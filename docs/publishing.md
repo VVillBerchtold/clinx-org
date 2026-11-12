@@ -83,4 +83,4 @@ To try the form on your own computer, build the site and start the local host. T
 deploy/node_modules/.bin/wrangler dev --config wrangler.jsonc
 ```
 
-Before the form can send for real, clinx.org must be set up for sending in the host's mail service, and the mailbox must be a verified destination there. Until then the form answers "could not be delivered" and shows the address to write to.
+The form sends through the host's mail service, which clinx.org is set up for. If a message cannot be sent, the form answers "could not be delivered" and shows the address to write to.

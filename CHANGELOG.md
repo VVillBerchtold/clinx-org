@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- The contact form sends (12 November 2026): clinx.org is set up for sending in the host's mail service, and a test message through the live form was delivered. `docs/publishing.md` no longer says the form is waiting for that.
 - The three repositories are public and the site is live at clinx.org (12 November 2026). The monthly refresh now reads the clinx-radar repository with no key: the read-only key it used while that repository was private is deleted, and a refresh run without it passed.
 - The site is public. `PREVIEW` is `false`: the Draft tags are gone, search engines may list the pages, and `sitemap.xml` is written. The wording was approved by the owner on 12 November 2026.
 - The repository reads in plain words: the README says what the site is, where its numbers come from and where each part lives, with a table of the site's promises and the code that keeps each one. The detail moved to `docs/`, one topic to a page (how the site is built, how figures and names are written, the checks, the monthly refresh, publishing and the contact form), and `src/lib/`, `scripts/` and `worker/` each have a short note. On the Data page the three repository names become links when the site goes public.
