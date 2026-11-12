@@ -58,7 +58,3 @@ After a new dataset version with new drug codes, the names file can be rebuilt w
 Every added, changed, kept and dropped name is listed in the report. `--accept-changes` is for the case where a person has read the report and the unusual change is real.
 
 The directory's files are data. The script copies their text as listed and runs nothing from them.
-
-## One note while the repositories are private
-
-The job reads the clinx-radar repository with a read-only key (`OPAIS_DEPLOY_KEY`). Once that repository is public the key can be deleted and the job works without it.

@@ -16,10 +16,6 @@
 # Publishing is switched off until the owner decides it: the publish job runs
 # only when the repository variable PUBLISH_ENABLED is "true". It publishes the
 # same files the checks passed on, with scripts/deploy/publish.sh.
-#
-# While the OPAIS library's repository is private, this job reads it with a
-# read-only deploy key held in the secret OPAIS_DEPLOY_KEY. Once that repository
-# is public the secret can be deleted and the job works without it.
 name: refresh
 
 on:
@@ -55,7 +51,6 @@ jobs:
           repository: ${{ vars.OPAIS_REPO }}
           ref: ${{ vars.OPAIS_REF }}
           path: _opais
-          ssh-key: ${{ secrets.OPAIS_DEPLOY_KEY }}
           persist-credentials: false
       - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
         with:
