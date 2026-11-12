@@ -1,3 +1,12 @@
+<p>
+  <a href="https://clinx.org">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="public/brand/clinx-wordmark-on-dark.svg">
+      <img src="public/brand/clinx-wordmark-on-light.svg" alt="ClinX" height="28">
+    </picture>
+  </a>
+</p>
+
 # clinx-org
 
 This is the code for [clinx.org](https://clinx.org), a free website that shows what hospitals and health centers report to their states about the federal 340B drug program.
