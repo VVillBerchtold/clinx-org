@@ -1,0 +1,61 @@
+<!doctype html>
+<!--
+  The preview pictures GitHub shows when a link to one of the three repositories is shared
+  (public/brand/card-clinx-340b.png, card-clinx-radar.png, card-clinx-org.png).
+  One file holds all three. To redraw one: open this file with the repository's name after a #
+  (repo-cards.html#clinx-radar) in a browser window 1280 wide and 640 tall and save a picture of it.
+  The look is the share card's (share-card.html). The large dot is the ClinX mark.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ClinX repository cards</title>
+<style>
+@font-face { font-family: 'Bricolage Grotesque'; font-weight: 200 800; src: url('../../node_modules/@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-opsz-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Instrument Sans'; font-weight: 400 700; src: url('../../node_modules/@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2') format('woff2'); }
+* { box-sizing: border-box; margin: 0; }
+html, body { width: 1280px; height: 640px; }
+body { background: #080a1a; color: #f1f2fb; font-family: 'Instrument Sans', system-ui, sans-serif; position: relative; overflow: hidden; -webkit-font-smoothing: antialiased; }
+section { display: none; }
+section:target { display: block; }
+.say { position: absolute; left: 80px; top: 68px; bottom: 68px; width: 640px; display: flex; flex-direction: column; }
+.mark { height: 37px; align-self: flex-start; }
+h1 { font: 800 80px/0.96 'Bricolage Grotesque', sans-serif; letter-spacing: -0.03em; margin-top: auto; }
+h1 span { display: block; color: #8f96ff; }
+p { font: 500 27px/1.35 'Instrument Sans', sans-serif; color: #b6bad9; margin-top: 26px; max-width: 600px; }
+.where { margin-top: auto; font: 600 23px/1 ui-monospace, 'SF Mono', Menlo, monospace; color: #f1f2fb; display: flex; align-items: center; gap: 14px; }
+.where i { width: 12px; height: 12px; border-radius: 50%; background: #8f96ff; box-shadow: 0 0 0 6px rgba(143, 150, 255, 0.22); }
+.where b { font-weight: 600; color: #b6bad9; }
+.dot { position: absolute; right: -96px; top: 50%; translate: 0 -50%; width: 560px; height: 560px; }
+</style>
+</head>
+<body>
+<section id="clinx-340b">
+  <div class="say">
+    <img class="mark" src="../../public/brand/clinx-wordmark-on-dark.svg" alt="ClinX">
+    <h1>State 340B filings, <span>as open data.</span></h1>
+    <p>Every figure is kept as printed and names the page of the filing it was read from.</p>
+    <div class="where"><i></i><span><b>github.com/VVillBerchtold/</b>clinx-340b</span></div>
+  </div>
+  <img class="dot" src="../../public/brand/clinx-mark.svg" alt="">
+</section>
+<section id="clinx-radar">
+  <div class="say">
+    <img class="mark" src="../../public/brand/clinx-wordmark-on-dark.svg" alt="ClinX">
+    <h1>What changed in <span>the 340B registry.</span></h1>
+    <p>Keeps dated copies of the federal registry and reports what changed between two of them.</p>
+    <div class="where"><i></i><span><b>github.com/VVillBerchtold/</b>clinx-radar</span></div>
+  </div>
+  <img class="dot" src="../../public/brand/clinx-mark.svg" alt="">
+</section>
+<section id="clinx-org">
+  <div class="say">
+    <img class="mark" src="../../public/brand/clinx-wordmark-on-dark.svg" alt="ClinX">
+    <h1>The code behind <span>clinx.org.</span></h1>
+    <p>A free site of state 340B filings. No cookies, no trackers, no sign-in.</p>
+    <div class="where"><i></i><span><b>github.com/VVillBerchtold/</b>clinx-org</span></div>
+  </div>
+  <img class="dot" src="../../public/brand/clinx-mark.svg" alt="">
+</section>
+</body>
+</html>

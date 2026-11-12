@@ -198,17 +198,27 @@ code {
   padding-block: 1.25rem;
 }
 .mark {
-  font: 800 1.625rem/1 var(--display);
-  letter-spacing: -0.02em;
+  display: inline-flex;
+  align-items: center;
+  height: 1.625rem;
+  color: var(--ink);
   text-decoration: none;
 }
-.mark span {
-  display: inline-block;
-  color: var(--accent);
-  transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.2, 1.2);
+/* The wordmark is a drawing (docs/brand.md): one colour, with the dot of the i in the accent. */
+.wordmark {
+  display: block;
+  height: 1.25rem;
+  width: auto;
+  overflow: visible;
+  fill: currentColor;
 }
-.mark:hover span {
-  transform: rotate(90deg) scale(1.15);
+.wordmark-dot {
+  fill: var(--accent);
+  transition: translate 0.5s cubic-bezier(0.2, 0.9, 0.2, 1.2);
+}
+/* The drawing is 774 units tall, so 70 units is a lift of about two pixels in the header. */
+.mark:hover .wordmark-dot {
+  translate: 0 -70px;
 }
 .site-nav ul {
   display: flex;

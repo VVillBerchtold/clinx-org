@@ -1,0 +1,13 @@
+---
+// The ClinX wordmark as a drawing, so the dot of the i can be purple (docs/brand.md).
+// The shapes come from the same script that writes the files in public/brand/.
+// Colours come from the stylesheet (.mark in layout.css): the letters take the text colour, the dot the accent.
+import { wordmarkShapes } from '../../scripts/brand/build.mjs';
+const { ink, dot, viewBox } = wordmarkShapes();
+const place = (shape: { x: number }) => `translate(${shape.x} 0) scale(1 -1)`;
+---
+
+<svg class="wordmark" viewBox={viewBox} aria-hidden="true" focusable="false">
+  {ink.map((shape) => <path transform={place(shape)} d={shape.d} />)}
+  <path class="wordmark-dot" transform={place(dot)} d={dot.d} />
+</svg>

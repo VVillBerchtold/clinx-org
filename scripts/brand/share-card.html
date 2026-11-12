@@ -2,6 +2,7 @@
 <!--
   The picture a link to ClinX.org shows when it is shared (public/brand/share-card.png).
   To redraw it: open this file in a browser window 1200 wide and 630 tall and save a picture of it.
+  The name at the top is the drawn wordmark (clinx-wordmark-on-dark.svg, from build.mjs).
   The tile pattern is decoration: the grid is the site's state map with no letters, and the
   brightness of a tile stands for nothing. It never needs to change when a state is added.
 -->
@@ -16,8 +17,8 @@
 html, body { width: 1200px; height: 630px; }
 body { background: #080a1a; color: #f1f2fb; font-family: 'Instrument Sans', system-ui, sans-serif; position: relative; overflow: hidden; -webkit-font-smoothing: antialiased; }
 .say { position: absolute; left: 72px; top: 64px; bottom: 64px; width: 580px; display: flex; flex-direction: column; }
-.mark { font: 800 44px/1 'Bricolage Grotesque', sans-serif; letter-spacing: -0.02em; }
-.mark span, h1 span { color: #8f96ff; }
+.mark { height: 34px; align-self: flex-start; }
+h1 span { color: #8f96ff; }
 h1 { font: 800 88px/0.94 'Bricolage Grotesque', sans-serif; letter-spacing: -0.03em; margin-top: auto; }
 h1 span { display: block; }
 p { font: 500 27px/1.35 'Instrument Sans', sans-serif; color: #b6bad9; margin-top: 28px; max-width: 560px; }
@@ -28,7 +29,7 @@ svg { position: absolute; right: 56px; top: 50%; translate: 0 -50%; width: 480px
 </head>
 <body>
 <div class="say">
-  <div class="mark">Clin<span>X</span></div>
+  <img class="mark" src="../../public/brand/clinx-wordmark-on-dark.svg" alt="ClinX">
   <h1>340B filings, <span>state by state.</span></h1>
   <p>Open data from public state filings. Every figure links to the page it came from.</p>
   <div class="where"><i></i>clinx.org</div>

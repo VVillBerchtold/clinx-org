@@ -1,4 +1,5 @@
 ---
+import Wordmark from '../components/Wordmark.astro';
 import '../styles/tokens.css';
 import '../styles/layout.css';
 import displayFont from '../../node_modules/@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-opsz-normal.woff2?url';
@@ -57,7 +58,10 @@ const labels: Node[] = unlisted ? [] : [...about, ...(crumbs.length > 0 ? [trail
     <meta property="og:image:height" content={String(SHARE_CARD.height)} />
     <meta property="og:image:alt" content={SHARE_CARD.alt} />
     <meta name="twitter:card" content="summary_large_image" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     {labels.length > 0 && <script is:inline type="application/ld+json" set:html={toBlock(labels)} />}
     <link rel="preload" href={displayFont} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={bodyFont} as="font" type="font/woff2" crossorigin />
@@ -66,7 +70,7 @@ const labels: Node[] = unlisted ? [] : [...about, ...(crumbs.length > 0 ? [trail
     <a class="skip-link" href="#main">Skip to the content</a>
     <header class="site-header">
       <div class="wrap">
-        <a class="mark" href="/" aria-label="ClinX home">Clin<span>X</span></a>
+        <a class="mark" href="/" aria-label="ClinX home"><Wordmark /></a>
         <nav class="site-nav" aria-label="Main">
           <ul>
             {
@@ -116,7 +120,7 @@ const labels: Node[] = unlisted ? [] : [...about, ...(crumbs.length > 0 ? [trail
       <div class="wrap">
         <div class="foot-grid">
           <div>
-            <a class="mark" href="/" aria-label="ClinX home">Clin<span>X</span></a>
+            <a class="mark" href="/" aria-label="ClinX home"><Wordmark /></a>
             <p>Open healthcare data and tools, built by Will Berchtold in Rhode Island.</p>
           </div>
           <nav aria-label="340B Scorecard">
