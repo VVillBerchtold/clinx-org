@@ -65,7 +65,7 @@ export const ARTICLE_TITLE = 'Reading a sensitive file without receiving it';
  * engines not to list it, and robots.txt turns every crawler away. Set it to false and the tags are
  * gone, robots.txt opens the site, and the build writes sitemap.xml.
  */
-export const PREVIEW = true;
+export const PREVIEW = false;
 
 /** The three public repositories. The pages link to them only once the site is public (PREVIEW false). */
 export const REPOSITORIES = {
