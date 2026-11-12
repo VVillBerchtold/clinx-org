@@ -36,7 +36,7 @@ Charts are SVG drawn at build time (`src/lib/meter.ts`, `src/lib/states.ts`). Th
 
 - No third-party scripts, fonts or images. The two typefaces are served from the site's own files.
 - No analytics, no cookies, nothing stored in the browser.
-- A strict Content-Security-Policy with no `unsafe-inline`: no inline scripts, no inline styles, no `style` attributes. The policy is in `public/_headers` and repeated in a tag on every page.
+- A strict Content-Security-Policy with no `unsafe-inline`: no inline scripts, no inline styles, no `style` attributes. The policy is in `public/_headers` and repeated in a tag on every page. (The one block of data each page gives search engines is not a script the browser runs; see [Being found](being-found.md).)
 
 ## Money is counted in whole cents
 

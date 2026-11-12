@@ -99,6 +99,7 @@ deploy/node_modules/.bin/wrangler dev --config wrangler.jsonc
 - [How the site is built](docs/how-the-site-is-built.md): the rules every page follows, and why.
 - [How figures and names are written](docs/how-figures-and-names-are-written.md): tidy on the page, untouched in the data.
 - [The checks](docs/the-checks.md): what the scan of the built site looks for.
+- [Being found](docs/being-found.md): what each page tells search engines, and how that is kept honest.
 - [The monthly refresh](docs/the-monthly-refresh.md): how the federal registry and the FDA names are brought up to date.
 - [Publishing and the contact form](docs/publishing.md): the host, the go-live switch and the one program that runs there.
 - [Changelog](CHANGELOG.md) and [how to contribute](CONTRIBUTING.md).

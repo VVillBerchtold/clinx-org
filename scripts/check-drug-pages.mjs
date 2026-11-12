@@ -85,6 +85,7 @@ for (const { slug, file } of pages) {
 
   // No inline script, no inline style.
   for (const m of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)) {
+    if (/^\s*type="application\/ld\+json"\s*$/.test(m[1])) continue; // data for search engines, read by check-dist.mjs; the browser does not run it
     if (!/\bsrc\s*=/.test(m[1]) || m[2].trim() !== '') fail(where, 'an inline <script>');
   }
   if (!/<script\b[^>]*\bsrc="[^"]*"/.test(html)) fail(where, 'no script file is loaded');
@@ -147,6 +148,7 @@ else {
   if (!toolbar) fail(where, 'no toolbar');
   else if (!/\shidden(?=[\s>=])/.test(toolbar[0])) fail(where, 'the toolbar is not hidden in the HTML');
   for (const m of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)) {
+    if (/^\s*type="application\/ld\+json"\s*$/.test(m[1])) continue; // data for search engines, read by check-dist.mjs; the browser does not run it
     if (!/\bsrc\s*=/.test(m[1]) || m[2].trim() !== '') fail(where, 'an inline <script>');
   }
   if (/<style\b/i.test(html)) fail(where, 'an inline <style>');

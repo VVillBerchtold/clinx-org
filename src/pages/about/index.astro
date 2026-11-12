@@ -4,10 +4,16 @@ import Base from '../../layouts/Base.astro';
 import Arrow from '../../components/Arrow.astro';
 import Draft from '../../components/Draft.astro';
 import PageHead from '../../components/PageHead.astro';
-import { LINKEDIN_URL, X_URL } from '../../lib/site';
+import { LINKEDIN_URL, REPOSITORIES, X_URL } from '../../lib/site';
+import { aboutPageNode, founderNode } from '../../lib/structured-data';
 ---
 
-<Base title="About" description="Why ClinX exists, how it works, who builds it, how it stays independent, and how to report a correction.">
+<Base
+  title="About: the mission and founder Will Berchtold"
+  description="Why ClinX exists, how it works and who builds it: Will Berchtold, founder of ClinX and ReferralFinderX. How it stays independent and how to report a correction."
+  crumbs={[{ name: 'About', path: '/about/' }]}
+  about={[aboutPageNode(), founderNode()]}
+>
   <PageHead title="About" trail={[{ label: 'ClinX' }]}>
     <p class="lede">
       ClinX exists to put capable healthcare tools and data within reach of every clinic, whatever its size or budget.
@@ -122,7 +128,7 @@ import { LINKEDIN_URL, X_URL } from '../../lib/site';
         <li>Say what the site shows and what the PDF page prints.</li>
       </ol>
       <p>The PDF governs. A confirmed correction is released as a new version of the dataset and listed in its changelog.</p>
-      <p class="head-tag"><span>Corrections go through the dataset's public issue list, which opens when the site goes live.</span> <Draft /></p>
+      <p class="head-tag"><span>Corrections go through <a href={`${REPOSITORIES.dataset}/issues`}>the dataset's public issue list</a>, or the <a href="/contact/">contact form</a>.</span> <Draft /></p>
     </div>
   </section>
 

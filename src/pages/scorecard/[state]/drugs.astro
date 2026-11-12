@@ -51,7 +51,8 @@ const summaryText = (g: StateDrugGroup) => {
 ---
 
 <Base
-  title={`${state}: drugs across all ${year} filings`}
+  title={`${state}: drugs across all ${year} 340B filings`}
+  crumbs={[{ name: 'Scorecard', path: '/scorecard/' }, { name: state, path: `/scorecard/${view.state.toLowerCase()}/` }, { name: 'Drugs across all filers', path: Astro.url.pathname }]}
   description={`Every ${drug.noun} row of ${drug.scheduleName} from all ${filers.length} ${state} 340B filings for calendar year ${year}, side by side by drug code, with amounts and claims as filed. Search the rows or download them as one file.`}
 >
   <PageHead

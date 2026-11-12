@@ -45,7 +45,8 @@ const groups = GROUP_ORDER.map((g) => ({ g, list: viewsInGroup(views, g), totals
 ---
 
 <Base
-  title={onePage ? `${name}: ${spec.periodWord} ${year} ${spec.nounPlural}` : `${name}: ${year} filings`}
+  title={onePage ? `${name} 340B hospital ${spec.nounPlural}, ${spec.periodWord} ${year}` : `${name} 340B filings, ${year}`}
+  crumbs={[{ name: 'Scorecard', path: '/scorecard/' }, { name, path: `/scorecard/${code.toLowerCase()}/` }]}
   description={
     onePage
       ? `Gross margin, external cost and share for each ${name} hospital 340B report for ${spec.periodWord} ${year}, as submitted to the state and marked draft by it. Every figure links to the page of the report it was read from.`

@@ -6,7 +6,7 @@ import PageHead from '../../components/PageHead.astro';
 import { ARTICLE_TITLE } from '../../lib/site';
 ---
 
-<Base title="Writing" description="Articles and working demos from ClinX.">
+<Base title="Writing" crumbs={[{ name: 'Writing', path: '/writing/' }]} description="Articles and working demos from ClinX: how its tools are built, with examples you can check for yourself.">
   <PageHead title="Writing" trail={[{ label: 'ClinX' }]}>
     <p class="lede">How the tools here are built, with working examples you can check for yourself.</p>
   </PageHead>

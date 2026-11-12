@@ -8,6 +8,7 @@ import { buildStateDrugViews, formatDate, getDataset, stateDrugCsv } from '../..
 import { stateName } from '../../lib/states';
 import { PREVIEW, REPOSITORIES } from '../../lib/site';
 import { renderSections } from '../../lib/markdown';
+import { datasetNode } from '../../lib/structured-data';
 
 const data = getDataset();
 // Files this site makes from the dataset: each state's drug rows, all filers in one file.
@@ -37,8 +38,10 @@ const describe: Record<string, string> = {
 ---
 
 <Base
-  title="Data"
-  description="Download the 340B state filings dataset as CSV and JSON files, read the data dictionary, and see the dataset version."
+  title="340B open data: downloads and data dictionary"
+  description="Download the 340B state filings dataset as CSV and JSON files, read the data dictionary, and see the dataset version. Free to use under CC BY 4.0."
+  crumbs={[{ name: 'Data', path: '/data/' }]}
+  about={[datasetNode(data, drugFiles.map(({ view, sha256 }) => ({ name: view.csvName, path: view.csvPath, sha256 })))]}
 >
   <PageHead title="Data" trail={[{ label: '340B Scorecard' }]}>
     <p class="lede">Every figure on this site, as files you can download. Each one is kept as filed or printed and cites the page of the PDF it was read from.</p>

@@ -90,6 +90,44 @@ const unlistedPages = [];
 const shareImages = new Set();
 const ids = new Map(); // url path -> Set of ids
 const links = []; // { page, target }
+const labelPages = new Map(); // url path -> the page's blocks of data for search engines (text)
+
+// The data a page gives search engines must be well-formed, must describe this page, and must name
+// only pages and files this site really has.
+function checkLabels(page, raw, listed) {
+  const ownAddress = SITE + page.replace(/index\.html$/, '');
+  if (!listed) return fail(page, 'a page search engines may not list carries data for them');
+  if (/[<>&]/.test(raw)) return fail(page, 'data for search engines contains a raw <, > or &');
+  let doc;
+  try {
+    doc = JSON.parse(raw);
+  } catch {
+    return fail(page, 'data for search engines is not valid JSON');
+  }
+  if (doc['@context'] !== 'https://schema.org' || !Array.isArray(doc['@graph']) || doc['@graph'].length === 0) return fail(page, 'data for search engines must be a schema.org @graph with something in it');
+  const visit = (value, key) => {
+    if (typeof value === 'string') {
+      if (value === SITE || value.startsWith(SITE + '/')) links.push({ page, target: value.slice(SITE.length).split('#')[0] || '/' });
+      else if (/^http:\/\//.test(value)) fail(page, `data for search engines names an http address: ${value}`);
+      if (key !== '@type' && value.trim() === '') fail(page, `data for search engines has an empty ${key}`);
+    } else if (Array.isArray(value)) value.forEach((v) => visit(v, key));
+    else if (value && typeof value === 'object') for (const [k, v] of Object.entries(value)) visit(v, k);
+  };
+  visit(doc, '@graph');
+  for (const node of doc['@graph']) {
+    if (node['@type'] === 'BreadcrumbList') {
+      const items = node.itemListElement ?? [];
+      if (items.length < 2 || items.some((it, i) => it.position !== i + 1 || !it.name || !it.item)) fail(page, 'the trail for search engines is not a numbered list of named pages');
+      else if (items[0].item !== SITE + '/' || items[items.length - 1].item !== ownAddress) fail(page, `the trail for search engines must run from the home page to ${ownAddress}`);
+    }
+    if (node['@type'] === 'Dataset') {
+      const d = node.description ?? '';
+      if (!node.name || d.length < 50 || d.length > 5000) fail(page, 'the dataset description for search engines needs a name and 50 to 5000 characters');
+      if (!/^https:\/\/creativecommons\.org\/licenses\//.test(node.license ?? '')) fail(page, 'the dataset for search engines names no licence');
+      if (!Array.isArray(node.distribution) || node.distribution.length === 0 || node.distribution.some((f) => !f.contentUrl || !f.encodingFormat)) fail(page, 'the dataset for search engines lists no files');
+    }
+  }
+}
 
 for (const file of htmlFiles) {
   const page = urlOf(file);
@@ -100,12 +138,20 @@ for (const file of htmlFiles) {
   const pageIds = new Set();
   ids.set(page, pageIds);
 
-  // Inline script or style with content.
+  // Inline script or style with content. One kind of block is let through: the data a search engine
+  // reads (type application/ld+json). The browser does not run it; checkLabels() below reads it.
+  const labelBlocks = [];
   for (const m of noComments.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)) {
     const attrs = attributesOf(m[1]);
+    if (attrs.length === 1 && attrs[0][0] === 'type' && attrs[0][1] === 'application/ld+json') {
+      labelBlocks.push(m[2]);
+      continue;
+    }
     const hasSrc = attrs.some(([n]) => n === 'src');
     if (!hasSrc || m[2].trim() !== '') fail(page, 'inline <script>');
   }
+  if (labelBlocks.length > 1) fail(page, `${labelBlocks.length} blocks of data for search engines, expected at most one`);
+  labelPages.set(page, labelBlocks);
   if (/<style\b/i.test(noComments)) fail(page, 'inline <style>');
 
   let h1 = 0;
@@ -182,6 +228,7 @@ for (const file of htmlFiles) {
   const ownAddress = SITE + page.replace(/index\.html$/, '');
   if (page !== '/404.html' && (canonicals.length !== 1 || canonicals[0] !== ownAddress)) fail(page, `the canonical link must be ${ownAddress}, found: ${canonicals.join(', ') || 'none'}`);
   (unlisted ? unlistedPages : listedPages).push(page === '/404.html' ? page : ownAddress);
+  for (const raw of labelBlocks) checkLabels(page, raw, !unlisted);
   if (!sawTitle) fail(page, 'no <title>');
   if (!sawDescription) fail(page, 'no meta description');
   if (!sawLang) fail(page, 'html lang is not "en"');

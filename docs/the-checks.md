@@ -21,7 +21,7 @@
 - A script that opens a network connection. The one exception is the article's demo, whose single call goes to an address that cannot exist, to show that nothing leaves the browser.
 
 **Anything that weakens the page security policy**
-- An inline script or style, a `style` attribute, or an `onclick`-style attribute.
+- An inline script or style, a `style` attribute, or an `onclick`-style attribute. One block is let through: the data a page gives search engines, which the browser does not run. The scan reads it and fails on a malformed block or one that names a page the site does not have. See [Being found](being-found.md).
 - A page without the policy tag, or with one that differs from `public/_headers`.
 - A `form` anywhere but the contact page, or an `iframe`, `object`, `embed` or `base` element.
 

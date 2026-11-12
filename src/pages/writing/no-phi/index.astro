@@ -7,11 +7,19 @@ import PageHead from '../../../components/PageHead.astro';
 import article from '../../../content/no-phi.md?raw';
 import { renderSections } from '../../../lib/markdown';
 import { ARTICLE_TITLE } from '../../../lib/site';
+import { articleNode, founderNode } from '../../../lib/structured-data';
 
 const sections = renderSections(article);
+
+const articleDescription = "How to build a tool that reads a sensitive file on the reader's own computer, keeps only totals, and cannot send anything.";
 ---
 
-<Base title={ARTICLE_TITLE} description="How to build a tool that reads a sensitive file on the reader's own computer, keeps only totals, and cannot send anything.">
+<Base
+  title={ARTICLE_TITLE}
+  description={articleDescription}
+  crumbs={[{ name: 'Writing', path: '/writing/' }, { name: ARTICLE_TITLE, path: '/writing/no-phi/' }]}
+  about={[articleNode(articleDescription), founderNode()]}
+>
   <PageHead wide title={ARTICLE_TITLE} trail={[{ label: 'Writing', href: '/writing/' }, { label: 'Article' }]}>
     <p class="byline">By Will Berchtold <span aria-hidden="true">·</span> 4 minute read <Draft /></p>
   </PageHead>

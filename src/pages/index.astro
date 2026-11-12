@@ -1,6 +1,7 @@
 ---
 import '../styles/home.css';
 import Base from '../layouts/Base.astro';
+import { founderNode, siteNode } from '../lib/structured-data';
 import Arrow from '../components/Arrow.astro';
 import Count from '../components/Count.astro';
 import Draft from '../components/Draft.astro';
@@ -65,6 +66,7 @@ const differenceCount = data.discrepancies.length;
 <Base
   bleed
   title="ClinX: 340B filings, state by state"
+  about={[siteNode(), founderNode()]}
   description="What hospitals and health centers reported to their states about the 340B drug program, as open data. Every figure links to the page of the filing it came from."
 >
   <section class="wrap hero" aria-labelledby="hero-title">

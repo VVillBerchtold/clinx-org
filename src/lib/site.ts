@@ -80,3 +80,9 @@ export const REFERRALFINDERX_URL = 'https://referralfinderx.com';
 /** The founder's public profiles. */
 export const LINKEDIN_URL = 'https://www.linkedin.com/in/will-berchtold';
 export const X_URL = 'https://x.com/willberch';
+export const GITHUB_URL = 'https://github.com/VVillBerchtold';
+/** The founder's page on the ReferralFinderX site. */
+export const REFERRALFINDERX_FOUNDER_URL = 'https://referralfinderx.com/founder.html';
+
+/** The day the article went public with the site. */
+export const ARTICLE_PUBLISHED = '2026-11-12';

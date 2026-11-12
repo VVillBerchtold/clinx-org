@@ -61,8 +61,9 @@ const cell = (r: LineItem): string => (r.amountAsFiled === '' ? 'blank' : r.amou
 ---
 
 <Base
-  title={`${name}: ${year} data in the state's report`}
-  description={`Net 340B revenue for the ${entities.length} entities named in the ${name} ${spec.agency} report, ${year} data, as the state printed it, with the state's totals and the places where its figures differ. Every figure links to its page of the report.`}
+  title={`${name} 340B report: ${year} data by entity`}
+  crumbs={[{ name: 'Scorecard', path: '/scorecard/' }, { name, path: `/scorecard/${code.toLowerCase()}/` }]}
+  description={`Net 340B revenue for the ${entities.length} entities named in the ${spec.agency.startsWith(name) ? spec.agency : `${name} ${spec.agency}`} report, ${year} data, as the state printed it, with the state's totals and the places where its figures differ. Every figure links to its page of the report.`}
 >
   <PageHead title={name} trail={[{ label: 'Scorecard', href: '/scorecard/' }, { label: `${year} data, state report` }]}>
     <p class="lede">

@@ -5,6 +5,7 @@ import displayFont from '../../node_modules/@fontsource-variable/bricolage-grote
 import bodyFont from '../../node_modules/@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2?url';
 import { CSP_FORM_META, CSP_META, NAV, PREVIEW, SHARE_CARD, SITE_NAME, SITE_URL } from '../lib/site';
 import { formatDate, getDataset } from '../lib/data';
+import { toBlock, trailNode, type Crumb, type Node } from '../lib/structured-data';
 
 interface Props {
   title: string;
@@ -15,15 +16,21 @@ interface Props {
   postsForm?: boolean;
   /** True on pages a search engine should never list (not found, the form's answer pages). */
   unlisted?: boolean;
+  /** The trail from the home page to this page, for search engines (see lib/structured-data.ts). */
+  crumbs?: readonly Crumb[];
+  /** What else this page is, for search engines: a site, a person, a dataset, an article. */
+  about?: readonly Node[];
 }
 
-const { title, description, bleed = false, postsForm = false, unlisted = false } = Astro.props;
+const { title, description, bleed = false, postsForm = false, unlisted = false, crumbs = [], about = [] } = Astro.props;
 const data = getDataset();
 const path = Astro.url.pathname;
 const refreshFiles = import.meta.glob<{ last_refresh: string }>('../../refresh/last-refresh.json', { eager: true, import: 'default' });
 const lastRefresh = Object.values(refreshFiles)[0]?.last_refresh;
 const fullTitle = path === '/' ? title : `${title} | ${SITE_NAME}`;
 const canonical = SITE_URL + path;
+// One block of data for search engines. An unlisted page carries none.
+const labels: Node[] = unlisted ? [] : [...about, ...(crumbs.length > 0 ? [trailNode(crumbs)] : [])];
 ---
 
 <!doctype html>
@@ -51,6 +58,7 @@ const canonical = SITE_URL + path;
     <meta property="og:image:alt" content={SHARE_CARD.alt} />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    {labels.length > 0 && <script is:inline type="application/ld+json" set:html={toBlock(labels)} />}
     <link rel="preload" href={displayFont} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={bodyFont} as="font" type="font/woff2" crossorigin />
   </head>

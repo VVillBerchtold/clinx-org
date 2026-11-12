@@ -60,7 +60,7 @@ export interface FormBase {
   shownSchedules: readonly string[];
   /** Schedules of the form that are never loaded (not shown for now). The drug schedule is loaded apart (see drugSchedule). Any other schedule is an error. */
   withheldSchedules: readonly string[];
-  /** Short page title suffix, for example "2025 filing". */
+  /** Short page title suffix, for example "340B filing, 2025". */
   titleSuffix: (year: string) => string;
 }
 
@@ -167,7 +167,7 @@ const RI: FormSpec = {
   margin: { plus: A('2'), minus: A('1') },
   external: [A('3'), A('4')],
   describe: riLines,
-  titleSuffix: (year) => `${year} filing`,
+  titleSuffix: (year) => `340B filing, ${year}`,
 };
 
 const V = (schedule: string, line: string, label: string, kind: RowKind = 'detail'): RowKey => ({ schedule, line, kind, label });
@@ -208,7 +208,7 @@ const VT: FormSpec = {
     const labels = keys.map((k) => k.label ?? k.line);
     return labels.length < 2 ? labels.join('') : `${labels.slice(0, -1).join(', ')} and ${labels[labels.length - 1]}`;
   },
-  titleSuffix: (year) => `FY${year} report`,
+  titleSuffix: (year) => `340B report, FY${year}`,
 };
 
 const MN_GROUPS: readonly ReportGroup[] = [
@@ -236,7 +236,7 @@ const MN: ReportFormSpec = {
   totalsTable: { schedule: 'table_6_2', netSuffix: 'net_revenue', pctSuffix: 'pct_of_total', netHeading: 'Net 340B Revenue ($)', pctHeading: '% of Total', groups: MN_GROUPS },
   notes: { schedule: 'page_note', aboveEntityTable: 'note_1', entityTableTitle: 'note_2', entityTableSource: 'note_3', aboveTotalsTable: 'note_4', totalsTableTitle: 'note_5', totalsTableSource: 'note_6' },
   typeFor: (printedType) => (/\bHospital\b/.test(printedType) ? 'hospital' : 'other'),
-  titleSuffix: (year) => `${year} data`,
+  titleSuffix: (year) => `340B data, ${year}`,
 };
 
 export const FORMS: Readonly<Record<string, AnyFormSpec>> = { [RI.id]: RI, [VT.id]: VT, [MN.id]: MN };

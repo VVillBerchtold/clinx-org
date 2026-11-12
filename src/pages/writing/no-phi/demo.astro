@@ -3,9 +3,10 @@ import '../../../styles/pages.css';
 import '../../../styles/no-phi-demo.css';
 import Base from '../../../layouts/Base.astro';
 import PageHead from '../../../components/PageHead.astro';
+import { ARTICLE_TITLE } from '../../../lib/site';
 ---
 
-<Base title="Demo: totals from a file that stays on your computer" description="A working demo. It reads a made-up claims file in the browser, shows totals, and makes no network request while it does.">
+<Base title="Demo: totals from a file that stays on your computer" crumbs={[{ name: 'Writing', path: '/writing/' }, { name: ARTICLE_TITLE, path: '/writing/no-phi/' }, { name: 'Demo', path: '/writing/no-phi/demo/' }]} description="A working demo. It reads a made-up claims file in the browser, shows totals, and makes no network request while it does.">
   <div id="demo-area">
     <PageHead wide title="Totals from a file that never leaves your computer" trail={[{ label: 'Writing', href: '/writing/' }, { label: 'Article', href: '/writing/no-phi/' }, { label: 'Demo' }]}>
       <p class="lede">

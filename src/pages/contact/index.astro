@@ -7,7 +7,7 @@ import { CONTACT_LIMITS, CONTACT_TOPICS } from '../../lib/contact-topics';
 import { CONTACT_EMAIL } from '../../lib/site';
 ---
 
-<Base title="Contact" description="Send ClinX a question, a correction, feedback, or a request for a tool or a dataset." postsForm>
+<Base title="Contact" crumbs={[{ name: 'Contact', path: '/contact/' }]} description="Send ClinX a question, a correction, feedback, or a request for a tool or a dataset." postsForm>
   <PageHead title="Contact" trail={[{ label: 'ClinX' }]} wide>
     <p class="lede head-tag">
       <span>A question, a figure that looks wrong, or a tool your clinic needs: send it here. Every message goes to Will Berchtold, who builds ClinX.</span>

@@ -64,7 +64,8 @@ const percent = (cents: number) => (view.maxCents > 0 && cents > 0 ? barPercentO
 ---
 
 <Base
-  title={`${name}: ${drug.nounPlural} in the ${year} filing`}
+  title={`${name}: ${drug.nounPlural} in the ${year} 340B filing`}
+  crumbs={[{ name: 'Scorecard', path: '/scorecard/' }, { name: state, path: `/scorecard/${entity.state.toLowerCase()}/` }, { name, path: Astro.url.pathname.replace(/drugs\/$/, '') }, { name: drug.nounPlural[0]!.toUpperCase() + drug.nounPlural.slice(1), path: Astro.url.pathname }]}
   description={`Every ${drug.noun} row of ${drug.scheduleName} of the ${name} 340B filing for calendar year ${year}, as filed, with its amount and number of claims. Search the rows. Every amount links to its page of the filing.`}
 >
   <PageHead

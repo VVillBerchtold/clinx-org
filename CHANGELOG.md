@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Being found (not yet published): each page now tells search engines what it is in one block of data (`src/lib/structured-data.ts`): the site and its builder on the home page, the person and his other public pages on About, the dataset with its version, licence, coverage and files on Data, the article, and the trail of pages everywhere else. Page titles name 340B and the year ("Rhode Island 340B filings, 2025"); the headings on the pages are unchanged. `npm run check:dist` reads every block and fails on a malformed one or one that names a page the site does not have; `docs/being-found.md` explains it. Also fixed: the Minnesota page's description said "Minnesota Minnesota Department of Health", and About still said the issue list "opens when the site goes live" (it now links to it).
 - The contact form sends (12 November 2026): clinx.org is set up for sending in the host's mail service, and a test message through the live form was delivered. `docs/publishing.md` no longer says the form is waiting for that.
 - The three repositories are public and the site is live at clinx.org (12 November 2026). The monthly refresh now reads the clinx-radar repository with no key: the read-only key it used while that repository was private is deleted, and a refresh run without it passed.
 - The site is public. `PREVIEW` is `false`: the Draft tags are gone, search engines may list the pages, and `sitemap.xml` is written. The wording was approved by the owner on 12 November 2026.

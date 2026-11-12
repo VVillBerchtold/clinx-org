@@ -102,6 +102,7 @@ const retrieved = formatDate(filing.retrievedAt);
 
 <Base
   title={`${entity.nameAsFiled}: ${spec.titleSuffix(filing.reportingYear)}`}
+  crumbs={[{ name: 'Scorecard', path: '/scorecard/' }, { name: state, path: stateHref }, { name: entity.nameAsFiled, path: Astro.url.pathname }]}
   description={
     onePage
       ? `The page as printed, calculated measures, differences, narrative and source for the ${entity.nameAsFiled} 340B report for ${spec.periodWord} ${filing.reportingYear}, marked draft by the state.`

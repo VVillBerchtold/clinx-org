@@ -7,7 +7,7 @@ import PageHead from '../../components/PageHead.astro';
 import { CONTACT_EMAIL } from '../../lib/site';
 ---
 
-<Base title="Privacy and security" description="What this site collects, how files you open stay on your computer, and how the site is protected.">
+<Base title="Privacy and security" crumbs={[{ name: 'Privacy and security', path: '/privacy/' }]} description="What this site collects, how files you open stay on your computer, and how the site is protected.">
   <PageHead title="Privacy and security" trail={[{ label: 'ClinX' }]} wide>
     <p class="lede head-tag">
       <span>This site keeps nothing about you. There is nothing to sign in to. The one thing it ever receives is a message you choose to send through the contact form.</span>
