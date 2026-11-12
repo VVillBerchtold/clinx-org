@@ -1,0 +1,26 @@
+---
+/** The opening of every page but the home page: where you are, the title, one or two plain sentences. */
+interface Props {
+  title: string;
+  /** Trail before the title, for example Scorecard, then Rhode Island. The last item has no link. */
+  trail: readonly { label: string; href?: string }[];
+  wide?: boolean;
+}
+const { title, trail, wide = false } = Astro.props;
+---
+
+<header class:list={['page-head', { wide }]}>
+  <nav class="kicker" aria-label="You are here">
+    <span class="dot" aria-hidden="true"></span>
+    {
+      trail.map((t, i) => (
+        <>
+          {i > 0 && <span class="sep" aria-hidden="true">/</span>}
+          {t.href ? <a href={t.href}>{t.label}</a> : <span>{t.label}</span>}
+        </>
+      ))
+    }
+  </nav>
+  <h1>{title}</h1>
+  <slot />
+</header>

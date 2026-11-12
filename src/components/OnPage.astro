@@ -1,0 +1,40 @@
+---
+/**
+ * The parts of a long page, twice:
+ * 1. a contents list where the page puts it (plain links, works without script);
+ * 2. a slim bar that stays at the top of the window once that list has scrolled away. It names the part being
+ *    read and opens a menu of all parts. It is rendered hidden; src/scripts/page-nav.ts switches it on.
+ */
+interface Props {
+  /** The page's title, shown at the left of the bar. */
+  title: string;
+  items: readonly { id: string; label: string }[];
+  class?: string;
+}
+const { title, items, class: extra } = Astro.props;
+---
+
+<nav class:list={['onpage', extra]} aria-labelledby="onpage-label" data-onpage>
+  <p class="onpage-label" id="onpage-label">On this page</p>
+  <ol>
+    {items.map((item) => <li><a href={`#${item.id}`}>{item.label}</a></li>)}
+  </ol>
+</nav>
+
+<div class="page-bar" data-page-bar hidden>
+  <div class="wrap">
+    <a class="page-bar-title" href="#top" data-page-bar-top><span>{title}</span></a>
+    <div class="page-bar-menu">
+      <button class="page-bar-now" type="button" aria-expanded="false" aria-controls="page-bar-list" data-page-bar-now>
+        <span class="page-bar-step" data-page-bar-step></span>
+        <span class="page-bar-name" data-page-bar-name>On this page</span>
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" focusable="false"><path d="M3 5.25 7 9.25l4-4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </button>
+      <nav class="page-bar-list" id="page-bar-list" aria-label="Parts of this page" hidden data-page-bar-list>
+        <ol>
+          {items.map((item) => <li><a href={`#${item.id}`}>{item.label}</a></li>)}
+        </ol>
+      </nav>
+    </div>
+  </div>
+</div>

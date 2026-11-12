@@ -1,0 +1,31 @@
+---
+import FilingStatePage from '../../../components/FilingStatePage.astro';
+import ReportStatePage from '../../../components/ReportStatePage.astro';
+import { buildReportViews, buildViews, getDataset } from '../../../lib/data';
+
+/**
+ * One page per state. The kind of record the state's rows are decides the page: a state whose filers
+ * file for themselves gets the table of filings; a state that prints a report about its entities gets
+ * that report's page. Nothing here looks at a state's code.
+ */
+export function getStaticPaths() {
+  const data = getDataset();
+  const filingStates = [...new Set(buildViews(data).map((v) => v.entity.state))];
+  const reportStates = buildReportViews(data).map((v) => v.state);
+  const both = filingStates.filter((c) => reportStates.includes(c));
+  if (both.length > 0) throw new Error(`${both.join(', ')}: a state cannot have both its filers' filings and a report about them`);
+  return [
+    ...filingStates.map((code) => ({ params: { state: code.toLowerCase() }, props: { code, kind: 'filings' as const } })),
+    ...reportStates.map((code) => ({ params: { state: code.toLowerCase() }, props: { code, kind: 'report' as const } })),
+  ];
+}
+
+interface Props {
+  code: string;
+  kind: 'filings' | 'report';
+}
+
+const { code, kind } = Astro.props;
+---
+
+{kind === 'report' ? <ReportStatePage code={code} /> : <FilingStatePage code={code} />}

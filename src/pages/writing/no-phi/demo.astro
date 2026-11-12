@@ -1,0 +1,82 @@
+---
+import '../../../styles/pages.css';
+import '../../../styles/no-phi-demo.css';
+import Base from '../../../layouts/Base.astro';
+import PageHead from '../../../components/PageHead.astro';
+---
+
+<Base title="Demo: totals from a file that stays on your computer" description="A working demo. It reads a made-up claims file in the browser, shows totals, and makes no network request while it does.">
+  <div id="demo-area">
+    <PageHead wide title="Totals from a file that never leaves your computer" trail={[{ label: 'Writing', href: '/writing/' }, { label: 'Article', href: '/writing/no-phi/' }, { label: 'Demo' }]}>
+      <p class="lede">
+        This page reads a pharmacy claims file inside your browser and shows the totals. It counts every request it makes while it works. The count stays at zero.
+      </p>
+    </PageHead>
+
+    <div class="demo">
+      <section class="demo-tool" aria-labelledby="h-input">
+        <h2 id="h-input">Pick a file</h2>
+        <div id="drop" class="demo-drop">
+          <svg class="demo-icon" width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true" focusable="false">
+            <path d="M12 5h14l8 8v24a2 2 0 0 1-2 2H12a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"></path>
+            <path d="M26 5v8h8M16 23h12M16 29h12M16 17h5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+          <p class="demo-drop-say">Drop a CSV file here</p>
+          <div class="btn-row">
+            <button id="use-sample" class="btn" type="button">Use the sample file</button>
+            <input id="file" class="visually-hidden" type="file" accept=".csv,text/csv" aria-describedby="drop-help" />
+            <label for="file" class="btn ghost">Choose a file</label>
+          </div>
+          <p id="drop-help" class="small muted">The sample is 50,000 made-up rows, built in your browser's memory. Nothing is downloaded.</p>
+        </div>
+        <p id="progress" class="demo-status">Nothing read yet.</p>
+        <p id="live" class="visually-hidden" role="status" aria-live="polite"></p>
+        <p class="small muted"><strong>Every id, drug, pharmacy and amount in the sample is made up.</strong> Please do not load real patient data into a demo.</p>
+      </section>
+
+      <section id="proof" class="demo-proof" aria-labelledby="h-proof">
+        <h2 id="h-proof">Requests made since you picked a file</h2>
+        <p class="proof-num"><span id="proof-later-count">0</span></p>
+        <ul id="proof-later-list" class="proof-list"></ul>
+        <p id="proof-ran" class="proof-ran">The count comes from your browser's own record of what this page has loaded.</p>
+        <details>
+          <summary>Before that, the page loaded <span id="proof-count">0</span> files of its own</summary>
+          <ul id="proof-load-list" class="proof-list"></ul>
+        </details>
+        <div class="proof-test">
+          <button id="try-send" class="btn" type="button">Try to send something</button>
+          <p class="small">
+            This asks your browser to connect to <code>example.invalid</code>, an address that can never exist. The request carries nothing from your file. Your browser should refuse it.
+          </p>
+          <div aria-live="polite">
+            <p id="send-result" class="small"></p>
+            <p id="proof-violation" class="small"></p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section id="results" class="demo-results" aria-labelledby="h-results" hidden>
+      <h2 id="h-results">Totals</h2>
+      <div id="results-body" class="demo-results-body"></div>
+    </section>
+
+    <div class="after-product">
+      <section class="split" aria-labelledby="h-check">
+        <h2 id="h-check">Check it yourself</h2>
+        <div class="split-body">
+          <ul>
+            <li>Open your browser's developer tools, choose the Network panel, then load a file. No new request appears.</li>
+            <li>Load this page, switch your network off, then use the sample file. It still works.</li>
+            <li>Read the page's policy. It contains <code>connect-src 'none'</code>, which tells the browser to refuse every connection the page tries to make.</li>
+          </ul>
+          <p><a href="/writing/no-phi/">The article</a> explains how the page is built.</p>
+          <p class="small muted">This is a technical demonstration of a pattern. It makes no legal or compliance claim.</p>
+        </div>
+      </section>
+    </div>
+  </div>
+  <script>
+    import '../../../scripts/no-phi/main';
+  </script>
+</Base>

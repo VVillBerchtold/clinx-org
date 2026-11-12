@@ -1,0 +1,177 @@
+# Monthly refresh. Pulls HRSA's OPAIS export, compares it with the last
+# snapshot, rebuilds the site and runs every check. It publishes only on a full
+# pass. On any failure it opens an issue and the live site stays as it was.
+#
+# This job refreshes the HRSA registration layer and the drug names from the
+# FDA's National Drug Code Directory (one public zip, fetched once over https).
+# The filing data changes only when a new dataset version is released and
+# copied in by hand.
+#
+# The export is fetched by the OPAIS library's `opais pull`, which presses the
+# download button on HRSA's public reports page once. The raw export names
+# people: it is kept in a temporary folder outside the repository, deleted when
+# the run ends, and never uploaded. Only the snapshot (no personal fields) and
+# the change report leave the job.
+#
+# Publishing is switched off until the owner decides it: the publish job runs
+# only when the repository variable PUBLISH_ENABLED is "true". It publishes the
+# same files the checks passed on, with scripts/deploy/publish.sh.
+#
+# While the OPAIS library's repository is private, this job reads it with a
+# read-only deploy key held in the secret OPAIS_DEPLOY_KEY. Once that repository
+# is public the secret can be deleted and the job works without it.
+name: refresh
+
+on:
+  schedule:
+    - cron: "17 9 3 * *" # 09:17 UTC on the 3rd of each month
+  workflow_dispatch:
+    inputs:
+      force_failure:
+        description: "Drill: fail on purpose after every check has passed"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    outputs:
+      date: ${{ steps.date.outputs.date }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check out the OPAIS library
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ${{ vars.OPAIS_REPO }}
+          ref: ${{ vars.OPAIS_REF }}
+          path: _opais
+          ssh-key: ${{ secrets.OPAIS_DEPLOY_KEY }}
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: "0.12.19"
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Install the locked dependencies
+        run: |
+          npm ci
+          uv sync --locked --project _opais --extra pull
+      - name: Install the browser the pull uses
+        run: uv run --project _opais --extra pull playwright install --with-deps chromium
+      - name: Today's date
+        id: date
+        run: echo "date=$(date -u +%F)" >> "$GITHUB_OUTPUT"
+      - name: Pull, snapshot, compare, rebuild, check
+        env:
+          REFRESH_DATE: ${{ steps.date.outputs.date }}
+          OPAIS_DIR: ${{ github.workspace }}/_opais
+          FORCE_FAILURE: ${{ inputs.force_failure || false }}
+          ASTRO_TELEMETRY_DISABLED: "1"
+        run: scripts/refresh/refresh.sh
+      - name: Keep the change report, pass or fail
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: refresh-report
+          path: refresh/reports/
+          if-no-files-found: ignore
+      - name: Keep the built site
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: site
+          path: |
+            dist/
+            refresh/snapshots/
+            refresh/last-refresh.json
+            reference/fda-ndc/
+          if-no-files-found: error
+
+  publish:
+    # Runs only after a full pass. A failed or cancelled refresh never reaches it.
+    needs: refresh
+    if: ${{ needs.refresh.result == 'success' && vars.PUBLISH_ENABLED == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: site
+          path: _site
+      - name: Put the checked site in place
+        run: mv _site/dist dist
+      - name: Publish to ClinX.org
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: scripts/deploy/publish.sh
+
+  record:
+    # After a publish, keep the new snapshot and the drug names in the repository
+    # so next month's run has something to compare with and ordinary builds show
+    # the same thing.
+    needs: [refresh, publish]
+    if: ${{ needs.publish.result == 'success' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: site
+          path: _site
+      - name: Commit the snapshot, the refresh date and the drug names
+        env:
+          REFRESH_DATE: ${{ needs.refresh.outputs.date }}
+        run: |
+          mkdir -p refresh/snapshots
+          cp _site/refresh/snapshots/*.json refresh/snapshots/
+          cp _site/refresh/last-refresh.json refresh/last-refresh.json
+          cp _site/reference/fda-ndc/names.csv _site/reference/fda-ndc/SOURCE.json reference/fda-ndc/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add refresh/snapshots refresh/last-refresh.json reference/fda-ndc/names.csv reference/fda-ndc/SOURCE.json
+          git diff --cached --quiet || git commit -m "Record the OPAIS snapshot and the FDA drug names of $REFRESH_DATE"
+          git push
+
+  report-failure:
+    needs: [refresh, publish, record]
+    if: ${{ always() && (needs.refresh.result == 'failure' || needs.publish.result == 'failure' || needs.record.result == 'failure') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    steps:
+      - name: Open an issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          DRILL: ${{ inputs.force_failure || false }}
+        run: |
+          title="Monthly refresh failed on $(date -u +%F)"
+          if [ "$DRILL" = "true" ]; then title="$title (drill)"; fi
+          gh issue create --title "$title" --body "The refresh did not pass, so nothing was published. The live site is unchanged.
+
+          Run: $RUN_URL
+
+          The run's log names the step that failed. If a change report was made, it is attached to the run as \`refresh-report\`."

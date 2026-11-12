@@ -1,0 +1,240 @@
+---
+import '../styles/home.css';
+import '../styles/scorecard.css';
+import Base from '../layouts/Base.astro';
+import Cited from './Cited.astro';
+import DifferencesTable from './DifferencesTable.astro';
+import OnPage from './OnPage.astro';
+import PageHead from './PageHead.astro';
+import { formatDate, getDataset, pdfHref, reportViewFor, type Discrepancy, type LineItem } from '../lib/data';
+import { barPercentOfScale } from '../lib/meter';
+import { numberWord, numberWordCap } from '../lib/site';
+import { STATE_REGISTRY, stateName } from '../lib/states';
+
+/**
+ * A state's page when the state prints a report about the entities it names: one table with a row per
+ * entity, the state's totals, and the places where the report's own figures differ. There is no page per
+ * entity (each has two figures) and no measure (the report prints no cost). The words that depend on the
+ * form come from forms.ts; the figures and the report's own sentences come from the dataset.
+ */
+interface Props {
+  code: string;
+}
+
+const { code } = Astro.props;
+const data = getDataset();
+const report = reportViewFor(data, code);
+const { spec, filing, entities, totals, notes } = report;
+const name = stateName(code);
+const entry = STATE_REGISTRY[code];
+const year = filing.reportingYear;
+const pdf = (page: number) => pdfHref(filing, page);
+const pageLabel = (page: number) => `Page ${page} of the report PDF`;
+const reportTitle = filing.formRevision;
+
+// The count the paragraph above the table states, from the dataset's own difference record.
+const rowsRule = report.differences.find((x) => x.difference.rule === 'table_6_1.rows=stated_entities')?.difference;
+const statedCount = rowsRule?.filed ?? null;
+const statewideDiffs = report.differences.filter((x) => x.owner === null).length;
+const entityDiffs = report.differences.length - statewideDiffs;
+const owners = new Map<Discrepancy, string | null>(report.differences.map((x) => [x.difference, x.owner]));
+
+// Bars: one scale for the whole table, a round number of millions above every figure.
+const MILLION_CENTS = 100_000_000;
+const STEP_CENTS = 50 * MILLION_CENTS;
+const figures = entities.map((e) => e.netCents).filter((c): c is number => c !== null);
+const scaleCents = Math.max(STEP_CENTS, Math.ceil(Math.max(...figures) / STEP_CENTS) * STEP_CENTS);
+const scaleMillions = (scaleCents / MILLION_CENTS).toLocaleString('en-US');
+// The two marks the site already has: the hospital colour, and the other colour for any other printed type.
+const toneOf = (type: string): 'hosp' | 'hc' => (spec.typeFor(type) === 'hospital' ? 'hosp' : 'hc');
+const otherTypes = [...new Set(entities.filter((e) => toneOf(e.typeAsPrinted) === 'hc').map((e) => e.typeAsPrinted))];
+
+// The pages of the report PDF that the figures come from.
+const reportRecords = new Set(data.filings.filter((f) => f.state === code && f.recordKind !== 'filing').map((f) => f.filingId));
+const pagesUsed = [...new Set(data.lineItems.filter((r) => reportRecords.has(r.filingId)).map((r) => r.page))].sort((a, b) => a - b);
+const firstPage = pagesUsed[0]!;
+const lastPage = pagesUsed[pagesUsed.length - 1]!;
+
+const unadjusted = totals.filter((t) => !t.group.adjusted);
+const adjusted = totals.filter((t) => t.group.adjusted);
+const cell = (r: LineItem): string => (r.amountAsFiled === '' ? 'blank' : r.amountAsFiled);
+---
+
+<Base
+  title={`${name}: ${year} data in the state's report`}
+  description={`Net 340B revenue for the ${entities.length} entities named in the ${name} ${spec.agency} report, ${year} data, as the state printed it, with the state's totals and the places where its figures differ. Every figure links to its page of the report.`}
+>
+  <PageHead title={name} trail={[{ label: 'Scorecard', href: '/scorecard/' }, { label: `${year} data, state report` }]}>
+    <p class="lede">
+      The {spec.agency}'s own report names these entities and prints one net 340B revenue figure for each, for {year}. The entities' own filings are not public. Every figure below is the state's, as printed, and links to its page of the report.
+    </p>
+    {
+      statedCount !== null && (
+        <p class="lede">
+          The report's table prints {numberWord(entities.length)} rows. The paragraph above it says {statedCount} entities. Both are kept; see the differences below.
+        </p>
+      )
+    }
+    <OnPage
+      title={name}
+      items={[
+        { id: 'entities', label: 'The entities' },
+        { id: 'statewide', label: 'Statewide totals' },
+        { id: 'differences', label: 'Differences' },
+        { id: 'read-with-care', label: 'Read it with care' },
+        { id: 'sources', label: 'Where the figures come from' },
+      ]}
+    />
+  </PageHead>
+
+  <div class="prose">
+    <h2 id="entities">The entities in the report</h2>
+    <p>
+      Listed A to Z by name as {spec.asWord}: {numberWord(entities.length)} rows. Select a column heading to sort. The report says these net revenue figures are not adjusted; its own words are quoted here.
+    </p>
+    <figure class="page-quote">
+      <blockquote>
+        <p><strong>{notes.entityTableTitle.labelAsFiled}</strong></p>
+        <p>{notes.aboveEntityTable.labelAsFiled}</p>
+      </blockquote>
+      <figcaption>
+        The title and the paragraph the report prints above the table, word for word.{' '}
+        <Cited value="Open the page" href={pdf(notes.aboveEntityTable.page)} label={pageLabel(notes.aboveEntityTable.page)} />
+      </figcaption>
+    </figure>
+
+    <div class="table-wrap wide stack report-entities" id="table-entities">
+      <table data-sortable role="table">
+        <caption><span>Entities named in the report, {year} data: type, city and net 340B revenue as {spec.asWord}</span></caption>
+        <thead role="rowgroup">
+          <tr role="row">
+            <th role="columnheader" scope="col" data-sort="text">Name as {spec.asWord}</th>
+            <th role="columnheader" scope="col" data-sort="text">Type as {spec.asWord}</th>
+            <th role="columnheader" scope="col" data-sort="text">City as {spec.asWord}</th>
+            <th role="columnheader" scope="col" class="num" data-sort="number">{spec.entityTable.netHeading}</th>
+            <th role="columnheader" scope="col" class="num" data-sort="number">{spec.entityTable.pctHeading}</th>
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          {
+            entities.map((e) => (
+              <tr role="row" class={`tone-${toneOf(e.typeAsPrinted)}`}>
+                <th role="rowheader" scope="row">{e.name}</th>
+                <td role="cell" data-label={`Type as ${spec.asWord}`}>{e.typeAsPrinted}</td>
+                <td role="cell" data-label={`City as ${spec.asWord}`}>{e.cityAsPrinted}</td>
+                <td role="cell" class="num share" data-label={spec.entityTable.netHeading} data-value={e.netCents ?? ''}>
+                  <span class="rail">
+                    <span class="rail-track">
+                      {e.netCents !== null && <svg class="bar" width={`${barPercentOfScale(e.netCents, scaleCents)}%`} height="10" aria-hidden="true" focusable="false" />}
+                    </span>
+                    <Cited value={cell(e.net)} href={pdf(e.net.page)} label={e.cite.net} />
+                  </span>
+                </td>
+                <td role="cell" class="num wide-cell" data-label={spec.entityTable.pctHeading} data-value={e.pctValue}>
+                  <Cited value={cell(e.pct)} href={pdf(e.pct.page)} label={e.cite.pct} />
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="small muted">
+      Bars are drawn to one scale: the full width is ${scaleMillions} million.{' '}
+      {otherTypes.length > 0 ? `A bar in the hospital colour is a row whose printed type contains the word Hospital. A bar in the other colour is a row with another printed type: ${otherTypes.join(', ')}.` : ''}
+    </p>
+    <figure class="page-quote">
+      <blockquote>
+        <p>{notes.entityTableSource.labelAsFiled}</p>
+      </blockquote>
+      <figcaption>
+        The line the report prints under the table, word for word.{' '}
+        <Cited value="Open the page" href={pdf(notes.entityTableSource.page)} label={pageLabel(notes.entityTableSource.page)} />
+      </figcaption>
+    </figure>
+
+    <h2 id="statewide">Statewide totals</h2>
+    <p>
+      The report's second table gives net 340B revenue for the whole state, as printed. Each group is printed twice, unadjusted and adjusted. The paragraph below says what the adjustment is.
+    </p>
+    <figure class="page-quote">
+      <blockquote>
+        <p><strong>{notes.totalsTableTitle.labelAsFiled}</strong></p>
+        <p>{notes.aboveTotalsTable.labelAsFiled}</p>
+      </blockquote>
+      <figcaption>
+        The title and the paragraph the report prints above the table, word for word.{' '}
+        <Cited value="Open the page" href={pdf(notes.aboveTotalsTable.page)} label={pageLabel(notes.aboveTotalsTable.page)} />
+      </figcaption>
+    </figure>
+    <div class="table-wrap wide printed" id="table-statewide">
+      <table>
+        <caption><span>Statewide net 340B revenue as {spec.asWord}, {year} data: unadjusted, then adjusted</span></caption>
+        <thead>
+          <tr>
+            <th scope="col">Row as {spec.asWord}</th>
+            <th scope="col" class="num">{spec.totalsTable.netHeading}</th>
+            <th scope="col" class="num">{spec.totalsTable.pctHeading}</th>
+          </tr>
+        </thead>
+        {
+          [unadjusted, adjusted].map((group) => (
+            <tbody>
+              {group.map((t) => (
+                <tr class:list={{ 'is-total': t.group.kind === 'total' }}>
+                  <th scope="row">{t.group.label}</th>
+                  <td class="num"><Cited value={cell(t.net)} href={pdf(t.net.page)} label={t.cite.net} /></td>
+                  <td class="num"><Cited value={cell(t.pct)} href={pdf(t.pct.page)} label={t.cite.pct} /></td>
+                </tr>
+              ))}
+            </tbody>
+          ))
+        }
+      </table>
+    </div>
+    <p class="small muted">The names of the rows are the report's own words.</p>
+    <figure class="page-quote">
+      <blockquote>
+        <p>{notes.totalsTableSource.labelAsFiled}</p>
+      </blockquote>
+      <figcaption>
+        The line the report prints under the table, word for word.{' '}
+        <Cited value="Open the page" href={pdf(notes.totalsTableSource.page)} label={pageLabel(notes.totalsTableSource.page)} />
+      </figcaption>
+    </figure>
+
+    <DifferencesTable
+      differences={report.differences.map((x) => x.difference)}
+      name={name}
+      spec={spec}
+      owners={owners}
+      lead={`${numberWordCap(report.differences.length)} places where two figures of the report differ. Nothing was changed; both figures are kept as ${spec.asWord}. ${numberWordCap(statewideDiffs)} are about the statewide totals. ${numberWordCap(entityDiffs)} are about one entity each, named above its entry.`}
+    />
+
+    <section aria-labelledby="read-with-care">
+      <div class="note">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="2"></circle><path d="M10 9v5M10 6v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+        <div>
+          <p><strong id="read-with-care">Read it with care.</strong> This is a table the state published, with one figure for each entity. It is not what the entities filed. The report's cover letter says that &ldquo;reported data are not audited nor otherwise verifiable&rdquo;.</p>
+          <p>The other states' measures cannot be calculated from it: the report prints no acquisition cost and no payments to pharmacies or vendors. So {name}'s figures are shown as the state printed them, and the states are not added together or compared. <a href="/methods/#5-measures">Methods</a> sets out each calculation.</p>
+        </div>
+      </div>
+    </section>
+
+    <h2 id="sources">Where the figures come from</h2>
+    {entry?.stands && <p>{entry.stands}</p>}
+    {entry?.sources && <div class="btn-row">{entry.sources.map((src) => <a class="btn ghost" href={src.href}>{src.label}</a>)}</div>}
+    <dl class="facts panel">
+      <dt>Report PDF</dt>
+      <dd><a href={pdfHref(filing, 1)}>Open the report on the {spec.publisher}</a></dd>
+      <dt>Title</dt>
+      <dd>{reportTitle}</dd>
+      <dt>SHA-256</dt>
+      <dd><span class="mono">{filing.pdfSha256}</span></dd>
+      <dt>Retrieved</dt>
+      <dd>{formatDate(filing.retrievedAt)}</dd>
+      <dt>Pages used</dt>
+      <dd>{firstPage} to {lastPage} of {filing.pageCount}</dd>
+    </dl>
+  </div>
+</Base>

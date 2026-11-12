@@ -1,0 +1,17 @@
+---
+import '../styles/home.css';
+import '../styles/pages.css';
+import Base from '../layouts/Base.astro';
+import Arrow from '../components/Arrow.astro';
+---
+
+<Base title="Page not found" description="This page does not exist." unlisted>
+  <div class="lost">
+    <p class="bignum" aria-hidden="true">404</p>
+    <h1>There is no page at this address.</h1>
+    <div class="btn-row">
+      <a class="btn" href="/scorecard/">Open the scorecard <Arrow /></a>
+      <a class="btn ghost" href="/">Home</a>
+    </div>
+  </div>
+</Base>

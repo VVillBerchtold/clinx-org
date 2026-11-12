@@ -1,0 +1,38 @@
+<!doctype html>
+<!--
+  The picture a link to ClinX.org shows when it is shared (public/brand/share-card.png).
+  To redraw it: open this file in a browser window 1200 wide and 630 tall and save a picture of it.
+  The tile pattern is decoration: the grid is the site's state map with no letters, and the
+  brightness of a tile stands for nothing. It never needs to change when a state is added.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ClinX share card</title>
+<style>
+@font-face { font-family: 'Bricolage Grotesque'; font-weight: 200 800; src: url('../../node_modules/@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-opsz-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Instrument Sans'; font-weight: 400 700; src: url('../../node_modules/@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2') format('woff2'); }
+* { box-sizing: border-box; margin: 0; }
+html, body { width: 1200px; height: 630px; }
+body { background: #080a1a; color: #f1f2fb; font-family: 'Instrument Sans', system-ui, sans-serif; position: relative; overflow: hidden; -webkit-font-smoothing: antialiased; }
+.say { position: absolute; left: 72px; top: 64px; bottom: 64px; width: 580px; display: flex; flex-direction: column; }
+.mark { font: 800 44px/1 'Bricolage Grotesque', sans-serif; letter-spacing: -0.02em; }
+.mark span, h1 span { color: #8f96ff; }
+h1 { font: 800 88px/0.94 'Bricolage Grotesque', sans-serif; letter-spacing: -0.03em; margin-top: auto; }
+h1 span { display: block; }
+p { font: 500 27px/1.35 'Instrument Sans', sans-serif; color: #b6bad9; margin-top: 28px; max-width: 560px; }
+.where { margin-top: auto; font: 600 24px/1 ui-monospace, 'SF Mono', Menlo, monospace; color: #f1f2fb; display: flex; align-items: center; gap: 14px; }
+.where i { width: 12px; height: 12px; border-radius: 50%; background: #8f96ff; box-shadow: 0 0 0 6px rgba(143, 150, 255, 0.22); }
+svg { position: absolute; right: 56px; top: 50%; translate: 0 -50%; width: 480px; height: auto; fill: #8f96ff; }
+</style>
+</head>
+<body>
+<div class="say">
+  <div class="mark">Clin<span>X</span></div>
+  <h1>340B filings, <span>state by state.</span></h1>
+  <p>Open data from public state filings. Every figure links to the page it came from.</p>
+  <div class="where"><i></i>clinx.org</div>
+</div>
+<svg viewBox="0 0 520 382" aria-hidden="true"><rect x="10" y="10" width="40" height="40" rx="9" fill-opacity="0.35"/><rect x="10" y="102" width="40" height="40" rx="9" fill-opacity="0.28"/><rect x="10" y="148" width="40" height="40" rx="9" fill-opacity="0.24"/><rect x="10" y="194" width="40" height="40" rx="9" fill-opacity="0.21"/><rect x="10" y="332" width="40" height="40" rx="9" fill-opacity="0.16"/><rect x="56" y="102" width="40" height="40" rx="9" fill-opacity="0.32"/><rect x="56" y="148" width="40" height="40" rx="9" fill-opacity="0.28"/><rect x="56" y="194" width="40" height="40" rx="9" fill-opacity="0.24"/><rect x="56" y="240" width="40" height="40" rx="9" fill-opacity="0.22"/><rect x="102" y="102" width="40" height="40" rx="9" fill-opacity="0.36"/><rect x="102" y="148" width="40" height="40" rx="9" fill-opacity="0.32"/><rect x="102" y="194" width="40" height="40" rx="9" fill-opacity="0.28"/><rect x="102" y="240" width="40" height="40" rx="9" fill-opacity="0.25"/><rect x="148" y="102" width="40" height="40" rx="9" fill-opacity="0.41"/><rect x="148" y="148" width="40" height="40" rx="9" fill-opacity="0.36"/><rect x="148" y="194" width="40" height="40" rx="9" fill-opacity="0.32"/><rect x="148" y="240" width="40" height="40" rx="9" fill-opacity="0.28"/><rect x="148" y="286" width="40" height="40" rx="9" fill-opacity="0.25"/><rect x="148" y="332" width="40" height="40" rx="9" fill-opacity="0.22"/><rect x="194" y="102" width="40" height="40" rx="9" fill-opacity="0.46"/><rect x="194" y="148" width="40" height="40" rx="9" fill-opacity="0.41"/><rect x="194" y="194" width="40" height="40" rx="9" fill-opacity="0.36"/><rect x="194" y="240" width="40" height="40" rx="9" fill-opacity="0.32"/><rect x="194" y="286" width="40" height="40" rx="9" fill-opacity="0.28"/><rect x="240" y="102" width="40" height="40" rx="9" fill-opacity="0.51"/><rect x="240" y="148" width="40" height="40" rx="9" fill-opacity="0.46"/><rect x="240" y="194" width="40" height="40" rx="9" fill-opacity="0.41"/><rect x="240" y="240" width="40" height="40" rx="9" fill-opacity="0.37"/><rect x="240" y="286" width="40" height="40" rx="9" fill-opacity="0.33"/><rect x="286" y="102" width="40" height="40" rx="9" fill-opacity="0.57"/><rect x="286" y="148" width="40" height="40" rx="9" fill-opacity="0.52"/><rect x="286" y="194" width="40" height="40" rx="9" fill-opacity="0.47"/><rect x="286" y="240" width="40" height="40" rx="9" fill-opacity="0.42"/><rect x="286" y="286" width="40" height="40" rx="9" fill-opacity="0.37"/><rect x="332" y="102" width="40" height="40" rx="9" fill-opacity="0.64"/><rect x="332" y="148" width="40" height="40" rx="9" fill-opacity="0.58"/><rect x="332" y="194" width="40" height="40" rx="9" fill-opacity="0.52"/><rect x="332" y="240" width="40" height="40" rx="9" fill-opacity="0.47"/><rect x="332" y="286" width="40" height="40" rx="9" fill-opacity="0.42"/><rect x="378" y="102" width="40" height="40" rx="9" fill-opacity="0.7"/><rect x="378" y="148" width="40" height="40" rx="9" fill-opacity="0.64"/><rect x="378" y="194" width="40" height="40" rx="9" fill-opacity="0.58"/><rect x="378" y="240" width="40" height="40" rx="9" fill-opacity="0.52"/><rect x="378" y="332" width="40" height="40" rx="9" fill-opacity="0.42"/><rect x="424" y="56" width="40" height="40" rx="9" fill-opacity="0.84"/><rect x="424" y="102" width="40" height="40" rx="9" fill-opacity="0.77"/><rect x="424" y="148" width="40" height="40" rx="9" fill-opacity="0.7"/><rect x="424" y="194" width="40" height="40" rx="9" fill-opacity="0.64"/><rect x="470" y="10" width="40" height="40" rx="9" fill-opacity="0.98"/><rect x="470" y="56" width="40" height="40" rx="9" fill-opacity="0.91"/><rect x="470" y="102" width="40" height="40" rx="9" fill-opacity="0.84"/></svg>
+</body>
+</html>

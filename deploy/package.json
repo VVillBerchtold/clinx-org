@@ -1,0 +1,8 @@
+{
+  "name": "clinx-org-deploy",
+  "private": true,
+  "description": "The one tool the publish step needs, pinned and locked apart from the site's own dependencies.",
+  "devDependencies": {
+    "wrangler": "4.153.0"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "National Drug Code Directory",
+  "publisher": "U.S. Food and Drug Administration",
+  "url": "https://www.accessdata.fda.gov/cder/ndctext.zip",
+  "page": "https://www.fda.gov/drugs/drug-approvals-and-databases/national-drug-code-directory",
+  "retrieved": "2026-11-11",
+  "zip_sha256": "d2043d57ee9dbffe1249d8550283f175963364365e04fb31d76234ee29614197",
+  "product_txt_sha256": "5379439f834deb43bd8438413a99c073b86f215d9a6349b5817413fec49f87cb",
+  "package_txt_sha256": "255a9512038fadcdcf75d10afa4761eb1b478c3f678d17185b8b1e364201900f",
+  "products_listed": 116660,
+  "packages_listed": 219225,
+  "packages_in_another_layout": 0,
+  "filed_codes": 1271,
+  "matched_package": 1258,
+  "matched_product": 4,
+  "not_listed": 9,
+  "unclear": 0,
+  "kept_from_an_earlier_copy": 0
+}

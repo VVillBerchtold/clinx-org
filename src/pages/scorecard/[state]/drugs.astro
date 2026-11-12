@@ -1,0 +1,283 @@
+---
+import '../../../styles/drugs.css';
+import Base from '../../../layouts/Base.astro';
+import Cited from '../../../components/Cited.astro';
+import Draft from '../../../components/Draft.astro';
+import PageHead from '../../../components/PageHead.astro';
+import { buildStateDrugViews, formatDate, getDataset, pdfHref, type DrugRow, type StateDrugGroup, type StateDrugView } from '../../../lib/data';
+import { claimsShown, groupClaimsSortValue } from '../../../lib/drug-groups';
+import { fdaShown } from '../../../lib/fda-names';
+import { filedDrugShown } from '../../../lib/filed-drug-display';
+import { drawFigure } from '../../../lib/money';
+import { CLAIMS_WORDS, formatAtScale } from '../../../lib/drugs';
+import { barPercentOfScale } from '../../../lib/meter';
+import { stateName } from '../../../lib/states';
+
+/**
+ * One page per state whose filings carry drug rows: every filer's rows side by side, by drug code, for the
+ * latest reporting year. Every row is in the HTML. The toolbar is hidden until src/scripts/drug-groups-table.ts
+ * turns it on; without the script the page is a plain table. A figure that links to a filing is as filed; a
+ * figure without a link was added by this site from the rows under it. No claim count of 1 to 5 is held, so
+ * none is printed: see drug-groups.ts.
+ */
+export function getStaticPaths() {
+  return buildStateDrugViews(getDataset()).map((view) => ({
+    params: { state: view.state.toLowerCase() },
+    props: { view },
+  }));
+}
+
+interface Props {
+  view: StateDrugView;
+}
+
+const { view } = Astro.props;
+const { drug, spec, groups } = view;
+const state = stateName(view.state);
+const year = view.reportingYear;
+const n = (value: number) => value.toLocaleString('en-US');
+const filers = view.views;
+const filerIndex = new Map(filers.map((v, i) => [v.filing.filingId, i]));
+const filerOf = (r: DrugRow) => filers[filerIndex.get(r.filingId)!]!;
+const cite = (r: DrugRow) => `${filerOf(r).entity.nameAsFiled}, ${drug.scheduleName}, line ${r.line}, page ${r.page} of the ${spec.noun} PDF`;
+const pdf = (r: DrugRow) => pdfHref(filerOf(r).filing, r.page);
+const percent = (cents: number) => (view.maxCents > 0 && cents > 0 ? barPercentOfScale(cents, view.maxCents) : null);
+const sumText = (g: StateDrugGroup) => formatAtScale(g.amountCents, g.scale).replace('$', '');
+const summaryText = (g: StateDrugGroup) => {
+  const f = g.filingIds.length;
+  const who = `${f} ${f === 1 ? 'filer' : 'filers'}`;
+  return g.rows.length === f ? who : `${g.rows.length} rows from ${who}`;
+};
+---
+
+<Base
+  title={`${state}: drugs across all ${year} filings`}
+  description={`Every ${drug.noun} row of ${drug.scheduleName} from all ${filers.length} ${state} 340B filings for calendar year ${year}, side by side by drug code, with amounts and claims as filed. Search the rows or download them as one file.`}
+>
+  <PageHead
+    wide
+    title={`${state}: drugs across all filers`}
+    trail={[
+      { label: 'Scorecard', href: '/scorecard/' },
+      { label: state, href: `/scorecard/${view.state.toLowerCase()}/` },
+      { label: 'Drugs' },
+    ]}
+  >
+    <p class="lede">{drug.scheduleName} of each {state} filing lists drugs, with an amount and a number of claims for each. This page sets the {n(view.rowCount)} rows of all {filers.length} filings for calendar year {year} side by side, by drug code. Every amount as filed links to its page of the filing. <Draft /></p>
+    <p class="lede">The filings describe the {drug.scheduleName} amounts in more than one way, so an amount added across filers may add figures that were not measured alike. <a href="#how">How this page is put together</a></p>
+    <div class="btn-row">
+      <a class="btn" href={view.csvPath} download>Download all {n(view.rowCount)} rows (CSV)</a>
+      <a class="btn ghost" href={`/scorecard/${view.state.toLowerCase()}/`}>Back to {state}</a>
+    </div>
+  </PageHead>
+
+  <ul class="stats drug-stats" aria-label="This page at a glance">
+    <li><strong>{n(view.rowCount)}</strong><span>{drug.noun} rows in {filers.length} filings</span></li>
+    <li><strong>{n(view.codeCount)}</strong><span>drug codes (NDC) filed as one 11-digit code</span></li>
+    <li><strong>{n(view.sharedCount)}</strong><span>of those codes are on two or more filings</span></li>
+    <li><strong>{n(view.fewerThan6)}</strong><span>{view.fewerThan6 === 1 ? 'row shows' : 'rows show'} &ldquo;{CLAIMS_WORDS.fewer_than_6}&rdquo; for claims. <a href="/methods/#9-small-claim-counts">What this means</a></span></li>
+  </ul>
+
+  <div class="prose">
+    <section class="drug-section" aria-labelledby="drug-rows-title" data-drug-groups>
+      <h2 id="drug-rows-title">All {n(view.rowCount)} rows, by drug code</h2>
+
+      <div class="drug-sticky" data-drug-js hidden>
+        <div class="drug-bar has-filer" role="search" aria-label="Search and filter the drugs">
+          <div class="drug-search">
+            <svg class="drug-mag" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="5.25" stroke="currentColor" stroke-width="2"></circle><path d="M12 12l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+            <label class="visually-hidden" for="drug-q">Search drug name, ingredient, labeler or NDC</label>
+            <input id="drug-q" type="search" placeholder="Search name, ingredient, labeler or NDC" autocomplete="off" spellcheck="false" enterkeyhint="search" aria-keyshortcuts="/" data-drug-q />
+            <kbd aria-hidden="true">/</kbd>
+          </div>
+          <fieldset class="drug-seg">
+            <legend class="visually-hidden">Drugs to show</legend>
+            <input type="radio" name="drug-show" id="drug-show-all" value="all" checked /><label for="drug-show-all">All</label>
+            <input type="radio" name="drug-show" id="drug-show-m" value="m" /><label for="drug-show-m">Two or more filers</label>
+            <input type="radio" name="drug-show" id="drug-show-o" value="o" /><label for="drug-show-o">One filer</label>
+          </fieldset>
+          <label class="drug-sel drug-filer">
+            <span>Filer</span>
+            <select data-drug-filer>
+              <option value="" selected>All {filers.length}</option>
+              {filers.map((v, i) => <option value={i}>{v.entity.nameAsFiled}</option>)}
+            </select>
+            <svg class="drug-chev" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" focusable="false"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </label>
+          <label class="drug-sel drug-order">
+            <span>Order</span>
+            <select data-drug-order>
+              <option value="filers" selected>Filers, most first</option>
+              <option value="amount-desc">Amount, largest first</option>
+              <option value="amount-asc">Amount, smallest first</option>
+              <option value="claims-desc">Claims, largest first</option>
+              <option value="name">Name, A to Z</option>
+              <option value="code">Code, 0 to 9</option>
+            </select>
+            <svg class="drug-chev" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" focusable="false"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </label>
+          <p class="drug-live" aria-live="polite" aria-atomic="true">
+            <span class="drug-count" data-drug-count>Showing {n(groups.length)} of {n(groups.length)} drugs</span>
+            <span class="drug-sum" data-drug-sum></span>
+          </p>
+          <button type="button" class="btn ghost drug-clear is-off" data-drug-clear disabled>Clear</button>
+        </div>
+      </div>
+
+      <div class="table-wrap drug-wrap">
+        <table class="drug-table dg-table" data-drug-table data-count={groups.length}>
+          <caption><span>{drug.scheduleName} rows of all {filers.length} {state} filings for {year}: {n(view.codeCount)} drug codes{view.aloneCount > 0 && `, and ${n(view.aloneCount)} rows that are not grouped`}</span></caption>
+          <thead>
+            <tr>
+              <th scope="col" class="c-name">Drug name and code</th>
+              <th scope="col" class="num c-amt">Amount as filed, added across filers</th>
+              <th scope="col" class="num c-claims">Claims as filed, added</th>
+            </tr>
+          </thead>
+          {
+            groups.map((g) => {
+              const single = g.rows.length === 1 ? g.rows[0]! : null;
+              const pct = percent(g.amountCents);
+              const claims = claimsShown(g.claims);
+              const who = g.filingIds.map((id) => filerIndex.get(id)!).join(' ');
+              const shown = g.fda ? fdaShown(g.fda) : null;
+              return (
+                <tbody class="dg" id={g.id} data-a={g.amountCents} data-c={groupClaimsSortValue(g.claims)} data-n={g.filingIds.length} data-k={g.filingIds.length > 1 ? 'm' : 'o'} data-f={who} data-code={g.key ?? ''}>
+                  <tr class="dg-head">
+                    <th scope="row">
+                      {g.shownName === '' ? <span class="drug-name none">(no name printed)</span> : <span class="drug-name" data-typed={!g.fda && g.shownName !== g.name ? g.name : undefined}>{g.shownName}</span>}
+                      {shown && (
+                        <span class="dg-fda">
+                          {shown.generic !== '' && <span data-drug-find>{shown.generic}</span>}
+                          {shown.strength !== '' && <span>{shown.strength}</span>}
+                          {shown.form !== '' && <span class="dg-form">{shown.form}</span>}
+                          {shown.labeler !== '' && <span data-drug-find>{shown.labeler}</span>}
+                        </span>
+                      )}
+                      {g.ndcText !== '' && <span class="ndc">{g.ndcText}</span>}
+                      {g.key === null && <span class="dg-alone">Not grouped: the code is not filed as one 11-digit code</span>}
+                      {g.key !== null && !g.fda && <span class="dg-alone">The FDA directory does not list this code: the name is from the filing</span>}
+                      {g.fda?.match === 'product' && <span class="dg-alone">The FDA directory lists this product, not this package</span>}
+                      {g.fda?.kept && <span class="dg-alone">The FDA directory no longer lists this code: the name is as listed on {formatDate(g.fda.listedOn)}</span>}
+                      {single && (
+                        <span class="dg-by">
+                          {g.fda && (single.nameAsFiled === '' ? 'Filed with no name by ' : <>Named <span class="dg-as" data-drug-find data-typed={filedDrugShown(single.nameAsFiled) !== single.nameAsFiled ? single.nameAsFiled : undefined}>{filedDrugShown(single.nameAsFiled)}</span> by </>)}
+                          {!g.fda && 'Filed by '}
+                          <a href={filerOf(single).path}>{filerOf(single).entity.nameAsFiled}</a>, line {single.line}
+                        </span>
+                      )}
+                      {!single && g.fda && g.name !== '' && (
+                        <span class="dg-filed">
+                          {g.names.length > 1 ? 'Most often named ' : 'Named '}
+                          <span class="dg-as" data-drug-find data-typed={filedDrugShown(g.name) !== g.name ? g.name : undefined}>{filedDrugShown(g.name)}</span>
+                          {' in the filings'}
+                        </span>
+                      )}
+                    </th>
+                    <td class="num c-amt">
+                      {single ? <Cited value={drawFigure(single.amountAsFiled, 'money')} href={pdf(single)} label={cite(single)} /> : <span class="dg-sum">{sumText(g)}</span>}
+                      <span class="track">{pct !== null && <svg class="bar" width={`${pct}%`} height="6" aria-hidden="true" focusable="false" />}</span>
+                    </td>
+                    <td class="num c-claims">
+                      {claims.kind === 'count' ? (
+                        single ? drawFigure(single.claimsAsFiled) : n(claims.value)
+                      ) : claims.kind === 'at_least' ? (
+                        <span class="dg-least"><span>at least</span> {n(claims.value)}</span>
+                      ) : single ? (
+                        <span class="drug-pill">{CLAIMS_WORDS[single.claimsStatus === 'beside_small' ? 'beside_small' : 'fewer_than_6']}<span class="visually-hidden"> (the count is not shown)</span></span>
+                      ) : (
+                        <span class="drug-pill">no count shown</span>
+                      )}
+                    </td>
+                  </tr>
+                  {!single && (
+                    <tr class="dg-more">
+                      <td colspan="3">
+                        <details>
+                          <summary>{summaryText(g)}<span class="visually-hidden">: the filed rows for {g.shownName || g.ndcText}</span></summary>
+                          <table class="dg-rows">
+                            <caption class="visually-hidden">The filed rows for code {g.ndcText}</caption>
+                            <thead>
+                              <tr>
+                                <th scope="col">Filer</th>
+                                <th scope="col">Name in the filing</th>
+                                <th scope="col" class="num">Amount as filed</th>
+                                <th scope="col" class="num">Claims as filed</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {g.rows.map((r) => (
+                                <tr>
+                                  <th scope="row"><a href={filerOf(r).path}>{filerOf(r).entity.nameAsFiled}</a></th>
+                                  <td class="dg-name">{r.nameAsFiled === '' ? <span class="none">(no name printed)</span> : <span data-as-filed data-typed={filedDrugShown(r.nameAsFiled) !== r.nameAsFiled ? r.nameAsFiled : undefined}>{filedDrugShown(r.nameAsFiled)}</span>}</td>
+                                  <td class="num dg-amt"><Cited value={drawFigure(r.amountAsFiled, 'money')} href={pdf(r)} label={cite(r)} /></td>
+                                  <td class="num dg-claims">
+                                    {r.claimsStatus === 'count' ? (
+                                      drawFigure(r.claimsAsFiled)
+                                    ) : (
+                                      <span class="drug-pill">{CLAIMS_WORDS[r.claimsStatus]}<span class="visually-hidden"> (the count is not shown)</span></span>
+                                    )}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </details>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              );
+            })
+          }
+          <tbody class="drug-empty" hidden>
+            <tr>
+              <td colspan="3">
+                <p>No drug matches.</p>
+                <button type="button" class="btn ghost drug-clear" data-drug-clear>Clear</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <h2 id="how">How this page is put together <Draft /></h2>
+    <dl class="facts panel dg-how">
+      <dt>Grouping</dt>
+      <dd>Rows are put together when each one&rsquo;s NDC cell is filed as one 11-digit code, written as eleven digits or with dashes as 5-4-2. Nothing is guessed. A shorter code is not padded with zeros and a cell that lists several codes is not split{view.aloneCount > 0 && `: those ${n(view.aloneCount)} rows stay on their own, with the cell as filed`}.</dd>
+      <dt>Name shown</dt>
+      <dd>
+        Filers write one drug&rsquo;s name in different ways. Where the U.S. Food and Drug Administration&rsquo;s <a href={view.fda.source.page} rel="noopener">National Drug Code Directory</a> lists a code, the name shown is the FDA&rsquo;s, and the line under it gives the listed ingredient, strength, form and labeler (the firm named on the label). The directory, as downloaded on {formatDate(view.fda.source.retrieved)}, lists {n(view.fda.named)} of the {n(view.codeCount)} codes on this page{view.fda.byProduct > 0 && `; for ${n(view.fda.byProduct)} of them it lists the product but not that package`}. {view.fda.kept > 0 && `The directory drops a drug when it leaves the market; for ${n(view.fda.kept)} of the codes it no longer lists, the name is kept as it was last listed, with that day. `}These names are the FDA&rsquo;s. No filer wrote them, and each filer&rsquo;s own wording is kept beside them, in the rows under the drug and in the download. The directory&rsquo;s firms type their listings in different ways, so on this page its capitals, strengths and unit names are written one way (&ldquo;.5 mg/1&rdquo; is shown as &ldquo;0.5 mg&rdquo;). The download gives every field exactly as the directory lists it.
+      </dd>
+      <dt>Name when not listed</dt>
+      <dd>For {view.fda.notListed === 1 ? 'the one code' : `the ${n(view.fda.notListed)} codes`} the directory does not list, and for a row that is not grouped, the name shown is the one filed most often; when names are filed equally often, the shortest.</dd>
+      <dt>Filers&rsquo; names</dt>
+      <dd>Filers type drug names in many ways, so a filer&rsquo;s name is written one way on this page: capitals, spaces, unit names such as mg and mL, a zero before a decimal point, and commas in long numbers. No word is changed, spelled out or left out, and shorthand stays as the filer typed it. The filing and the download keep each name as typed, and a search here reads both.</dd>
+      <dt>Amounts</dt>
+      <dd>A figure with a dotted line under it is as filed and links to its page of the filing. A figure without one was added by this site from the rows under it. The filings describe the {drug.scheduleName} amounts in more than one way, and some filers write whole dollars. Figures are written here with commas between thousands, and an amount filed with one decimal place is written with two; the filing and the download keep each figure as typed. <a href="/methods/">Methods</a> says more.</dd>
+      <dt>Claims</dt>
+      <dd>A count of 1 to 5 is not shown on this site or in its data files. Where a filer&rsquo;s count is left out, the added figure covers the other filers and reads &ldquo;at least&rdquo;. <a href="/methods/#9-small-claim-counts">Methods, section 9</a>, says how.</dd>
+      <dt>Rows under $5,000</dt>
+      <dd>A filing can close {drug.scheduleName} with one row for all its drugs under $5,000, and it prints a total. Those rows are on each filer&rsquo;s own drug page and are not part of this page.</dd>
+      <dt>Download</dt>
+      <dd><a href={view.csvPath} download>{view.csvName}</a> has one line per row as filed, with the filer, the page of the filing and a link to it. Two fields are this site&rsquo;s: <code>ndc_11</code>, the code the row is grouped by (blank for a row on its own), and <code>group_name</code>, the name filed most often for that code. Eight fields that begin <code>fda_</code> carry the FDA directory&rsquo;s listing for the code, with the day of the copy that listed it, and are blank when it lists none. Data: CC BY 4.0.</dd>
+    </dl>
+
+    <h2 id="filers">The {filers.length} filings</h2>
+    <ul class="dg-filers">
+      {
+        filers.map((v) => (
+          <li>
+            <a href={v.path}>{v.entity.nameAsFiled}</a>
+            <span>{n(v.rows.length)} {v.rows.length === 1 ? 'row' : 'rows'}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <script>
+    import '../../../scripts/drug-groups-table';
+  </script>
+</Base>

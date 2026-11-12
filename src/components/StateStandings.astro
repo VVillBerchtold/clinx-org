@@ -1,0 +1,42 @@
+---
+import Draft from './Draft.astro';
+import { STATE_REGISTRY, VISIBILITY_LABEL, statesWith } from '../lib/states';
+
+/** The states with a 340B reporting law that are not in the scorecard yet, A to Z. */
+const law = statesWith('law');
+---
+
+<ul class="standings">
+  {
+    law.map((s) => {
+      const e = STATE_REGISTRY[s.code];
+      if (!e?.visibility || !e.stands || !e.sources) throw new Error(`State ${s.code} is missing its details`);
+      return (
+        <li class={`standing v-${e.visibility}`}>
+          <div class="standing-id">
+            <span class="standing-code" aria-hidden="true">{s.code}</span>
+            <div>
+              <h3>{s.name}</h3>
+              <span class="chip">{VISIBILITY_LABEL[e.visibility]}</span>
+            </div>
+          </div>
+          <p>{e.stands}</p>
+          <ul class="standing-src">
+            {e.sources.map((src) => (
+              <li>
+                <a href={src.href}>
+                  {src.label}
+                  <span class="visually-hidden"> for {s.name}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </li>
+      );
+    })
+  }
+</ul>
+<p class="scale-note standings-note">
+  <span>Read from each state's law and the state's own pages on 11 November 2026.</span>
+  <Draft />
+</p>

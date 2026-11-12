@@ -1,0 +1,180 @@
+---
+import '../styles/home.css';
+import '../styles/scorecard.css';
+import Base from '../layouts/Base.astro';
+import Arrow from './Arrow.astro';
+import Draft from './Draft.astro';
+import Meter from './Meter.astro';
+import OnPage from './OnPage.astro';
+import PageHead from './PageHead.astro';
+import ShareTable from './ShareTable.astro';
+import { GROUP_LABEL, GROUP_ORDER, buildViews, comparabilityParagraph, formatDate, getDataset, groupTotals, retrievalSpan, sharedValue, stateDrugViewFor, viewsInGroup } from '../lib/data';
+import { renderInline } from '../lib/markdown';
+import { formatUsdMillions } from '../lib/money';
+import { groupId, numberWord, numberWordCap } from '../lib/site';
+import { STATE_REGISTRY, stateName } from '../lib/states';
+import { formSpec } from '../lib/forms';
+
+interface Props {
+  code: string;
+}
+
+const { code } = Astro.props;
+const data = getDataset();
+const views = buildViews(data).filter((v) => v.entity.state === code);
+const name = stateName(code);
+const years = [...new Set(views.map((v) => v.filing.reportingYear))].sort();
+const year = years.join(', ');
+const forms = [...new Set(views.map((v) => v.filing.formRevision))];
+// One form per state page: the form decides the wording and the columns.
+const spec = formSpec(sharedValue(views.map((v) => v.filing.form), `${name}: form`));
+const onePage = spec.layout === 'one-page';
+const entry = STATE_REGISTRY[code];
+// A notice the state's pages print on every report (blank for a form that prints none).
+const notice = sharedValue(views.map((v) => v.filing.statusNoticeAsFiled), `${name}: status notice`);
+const submission = sharedValue(views.map((v) => v.filing.submissionAsFiled), `${name}: submission line`);
+if (onePage && submission.toLowerCase() !== 'as submitted to the green mountain care board in 2026') throw new Error(`${name}: the submission line is not the one the lede quotes`);
+const posted = retrievalSpan(views);
+const postedText = posted.first === posted.last ? `on ${formatDate(posted.first)}` : `between ${formatDate(posted.first)} and ${formatDate(posted.last)}`;
+const calcFrom = onePage ? "the figures on each report's page" : 'Schedule A';
+const caveat = renderInline(comparabilityParagraph(data).replace("**Why two filers' shares are not directly comparable.**", '').trim());
+const tone = { health_center: 'hc', hospital: 'hosp' } as const;
+// Every filer's drug rows side by side, when the state's form has a drug schedule.
+const drugs = stateDrugViewFor(data, code);
+const groups = GROUP_ORDER.map((g) => ({ g, list: viewsInGroup(views, g), totals: groupTotals(viewsInGroup(views, g)) })).filter((x) => x.list.length > 0);
+---
+
+<Base
+  title={onePage ? `${name}: ${spec.periodWord} ${year} ${spec.nounPlural}` : `${name}: ${year} filings`}
+  description={
+    onePage
+      ? `Gross margin, external cost and share for each ${name} hospital 340B report for ${spec.periodWord} ${year}, as submitted to the state and marked draft by it. Every figure links to the page of the report it was read from.`
+      : `Gross margin, external cost and share for each ${name} 340B filing for ${year}, grouped by type of filer. Every figure links to the page of the filing it was read from.`
+  }
+>
+  <PageHead title={name} trail={[{ label: 'Scorecard', href: '/scorecard/' }, { label: onePage ? `${spec.periodWord[0]!.toUpperCase()}${spec.periodWord.slice(1)} ${year} ${spec.nounPlural}` : `${year} filings` }]}>
+    {
+      onePage ? (
+        <p class="lede">
+          The {numberWord(views.length)} hospital {spec.nounPlural} for {spec.periodWord} {year}, as submitted to the Green Mountain Care Board in 2026. Reports are listed A to Z by name as {spec.asWord}. Each figure links to the page of the report it was read from.
+        </p>
+      ) : (
+        <p class="lede">
+          The {numberWord(views.length)} 340B filings for calendar year {year}, on {forms.join(' and ')}. Filings are listed A to Z by name as filed. Each figure links to the page of the filing it was read from.
+        </p>
+      )
+    }
+    <OnPage
+      title={name}
+      items={[
+        ...groups.map(({ g }) => ({ id: `${g.replace('_', '-')}-heading`, label: GROUP_LABEL[g] })),
+        { id: 'read-with-care', label: 'Read it with care' },
+        ...(drugs ? [{ id: 'drugs-heading', label: 'Drugs across all filers' }] : []),
+        ...(entry?.sources ? [{ id: 'sources-heading', label: `Where the ${spec.nounPlural} come from` }] : []),
+      ]}
+    />
+  </PageHead>
+
+  {
+    notice !== '' && (
+      <section class="section draft-notice" aria-label="Draft notice">
+        <div class="note">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="2"></circle><path d="M10 9v5M10 6v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+          <div>
+            <p><strong>The state marks these {spec.nounPlural} as draft.</strong> Every page prints: &ldquo;{notice}&rdquo;</p>
+            <p>The figures here are shown as they stood on the Board's website {postedText}.</p>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <Meter
+    id="state-meter"
+    label="Payments to contract pharmacies and outside vendors as a share of 340B margin, by group"
+    rows={groups.map(({ g, totals }) => ({
+      label: GROUP_LABEL[g],
+      detail: `${totals.count} ${spec.nounPlural} · ${formatUsdMillions(totals.externalCostCents)} of ${formatUsdMillions(totals.grossMarginCents)}`,
+      shareMicro: totals.shareMicro,
+      tone: tone[g],
+    }))}
+  />
+
+  <section class="section" aria-labelledby="read-with-care">
+    <div class="note">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="2"></circle><path d="M10 9v5M10 6v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+      <div>
+        {
+          onePage ? (
+            <>
+              <p><strong id="read-with-care">Read it with care.</strong> Each hospital made its report in its own way, the page prints no reporting basis, and every report is marked draft. For these reasons the reports are listed A to Z and not ranked.</p>
+              <p>Vermont's page and Rhode Island's form ask for different things. The measures use each state's own rows, and the two states are not added together or compared. <a href="/methods/#5-measures">Methods</a> sets out each calculation and <a href="/methods/#not-comparable">why two filers' shares are not directly comparable</a>.</p>
+            </>
+          ) : (
+            <>
+              <p><strong id="read-with-care">Read it with care.</strong> <Fragment set:html={caveat} /></p>
+              <p>Health centers are compared only with health centers, and hospitals only with hospitals. <a href="/methods/">Methods</a> sets out each calculation.</p>
+            </>
+          )
+        }
+      </div>
+    </div>
+  </section>
+
+  {
+    groups.map(({ g, list, totals }) => (
+      <section class:list={['section', `tone-${tone[g]}`]} aria-labelledby={`${g.replace('_', '-')}-heading`}>
+        <div class="section-head">
+          <h2 id={`${g.replace('_', '-')}-heading`}>
+            <span class="swatch" aria-hidden="true" />
+            {GROUP_LABEL[g]}
+          </h2>
+          <p>{numberWordCap(list.length)} {spec.nounPlural}. Select a column heading to sort.</p>
+        </div>
+        <ShareTable
+          views={list}
+          id={groupId(g)}
+          tone={tone[g]}
+          caption={`${GROUP_LABEL[g]}, ${onePage ? `${spec.periodWord} ${year}` : year}: gross margin, external cost and share, calculated from ${calcFrom}`}
+          totals={{ label: `All ${numberWord(list.length)} together`, value: totals, href: '/methods/#5-measures' }}
+        />
+        {entry?.listingNote && (
+          <p class="small muted">
+            <a href={entry.listingNote.href}>{entry.listingNote.label}</a> says: &ldquo;{entry.listingNote.quote}&rdquo;
+          </p>
+        )}
+      </section>
+    ))
+  }
+  <p class="scale-note">Bars in the tables are drawn to one scale: the full width is 50%.</p>
+
+  {
+    drugs && (
+      <section class="section" aria-labelledby="drugs-heading">
+        <div class="section-head">
+          <h2 id="drugs-heading">Drugs across all filers</h2>
+          <p>{drugs.rowCount.toLocaleString('en-US')} rows from {drugs.views.length} filings. <Draft /></p>
+        </div>
+        <p>{drugs.drug.scheduleName} of each filing lists drugs, with an amount and a number of claims for each. One page sets the rows of all {drugs.views.length} filings side by side, by drug code, so one drug can be read across filers. The rows can also be downloaded as one file.</p>
+        <div class="btn-row">
+          <a class="btn" href={drugs.path}>See drugs across all filers <Arrow /></a>
+          <a class="btn ghost" href={drugs.csvPath} download>Download the rows (CSV)</a>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    entry?.sources && entry.stands && (
+      <section class="section" aria-labelledby="sources-heading">
+        <div class="section-head">
+          <h2 id="sources-heading">Where the {spec.nounPlural} come from</h2>
+        </div>
+        <p>{entry.stands}</p>
+        <div class="btn-row">
+          {entry.sources.map((src) => <a class="btn ghost" href={src.href}>{src.label}</a>)}
+        </div>
+      </section>
+    )
+  }
+</Base>

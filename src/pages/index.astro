@@ -1,0 +1,260 @@
+---
+import '../styles/home.css';
+import Base from '../layouts/Base.astro';
+import Arrow from '../components/Arrow.astro';
+import Count from '../components/Count.astro';
+import Draft from '../components/Draft.astro';
+import Meter from '../components/Meter.astro';
+import StateStandings from '../components/StateStandings.astro';
+import { GROUP_LABEL, GROUP_ORDER, buildReportViews, buildViews, getDataset, groupTotals, sharedValue, viewsInGroup } from '../lib/data';
+import { formatPercentMicro, formatUsd, formatUsdMillions, ratioMicro, usdRounded } from '../lib/money';
+import { REFERRALFINDERX_URL, numberWord, numberWordCap } from '../lib/site';
+import { STATE_REGISTRY, statesWith, tileMapSvg } from '../lib/states';
+
+const data = getDataset();
+const views = buildViews(data);
+const reports = buildReportViews(data);
+const live = statesWith('live');
+const law = statesWith('law');
+const n = (x: number): string => x.toLocaleString('en-US');
+const tone = { health_center: 'hc', hospital: 'hosp' } as const;
+
+/** One block per state in the scorecard: its filings, grouped by type of filer, or its state report's totals. */
+const features = live.map((s) => {
+  const href = STATE_REGISTRY[s.code]?.href;
+  if (!href) throw new Error(`State ${s.code} has no page`);
+  const report = reports.find((r) => r.state === s.code);
+  if (report) {
+    // The report's totals table, before its adjustment: the rows that make up the total, then the total.
+    const unadjusted = report.totals.filter((t) => !t.group.adjusted);
+    const total = unadjusted.find((t) => t.group.kind === 'total');
+    const parts = unadjusted.filter((t) => t.group.kind !== 'total');
+    if (!total || total.netCents === null || total.netCents <= 0) throw new Error(`${s.name}: no unadjusted total in the report`);
+    const totalCents = total.netCents;
+    if (parts.length !== 2 || parts.some((p) => p.netCents === null)) throw new Error(`${s.name}: expected two printed parts of the unadjusted total`);
+    if (parts.reduce((sum, p) => sum + p.netCents!, 0) !== totalCents) throw new Error(`${s.name}: the printed parts do not add up to the printed total, so they cannot share one scale`);
+    const rows = parts.map((p, i) => {
+      const shareMicro = ratioMicro(p.netCents!, totalCents)!;
+      // The share drawn is worked out from the two amounts; the report prints the same share to one decimal.
+      const printed = p.pct.amountAsFiled.trim();
+      if (formatPercentMicro(shareMicro, 1) !== printed) throw new Error(`${s.name}: ${p.group.label} is printed as ${printed}, the amounts give ${formatPercentMicro(shareMicro, 1)}`);
+      return {
+        label: i === 0 ? 'Entities the report names' : 'All other entities',
+        detail: `${printed} of the statewide total, as ${report.spec.asWord}`,
+        shareMicro,
+        tone: 'plain' as const,
+        amount: usdRounded(p.netCents!),
+      };
+    });
+    const whole = usdRounded(totalCents);
+    return { kind: 'report' as const, ...s, href, report, rows, totalText: formatUsd(totalCents).replace(/\.00$/, ''), scaleEnd: `${whole.figure} ${whole.unit}`.trim(), years: report.filing.reportingYear };
+  }
+  const mine = views.filter((v) => v.entity.state === s.code);
+  const spec = mine[0]!.spec;
+  const years = [...new Set(mine.map((v) => v.filing.reportingYear))].sort().join(', ');
+  const forms = [...new Set(mine.map((v) => v.filing.formRevision))].join(' and ');
+  const groups = GROUP_ORDER.map((g) => ({ g, totals: groupTotals(viewsInGroup(mine, g)) })).filter((x) => x.totals.count > 0);
+  const status = sharedValue(mine.map((v) => v.filing.statusAsFiled), `${s.name}: status`);
+  return { kind: 'filings' as const, ...s, href, count: mine.length, years, forms, groups, spec, status };
+});
+// Records the dataset holds from the filers themselves, and rows a state printed about its entities.
+const filingCount = data.filings.filter((f) => f.recordKind !== 'state_report_totals').length;
+const differenceCount = data.discrepancies.length;
+---
+
+<Base
+  bleed
+  title="ClinX: 340B filings, state by state"
+  description="What hospitals and health centers reported to their states about the 340B drug program, as open data. Every figure links to the page of the filing it came from."
+>
+  <section class="wrap hero" aria-labelledby="hero-title">
+    <div class="hero-say">
+      <p class="kicker"><span class="dot" aria-hidden="true"></span>340B Scorecard</p>
+      <h1 id="hero-title">340B filings, <span>state by state.</span></h1>
+      <p class="lede">
+        States are starting to require hospitals and health centers to report what they earn and spend under the federal 340B drug program. ClinX turns the public filings into open data. Every figure links to the page it came from.
+      </p>
+      <div class="btn-row">
+        <a class="btn" href="/scorecard/">Open the scorecard <Arrow /></a>
+        <a class="btn ghost" href="/methods/">How it is calculated</a>
+      </div>
+    </div>
+    <div class="hero-map">
+      <Fragment set:html={tileMapSvg('home-map')} />
+      <ul class="legend">
+        <li><span class="key live" aria-hidden="true"></span>In the scorecard</li>
+        <li><span class="key law" aria-hidden="true"></span>Has a 340B reporting law</li>
+        <li><span class="key" aria-hidden="true"></span>Neither yet</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="mission-title">
+    <div class="wrap mission">
+      <div class="mission-say">
+        <p class="kicker">What ClinX is</p>
+        <h2 id="mission-title">Healthcare tools and data, <span>within reach of every clinic.</span></h2>
+        <p class="lede">
+          In healthcare, the most capable tools are gated behind six-figure contracts, complex IT projects and compliance burdens, which puts them out of reach for most clinics. ClinX publishes open data and builds tools that a clinic of any size can pick up and use.
+        </p>
+        <p class="head-tag"><Draft /></p>
+      </div>
+      <ul class="mission-points">
+        <li>
+          <strong>The first project</strong>
+          <p>
+            The 340B Scorecard. The federal 340B program lets hospitals and health centers buy outpatient drugs at a discount. States have begun requiring them to report what they paid for those drugs, what they were paid, and what went to outside pharmacies and vendors. The scorecard puts each public filing in one place, line by line.
+          </p>
+        </li>
+        <li>
+          <strong>What it leaves out</strong>
+          <p>Opinions. It does not grade a filer or say why a figure is what it is. It shows what was filed and how each measure is calculated.</p>
+        </li>
+        <li>
+          <strong>Yours to reuse</strong>
+          <p>The data, the code and the method are open. Check a figure, download the tables, or build your own version for another state or another program.</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="live-title">
+    <div class="wrap">
+      <div class="band-head split-head">
+        <h2 id="live-title">In the scorecard now.</h2>
+        <p class="lede">A state is added once what it makes public can be copied, and every figure has been copied, checked and linked to the page it came from. Each state publishes different things, so each is shown on its own and the states are never added together.</p>
+      </div>
+      {
+        features.map((f) =>
+          f.kind === 'report' ? (
+            <article class="state-feature band-body" aria-labelledby={`live-${f.code}`}>
+              <header>
+                <div>
+                  <p class="kicker"><span class="dot" aria-hidden="true" />{f.years} data · the state's own report</p>
+                  <h3 id={`live-${f.code}`}>{f.name}</h3>
+                </div>
+                <dl>
+                  <div><dt>Rows</dt><dd><Count value={String(f.report.entities.length)} /></dd></div>
+                  <div><dt>Form</dt><dd class="small-dd">{f.report.filing.formRevision}</dd></div>
+                </dl>
+                <a class="btn" href={f.href}>Open {f.name} <Arrow /></a>
+              </header>
+              <p class="state-feature-say">Net 340B revenue as the state's report prints it: {f.totalText} statewide, before the report's own adjustment. The report prints no acquisition cost and no payments to pharmacies or vendors, so no share of margin is calculated for {f.name}.</p>
+              <Meter
+                id={`home-meter-${f.code.toLowerCase()}`}
+                label={`${f.name}: net 340B revenue as printed, as parts of the statewide total`}
+                rows={f.rows}
+                scale={['$0', `${f.scaleEnd}, the statewide total`]}
+              />
+              <p class="small muted">Amounts beside the bars are rounded. The {f.name} page gives every figure as printed, each linked to its page of the report.</p>
+            </article>
+          ) : (
+            <article class="state-feature band-body" aria-labelledby={`live-${f.code}`}>
+              <header>
+                <div>
+                  <p class="kicker"><span class="dot" aria-hidden="true" />{f.years} {f.spec.nounPlural}{f.status !== '' && ` · marked ${f.status} by the state`}</p>
+                  <h3 id={`live-${f.code}`}>{f.name}</h3>
+                </div>
+                <dl>
+                  <div><dt>{f.spec.nounPlural[0]!.toUpperCase() + f.spec.nounPlural.slice(1)}</dt><dd><Count value={String(f.count)} /></dd></div>
+                  <div><dt>Form</dt><dd class="small-dd">{f.forms}</dd></div>
+                </dl>
+                <a class="btn" href={f.href}>Open {f.name} <Arrow /></a>
+              </header>
+              <p class="state-feature-say">Payments to contract pharmacies and outside vendors, as a share of the 340B margin reported{f.groups.length > 1 ? ', by type of filer' : ''}.</p>
+              <Meter
+                id={`home-meter-${f.code.toLowerCase()}`}
+                label={`${f.name}: payments to contract pharmacies and outside vendors as a share of 340B margin, by group`}
+                rows={f.groups.map(({ g, totals }) => ({
+                  label: GROUP_LABEL[g],
+                  detail: `${totals.count} ${f.spec.nounPlural} · ${formatUsdMillions(totals.externalCostCents)} of ${formatUsdMillions(totals.grossMarginCents)}`,
+                  shareMicro: totals.shareMicro,
+                  tone: tone[g],
+                }))}
+              />
+            </article>
+          ),
+        )
+      }
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="law-title">
+    <div class="wrap">
+      <div class="band-head split-head">
+        <h2 id="law-title">{numberWordCap(law.length)} more states have a reporting law.</h2>
+        <p class="lede">
+          What each state makes public differs. Some post every report, some name only part of the list, and some publish state totals alone.
+        </p>
+      </div>
+      <div class="band-body">
+        <StateStandings />
+      </div>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="checked-title">
+    <div class="wrap">
+      <div class="band-head">
+        <h2 id="checked-title">Copied from the filings. Checked twice.</h2>
+        <p class="lede">Every page of every filing is read twice, separately, and the two reads are compared row by row. Filed figures are never changed.</p>
+      </div>
+      <ul class="stats band-body">
+        <li><strong><Count value={n(live.length)} /></strong><span>{live.length === 1 ? 'state' : 'states'} in the scorecard, of {numberWord(live.length + law.length)} with a reporting law</span></li>
+        <li><strong><Count value={n(filingCount)} /></strong><span>filings, reports and rows of a state's report, each kept as filed or printed</span></li>
+        <li><strong><Count value={n(data.rowCount)} /></strong><span>rows, each citing its page</span></li>
+        <li><strong><a href="/methods/#all-differences">{n(differenceCount)}</a></strong><span>places where the figures of one filing or report differ, shown as filed</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="open-title">
+    <div class="wrap">
+      <div class="band-head">
+        <h2 id="open-title">Open to everyone.</h2>
+        <p class="lede">The data, the code and this site are free to use and to build on.</p>
+      </div>
+      <div class="open band-body">
+        <a class="card" href="/data/">
+          <span class="label">Data · CC BY 4.0</span>
+          <span class="file-chips" aria-hidden="true">{data.downloads.map((name) => <code>{name}</code>)}</span>
+          <strong>The filings dataset</strong>
+          <p>Every schedule of every filing as CSV and JSON, with a link to each source PDF.</p>
+        </a>
+        <a class="card" href="/data/#repositories"><span class="label">Code · MIT</span><strong>The registry tracker</strong><p>Keeps dated copies of the federal 340B registry and reports what changed.</p></a>
+        <a class="card" href="/writing/no-phi/"><span class="label">Writing</span><strong>Totals from a file that never leaves your computer</strong><p>A pattern for tools that handle sensitive files, with a working demo.</p></a>
+      </div>
+      <a class="zeros" href="/privacy/">
+        <span><b>0</b> cookies</span>
+        <span><b>0</b> trackers</span>
+        <span><b>0</b> sign-ins</span>
+        <span><b>0</b> requests to other sites</span>
+        <em>Privacy and security</em>
+      </a>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="maker-title">
+    <div class="wrap">
+      <div class="maker">
+        <h2 id="maker-title">Built by someone who does the work.</h2>
+        <div class="maker-body">
+          <p>
+            ClinX is built by Will Berchtold, who works in community health in Rhode Island. It is where he publishes open healthcare data and tools made for the people who keep clinics running.
+          </p>
+          <div class="btn-row"><a class="btn ghost" href="/about/">About Will and ClinX</a></div>
+        </div>
+      </div>
+      <div class="prod">
+        <div class="prod-id">
+          <img src="/brand/referralfinderx-mark.svg" alt="" width="72" height="72" />
+          <div>
+            <strong>ReferralFinderX</strong>
+            <p>Also from ClinX: a directory of specialist offices for referral teams.</p>
+          </div>
+        </div>
+        <a class="btn" href={REFERRALFINDERX_URL}>Visit ReferralFinderX <Arrow /></a>
+      </div>
+    </div>
+  </section>
+</Base>

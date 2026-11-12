@@ -1,0 +1,28 @@
+{
+  "name": "clinx-org",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.23.4"
+  },
+  "scripts": {
+    "sync": "node scripts/sync-data.mjs",
+    "check:data": "node scripts/check-data.mjs",
+    "check": "ASTRO_TELEMETRY_DISABLED=1 astro check",
+    "test": "vitest run",
+    "build": "ASTRO_TELEMETRY_DISABLED=1 astro build && node scripts/sitemap.mjs",
+    "check:dist": "node scripts/check-dist.mjs && node scripts/check-drug-pages.mjs"
+  },
+  "dependencies": {
+    "astro": "7.4.11"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.12",
+    "@fontsource-variable/bricolage-grotesque": "5.3.0",
+    "@fontsource-variable/instrument-sans": "5.3.0",
+    "typescript": "6.0.3",
+    "vitest": "5.1.0"
+  }
+}

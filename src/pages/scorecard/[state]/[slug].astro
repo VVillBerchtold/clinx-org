@@ -1,0 +1,512 @@
+---
+import '../../../styles/home.css';
+import '../../../styles/scorecard.css';
+import '../../../styles/drugs.css';
+import Base from '../../../layouts/Base.astro';
+import Arrow from '../../../components/Arrow.astro';
+import Cited from '../../../components/Cited.astro';
+import Count from '../../../components/Count.astro';
+import DifferencesTable from '../../../components/DifferencesTable.astro';
+import MeasuresTable from '../../../components/MeasuresTable.astro';
+import Meter from '../../../components/Meter.astro';
+import OnPage from '../../../components/OnPage.astro';
+import PageHead from '../../../components/PageHead.astro';
+import Pager from '../../../components/Pager.astro';
+import { stateName } from '../../../lib/states';
+import {
+  CATEGORY_LABEL,
+  buildViews,
+  compareNames,
+  drugViewFor,
+  findDifferences,
+  formatDate,
+  getDataset,
+  groupSingular,
+  measureFormula,
+  pdfHref,
+  printedNote,
+  type FilingView,
+} from '../../../lib/data';
+import { drawFigure, drawFiguresInText, formatPercentMicro, formatUsd, formatUsdMillions, parseCents } from '../../../lib/money';
+import { barPercentOfScale } from '../../../lib/meter';
+import { filedDrugShown } from '../../../lib/filed-drug-display';
+
+export function getStaticPaths() {
+  const views = buildViews(getDataset());
+  return views.map((view) => {
+    // The filings beside this one: same state, same year, A to Z by name as filed.
+    const set = views
+      .filter((v) => v.entity.state === view.entity.state && v.filing.reportingYear === view.filing.reportingYear)
+      .sort((a, b) => compareNames(a.entity.nameAsFiled, b.entity.nameAsFiled));
+    const at = set.indexOf(view);
+    const step = (v: FilingView | undefined) => (v ? { href: v.entity.path, name: v.entity.nameAsFiled } : undefined);
+    return {
+      params: { state: view.entity.state.toLowerCase(), slug: view.entity.slug },
+      props: { view, prev: step(set[at - 1]), next: step(set[at + 1]) },
+    };
+  });
+}
+
+interface Props {
+  view: FilingView;
+  prev: { href: string; name: string } | undefined;
+  next: { href: string; name: string } | undefined;
+}
+
+const { view, prev, next } = Astro.props;
+const data = getDataset();
+const { filing, entity, spec } = view;
+const id = filing.filingId;
+const onePage = spec.layout === 'one-page';
+
+const rows = data.lineItems.filter((r) => r.filingId === id);
+const vendorRows = rows.filter((r) => (r.schedule === 'D' || r.schedule === 'E') && r.rowKind !== 'total');
+const totalRows = rows.filter((r) => (r.schedule === 'D' || r.schedule === 'E') && r.rowKind === 'total');
+const printedNotes = rows.filter((r) => r.schedule === 'A' && r.note !== '');
+
+const categoryMeasures = data.measures.filter((m) => m.filingId === id && m.measure.startsWith('schedule_e_'));
+const eRows = rows.filter((r) => r.schedule === 'E');
+const ePage = eRows.length > 0 ? Math.min(...eRows.map((r) => r.page)) : null;
+
+const differences = findDifferences(data, id);
+const attachments = data.attachments.filter((a) => a.filingId === id);
+// A separate document the state lists beside the report (Vermont's narrative) has its own address.
+const documents = attachments.filter((a) => a.documentUrl !== '');
+const pageNotes = rows.filter((r) => r.schedule === 'page_note');
+const figureRows = view.printedRows;
+
+const pdf = (page: number) => pdfHref(filing, page);
+const formula = (name: string): string => measureFormula(data, id, name);
+const schedLabel: Record<string, string> = { D: 'Schedule D, contract pharmacy', E: 'Schedule E, outside vendor', A: 'Schedule A' };
+// Bars in the vendor table: one scale, the largest amount among its rows.
+const vendorMax = Math.max(0, ...vendorRows.map((r) => r.amountCents ?? 0));
+
+// The drug schedule, when the form has one: a section here and a page of its own.
+const drugView = drugViewFor(data, id);
+const drugMax = drugView ? Math.max(...drugView.largest.map((r) => r.amountCents)) : 0;
+
+const state = stateName(entity.state);
+const stateHref = `/scorecard/${entity.state.toLowerCase()}/`;
+const tone = entity.entityType === 'hospital' ? 'hosp' : 'hc';
+const shareShort = view.shareMicro === null ? null : formatPercentMicro(view.shareMicro, 1);
+
+// One-page form: the rows are shown in groups, the way the page groups them.
+const printedGroups = onePage
+  ? (['payments', 'acquisition', 'expenses', 'result'] as const).map((schedule) => figureRows.filter((r) => r.schedule === schedule))
+  : [];
+// Cells that print a word where a figure goes (N/R): shown as printed, never read as zero.
+const noFigureCells = [...new Set(figureRows.filter((r) => r.unit === 'usd' && r.amountCents === null).map((r) => r.amountAsFiled))];
+const noticeText = filing.statusNoticeAsFiled;
+const retrieved = formatDate(filing.retrievedAt);
+---
+
+<Base
+  title={`${entity.nameAsFiled}: ${spec.titleSuffix(filing.reportingYear)}`}
+  description={
+    onePage
+      ? `The page as printed, calculated measures, differences, narrative and source for the ${entity.nameAsFiled} 340B report for ${spec.periodWord} ${filing.reportingYear}, marked draft by the state.`
+      : `Schedule A figures, calculated measures, vendor payments, differences and source for the ${entity.nameAsFiled} 340B filing for calendar year ${filing.reportingYear}.`
+  }
+>
+  <PageHead wide title={entity.nameAsFiled} trail={[{ label: 'Scorecard', href: '/scorecard/' }, { label: state, href: stateHref }, { label: onePage ? `${spec.periodWord[0]!.toUpperCase()}${spec.periodWord.slice(1)} ${filing.reportingYear} ${spec.noun}` : `${filing.reportingYear} filing` }]}>
+    <p class="lede">{groupSingular(entity.entityType, spec)}, {state}, {spec.periodWord} {filing.reportingYear}. Everything below is as {spec.asWord}, or calculated from what was {spec.asWord}. Each figure links to the page of the {spec.noun} it was read from.</p>
+  </PageHead>
+
+  {
+    noticeText !== '' && (
+      <div class="note filing-notice">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="2"></circle><path d="M10 9v5M10 6v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+        <div>
+          <p><strong>The state marks this {spec.noun} as {filing.statusAsFiled}.</strong> The page prints: &ldquo;{noticeText}&rdquo; The figures are shown as they stood on the Board's website on {retrieved}.</p>
+        </div>
+      </div>
+    )
+  }
+
+  <div class:list={['filing-top', `tone-${tone}`]}>
+    <section class="panel summary" aria-labelledby="summary-title">
+      <h2 id="summary-title" class="visually-hidden">Summary</h2>
+      <div class="summary-num">
+        {
+          shareShort === null ? (
+            <p>The share is not calculated: the gross margin is not above zero.</p>
+          ) : (
+            <>
+              <div class="bignum" aria-hidden="true"><Count value={shareShort.replace('%', '')} /><sup>%</sup></div>
+              <p>Payments to contract pharmacies and outside vendors equal {shareShort} of the 340B margin shown in this {spec.noun}.</p>
+            </>
+          )
+        }
+      </div>
+      {shareShort !== null && (
+        <Meter id="filing-meter" label={`Share of 340B margin, this ${spec.noun}`} rows={[{ label: `This ${spec.noun}`, detail: `${formatUsdMillions(view.externalCostCents)} of ${formatUsdMillions(view.grossMarginCents)}`, shareMicro: view.shareMicro, tone }]} />
+      )}
+      <dl class="pair">
+        <div>
+          <dt>Gross margin</dt>
+          <dd><Cited value={formatUsd(view.grossMarginCents)} href={pdf(view.marginPage)} label={view.cite.margin} /><small>{formula('gross_margin')}</small></dd>
+        </div>
+        <div>
+          <dt>External cost</dt>
+          <dd><Cited value={formatUsd(view.externalCostCents)} href={pdf(view.externalPage)} label={view.cite.external} /><small>{formula('external_cost')}</small></dd>
+        </div>
+      </dl>
+    </section>
+    <section class="panel side" aria-labelledby="facts-title">
+      <h2 id="facts-title" class="visually-hidden">About this {spec.noun}</h2>
+      {
+        onePage ? (
+          <dl class="facts">
+            <dt>Form</dt>
+            <dd>{filing.formRevision}</dd>
+            <dt>Period as printed</dt>
+            <dd>{filing.periodAsFiled}</dd>
+            <dt>Submission as printed</dt>
+            <dd>{filing.submissionAsFiled}</dd>
+            <dt>Status as printed</dt>
+            <dd>{filing.statusAsFiled}</dd>
+          </dl>
+        ) : (
+          <dl class="facts">
+            <dt>Form</dt>
+            <dd>{filing.formRevision}</dd>
+            <dt>Reporting basis as filed</dt>
+            <dd>{filing.reportingBasisAsFiled}</dd>
+            <dt>Recertification date as filed</dt>
+            <dd>{filing.recertificationDateAsFiled}</dd>
+            <dt>340B ID numbers as filed</dt>
+            <dd>{entity.opaisIdsAsFiled}</dd>
+          </dl>
+        )
+      }
+      <div class="btn-row"><a class="btn" href={pdfHref(filing, 1)}>Open the {spec.noun} (PDF) <Arrow /></a></div>
+    </section>
+  </div>
+
+  <OnPage
+    class="filing-nav"
+    title={entity.nameAsFiled}
+    items={
+      onePage
+        ? [
+            { id: 'page-as-printed', label: 'The page as printed' },
+            { id: 'measures', label: 'Calculated measures' },
+            { id: 'differences', label: 'Differences' },
+            ...(documents.length > 0 ? [{ id: 'narrative', label: 'Narrative' }] : []),
+            { id: 'source', label: 'Source' },
+          ]
+        : [
+            { id: 'schedule-a', label: 'Schedule A' },
+            { id: 'measures', label: 'Calculated measures' },
+            { id: 'by-category', label: 'Payments by category' },
+            { id: 'by-vendor', label: 'Payments by name' },
+            ...(drugView ? [{ id: 'drugs', label: 'Drugs' }] : []),
+            { id: 'differences', label: 'Differences' },
+            { id: 'attachments', label: 'Added pages' },
+            { id: 'source', label: 'Source' },
+          ]
+    }
+  />
+
+  <div class="prose">
+  {!onePage && (<>
+  <h2 id="schedule-a">Schedule A: lines 1 to 6</h2>
+  <div class="table-wrap lines">
+    <table role="table">
+      <caption><span>Schedule A as filed, for {entity.nameAsFiled}</span></caption>
+      <thead role="rowgroup">
+        <tr role="row">
+          <th role="columnheader" scope="col">Line</th>
+          <th role="columnheader" scope="col">Label as filed</th>
+          <th role="columnheader" scope="col" class="num">Amount as filed</th>
+        </tr>
+      </thead>
+      <tbody role="rowgroup">
+        {
+          figureRows.map((r) => (
+            <tr role="row">
+              <th role="rowheader" scope="row">{r.line}</th>
+              <td role="cell">{r.labelAsFiled}</td>
+              <td role="cell" class="num" data-label="Amount as filed">
+                <Cited value={drawFigure(r.amountAsFiled, 'money') || 'blank'} href={pdf(r.page)} label={`Schedule A, line ${r.line}, page ${r.page} of the filing PDF`} />
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+  <p class="small muted">Amounts are in US dollars at the scale the filer used: some filers report whole dollars, others cents. Figures on this page are written with commas between thousands; the filing PDF and the downloads keep each one as typed.</p>
+  {
+    printedNotes.length > 0 && (
+      <ul>
+        {printedNotes.map((r) => (
+          <li>Line {r.line}: {r.note}</li>
+        ))}
+      </ul>
+    )
+  }
+
+  <MeasuresTable view={view} formulas={{ margin: formula('gross_margin'), external: formula('external_cost') }} caption="Measures calculated from Schedule A figures as filed" />
+
+  <h2 id="by-category">Vendor payments by category</h2>
+  <p>Schedule E rows added up by category. The category is given only from the filer's own words on each row.</p>
+  <div class="table-wrap">
+    <table>
+      <caption><span>Schedule E payments by category, for {entity.nameAsFiled}</span></caption>
+      <thead>
+        <tr>
+          <th scope="col">Category</th>
+          <th scope="col" class="num">Sum of Schedule E rows</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          categoryMeasures.map((m) => {
+            const key = m.measure.replace('schedule_e_', '');
+            const cents = parseCents(m.value);
+            const text = cents === null ? 'Not calculated' : formatUsd(cents);
+            return (
+              <tr>
+                <th scope="row">{CATEGORY_LABEL[key] ?? key}</th>
+                <td class="num">
+                  {ePage === null ? text : <Cited value={text} href={pdf(ePage)} label={`Schedule E, page ${ePage} of the filing PDF`} />}
+                </td>
+              </tr>
+            );
+          })
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="by-vendor">Vendor payments by name</h2>
+  <p>Schedule D lists contract pharmacies. Schedule E lists outside vendors. Names are as filed. Where one company is named in different ways across filings, the normalized name is shown under the name as filed. Select a column heading to sort.</p>
+  {
+    vendorRows.length === 0 ? (
+      <p>This filing prints no named rows on Schedule D or Schedule E.</p>
+    ) : (
+      <><div class:list={['table-wrap', 'wide', 'stack', 'vendors', `tone-${tone}`]}>
+        <table data-sortable role="table">
+          <caption><span>Schedule D and Schedule E rows as filed, in the order printed, for {entity.nameAsFiled}</span></caption>
+          <thead role="rowgroup">
+            <tr role="row">
+              <th role="columnheader" scope="col" data-sort="text">Name as filed</th>
+              <th role="columnheader" scope="col" data-sort="text">Schedule</th>
+              <th role="columnheader" scope="col" data-sort="text">Category</th>
+              <th role="columnheader" scope="col" class="num" data-sort="number">Amount as filed</th>
+            </tr>
+          </thead>
+          <tbody role="rowgroup">
+            {vendorRows.map((r) => (
+              <tr role="row">
+                <th role="rowheader" scope="row">
+                  {r.nameAsFiled || r.labelAsFiled}
+                  {r.normalizedVendor && <span class="sub">Normalized name: {r.normalizedVendor}</span>}
+                </th>
+                <td role="cell" data-label="Schedule" data-value={r.schedule}>{schedLabel[r.schedule]}</td>
+                <td role="cell" class:list={{ blank: !r.category }} data-label="Category" data-value={r.category}>{r.category ? (CATEGORY_LABEL[r.category] ?? r.category) : ''}</td>
+                <td role="cell" class="num share" data-label="Amount as filed" data-value={r.amountCents ?? ''}>
+                  <span class="rail">
+                    <span class="rail-track">{vendorMax > 0 && (r.amountCents ?? 0) > 0 && <svg class="bar" width={`${barPercentOfScale(r.amountCents ?? 0, vendorMax)}%`} height="10" aria-hidden="true" focusable="false" />}</span>
+                    <Cited value={drawFigure(r.amountAsFiled, 'money') || 'blank'} href={pdf(r.page)} label={`Schedule ${r.schedule}, page ${r.page} of the filing PDF`} />
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+          <tfoot role="rowgroup">
+            {totalRows.map((r) => (
+              <tr role="row">
+                <th role="rowheader" scope="row" colspan="3">{r.labelAsFiled}</th>
+                <td role="cell" class="num" data-label="Amount as filed">
+                  <Cited value={drawFigure(r.amountAsFiled, 'money') || 'blank'} href={pdf(r.page)} label={`Schedule ${r.schedule} total, page ${r.page} of the filing PDF`} />
+                </td>
+              </tr>
+            ))}
+          </tfoot>
+        </table>
+      </div>
+      <p class="small muted">Bars are drawn to one scale: the full width is the largest amount among these rows.</p>
+    </>)
+  }
+
+  {
+    drugView && (
+      <>
+        <h2 id="drugs">Drugs in this filing</h2>
+        <p>{drugView.drug.scheduleName} lists the drugs, with an amount and a number of claims for each, as filed. The full list is on its own page.</p>
+        <dl class="facts panel">
+          <dt>Rows on {drugView.drug.scheduleName}</dt>
+          <dd>{drugView.rows.length.toLocaleString('en-US')}</dd>
+          <dt>Total as filed</dt>
+          <dd><Cited value={`$${drawFigure(drugView.total.amountAsFiled, 'money')}`} href={pdf(drugView.total.page)} label={`${drugView.drug.scheduleName}, printed total, page ${drugView.total.page} of the filing PDF`} /></dd>
+          <dt>Claims total as filed</dt>
+          <dd><Cited value={drawFigure(drugView.total.claimsAsFiled)} href={pdf(drugView.total.page)} label={`${drugView.drug.scheduleName}, printed claims total, page ${drugView.total.page} of the filing PDF`} /></dd>
+        </dl>
+        <h3>The five largest amounts on {drugView.drug.scheduleName}</h3>
+        <ol class:list={['drug-top', `tone-${tone}`]}>
+          {
+            drugView.largest.map((r) => (
+              <li>
+                {r.nameAsFiled === '' ? <span class="top-name none">(no name printed)</span> : <span class="top-name">{filedDrugShown(r.nameAsFiled)}</span>}
+                <span class="track">{drugMax > 0 && r.amountCents > 0 && <svg class="bar" width={`${barPercentOfScale(r.amountCents, drugMax)}%`} height="10" aria-hidden="true" focusable="false" />}</span>
+                <span class="top-amt"><Cited value={drawFigure(r.amountAsFiled, 'money')} href={pdf(r.page)} label={`${drugView.drug.scheduleName}, line ${r.line}, page ${r.page} of the filing PDF`} /></span>
+              </li>
+            ))
+          }
+        </ol>
+        <p class="small muted">Bars are drawn to one scale: the full width is the largest of the five amounts.</p>
+        <div class="btn-row">
+          <a class="btn" href={drugView.path}>See all {drugView.rows.length.toLocaleString('en-US')} drug rows <Arrow /></a>
+          <a class="btn ghost" href={`/scorecard/${entity.state.toLowerCase()}/drugs/`}>Drugs across all filers</a>
+        </div>
+      </>
+    )
+  }
+
+  <DifferencesTable differences={differences} name={entity.nameAsFiled} spec={spec} />
+
+  <h2 id="attachments">Pages the filer added</h2>
+  {
+    attachments.length === 0 ? (
+      <p>The filing has no pages added to the form.</p>
+    ) : (
+      <>
+        <p>These pages are in the PDF. They are not transcribed.</p>
+        <div class="table-wrap wide">
+          <table>
+            <caption><span>Pages added by the filer, for {entity.nameAsFiled}</span></caption>
+            <thead>
+              <tr>
+                <th scope="col">Pages</th>
+                <th scope="col">Kind</th>
+                <th scope="col">Title as filed</th>
+                <th scope="col">What the pages are</th>
+              </tr>
+            </thead>
+            <tbody>
+              {attachments.map((a) => (
+                <tr>
+                  <th scope="row">
+                    <Cited value={a.firstPage === a.lastPage ? `${a.firstPage}` : `${a.firstPage} to ${a.lastPage}`} href={pdf(a.firstPage)} label={`Filing PDF, page ${a.firstPage}`} />
+                  </th>
+                  <td>{a.kind.replaceAll('_', ' ')}</td>
+                  <td>{a.titleAsFiled}</td>
+                  <td>{drawFiguresInText(a.note)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </>
+    )
+  }
+
+  <h2 id="source">Source</h2>
+  <dl class="facts panel">
+    <dt>Filing PDF</dt>
+    <dd><a href={pdfHref(filing, 1)}>Open the filing on the State of Rhode Island's website</a></dd>
+    <dt>SHA-256</dt>
+    <dd><span class="mono">{filing.pdfSha256}</span></dd>
+    <dt>Retrieved</dt>
+    <dd>{formatDate(filing.retrievedAt)}</dd>
+    <dt>Pages</dt>
+    <dd>{filing.pageCount}{filing.scanned ? ', a scan with no text layer' : ''}</dd>
+  </dl>
+  </>)}
+  {onePage && (<>
+  <h2 id="page-as-printed">The page as printed</h2>
+  <p>Every row of the page, in the order it prints them and grouped as the page groups them. Amounts are in US dollars, shown as printed. The operating margin is a percentage. Each value links to the page of the report PDF.</p>
+  <div class="table-wrap printed">
+    <table>
+      <caption><span>The page as printed, for {entity.nameAsFiled}</span></caption>
+      <thead>
+        <tr>
+          <th scope="col">Label as printed</th>
+          <th scope="col" class="num">Value as printed</th>
+        </tr>
+      </thead>
+      {
+        printedGroups.map((group) => (
+          <tbody>
+            {group.map((r) => (
+              <tr class:list={{ 'is-total': r.rowKind === 'total' }}>
+                <th scope="row">
+                  {r.labelAsFiled}
+                  {printedNote(r) !== '' && <small class="subline">{printedNote(r)}</small>}
+                </th>
+                <td class="num">
+                  <Cited value={drawFigure(r.amountAsFiled, r.unit === 'usd' ? 'money' : 'count') || 'blank'} href={pdf(r.page)} label={`Page ${r.page} of the ${spec.noun} PDF`} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        ))
+      }
+    </table>
+  </div>
+  {noFigureCells.length > 0 && <p class="small muted">{noFigureCells.join(' and ')} is shown as printed. It is not read as zero and adds nothing to a sum.</p>}
+  {
+    pageNotes.map((r) => (
+      <figure class="page-quote">
+        <blockquote>
+          <p>{r.labelAsFiled}</p>
+        </blockquote>
+        <figcaption>
+          Text the page prints below the figures, word for word.{' '}
+          <Cited value="Open the page" href={pdf(r.page)} label={`Page ${r.page} of the report PDF`} />
+        </figcaption>
+      </figure>
+    ))
+  }
+
+  <MeasuresTable view={view} formulas={{ margin: formula('gross_margin'), external: formula('external_cost') }} caption="Measures calculated from the figures as printed" />
+
+  <DifferencesTable differences={differences} name={entity.nameAsFiled} spec={spec} />
+
+  {
+    documents.length > 0 && (
+      <>
+        <h2 id="narrative">Narrative</h2>
+        {documents.map((a) => (
+          <>
+            <p>{drawFiguresInText(a.note)}</p>
+            <dl class="facts panel">
+              <dt>Document</dt>
+              <dd><a href={a.documentCoverPageUrl}>Narrative reporting, on the Green Mountain Care Board's website</a></dd>
+              <dt>PDF</dt>
+              <dd><a href={a.documentUrl}>Open the narrative (PDF)</a></dd>
+              <dt>SHA-256</dt>
+              <dd><span class="mono">{a.documentSha256}</span></dd>
+              <dt>Pages</dt>
+              <dd>{a.lastPage - a.firstPage + 1}</dd>
+            </dl>
+          </>
+        ))}
+      </>
+    )
+  }
+
+  <h2 id="source">Source</h2>
+  <dl class="facts panel">
+    <dt>Report PDF</dt>
+    <dd><a href={pdfHref(filing, 1)}>Open the report on the {spec.publisher}</a></dd>
+    <dt>The Board's page for it</dt>
+    <dd><a href={filing.coverPageUrl}>Open the page that lists the report</a></dd>
+    <dt>SHA-256</dt>
+    <dd><span class="mono">{filing.pdfSha256}</span></dd>
+    <dt>Retrieved</dt>
+    <dd>{retrieved}</dd>
+    <dt>Status as printed</dt>
+    <dd>{filing.statusAsFiled}</dd>
+    <dt>Notice as printed</dt>
+    <dd>{filing.statusNoticeAsFiled}</dd>
+    <dt>Pages</dt>
+    <dd>{filing.pageCount}</dd>
+  </dl>
+  </>)}
+  </div>
+
+  <Pager label={`More ${spec.nounPlural}`} noun={spec.noun} prev={prev} next={next} up={{ href: stateHref, label: `All ${state} ${spec.nounPlural}` }} />
+</Base>

@@ -1,0 +1,54 @@
+---
+import { meterSvg } from '../lib/meter';
+import { formatPercentMicro, type Micro } from '../lib/money';
+
+/**
+ * The tick meter: one row per group, each on the same scale. The scale is 0 to 100% unless the
+ * page names another (an amount of money against a total): then each row carries the amount it
+ * shows, and the lit part is still that row's share of the scale.
+ */
+interface Row {
+  label: string;
+  detail: string;
+  shareMicro: Micro | null;
+  tone: 'hc' | 'hosp' | 'plain';
+  /** Shown in place of the percentage: a figure set large and its unit set small ("$1.15", "billion"). */
+  amount?: { figure: string; unit: string };
+}
+interface Props {
+  id: string;
+  label: string;
+  rows: readonly Row[];
+  /** The words under the track, left to right. Two or more. */
+  scale?: readonly string[];
+}
+const { id, label, rows, scale = ['0%', '25%', '50%', '75%', '100%'] } = Astro.props;
+if (scale.length < 2) throw new Error('A meter scale needs a start and an end');
+const money = rows.some((r) => r.amount);
+if (money && !rows.every((r) => r.amount)) throw new Error('A meter shows amounts on every row or on none');
+---
+
+<div class:list={['meter', { 'meter-money': money }]} role="group" aria-label={label}>
+  {
+    rows.map((r, i) => (
+      <div class:list={['m-row', `tone-${r.tone}`]}>
+        <div>
+          <strong>{r.label}</strong>
+          <small>{r.detail}</small>
+        </div>
+        <div class="m-track" set:html={meterSvg({ id: `${id}-${i}`, shareMicro: r.shareMicro })} />
+        {r.amount ? (
+          <div class="m-val">
+            {r.amount.figure}
+            {r.amount.unit !== '' && <small> {r.amount.unit}</small>}
+          </div>
+        ) : (
+          <div class="m-val">{r.shareMicro === null ? 'n/a' : formatPercentMicro(r.shareMicro, 1)}</div>
+        )}
+      </div>
+    ))
+  }
+  <div class="m-scale" aria-hidden="true">
+    <div>{scale.map((s) => <span>{s}</span>)}</div>
+  </div>
+</div>

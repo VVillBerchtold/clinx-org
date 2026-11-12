@@ -1,0 +1,71 @@
+---
+import { formatFigure, type Discrepancy } from '../lib/data';
+import { drawFiguresInText } from '../lib/money';
+import type { FormBase } from '../lib/forms';
+
+/**
+ * The places where two figures of one filing differ, as the dataset records them. Nothing is
+ * explained: the figures and the dataset's own note are shown.
+ */
+interface Props {
+  differences: Discrepancy[];
+  name: string;
+  spec: Pick<FormBase, 'noun' | 'asWord' | 'layout'>;
+  /** For a report that holds many records: which entity a difference belongs to (blank for the report's own totals). */
+  owners?: ReadonlyMap<Discrepancy, string | null>;
+  /** Replaces the heading and the opening sentence when the figures are not one filing's own. */
+  heading?: string;
+  lead?: string;
+}
+
+const { differences, name, spec, owners, heading, lead } = Astro.props;
+const asWord = spec.asWord.charAt(0).toUpperCase() + spec.asWord.slice(1);
+const source = spec.layout === 'one-page' ? 'page' : spec.layout === 'state-report' ? 'report' : 'form';
+
+const basisMeaning = {
+  form: `The ${source} itself says the two figures agree.`,
+  comparison: `The ${source} does not say the two figures agree. They describe related things and are shown together.`,
+} as const;
+
+---
+
+<h2 id="differences">{heading ?? `Differences in this ${spec.noun}`}</h2>
+{
+  differences.length === 0 ? (
+    <p>No difference was found between this {spec.noun}'s own figures by the rules in <a href="/methods/#4-sums-and-comparisons">Methods</a>.</p>
+  ) : (
+    <>
+      <p>
+        {lead ?? `This ${spec.noun} has ${differences.length} place${differences.length === 1 ? '' : 's'} where two of its figures differ. Nothing was changed; both figures are kept as ${spec.asWord}.`}
+      </p>
+      <ol class="diffs" aria-label={`Differences found within the ${name} ${spec.noun}`}>
+        {differences.map((d) => (
+          <li>
+            {owners && (
+              <p class="diff-owner">{owners.get(d) ?? 'The statewide totals'}</p>
+            )}
+            <h3>{d.description}</h3>
+            <dl class="diff-figures">
+              <div>
+                <dt>Expected</dt>
+                <dd>{formatFigure(d.expected, d.unit)}</dd>
+              </div>
+              <div>
+                <dt>{asWord}</dt>
+                <dd>{formatFigure(d.filed, d.unit)}</dd>
+              </div>
+              <div>
+                <dt>Difference</dt>
+                <dd>{formatFigure(d.difference, d.unit, true)}</dd>
+              </div>
+            </dl>
+            <p class="diff-note">{drawFiguresInText(d.note)}</p>
+            <p class="diff-basis">
+              {basisMeaning[d.basis]} <span class="diff-rule">Rule <code>{d.rule}</code> in <a href="/methods/#4-sums-and-comparisons">Methods</a>.</span>
+            </p>
+          </li>
+        ))}
+      </ol>
+    </>
+  )
+}

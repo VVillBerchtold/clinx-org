@@ -1,0 +1,16 @@
+---
+/**
+ * The one component for a figure that has a source.
+ * `href` is the filing's PDF at the page the figure was read from (use pdfHref), or, for a sum
+ * of several filings, the table on this site that lists them. `label` says what the link leads to.
+ */
+interface Props {
+  value: string;
+  href: string;
+  label: string;
+}
+
+const { value, href, label } = Astro.props;
+---
+
+<a class="cited" href={href} title={label}>{value}<span class="visually-hidden"> ({label})</span></a>

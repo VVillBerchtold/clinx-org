@@ -1,0 +1,66 @@
+---
+import '../../styles/home.css';
+import '../../styles/scorecard.css';
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import StateStandings from '../../components/StateStandings.astro';
+import { buildReportViews, buildViews, countPhrase, getDataset } from '../../lib/data';
+import { numberWordCap } from '../../lib/site';
+import { STATE_REGISTRY, statesWith, tileMapSvg } from '../../lib/states';
+
+const data = getDataset();
+const views = buildViews(data);
+const reports = buildReportViews(data);
+const live = statesWith('live');
+const law = statesWith('law');
+const countIn = (code: string): string => {
+  const report = reports.find((r) => r.state === code);
+  if (report) return `${report.entities.length} rows`;
+  return countPhrase(views.filter((v) => v.entity.state === code));
+};
+---
+
+<Base title="Scorecard" description="The states in the 340B Scorecard. Pick a state to see what its filers reported, or what the state published about them. Every figure links to the page it came from.">
+  <PageHead title="Scorecard" trail={[{ label: '340B Scorecard' }]}>
+    <p class="lede">Pick a state. Each state's page lists what its filers reported, or what the state published about them. Where a state posts each filer's report, every report has its own page with the figures as filed.</p>
+  </PageHead>
+
+  <div class="states">
+    <div class="hero-map">
+      <Fragment set:html={tileMapSvg('scorecard-map')} />
+      <ul class="legend">
+        <li><span class="key live" aria-hidden="true"></span>In the scorecard</li>
+        <li><span class="key law" aria-hidden="true"></span>Has a 340B reporting law</li>
+        <li><span class="key" aria-hidden="true"></span>Neither yet</li>
+      </ul>
+    </div>
+    <div class="state-list">
+      <h2 class="label">In the scorecard</h2>
+      {
+        live.map((s) => (
+          <a class="state-link" href={STATE_REGISTRY[s.code]?.href}>
+            <strong>{s.name}</strong>
+            <span>
+              {countIn(s.code)} · {STATE_REGISTRY[s.code]?.summary}
+            </span>
+            <svg viewBox="0 0 18 18" fill="none" aria-hidden="true" focusable="false"><path d="M3 9h12M10 4l5 5-5 5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          </a>
+        ))
+      }
+      <div class="note">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="2" /><path d="M10 9v5M10 6v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+        <div>
+          <p><strong>Each state has its own form.</strong> Figures are shown in each state's own terms and are not added up across states.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="section" aria-labelledby="law-title">
+    <div class="section-head">
+      <h2 id="law-title">{numberWordCap(law.length)} more states have a reporting law</h2>
+      <p>What each state makes public differs. A state is added here once what it makes public can be copied and every figure has been checked against the page it came from.</p>
+    </div>
+    <StateStandings />
+  </section>
+</Base>

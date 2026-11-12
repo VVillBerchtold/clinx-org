@@ -1,0 +1,32 @@
+---
+import '../../styles/article.css';
+import Base from '../../layouts/Base.astro';
+import Draft from '../../components/Draft.astro';
+import PageHead from '../../components/PageHead.astro';
+import { ARTICLE_TITLE } from '../../lib/site';
+---
+
+<Base title="Writing" description="Articles and working demos from ClinX.">
+  <PageHead title="Writing" trail={[{ label: 'ClinX' }]}>
+    <p class="lede">How the tools here are built, with working examples you can check for yourself.</p>
+  </PageHead>
+
+  <div class="pieces">
+    <a class="card" href="/writing/no-phi/">
+      <span class="piece-top"><span class="label">Article · 4 minute read</span><Draft /></span>
+      <span class="piece-flow" aria-hidden="true"><span>You pick a file</span><i></i><span>Your browser reads it</span><i></i><span>Only totals appear</span></span>
+      <span>
+        <strong>{ARTICLE_TITLE}</strong>
+        <p>A way to build tools that need totals from a sensitive file, and never the file itself.</p>
+      </span>
+    </a>
+    <a class="card" href="/writing/no-phi/demo/">
+      <span class="label">Working demo</span>
+      <span class="piece-zero" aria-hidden="true">0</span>
+      <span>
+        <strong>Requests sent while it reads your file</strong>
+        <p>Totals from a made-up claims file, worked out in your browser.</p>
+      </span>
+    </a>
+  </div>
+</Base>

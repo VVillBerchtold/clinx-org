@@ -1,0 +1,86 @@
+---
+import '../../styles/contact.css';
+import Base from '../../layouts/Base.astro';
+import Draft from '../../components/Draft.astro';
+import PageHead from '../../components/PageHead.astro';
+import { CONTACT_LIMITS, CONTACT_TOPICS } from '../../lib/contact-topics';
+import { CONTACT_EMAIL } from '../../lib/site';
+---
+
+<Base title="Contact" description="Send ClinX a question, a correction, feedback, or a request for a tool or a dataset." postsForm>
+  <PageHead title="Contact" trail={[{ label: 'ClinX' }]} wide>
+    <p class="lede head-tag">
+      <span>A question, a figure that looks wrong, or a tool your clinic needs: send it here. Every message goes to Will Berchtold, who builds ClinX.</span>
+      <Draft />
+    </p>
+  </PageHead>
+
+  <div class="contact">
+    <form class="contact-form" method="post" action="/api/contact" data-contact-form>
+      <div class="field-pair">
+        <div class="field">
+          <label for="c-name">Your name</label>
+          <input id="c-name" name="name" type="text" autocomplete="name" maxlength={CONTACT_LIMITS.name} required />
+        </div>
+        <div class="field">
+          <label for="c-email">Your email</label>
+          <input id="c-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength={CONTACT_LIMITS.email} aria-describedby="c-email-hint" required />
+          <p class="hint" id="c-email-hint">Used only to reply to you.</p>
+        </div>
+      </div>
+      <div class="field-pair">
+        <div class="field">
+          <label for="c-org">Organization <span class="optional">optional</span></label>
+          <input id="c-org" name="organization" type="text" autocomplete="organization" maxlength={CONTACT_LIMITS.organization} />
+        </div>
+        <div class="field">
+          <label for="c-topic">Subject</label>
+          <div class="select">
+            <select id="c-topic" name="topic" required>
+              <option value="" selected disabled>Choose a subject</option>
+              {CONTACT_TOPICS.map((topic) => <option value={topic.value}>{topic.label}</option>)}
+            </select>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" focusable="false"><path d="M3 5.5 7 9.5l4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label for="c-message">Your message</label>
+        <textarea id="c-message" name="message" rows="8" maxlength={CONTACT_LIMITS.message} aria-describedby="c-message-hint" required></textarea>
+        <p class="hint" id="c-message-hint">
+          <span>Please leave out patient details. Nothing here needs them.</span>
+          <span class="count" data-count hidden><span data-count-now>0</span> of {CONTACT_LIMITS.message.toLocaleString('en-US')}</span>
+        </p>
+      </div>
+      <div class="trap" aria-hidden="true">
+        <label for="c-website">Leave this box empty</label>
+        <input id="c-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+      </div>
+      <input type="hidden" name="open_ms" value="" data-open-ms />
+      <div class="send-row">
+        <button class="btn accent" type="submit">Send message</button>
+        <p class="hint">Your message is emailed to {CONTACT_EMAIL}. The site keeps no copy.</p>
+      </div>
+    </form>
+
+    <aside class="contact-side" aria-label="Other ways to reach ClinX">
+      <section>
+        <h2>By email</h2>
+        <p><a class="address" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></p>
+        <p>The form and the address reach the same inbox.</p>
+      </section>
+      <section>
+        <h2>A figure looks wrong</h2>
+        <p>Choose &ldquo;A correction to a figure&rdquo; and name the organization, the year and the figure. Every figure on the site links to its page of the filing, so a correction can be checked against the source.</p>
+        <p><a href="/about/#corrections">How corrections are handled</a></p>
+      </section>
+      <section>
+        <h2>A security problem</h2>
+        <p>Please write before telling anyone else. <a href="/privacy/">Privacy and security</a> sets out how the site is protected.</p>
+      </section>
+    </aside>
+  </div>
+  <script>
+    import '../../scripts/contact-form';
+  </script>
+</Base>

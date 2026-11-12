@@ -1,0 +1,82 @@
+---
+import Cited from './Cited.astro';
+import { barPercent } from '../lib/meter';
+import { formatPercentMicro, formatUsd } from '../lib/money';
+import { pdfHref, type FilingView, type GroupTotals } from '../lib/data';
+
+/**
+ * Gross margin, external cost and share for the filings of one group, alphabetical by name as filed.
+ * The columns follow the filings' form: a form that prints a reporting basis gets that column.
+ * All the filings in one table are made on the same form.
+ */
+interface Props {
+  views: FilingView[];
+  caption: string;
+  id: string;
+  tone: 'hc' | 'hosp';
+  totals?: { label: string; value: GroupTotals; href: string };
+}
+
+const { views, caption, id, tone, totals } = Astro.props;
+const share = (v: number | null): string => (v === null ? 'Not calculated' : formatPercentMicro(v, 1));
+const spec = views[0]?.spec;
+if (!spec || views.some((v) => v.spec.id !== spec.id)) throw new Error('A table shows filings of one form only');
+const showsBasis = spec.layout === 'schedules';
+---
+
+<div class:list={['table-wrap', 'wide', 'stack', `tone-${tone}`]} id={id}>
+  <table data-sortable role="table">
+    <caption><span>{caption}</span></caption>
+    <thead role="rowgroup">
+      <tr role="row">
+        <th role="columnheader" scope="col" data-sort="text">{showsBasis ? `Name and reporting basis as ${spec.asWord}` : `Name as ${spec.asWord}`}</th>
+        <th role="columnheader" scope="col" class="num" data-sort="number">Gross margin</th>
+        <th role="columnheader" scope="col" class="num" data-sort="number">External cost</th>
+        <th role="columnheader" scope="col" class="num" data-sort="number">Share of margin</th>
+      </tr>
+    </thead>
+    <tbody role="rowgroup">
+      {
+        views.map((v) => (
+          <tr role="row">
+            <th role="rowheader" scope="row">
+              <a href={v.entity.path}>{v.entity.nameAsFiled}</a>
+              {showsBasis && <span class="sub"><span class="visually-hidden">Reporting basis as filed: </span>{v.filing.reportingBasisAsFiled || 'No basis printed'}</span>}
+            </th>
+            <td role="cell" class="num" data-label="Gross margin" data-value={v.grossMarginCents}>
+              <Cited value={formatUsd(v.grossMarginCents)} href={pdfHref(v.filing, v.marginPage)} label={v.cite.margin} />
+            </td>
+            <td role="cell" class="num" data-label="External cost" data-value={v.externalCostCents}>
+              <Cited value={formatUsd(v.externalCostCents)} href={pdfHref(v.filing, v.externalPage)} label={v.cite.external} />
+            </td>
+            <td role="cell" class="num share" data-label="Share of margin" data-value={v.shareMicro ?? ''}>
+              <span class="rail">
+                <span class="rail-track">{v.shareMicro !== null && <svg class="bar" width={`${barPercent(v.shareMicro)}%`} height="10" aria-hidden="true" focusable="false" />}</span>
+                <Cited value={share(v.shareMicro)} href={pdfHref(v.filing, v.sharePage)} label={v.cite.share} />
+              </span>
+              {v.shareMicro === null && <small class="why">The margin is not above zero.</small>}
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+    {
+      totals && (
+        <tfoot role="rowgroup">
+          <tr role="row">
+            <th role="rowheader" scope="row">{totals.label}</th>
+            <td role="cell" class="num" data-label="Gross margin">
+              <Cited value={formatUsd(totals.value.grossMarginCents)} href={totals.href} label={`Sum of the ${spec.nounPlural} in the table above`} />
+            </td>
+            <td role="cell" class="num" data-label="External cost">
+              <Cited value={formatUsd(totals.value.externalCostCents)} href={totals.href} label={`Sum of the ${spec.nounPlural} in the table above`} />
+            </td>
+            <td role="cell" class="num" data-label="Share of margin">
+              <Cited value={share(totals.value.shareMicro)} href={totals.href} label="Sum of external cost divided by sum of gross margin" />
+            </td>
+          </tr>
+        </tfoot>
+      )
+    }
+  </table>
+</div>

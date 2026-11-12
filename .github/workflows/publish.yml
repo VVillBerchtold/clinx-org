@@ -1,0 +1,55 @@
+# Publishes the site to ClinX.org. It never runs by itself: a person starts it by
+# hand and types the confirmation words. It runs every check, builds the site,
+# and publishes only if all of them pass.
+#
+# Needs two repository secrets, set by the owner:
+#   CLOUDFLARE_API_TOKEN   a token made from Cloudflare's "Edit Cloudflare Workers" template
+#   CLOUDFLARE_ACCOUNT_ID  the account's id
+name: publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "publish clinx.org" to publish the site'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: ${{ inputs.confirm == 'publish clinx.org' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      - name: Install the locked dependencies
+        run: npm ci
+      - name: Copied dataset files match SOURCE.json
+        run: npm run check:data
+      - name: Types
+        run: npm run check
+      - name: Tests
+        run: npm test
+      - name: Build
+        env:
+          ASTRO_TELEMETRY_DISABLED: "1"
+        run: npm run build
+      - name: Built site passes the safety scan
+        run: npm run check:dist
+      - name: Publish to ClinX.org
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: scripts/deploy/publish.sh

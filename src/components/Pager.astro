@@ -1,0 +1,51 @@
+---
+/**
+ * The end of a page that is one of a set (a state's filings, a state's drug pages): the one before, the one
+ * after, and the way back to the whole set. The set is in A to Z order by name as filed. No link is drawn
+ * for a step that does not exist: the first page has no "previous", the last has no "next".
+ */
+interface Step {
+  href: string;
+  name: string;
+}
+interface Props {
+  /** What the nav is called for a screen reader, for example "More filings". */
+  label: string;
+  /** The word after "Previous" and "Next", for example "filing". */
+  noun: string;
+  prev?: Step | undefined;
+  next?: Step | undefined;
+  up: { href: string; label: string };
+}
+const { label, noun, prev, next, up } = Astro.props;
+---
+
+<nav class="pager" aria-label={label}>
+  {
+    prev ? (
+      <a class="pager-step prev" href={prev.href} rel="prev">
+        <span class="pager-way">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" focusable="false"><path d="M11.5 7h-9M6 3 2 7l4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          Previous {noun}
+        </span>
+        <span class="pager-name">{prev.name}</span>
+      </a>
+    ) : (
+      <span class="pager-gap" aria-hidden="true"></span>
+    )
+  }
+  <a class="pager-up" href={up.href}>{up.label}</a>
+  {
+    next ? (
+      <a class="pager-step next" href={next.href} rel="next">
+        <span class="pager-way">
+          Next {noun}
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" focusable="false"><path d="M2.5 7h9M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </span>
+        <span class="pager-name">{next.name}</span>
+      </a>
+    ) : (
+      <span class="pager-gap" aria-hidden="true"></span>
+    )
+  }
+</nav>

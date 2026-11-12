@@ -1,0 +1,346 @@
+/* The scorecard: the list of states, a state's page and a filing's page. */
+
+.states {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+  gap: 2rem 3.5rem;
+  align-items: start;
+}
+.states .hero-map {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+.state-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.state-link {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.25rem 1.5rem;
+  align-items: center;
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  text-decoration: none;
+  transition: transform 0.25s, border-color 0.25s;
+}
+.state-link:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+}
+.state-link strong {
+  font: 800 clamp(1.75rem, 3vw, 2.375rem) / 1.05 var(--display);
+  letter-spacing: -0.025em;
+}
+.state-link span {
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+.state-link svg {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  width: 1.75rem;
+  height: 1.75rem;
+  color: var(--accent);
+  transition: transform 0.2s;
+}
+.state-link:hover svg {
+  transform: translateX(4px);
+}
+.section {
+  margin-top: var(--s7);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+}
+.section > p {
+  max-width: var(--measure);
+}
+.section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+}
+.section-head p {
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+.section-head h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.section-head .swatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+}
+
+/* A filing's page: the summary beside the facts */
+.filing-top {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: 1.125rem;
+  align-items: stretch;
+}
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.summary-num {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.5rem 1.5rem;
+}
+.summary .bignum {
+  font-size: clamp(4.5rem, 9vw, 7.5rem);
+}
+.summary-num p {
+  max-width: 22rem;
+  padding-bottom: 0.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+/* In the summary the meter is stacked: its label above a full-width track. */
+.summary .m-row,
+.summary .m-scale {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.5rem;
+}
+.summary .m-row > div:first-child {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.125rem 1rem;
+}
+.summary .m-val {
+  display: none;
+}
+.summary .m-scale div {
+  grid-column: 1;
+}
+.pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 2rem;
+  padding-top: 1.125rem;
+  border-top: 1px solid var(--line);
+}
+.pair dt {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: var(--text-sm);
+}
+.pair dd {
+  margin: 0.125rem 0 0;
+  font: 800 clamp(1.25rem, 2.2vw, 1.625rem) / 1.15 var(--display);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.pair small {
+  display: block;
+  margin-top: 0.125rem;
+  color: var(--muted);
+  font: 500 var(--text-xs) / 1.4 var(--body);
+  letter-spacing: 0;
+}
+.side {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+.side .facts {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+.side .facts dd {
+  margin-bottom: 0.875rem;
+}
+.filing-nav {
+  margin-top: 2.5rem;
+}
+
+@media (max-width: 900px) {
+  .states,
+  .filing-top {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* A notice the state prints on its pages: calm, directly under the page head */
+.draft-notice {
+  margin-top: 0;
+  margin-bottom: var(--s6);
+}
+.filing-notice {
+  margin-bottom: var(--s5);
+}
+
+/* A share that is not calculated gives its reason beside the words */
+.why {
+  display: block;
+  margin-top: 0.125rem;
+  color: var(--muted);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  text-align: right;
+  white-space: normal;
+}
+
+/* A one-page form as printed: rows in the page's own groups, totals marked */
+.printed tbody + tbody tr:first-child > * {
+  border-top: 2px solid var(--line);
+}
+.printed .is-total > * {
+  background: var(--surface-2);
+  font-weight: 700;
+}
+.printed .subline {
+  display: block;
+  margin-top: 0.125rem;
+  color: var(--muted);
+  font-size: var(--text-xs);
+  font-weight: 500;
+}
+
+/* The text a page prints below its figures, quoted word for word */
+.prose .page-quote {
+  margin-top: var(--s5);
+  padding: 1rem 1.25rem;
+  border-left: 4px solid var(--accent);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  background: var(--surface);
+}
+.page-quote blockquote p {
+  max-width: var(--measure);
+}
+.page-quote figcaption {
+  margin-top: var(--s2);
+  color: var(--muted);
+  font-size: var(--text-xs);
+}
+
+/* Differences: one entry per difference, read top to bottom. A table of seven columns broke
+   words apart at laptop widths; the note is a sentence and needs a full line. */
+.diffs,
+.prose ol.diffs {
+  list-style: none;
+  margin: var(--s4) 0 0;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+}
+.diffs > li,
+.prose .diffs > li {
+  max-width: none;
+  padding: var(--s5);
+  display: grid;
+  gap: var(--s3);
+}
+.diffs > li + li {
+  border-top: 1px solid var(--line);
+}
+.diffs h3 {
+  margin: 0;
+  font-family: var(--body);
+  font-size: var(--text-base);
+  font-weight: 650;
+  letter-spacing: 0;
+  max-width: var(--measure);
+}
+.diff-figures {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s3) var(--s6);
+  margin: 0;
+}
+.diff-figures > div {
+  min-width: 9rem;
+}
+.diff-figures dt {
+  font-size: var(--text-xs);
+  color: var(--muted);
+}
+.diff-figures dd {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.diffs p {
+  margin: 0;
+  max-width: var(--measure);
+}
+.diff-basis {
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+.diff-rule code {
+  overflow-wrap: anywhere;
+}
+
+/* A quotation from a source page lines up with its caption: no browser indent. */
+.page-quote blockquote {
+  margin: 0;
+}
+.page-quote blockquote p + p {
+  margin-top: var(--s2);
+}
+
+/* Whose difference it is, where a page lists differences for more than one record. */
+.prose .diffs .diff-owner + h3 {
+  margin-top: 0;
+}
+.diffs .diff-owner {
+  margin: 0 0 calc(var(--s2) * -1);
+  color: var(--accent);
+  font-size: var(--text-sm);
+  font-weight: 650;
+}
+
+/* A state's own table of entities: five columns that fit a laptop without scrolling sideways.
+   The last heading is the report's own and is long, so it may wrap. */
+.report-entities tbody th[scope='row'] {
+  min-width: 12rem;
+}
+.report-entities td.share {
+  --fig: 7.5rem;
+  min-width: 13rem;
+}
+.report-entities td.share .rail-track {
+  min-width: 5rem;
+}
+.report-entities thead th:last-child {
+  white-space: normal;
+  min-width: 7.5rem;
+  max-width: 9rem;
+}
+@media (max-width: 760px) {
+  .report-entities tbody th[scope='row'] {
+    min-width: 9.5rem;
+  }
+  .report-entities thead th:last-child {
+    min-width: 10rem;
+    max-width: none;
+  }
+  .report-entities td.share {
+    min-width: 11rem;
+  }
+}

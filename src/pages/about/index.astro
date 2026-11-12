@@ -1,0 +1,138 @@
+---
+import '../../styles/pages.css';
+import Base from '../../layouts/Base.astro';
+import Arrow from '../../components/Arrow.astro';
+import Draft from '../../components/Draft.astro';
+import PageHead from '../../components/PageHead.astro';
+import { LINKEDIN_URL, X_URL } from '../../lib/site';
+---
+
+<Base title="About" description="Why ClinX exists, how it works, who builds it, how it stays independent, and how to report a correction.">
+  <PageHead title="About" trail={[{ label: 'ClinX' }]}>
+    <p class="lede">
+      ClinX exists to put capable healthcare tools and data within reach of every clinic, whatever its size or budget.
+    </p>
+  </PageHead>
+
+  <section class="split" aria-labelledby="why">
+    <h2 id="why">Why it exists</h2>
+    <div class="split-body">
+      <p class="head-tag"><Draft /></p>
+      <p>
+        In healthcare, the most capable tools are gated behind six-figure contracts, complex IT projects and compliance burdens. A large health system can take those on. Most clinics cannot, so they go without resources that would help them get better outcomes for their patients.
+      </p>
+      <p>
+        ClinX is built to close that gap: open data that anyone can check and reuse, and tools a clinic can adopt without a large contract or a long project.
+      </p>
+      <p>
+        The 340B Scorecard is the first project. States are starting to publish what hospitals and health centers report about the federal 340B drug program. The filings are PDFs, one for each filer. The scorecard puts the numbers in one place, in a form anyone can check, with nothing added. Each state is added as its filings become public.
+      </p>
+    </div>
+  </section>
+
+  <section class="split" aria-labelledby="rules">
+    <h2 id="rules">How it works</h2>
+    <div class="split-body">
+      <ol class="rules">
+        <li>
+          <strong>As filed</strong>
+          <p>Every figure is copied from a public filing and links to the page it came from. Nothing is corrected or estimated. Where a filing's own figures differ, both are shown.</p>
+        </li>
+        <li>
+          <strong>Shown, not judged</strong>
+          <p>The site says what was filed and how each measure is calculated. It does not say why a figure is what it is.</p>
+        </li>
+        <li>
+          <strong>Open</strong>
+          <p>The data and the code are free to use, to check and to build on.</p>
+        </li>
+      </ol>
+      <div class="btn-row"><a class="btn ghost" href="/methods/">Read the methods <Arrow /></a></div>
+    </div>
+  </section>
+
+  <section class="founder" aria-labelledby="founder-name">
+    <div class="founder-id">
+      <div class="founder-top">
+        <picture class="founder-photo">
+          <source type="image/webp" srcset="/founder/will-berchtold-480.webp 480w, /founder/will-berchtold-960.webp 960w" sizes="136px" />
+          <img
+            src="/founder/will-berchtold-480.jpg"
+            srcset="/founder/will-berchtold-480.jpg 480w, /founder/will-berchtold-960.jpg 960w"
+            sizes="136px"
+            width="480"
+            height="596"
+            alt="Portrait of Will Berchtold."
+          />
+        </picture>
+        <div>
+          <p class="label">Founder</p>
+          <h2 id="founder-name">Will Berchtold</h2>
+        </div>
+      </div>
+      <dl>
+        <div>
+          <dt>Founder of</dt>
+          <dd>ClinX and <a href="/products/">ReferralFinderX</a></dd>
+        </div>
+        <div>
+          <dt>Works in</dt>
+          <dd>Community health</dd>
+        </div>
+        <div>
+          <dt>Based in</dt>
+          <dd>Rhode Island</dd>
+        </div>
+      </dl>
+      <div class="btn-row">
+        <a class="btn" href={LINKEDIN_URL}>LinkedIn</a>
+        <a class="btn" href={X_URL}>X</a>
+      </div>
+    </div>
+    <div class="founder-say">
+      <p>ClinX is built by Will Berchtold, alongside his work in community health.</p>
+      <p>
+        He trained in computer architecture and programming, and built his career in operations. At McKesson he supervised inventory quality control and coordinated pharmacy and hospital inventory changeovers across the eastern United States. He also spent more than a decade in restaurants, from the kitchen to sushi chef to manager.
+      </p>
+      <p>
+        Since 2022 he has worked in community health in Rhode Island, in health informatics, on the referral desk and in patient access. He is also the founder of ReferralFinderX, a directory of specialist offices for referral teams.
+      </p>
+      <p class="head-tag"><Draft /></p>
+    </div>
+  </section>
+
+  <section class="split" aria-labelledby="independence">
+    <h2 id="independence">Independence</h2>
+    <div class="split-body">
+      <p class="head-tag"><Draft /></p>
+      <p>
+        Will works at a Rhode Island community health center, and health centers are among the filers shown here. ClinX is his own project. It is not connected to his employer and does not speak for it.
+      </p>
+      <p>Every filer's figures are shown the same way: as filed, with a link to the page.</p>
+      <p>The 340B Scorecard is free and stands apart from anything ClinX sells. It does not depend on <a href="/products/">ReferralFinderX</a>, and ReferralFinderX does not depend on it.</p>
+    </div>
+  </section>
+
+  <section class="split" aria-labelledby="corrections">
+    <h2 id="corrections">Report a correction</h2>
+    <div class="split-body">
+      <p>If a figure here does not match the filing it cites, please report it.</p>
+      <ol>
+        <li>Name the filing, the schedule and the line.</li>
+        <li>Say what the site shows and what the PDF page prints.</li>
+      </ol>
+      <p>The PDF governs. A confirmed correction is released as a new version of the dataset and listed in its changelog.</p>
+      <p class="head-tag"><span>Corrections go through the dataset's public issue list, which opens when the site goes live.</span> <Draft /></p>
+    </div>
+  </section>
+
+  <section class="split" aria-labelledby="licences">
+    <h2 id="licences">Licences</h2>
+    <div class="split-body">
+      <p>
+        The code is under the MIT licence. The data is under Creative Commons Attribution 4.0 (CC BY 4.0). The filings themselves are public records of the state they were filed with.
+      </p>
+      <p>The names ClinX and ReferralFinderX and their logos are not covered by those licences.</p>
+    </div>
+  </section>
+</Base>

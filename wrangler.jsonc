@@ -1,0 +1,30 @@
+// ClinX.org on Cloudflare. The host serves every page and file in dist/ by itself.
+// One small program (worker/index.ts) runs only for paths under /api/: today that is the
+// contact form, which sends a message on as an email and keeps nothing.
+// The security headers for pages come from public/_headers, which the build copies into dist/.
+{
+  "name": "clinx-org",
+  // A date the pinned copy of the host's tool knows, so the same program runs on this Mac and on the host.
+  "compatibility_date": "2026-10-01",
+  "main": "./worker/index.ts",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash",
+    // Only /api/ reaches the program. Every other request is answered from the files.
+    "run_worker_first": ["/api/*"]
+  },
+  // The form's mail can go to this one address and nowhere else.
+  "send_email": [{ "name": "EMAIL", "destination_address": "will@clinx.org" }],
+  // At most 5 posts a minute from one visitor address (the host counts approximately).
+  "ratelimits": [{ "name": "CONTACT_LIMIT", "namespace_id": "1001", "simple": { "limit": 5, "period": 60 } }],
+  "vars": {
+    "CONTACT_TO": "will@clinx.org",
+    "CONTACT_FROM": "form@clinx.org",
+    "SITE_ORIGIN": "https://clinx.org"
+  },
+  // No workers.dev address and no preview addresses: the site is reachable at clinx.org only.
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{ "pattern": "clinx.org", "custom_domain": true }]
+}

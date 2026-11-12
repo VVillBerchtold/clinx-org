@@ -1,0 +1,247 @@
+/* The demo page. Every value comes from tokens.css. */
+
+.demo {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: 1.125rem;
+  align-items: stretch;
+}
+
+/* ---------- The tool ---------- */
+
+.demo-tool {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  background: var(--surface);
+}
+.demo-tool h2,
+.demo-proof h2 {
+  font: 700 var(--text-sm) / 1.4 var(--body);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.demo-tool h2 {
+  color: var(--muted);
+}
+.demo-drop {
+  position: relative;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 17rem;
+  padding: 2rem 1.25rem;
+  border: 2px dashed var(--tick);
+  border-radius: var(--r-lg);
+  background: var(--bg);
+  text-align: center;
+  transition: border-color 0.2s, background 0.2s;
+}
+.demo-drop.over {
+  border-color: var(--accent);
+  border-style: solid;
+  background: var(--accent-wash);
+}
+.demo-icon {
+  color: var(--accent);
+}
+.demo-drop-say {
+  font: 700 clamp(1.5rem, 2.8vw, 2rem) / 1.1 var(--display);
+  letter-spacing: -0.02em;
+}
+.demo-drop .btn-row {
+  justify-content: center;
+}
+.demo-drop label {
+  cursor: pointer;
+}
+.demo-drop input:focus-visible + label {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+.demo-drop input:disabled + label {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.demo-drop .small {
+  max-width: 38ch;
+}
+.demo-status {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.demo-status::before {
+  content: '';
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--tick);
+}
+[aria-busy='true'] .demo-status::before {
+  background: var(--accent);
+  animation: beat 1s ease-in-out infinite;
+}
+.done .demo-status::before {
+  background: var(--ok);
+}
+
+/* ---------- The proof ---------- */
+
+.demo-proof {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid var(--band-line);
+  border-radius: var(--r-xl);
+  background: var(--band);
+  color: var(--band-ink);
+  overflow-wrap: anywhere;
+}
+.demo-proof h2 {
+  color: var(--band-muted);
+}
+.proof-num {
+  font: 800 clamp(7rem, 15vw, 12rem) / 0.82 var(--display);
+  letter-spacing: -0.055em;
+  font-variant-numeric: tabular-nums;
+}
+.demo-proof.has-requests .proof-num {
+  color: var(--hosp);
+}
+.proof-ran {
+  color: var(--band-muted);
+  font-size: var(--text-sm);
+}
+.done .proof-ran {
+  color: var(--band-ink);
+  font-weight: 600;
+}
+.proof-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  color: var(--band-muted);
+  font: 500 0.75rem/1.5 var(--mono);
+}
+.proof-list:empty {
+  display: none;
+}
+.demo-proof details {
+  padding-block: 0.75rem;
+  border-block: 1px solid var(--band-line);
+  font-size: var(--text-sm);
+}
+.demo-proof summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.demo-proof details .proof-list {
+  margin-top: 0.625rem;
+}
+.proof-test {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.625rem;
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+.proof-test .btn {
+  background: var(--band-ink);
+  color: var(--band);
+}
+.proof-test > p {
+  color: var(--band-muted);
+}
+.proof-test code {
+  background: var(--band-line);
+}
+#send-result:not(:empty) {
+  padding: 0.625rem 0.875rem;
+  border-radius: var(--r-md);
+  background: var(--band-line);
+  font-weight: 600;
+}
+.demo-proof :focus-visible {
+  outline-color: var(--band-ink);
+}
+
+/* ---------- Results ---------- */
+
+.demo-results {
+  margin-top: clamp(2rem, 5vw, 3.5rem);
+}
+.demo-results-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+  margin-top: 1.25rem;
+}
+.demo-results .stats strong {
+  font-size: clamp(1.625rem, 2.7vw, 2.25rem);
+  letter-spacing: -0.03em;
+}
+.demo-figure {
+  padding: 1.125rem 1.25rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+}
+.demo-figure figcaption {
+  font: 700 1.0625rem/1.25 var(--display);
+  letter-spacing: -0.01em;
+}
+.demo-chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 0.75rem;
+  color: var(--muted);
+  font-family: var(--body);
+}
+.demo-chart rect {
+  fill: var(--accent);
+  transform-box: fill-box;
+  transform-origin: bottom;
+  animation: rise 0.7s var(--ease) backwards;
+}
+.demo-chart line {
+  stroke: var(--line);
+}
+@keyframes rise {
+  from {
+    transform: scaleY(0);
+  }
+}
+.demo-summary {
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+/* Short row labels (a month, a payer type) stay on one line. */
+#results-body tbody th {
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .demo {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .demo-drop {
+    min-height: 13rem;
+  }
+}

@@ -1,0 +1,1272 @@
+ndc_11,match,fda_product_ndc,proprietary_name,proprietary_name_suffix,nonproprietary_name,dosage_form,strength,labeler_name,listed_on
+00002143380,package,0002-1433,Trulicity,,Dulaglutide,"INJECTION, SOLUTION",.75 mg/.5mL,Eli Lilly and Company,2026-11-11
+00002143480,package,0002-1434,Trulicity,,Dulaglutide,"INJECTION, SOLUTION",1.5 mg/.5mL,Eli Lilly and Company,2026-11-11
+00002143611,package,0002-1436,EMGALITY,,galcanezumab-gnlm,"INJECTION, SOLUTION",120 mg/mL,Eli Lilly and Company,2026-11-11
+00002144509,package,0002-1445,TALTZ,,ixekizumab,"INJECTION, SOLUTION",80 mg/mL,Eli Lilly and Company,2026-11-11
+00002144511,package,0002-1445,TALTZ,,ixekizumab,"INJECTION, SOLUTION",80 mg/mL,Eli Lilly and Company,2026-11-11
+00002144527,package,0002-1445,TALTZ,,ixekizumab,"INJECTION, SOLUTION",80 mg/mL,Eli Lilly and Company,2026-11-11
+00002145780,package,0002-1457,Mounjaro,,tirzepatide,"INJECTION, SOLUTION",15 mg/.5mL,Eli Lilly and Company,2026-11-11
+00002146080,package,0002-1460,Mounjaro,,tirzepatide,"INJECTION, SOLUTION",12.5 mg/.5mL,Eli Lilly and Company,2026-11-11
+00002147180,package,0002-1471,Mounjaro,,tirzepatide,"INJECTION, SOLUTION",10 mg/.5mL,Eli Lilly and Company,2026-11-11
+00002148480,package,0002-1484,Mounjaro,,tirzepatide,"INJECTION, SOLUTION",7.5 mg/.5mL,Eli Lilly and Company,2026-11-11
+00002149580,package,0002-1495,Mounjaro,,tirzepatide,"INJECTION, SOLUTION",5 mg/.5mL,Eli Lilly and Company,2026-11-11
+00002150680,package,0002-1506,Mounjaro,,tirzepatide,"INJECTION, SOLUTION",2.5 mg/.5mL,Eli Lilly and Company,2026-11-11
+00002223680,package,0002-2236,Trulicity,,Dulaglutide,"INJECTION, SOLUTION",3 mg/.5mL,Eli Lilly and Company,2026-11-11
+00002237711,package,0002-2377,EMGALITY,,galcanezumab-gnlm,"INJECTION, SOLUTION",120 mg/mL,Eli Lilly and Company,2026-11-11
+00002245780,package,0002-2457,ZEPBOUND,,tirzepatide,"INJECTION, SOLUTION",15 mg/.5mL,Eli Lilly and Company,2026-11-11
+00002246080,package,0002-2460,ZEPBOUND,,tirzepatide,"INJECTION, SOLUTION",12.5 mg/.5mL,Eli Lilly and Company,2026-11-11
+00002247180,package,0002-2471,ZEPBOUND,,tirzepatide,"INJECTION, SOLUTION",10 mg/.5mL,Eli Lilly and Company,2026-11-11
+00002248480,package,0002-2484,ZEPBOUND,,tirzepatide,"INJECTION, SOLUTION",7.5 mg/.5mL,Eli Lilly and Company,2026-11-11
+00002249580,package,0002-2495,ZEPBOUND,,tirzepatide,"INJECTION, SOLUTION",5 mg/.5mL,Eli Lilly and Company,2026-11-11
+00002250680,package,0002-2506,ZEPBOUND,,tirzepatide,"INJECTION, SOLUTION",2.5 mg/.5mL,Eli Lilly and Company,2026-11-11
+00002318280,package,0002-3182,Trulicity,,Dulaglutide,"INJECTION, SOLUTION",4.5 mg/.5mL,Eli Lilly and Company,2026-11-11
+00002418230,package,0002-4182,Olumiant,,baricitinib,"TABLET, FILM COATED",2 mg/1,Eli Lilly and Company,2026-11-11
+00002447930,package,0002-4479,Olumiant,,baricitinib,"TABLET, FILM COATED",4 mg/1,Eli Lilly and Company,2026-11-11
+00002448354,package,0002-4483,Verzenio,,abemaciclib,TABLET,50 mg/1,Eli Lilly and Company,2026-11-11
+00002481554,package,0002-4815,Verzenio,,abemaciclib,TABLET,100 mg/1,Eli Lilly and Company,2026-11-11
+00002533754,package,0002-5337,Verzenio,,abemaciclib,TABLET,150 mg/1,Eli Lilly and Company,2026-11-11
+00002556260,package,0002-5562,RETEVMO,,selpercatinib,"TABLET, COATED",160 mg/1,Eli Lilly and Company,2026-11-11
+00002608260,package,0002-6082,RETEVMO,,selpercatinib,"TABLET, COATED",80 mg/1,Eli Lilly and Company,2026-11-11
+00002621654,package,0002-6216,Verzenio,,abemaciclib,TABLET,200 mg/1,Eli Lilly and Company,2026-11-11
+00002690230,package,0002-6902,JAYPIRCA,,pirtobrutinib,"TABLET, COATED",50 mg/1,Eli Lilly and Company,2026-11-11
+00002702660,package,0002-7026,JAYPIRCA,,pirtobrutinib,"TABLET, COATED",100 mg/1,Eli Lilly and Company,2026-11-11
+00002751001,package,0002-7510,Humalog,,Insulin lispro,"INJECTION, SOLUTION",100 [iU]/mL,Eli Lilly and Company,2026-11-11
+00002757501,package,0002-7575,Omvoh,,mirikizumab-mrkz,"INJECTION, SOLUTION",20 mg/mL,Eli Lilly and Company,2026-11-11
+00002766901,package,0002-7669,CYRAMZA,,ramucirumab,SOLUTION,10 mg/mL,Eli Lilly and Company,2026-11-11
+00002767801,package,0002-7678,CYRAMZA,,ramucirumab,SOLUTION,10 mg/mL,Eli Lilly and Company,2026-11-11
+00002771227,package,0002-7712,Humalog,KwikPen,Insulin lispro,"INJECTION, SOLUTION",200 [iU]/mL,Eli Lilly and Company,2026-11-11
+00002771559,package,0002-7715,BASAGLAR,KwikPen,Insulin glargine,"INJECTION, SOLUTION",100 [iU]/mL,Eli Lilly and Company,2026-11-11
+00002771711,package,0002-7717,Omvoh,,mirikizumab-mrkz,KIT,,Eli Lilly and Company,2026-11-11
+00002772411,package,0002-7724,TALTZ,,ixekizumab,"INJECTION, SOLUTION",80 mg/mL,Eli Lilly and Company,2026-11-11
+00002773701,package,0002-7737,Insulin Lispro,,Insulin lispro,"INJECTION, SOLUTION",100 [iU]/mL,Eli Lilly and Company,2026-11-11
+00002777211,package,0002-7772,EBGLYSS,,lebrikizumab-lbkz,"INJECTION, SOLUTION",250 mg/2mL,Eli Lilly and Company,2026-11-11
+00002801127,package,0002-8011,Omvoh,,mirikizumab-mrkz,"INJECTION, SOLUTION",100 mg/mL,Eli Lilly and Company,2026-11-11
+00002814801,package,0002-8148,HUMATROPE,,Somatropin,KIT,,Eli Lilly and Company,2026-11-11
+00002940101,package,0002-9401,Kisunla,,donanemab-azbt,"INJECTION, SOLUTION",17.5 mg/mL,Eli Lilly and Company,2026-11-11
+00003037113,package,0003-0371,NULOJIX,,BELATACEPT,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",250 mg/1,"E.R. Squibb & Sons, L.L.C.",2026-11-11
+00003085222,package,0003-0852,SPRYCEL,,dasatinib,TABLET,100 mg/1,"E.R. Squibb & Sons, L.L.C.",2026-11-11
+00003085522,package,0003-0855,SPRYCEL,,dasatinib,TABLET,80 mg/1,"E.R. Squibb & Sons, L.L.C.",2026-11-11
+00003089321,package,0003-0893,ELIQUIS,,apixaban,"TABLET, FILM COATED",2.5 mg/1,"E.R. Squibb & Sons, L.L.C.",2026-11-11
+00003089421,package,0003-0894,ELIQUIS,,apixaban,"TABLET, FILM COATED",5 mg/1,"E.R. Squibb & Sons, L.L.C.",2026-11-11
+00003089511,package,0003-0895,SOTYKTU,,deucravacitinib,"TABLET, FILM COATED",6 mg/1,"E.R. Squibb & Sons, L.L.C.",2026-11-11
+00003110060,package,0003-1100,Cobenfy,,xanomeline and trospium chloride,"CAPSULE, COATED PELLETS",100 mg/1; 20 mg/1,"E.R. Squibb & Sons, L.L.C.",2026-11-11
+00003218713,package,0003-2187,ORENCIA,,abatacept,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",250 mg/15mL,"E.R. Squibb & Sons, L.L.C.",2026-11-11
+00003218811,package,0003-2188,ORENCIA,,abatacept,"INJECTION, SOLUTION",125 mg/mL,"E.R. Squibb & Sons, L.L.C.",2026-11-11
+00003218851,package,0003-2188,ORENCIA,,abatacept,"INJECTION, SOLUTION",125 mg/mL,"E.R. Squibb & Sons, L.L.C.",2026-11-11
+00003229111,package,0003-2291,EMPLICITI,,elotuzumab,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",300 mg/1,"E.R. Squibb & Sons, L.L.C.",2026-11-11
+00003232711,package,0003-2327,YERVOY,,ipilimumab,INJECTION,5 mg/mL,"E.R. Squibb & Sons, L.L.C.",2026-11-11
+00003232822,package,0003-2328,YERVOY,,ipilimumab,INJECTION,5 mg/mL,"E.R. Squibb & Sons, L.L.C.",2026-11-11
+00003281411,package,0003-2814,ORENCIA,,abatacept,"INJECTION, SOLUTION",50 mg/.4mL,"E.R. Squibb & Sons, L.L.C.",2026-11-11
+00003373413,package,0003-3734,OPDIVO,,nivolumab,INJECTION,10 mg/mL,"E.R. Squibb & Sons, L.L.C.",2026-11-11
+00003375614,package,0003-3756,OPDIVO,,nivolumab,INJECTION,10 mg/mL,"E.R. Squibb & Sons, L.L.C.",2026-11-11
+00003377211,package,0003-3772,OPDIVO,,nivolumab,INJECTION,10 mg/mL,"E.R. Squibb & Sons, L.L.C.",2026-11-11
+00003377412,package,0003-3774,OPDIVO,,nivolumab,INJECTION,10 mg/mL,"E.R. Squibb & Sons, L.L.C.",2026-11-11
+00003452211,package,0003-4522,EMPLICITI,,elotuzumab,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",400 mg/1,"E.R. Squibb & Sons, L.L.C.",2026-11-11
+00003612001,package,0003-6120,OPDIVO QVANTIG,,nivolumab and hyaluronidase-nvhy,"INJECTION, SOLUTION",120 mg/mL; 2000 U/mL,"E.R. Squibb & Sons, L.L.C.",2026-11-11
+00003712511,package,0003-7125,OPDUALAG,,nivolumab and relatlimab-rmbw,INJECTION,12 mg/mL; 4 mg/mL,"E.R. Squibb & Sons, L.L.C.",2026-11-11
+00006011231,package,0006-0112,JANUVIA,,sitagliptin,"TABLET, FILM COATED",50 mg/1,Merck Sharp & Dohme LLC,2026-11-11
+00006022131,package,0006-0221,JANUVIA,,sitagliptin,"TABLET, FILM COATED",25 mg/1,Merck Sharp & Dohme LLC,2026-11-11
+00006022761,package,0006-0227,ISENTRESS,,RALTEGRAVIR,"TABLET, FILM COATED",400 mg/1,Merck Sharp & Dohme LLC,2026-11-11
+00006027731,package,0006-0277,JANUVIA,,sitagliptin,"TABLET, FILM COATED",100 mg/1,Merck Sharp & Dohme LLC,2026-11-11
+00006027754,package,0006-0277,JANUVIA,,sitagliptin,"TABLET, FILM COATED",100 mg/1,Merck Sharp & Dohme LLC,2026-11-11
+00006056840,package,0006-0568,ZOLINZA,,vorinostat,CAPSULE,100 mg/1,Merck Sharp & Dohme LLC,2026-11-11
+00006302602,package,0006-3026,KEYTRUDA,,pembrolizumab,"INJECTION, SOLUTION",25 mg/mL,Merck Sharp & Dohme LLC,2026-11-11
+00006306901,package,0006-3069,PIFELTRO,,doravirine,"TABLET, FILM COATED",100 mg/1,Merck Sharp & Dohme LLC,2026-11-11
+00006307602,package,0006-3076,PREVYMIS,,LETERMOVIR,"TABLET, FILM COATED",480 mg/1,Merck Sharp & Dohme LLC,2026-11-11
+00006500701,package,0006-5007,DELSTRIGO,,"doravirine, lamivudine, and tenofovir disoproxil fumarate","TABLET, FILM COATED",100 mg/1; 300 mg/1; 300 mg/1,Merck Sharp & Dohme LLC,2026-11-11
+00006508701,package,0006-5087,WINREVAIR,,SOTATERCEPT-CSRK,KIT,,Merck Sharp & Dohme LLC,2026-11-11
+00006508801,package,0006-5088,WINREVAIR,,SOTATERCEPT-CSRK,KIT,,Merck Sharp & Dohme LLC,2026-11-11
+00006509101,package,0006-5091,WINREVAIR,,SOTATERCEPT-CSRK,KIT,,Merck Sharp & Dohme LLC,2026-11-11
+00006533101,package,0006-5331,WELIREG,,belzutifan,"TABLET, FILM COATED",40 mg/1,Merck Sharp & Dohme LLC,2026-11-11
+00006536303,package,0006-5363,STEGLATRO,,ertugliflozin,"TABLET, FILM COATED",5 mg/1,Merck Sharp & Dohme LLC,2026-11-11
+00006536403,package,0006-5364,STEGLATRO,,ertugliflozin,"TABLET, FILM COATED",15 mg/1,Merck Sharp & Dohme LLC,2026-11-11
+00006542312,package,0006-5423,BRIDION,,sugammadex,"INJECTION, SOLUTION",100 mg/mL,Merck Sharp & Dohme LLC,2026-11-11
+00008010001,package,0008-0100,Besponsa,,inotuzumab ozogamicin,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",.25 mg/mL,"Wyeth Pharmaceuticals LLC, a subsidiary of Pfizer Inc.",2026-11-11
+00009004722,package,0009-0047,SOLU-MEDROL,,methylprednisolone sodium succinate,"INJECTION, POWDER, FOR SOLUTION",125 mg/2mL,Pharmacia & Upjohn Company LLC,2026-11-11
+00009307303,package,0009-3073,Depo-Medrol,,methylprednisolone acetate,"INJECTION, SUSPENSION",40 mg/mL,Pharmacia & Upjohn Company LLC,2026-11-11
+00013262681,package,0013-2626,GENOTROPIN,,somatropin,KIT,,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00013264681,package,0013-2646,GENOTROPIN,,somatropin,KIT,,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00013265802,package,0013-2658,GENOTROPIN,,somatropin,KIT,,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00023114501,package,0023-1145,BOTOX,,onabotulinumtoxinA,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",100 [USP'U]/1,"Allergan, Inc.",2026-11-11
+00023392102,package,0023-3921,BOTOX,,onabotulinumtoxinA,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",200 [USP'U]/1,"Allergan, Inc.",2026-11-11
+00023585801,package,0023-5858,LILETTA,,Levonorgestrel,INTRAUTERINE DEVICE,52 mg/1,"Allergan, Inc.",2026-11-11
+00023608210,package,0023-6082,INFeD,,Iron Dextran,INJECTION,50 mg/mL,"Allergan, Inc.",2026-11-11
+00023615108,package,0023-6151,Crinone,,progesterone,GEL,90 mg/1.125g,"Allergan, Inc.",2026-11-11
+00023649810,package,0023-6498,UBRELVY,,ubrogepant,TABLET,50 mg/1,"Allergan, Inc.",2026-11-11
+00023650110,package,0023-6501,UBRELVY,,ubrogepant,TABLET,100 mg/1,"Allergan, Inc.",2026-11-11
+00024065401,package,0024-0654,Sarclisa,,isatuximab,"INJECTION, SOLUTION, CONCENTRATE",100 mg/5mL,Sanofi-Aventis U.S. LLC,2026-11-11
+00024065601,package,0024-0656,Sarclisa,,isatuximab,"INJECTION, SOLUTION, CONCENTRATE",500 mg/25mL,Sanofi-Aventis U.S. LLC,2026-11-11
+00024515010,package,0024-5150,Elitek,,rasburicase,KIT,,Sanofi-Aventis U.S. LLC,2026-11-11
+00024582411,package,0024-5824,Jevtana,,cabazitaxel,KIT,,Sanofi-Aventis U.S. LLC,2026-11-11
+00024586903,package,0024-5869,TOUJEO,,insulin glargine,"INJECTION, SOLUTION",300 U/mL,Sanofi-Aventis U.S. LLC,2026-11-11
+00024587102,package,0024-5871,TOUJEO Max,,insulin glargine,"INJECTION, SOLUTION",300 U/mL,Sanofi-Aventis U.S. LLC,2026-11-11
+00024591001,package,0024-5910,KEVZARA,,sarilumab,"INJECTION, SOLUTION",200 mg/1.14mL,Sanofi-Aventis U.S. LLC,2026-11-11
+00024591401,package,0024-5914,Dupixent,,Dupilumab,"INJECTION, SOLUTION",300 mg/2mL,Sanofi-Aventis U.S. LLC,2026-11-11
+00024591502,package,0024-5915,Dupixent,,Dupilumab,"INJECTION, SOLUTION",300 mg/2mL,Sanofi-Aventis U.S. LLC,2026-11-11
+00024591801,package,0024-5918,Dupixent,,Dupilumab,"INJECTION, SOLUTION",200 mg/1.14mL,Sanofi-Aventis U.S. LLC,2026-11-11
+00024591902,package,0024-5919,Dupixent,,Dupilumab,"INJECTION, SOLUTION",200 mg/1.14mL,Sanofi-Aventis U.S. LLC,2026-11-11
+00024592001,package,0024-5920,KEVZARA,,sarilumab,"INJECTION, SOLUTION",150 mg/1.14mL,Sanofi-Aventis U.S. LLC,2026-11-11
+00024592201,package,0024-5922,KEVZARA,,sarilumab,"INJECTION, SOLUTION",200 mg/1.14mL,Sanofi-Aventis U.S. LLC,2026-11-11
+00024592505,package,0024-5925,ADMELOG,,insulin lispro,"INJECTION, SOLUTION",100 U/mL,Sanofi-Aventis U.S. LLC,2026-11-11
+00024592605,package,0024-5926,ADMELOG,,insulin lispro,"INJECTION, SOLUTION",100 U/mL,Sanofi-Aventis U.S. LLC,2026-11-11
+00026382650,package,0026-3826,Kovaltry,,Antihemophilic Factor (Recombinant),KIT,,Bayer HealthCare LLC,2026-11-11
+00026394625,package,0026-3946,Jivi,,Antihemophilic Factor (Recombinant) Pegylated-aucl,KIT,,Bayer HealthCare LLC,2026-11-11
+00026394825,package,0026-3948,Jivi,,Antihemophilic Factor (Recombinant) Pegylated-aucl,KIT,,Bayer HealthCare LLC,2026-11-11
+00026395050,package,0026-3950,Jivi,,Antihemophilic Factor (Recombinant) Pegylated-aucl,KIT,,Bayer HealthCare LLC,2026-11-11
+00032004770,package,0032-0047,Creon,,Pancrelipase,"CAPSULE, DELAYED RELEASE PELLETS",60000 [USP'U]/1; 12000 [USP'U]/1; 38000 [USP'U]/1,AbbVie Inc.,2026-11-11
+00032263601,package,0032-2636,Creon,,Pancrelipase,"CAPSULE, DELAYED RELEASE PELLETS",24000 [USP'U]/1; 76000 [USP'U]/1; 120000 [USP'U]/1,AbbVie Inc.,2026-11-11
+00053023023,package,0053-0230,HEMGENIX,,etranacogene dezaparvovec,KIT,,CSL Behring,2026-11-11
+00054014025,package,0054-0140,Acarbose,,Acarbose,TABLET,25 mg/1,Hikma Pharmaceuticals USA Inc.,2026-11-11
+00054018913,package,0054-0189,buprenorphine and naloxone,,buprenorphine and naloxone,TABLET,8 mg/1; 2 mg/1,Hikma Pharmaceuticals USA Inc.,2026-11-11
+00054048113,package,0054-0481,Everolimus,,Everolimus,TABLET,5 mg/1,Hikma Pharmaceuticals USA Inc.,2026-11-11
+00054048213,package,0054-0482,Everolimus,,Everolimus,TABLET,10 mg/1,Hikma Pharmaceuticals USA Inc.,2026-11-11
+00054071119,package,0054-0711,Deferiprone,,Deferiprone,"TABLET, COATED",1000 mg/1,Hikma Pharmaceuticals USA Inc.,2026-11-11
+00054087949,package,0054-0879,MERCAPTOPURINE,,MERCAPTOPURINE,SUSPENSION,20 mg/mL,Hikma Pharmaceuticals USA Inc.,2026-11-11
+00054327099,package,0054-3270,Fluticasone Propionate,,Fluticasone Propionate,"SPRAY, METERED",50 ug/1,Hikma Pharmaceuticals USA Inc.,2026-11-11
+00065074114,package,0065-0741,Tetracaine Hydrochloride,,tetracaine hydrochloride,SOLUTION,5 mg/mL,"Alcon Laboratories, Inc.",2026-11-11
+00069013501,package,0069-0135,BOSULIF,,Bosutinib,"TABLET, FILM COATED",100 mg/1,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069013601,package,0069-0136,BOSULIF,,Bosutinib,"TABLET, FILM COATED",500 mg/1,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069014501,package,0069-0145,INLYTA,,axitinib,"TABLET, FILM COATED",1 mg/1,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069015111,package,0069-0151,INLYTA,,axitinib,"TABLET, FILM COATED",5 mg/1,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069018721,package,0069-0187,Ibrance,,palbociclib,CAPSULE,75 mg/1,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069018821,package,0069-0188,Ibrance,,palbociclib,CAPSULE,100 mg/1,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069018921,package,0069-0189,Ibrance,,palbociclib,CAPSULE,125 mg/1,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069022701,package,0069-0227,Lorbrena,,lorlatinib,"TABLET, FILM COATED",25 mg/1,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069023101,package,0069-0231,Lorbrena,,lorlatinib,"TABLET, FILM COATED",100 mg/1,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069023801,package,0069-0238,Ruxience,,rituximab-pvvr,"INJECTION, SOLUTION",100 mg/10mL,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069024901,package,0069-0249,Ruxience,,rituximab-pvvr,"INJECTION, SOLUTION",500 mg/50mL,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069028403,package,0069-0284,Ibrance,,palbociclib,"TABLET, FILM COATED",75 mg/1,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069032401,package,0069-0324,NYVEPRIA,,pegfilgrastim-apgf,"INJECTION, SOLUTION",6 mg/.6mL,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069033428,package,0069-0334,Litfulo,,ritlecitinib,CAPSULE,50 mg/1,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069033530,package,0069-0335,Cibinqo,,abrocitinib,"TABLET, FILM COATED",100 mg/1,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069043530,package,0069-0435,Cibinqo,,abrocitinib,"TABLET, FILM COATED",200 mg/1,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069045430,package,0069-0454,Talzenna,,talazoparib,"CAPSULE, LIQUID FILLED",.35 mg/1,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069048603,package,0069-0486,Ibrance,,palbociclib,"TABLET, FILM COATED",100 mg/1,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069052002,package,0069-0520,Ngenla,,somatrogon-ghla,"INJECTION, SOLUTION",60 mg/1.2mL,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069054630,package,0069-0546,Talzenna,,talazoparib,"CAPSULE, LIQUID FILLED",.5 mg/1,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069068803,package,0069-0688,Ibrance,,palbociclib,"TABLET, FILM COATED",125 mg/1,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069080901,package,0069-0809,INFLECTRA,,infliximab-dyyb,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",100 mg/10mL,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069130810,package,0069-1308,RETACRIT,,epoetin alfa-epbx,"INJECTION, SOLUTION",10000 [iU]/mL,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069130904,package,0069-1309,RETACRIT,,epoetin alfa-epbx,"INJECTION, SOLUTION",40000 [iU]/mL,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069150130,package,0069-1501,Talzenna,,talazoparib,CAPSULE,.5 mg/1,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069197540,package,0069-1975,Vyndaqel,,tafamidis meglumine,"CAPSULE, LIQUID FILLED",20 mg/1,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069350002,package,0069-3500,ZAVZPRET,,zavegepant,SPRAY,10 mg/.1mL,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069504530,package,0069-5045,Paxlovid,,nirmatrelvir and ritonavir,KIT,,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069531720,package,0069-5317,Paxlovid,,nirmatrelvir and ritonavir,KIT,,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069532130,package,0069-5321,Paxlovid,,nirmatrelvir and ritonavir,KIT,,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00069873030,package,0069-8730,Vyndamax,,tafamidis,"CAPSULE, LIQUID FILLED",61 mg/1,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+00074003828,package,0074-0038,Orilissa,,Elagolix,"TABLET, FILM COATED",150 mg/1,AbbVie Inc.,2026-11-11
+00074012402,package,0074-0124,Humira,,Adalimumab,KIT,,AbbVie Inc.,2026-11-11
+00074012403,package,0074-0124,Humira,,Adalimumab,KIT,,AbbVie Inc.,2026-11-11
+00074024302,package,0074-0243,Humira,,Adalimumab,KIT,,AbbVie Inc.,2026-11-11
+00074055402,package,0074-0554,Humira,,Adalimumab,KIT,,AbbVie Inc.,2026-11-11
+00074056607,package,0074-0566,Venclexta,,Venetoclax,"TABLET, FILM COATED",50 mg/1,AbbVie Inc.,2026-11-11
+00074057611,package,0074-0576,Venclexta,,Venetoclax,"TABLET, FILM COATED",100 mg/1,AbbVie Inc.,2026-11-11
+00074057622,package,0074-0576,Venclexta,,Venetoclax,"TABLET, FILM COATED",100 mg/1,AbbVie Inc.,2026-11-11
+00074057630,package,0074-0576,Venclexta,,Venetoclax,"TABLET, FILM COATED",100 mg/1,AbbVie Inc.,2026-11-11
+00074057928,package,0074-0579,Venclexta,,Venetoclax,KIT,,AbbVie Inc.,2026-11-11
+00074061602,package,0074-0616,Humira,,Adalimumab,KIT,,AbbVie Inc.,2026-11-11
+00074104328,package,0074-1043,Rinvoq,,Upadacitinib,"TABLET, EXTENDED RELEASE",45 mg/1,AbbVie Inc.,2026-11-11
+00074104401,package,0074-1044,EMRELIS,,Telisotuzumab Vedotin,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",20 mg/mL,AbbVie Inc.,2026-11-11
+00074105001,package,0074-1050,Skyrizi,,risankizumab-rzaa,INJECTION,150 mg/mL,AbbVie Inc.,2026-11-11
+00074105501,package,0074-1055,EMRELIS,,Telisotuzumab Vedotin,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",100 mg/mL,AbbVie Inc.,2026-11-11
+00074106501,package,0074-1065,Skyrizi,,Risankizumab-rzaa,KIT,,AbbVie Inc.,2026-11-11
+00074107001,package,0074-1070,Skyrizi,,Risankizumab-rzaa,KIT,,AbbVie Inc.,2026-11-11
+00074153903,package,0074-1539,Humira,,Adalimumab,KIT,,AbbVie Inc.,2026-11-11
+00074165801,package,0074-1658,Zemplar,,Paricalcitol,"INJECTION, SOLUTION",5 ug/mL,AbbVie Inc.,2026-11-11
+00074210001,package,0074-2100,Skyrizi,,risankizumab-rzaa,INJECTION,150 mg/mL,AbbVie Inc.,2026-11-11
+00074230630,package,0074-2306,Rinvoq,,Upadacitinib,"TABLET, EXTENDED RELEASE",15 mg/1,AbbVie Inc.,2026-11-11
+00074231030,package,0074-2310,Rinvoq,,Upadacitinib,"TABLET, EXTENDED RELEASE",30 mg/1,AbbVie Inc.,2026-11-11
+00074260028,package,0074-2600,Mavyret,,Glecaprevir and Pibrentasvir,PELLET,20 mg/1; 50 mg/1,AbbVie Inc.,2026-11-11
+00074262528,package,0074-2625,Mavyret,,Glecaprevir and Pibrentasvir,"TABLET, FILM COATED",40 mg/1; 100 mg/1,AbbVie Inc.,2026-11-11
+00074334603,package,0074-3346,Lupron Depot,,leuprolide acetate,KIT,,AbbVie Inc.,2026-11-11
+00074364103,package,0074-3641,Lupron Depot,,leuprolide acetate,KIT,,AbbVie Inc.,2026-11-11
+00074364203,package,0074-3642,Lupron Depot,,leuprolide acetate,KIT,,AbbVie Inc.,2026-11-11
+00074366303,package,0074-3663,Lupron Depot,,leuprolide acetate,KIT,,AbbVie Inc.,2026-11-11
+00074377903,package,0074-3779,Lupron Depot-PED,,leuprolide acetate,KIT,,AbbVie Inc.,2026-11-11
+00074433902,package,0074-4339,Humira,,Adalimumab,KIT,,AbbVie Inc.,2026-11-11
+00074501501,package,0074-5015,Skyrizi,,risankizumab-rzaa,INJECTION,600 mg/10mL,AbbVie Inc.,2026-11-11
+00074709430,package,0074-7094,Qulipta,,Atogepant,TABLET,60 mg/1,AbbVie Inc.,2026-11-11
+00074709630,package,0074-7096,Qulipta,,Atogepant,TABLET,30 mg/1,AbbVie Inc.,2026-11-11
+00074969403,package,0074-9694,Lupron Depot-PED,,leuprolide acetate,KIT,,AbbVie Inc.,2026-11-11
+00078033184,package,0078-0331,Simulect,,basiliximab,"INJECTION, POWDER, FOR SOLUTION",20 mg/5mL,Novartis Pharmaceuticals Corporation,2026-11-11
+00078038566,package,0078-0385,Myfortic,,mycophenolic acid,"TABLET, DELAYED RELEASE",180 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078038666,package,0078-0386,Myfortic,,mycophenolic acid,"TABLET, DELAYED RELEASE",360 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078040134,package,0078-0401,Gleevec,,imatinib mesylate,TABLET,100 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078056651,package,0078-0566,Afinitor,,everolimus,TABLET,5 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078056751,package,0078-0567,Afinitor,,everolimus,TABLET,10 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078059287,package,0078-0592,Tasigna,,nilotinib,CAPSULE,150 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078060715,package,0078-0607,Gilenya,,Fingolimod hcl,CAPSULE,.5 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078062651,package,0078-0626,Afinitor,Disperz,everolimus,"TABLET, FOR SUSPENSION",2 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078062751,package,0078-0627,Afinitor,Disperz,everolimus,"TABLET, FOR SUSPENSION",3 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078063941,package,0078-0639,COSENTYX,,secukinumab,INJECTION,150 mg/mL,Novartis Pharmaceuticals Corporation,2026-11-11
+00078063968,package,0078-0639,COSENTYX,,secukinumab,INJECTION,150 mg/mL,Novartis Pharmaceuticals Corporation,2026-11-11
+00078063997,package,0078-0639,COSENTYX,,secukinumab,INJECTION,150 mg/mL,Novartis Pharmaceuticals Corporation,2026-11-11
+00078063998,package,0078-0639,COSENTYX,,secukinumab,INJECTION,150 mg/mL,Novartis Pharmaceuticals Corporation,2026-11-11
+00078064913,package,0078-0649,Gleevec,,imatinib mesylate,TABLET,400 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078065920,package,0078-0659,ENTRESTO,,Sacubitril and Valsartan,"TABLET, FILM COATED",24 mg/1; 26 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078068166,package,0078-0681,Tafinlar,,dabrafenib,CAPSULE,75 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078068266,package,0078-0682,Tafinlar,,dabrafenib,CAPSULE,50 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078068415,package,0078-0684,PROMACTA,,eltrombopag olamine,"TABLET, FILM COATED",12.5 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078068515,package,0078-0685,PROMACTA,,eltrombopag olamine,"TABLET, FILM COATED",25 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078068615,package,0078-0686,PROMACTA,,eltrombopag olamine,"TABLET, FILM COATED",50 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078068715,package,0078-0687,PROMACTA,,eltrombopag olamine,"TABLET, FILM COATED",75 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078069620,package,0078-0696,ENTRESTO,,Sacubitril and Valsartan,"TABLET, FILM COATED",97 mg/1; 103 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078069761,package,0078-0697,PROMACTA,,eltrombopag olamine,"POWDER, FOR SUSPENSION",25 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078069819,package,0078-0698,RYDAPT,,RYDAPT,"CAPSULE, LIQUID FILLED",25 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078069899,package,0078-0698,RYDAPT,,RYDAPT,"CAPSULE, LIQUID FILLED",25 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078070956,package,0078-0709,TABRECTA,,capmatinib,"TABLET, FILM COATED",150 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078071656,package,0078-0716,TABRECTA,,capmatinib,"TABLET, FILM COATED",200 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078073461,package,0078-0734,Ilaris,,canakinumab,"INJECTION, SOLUTION",150 mg/mL,Novartis Pharmaceuticals Corporation,2026-11-11
+00078077720,package,0078-0777,ENTRESTO,,Sacubitril and Valsartan,"TABLET, FILM COATED",49 mg/1; 51 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078081181,package,0078-0811,Sandostatin LAR Depot,,octreotide acetate,KIT,,Novartis Pharmaceuticals Corporation,2026-11-11
+00078081881,package,0078-0818,Sandostatin LAR Depot,,octreotide acetate,KIT,,Novartis Pharmaceuticals Corporation,2026-11-11
+00078082581,package,0078-0825,Sandostatin LAR Depot,,octreotide acetate,KIT,,Novartis Pharmaceuticals Corporation,2026-11-11
+00078086001,package,0078-0860,KISQALI,,ribociclib,"TABLET, FILM COATED",200 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078086742,package,0078-0867,KISQALI,,ribociclib,"TABLET, FILM COATED",200 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078087463,package,0078-0874,KISQALI,,ribociclib,"TABLET, FILM COATED",200 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078088361,package,0078-0883,ADAKVEO,,crizanlizumab,INJECTION,10 mg/mL,Novartis Pharmaceuticals Corporation,2026-11-11
+00078098615,package,0078-0986,MAYZENT,,siponimod,"TABLET, FILM COATED",2 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078100060,package,0078-1000,LEQVIO,,inclisiran,"INJECTION, SOLUTION",284 mg/1.5mL,Novartis Pharmaceuticals Corporation,2026-11-11
+00078100768,package,0078-1007,KESIMPTA,,ofatumumab,"INJECTION, SOLUTION",20 mg/.4mL,Novartis Pharmaceuticals Corporation,2026-11-11
+00078107068,package,0078-1070,COSENTYX,,secukinumab,INJECTION,300 mg/2mL,Novartis Pharmaceuticals Corporation,2026-11-11
+00078107766,package,0078-1077,VOTRIENT,,pazopanib hydrochloride,"TABLET, FILM COATED",200 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078109120,package,0078-1091,SCEMBLIX,,asciminib,"TABLET, FILM COATED",20 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078109820,package,0078-1098,SCEMBLIX,,asciminib,"TABLET, FILM COATED",40 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078110515,package,0078-1105,Mekinist,,trametinib,"TABLET, FILM COATED",.5 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078111215,package,0078-1112,Mekinist,,trametinib,"TABLET, FILM COATED",2 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00078116861,package,0078-1168,COSENTYX,,secukinumab,"INJECTION, SOLUTION, CONCENTRATE",25 mg/mL,Novartis Pharmaceuticals Corporation,2026-11-11
+00078117551,package,0078-1175,VIJOICE,,alpelisib,GRANULE,50 mg/1,Novartis Pharmaceuticals Corporation,2026-11-11
+00088210224,package,0088-2102,Priftin,,rifapentine,"TABLET, FILM COATED",150 mg/1,sanofi-aventis U.S. LLC,2026-11-11
+00088221905,package,0088-2219,Lantus Solostar,,insulin glargine,"INJECTION, SOLUTION",100 [iU]/mL,sanofi-aventis U.S. LLC,2026-11-11
+00093317431,package,0093-3174,Albuterol Sulfate,HFA,Albuterol Sulfate,"AEROSOL, METERED",90 ug/1,"Teva Pharmaceuticals USA, Inc.",2026-11-11
+00093598527,package,0093-5985,Epinephrine,,Epinephrine,INJECTION,.15 mg/.3mL,"Teva Pharmaceuticals USA, Inc.",2026-11-11
+00093598627,package,0093-5986,Epinephrine,,Epinephrine,INJECTION,.3 mg/.3mL,"Teva Pharmaceuticals USA, Inc.",2026-11-11
+00115169449,package,0115-1694,epinephrine,,epinephrine,INJECTION,.3 mg/.3mL,Amneal Pharmaceuticals of New York LLC,2026-11-11
+00121087416,package,0121-0874,Cetirizine Hydrochloride,,Cetirizine Hydrochloride,SOLUTION,1 mg/mL,"PAI Holdings, LLC dba PAI Pharma",2026-11-11
+00121495040,package,0121-4950,Lidocaine Hydrochloride,,Lidocaine Hydrochloride,SOLUTION,20 mg/mL,"PAI Holdings, LLC dba PAI Pharma",2026-11-11
+00143902202,package,0143-9022,Fulvestrant,,Fulvestrant,INJECTION,50 mg/mL,Hikma Pharmaceuticals USA Inc.,2026-11-11
+00143913925,package,0143-9139,Cefazolin,,Cefazolin,"INJECTION, POWDER, FOR SOLUTION",2 g/1,Hikma Pharmaceuticals USA Inc.,2026-11-11
+00143927901,package,0143-9279,Mitomycin,,Mitomycin,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",20 mg/40mL,Hikma Pharmaceuticals USA Inc.,2026-11-11
+00143929001,package,0143-9290,Estradiol Valerate,,Estradiol Valerate,INJECTION,20 mg/mL,Hikma Pharmaceuticals USA Inc.,2026-11-11
+00143929101,package,0143-9291,Estradiol Valerate,,Estradiol Valerate,INJECTION,40 mg/mL,Hikma Pharmaceuticals USA Inc.,2026-11-11
+00143955201,package,0143-9552,Leucovorin Calcium,,Leucovorin Calcium,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",350 mg/17.5mL,Hikma Pharmaceuticals USA Inc.,2026-11-11
+00143955301,package,0143-9553,Leucovorin Calcium,,Leucovorin Calcium,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",200 mg/20mL,Hikma Pharmaceuticals USA Inc.,2026-11-11
+00143957010,package,0143-9570,Sodium Ferric Gluconate Complex in Sucrose,,Sodium Ferric Gluconate Complex in Sucrose,INJECTION,12.5 mg/mL,Hikma Pharmaceuticals USA Inc.,2026-11-11
+00143965901,package,0143-9659,Testosterone Cypionate,,Testosterone Cypionate,INJECTION,200 mg/mL,Hikma Pharmaceuticals USA Inc.,2026-11-11
+00143992490,package,0143-9924,Cefazolin,,Cefazolin,"INJECTION, POWDER, FOR SOLUTION",330 mg/mL,Hikma Pharmaceuticals USA Inc.,2026-11-11
+00169203011,package,0169-2030,SOGROYA,,somapacitan-beco,"INJECTION, SOLUTION",6.7 mg/mL,Novo Nordisk,2026-11-11
+00169203511,package,0169-2035,SOGROYA,,somapacitan-beco,"INJECTION, SOLUTION",3.3 mg/mL,Novo Nordisk,2026-11-11
+00169203711,package,0169-2037,SOGROYA,,somapacitan-beco,"INJECTION, SOLUTION",10 mg/mL,Novo Nordisk,2026-11-11
+00169255013,package,0169-2550,Tresiba,,insulin degludec,"INJECTION, SOLUTION",200 U/mL,Novo Nordisk,2026-11-11
+00169266015,package,0169-2660,Tresiba,,insulin degludec,"INJECTION, SOLUTION",100 U/mL,Novo Nordisk,2026-11-11
+00169280015,package,0169-2800,Saxenda,,liraglutide,"INJECTION, SOLUTION",6 mg/mL,"Novo Nordisk Pharmaceutical Industries, LP",2026-11-11
+00169413013,package,0169-4130,Ozempic,,semaglutide,"INJECTION, SOLUTION",1.34 mg/mL,"Novo Nordisk Pharmaceutical Industries, LP",2026-11-11
+00169418113,package,0169-4181,Ozempic,,semaglutide,"INJECTION, SOLUTION",.68 mg/mL,"Novo Nordisk Pharmaceutical Industries, LP",2026-11-11
+00169430330,package,0169-4303,RYBELSUS,,oral semaglutide,TABLET,3 mg/1,"Novo Nordisk Pharmaceutical Industries, LP",2026-11-11
+00169430730,package,0169-4307,RYBELSUS,,oral semaglutide,TABLET,7 mg/1,"Novo Nordisk Pharmaceutical Industries, LP",2026-11-11
+00169431430,package,0169-4314,RYBELSUS,,oral semaglutide,TABLET,14 mg/1,"Novo Nordisk Pharmaceutical Industries, LP",2026-11-11
+00169450114,package,0169-4501,WEGOVY,,semaglutide,"INJECTION, SOLUTION",1 mg/.5mL,"Novo Nordisk Pharmaceutical Industries, LP",2026-11-11
+00169450514,package,0169-4505,WEGOVY,,semaglutide,"INJECTION, SOLUTION",.5 mg/.5mL,"Novo Nordisk Pharmaceutical Industries, LP",2026-11-11
+00169451714,package,0169-4517,WEGOVY,,semaglutide,"INJECTION, SOLUTION",1.7 mg/.75mL,"Novo Nordisk Pharmaceutical Industries, LP",2026-11-11
+00169452414,package,0169-4524,WEGOVY,,semaglutide,"INJECTION, SOLUTION",2.4 mg/.75mL,"Novo Nordisk Pharmaceutical Industries, LP",2026-11-11
+00169452514,package,0169-4525,WEGOVY,,semaglutide,"INJECTION, SOLUTION",.25 mg/.5mL,"Novo Nordisk Pharmaceutical Industries, LP",2026-11-11
+00169477212,package,0169-4772,Ozempic,,semaglutide,"INJECTION, SOLUTION",2.68 mg/mL,"Novo Nordisk Pharmaceutical Industries, LP",2026-11-11
+00169633910,package,0169-6339,NOVOLOG,,insulin aspart,"INJECTION, SOLUTION",100 [iU]/mL,Novo Nordisk,2026-11-11
+00169701301,package,0169-7013,TRETTEN,,Coagulation Factor XIII A-Subunit (Recombinant),KIT,,Novo Nordisk,2026-11-11
+00169750111,package,0169-7501,NOVOLOG,,insulin aspart,"INJECTION, SOLUTION",100 [iU]/mL,Novo Nordisk,2026-11-11
+00169770521,package,0169-7705,Norditropin,,somatropin,"INJECTION, SOLUTION",10 mg/1.5mL,Novo Nordisk,2026-11-11
+00169770821,package,0169-7708,Norditropin,,somatropin,"INJECTION, SOLUTION",15 mg/1.5mL,Novo Nordisk,2026-11-11
+00169810001,package,0169-8100,ESPEROCT,,"antihemophilic factor (recombinant), glycopegylated-exei",KIT,,Novo Nordisk,2026-11-11
+00169820001,package,0169-8200,ESPEROCT,,"antihemophilic factor (recombinant), glycopegylated-exei",KIT,,Novo Nordisk,2026-11-11
+00173068220,package,0173-0682,VENTOLIN,HFA,albuterol sulfate,"AEROSOL, METERED",90 ug/1,GlaxoSmithKline LLC,2026-11-11
+00173068224,package,0173-0682,VENTOLIN,HFA,albuterol sulfate,"AEROSOL, METERED",90 ug/1,GlaxoSmithKline LLC,2026-11-11
+00173085910,package,0173-0859,Breo Ellipta,,fluticasone furoate and vilanterol trifenatate,POWDER,100 ug/1; 25 ug/1,GlaxoSmithKline LLC,2026-11-11
+00173086910,package,0173-0869,Anoro Ellipta,,umeclidinium bromide and vilanterol trifenatate,POWDER,62.5 ug/1; 25 ug/1,GlaxoSmithKline LLC,2026-11-11
+00173087310,package,0173-0873,Incruse Ellipta,,umeclidinium,"AEROSOL, POWDER",62.5 ug/1,GlaxoSmithKline LLC,2026-11-11
+00173087410,package,0173-0874,Arnuity Ellipta,,fluticasone furoate,POWDER,100 ug/1,GlaxoSmithKline LLC,2026-11-11
+00173087610,package,0173-0876,Arnuity Ellipta,,fluticasone furoate,POWDER,200 ug/1,GlaxoSmithKline LLC,2026-11-11
+00173088101,package,0173-0881,Nucala,,mepolizumab,"INJECTION, POWDER, FOR SOLUTION",100 mg/mL,GlaxoSmithKline LLC,2026-11-11
+00173088210,package,0173-0882,Breo Ellipta,,fluticasone furoate and vilanterol trifenatate,POWDER,200 ug/1; 25 ug/1,GlaxoSmithKline LLC,2026-11-11
+00173088710,package,0173-0887,Trelegy Ellipta,,"fluticasone furoate, umeclidinium bromide and vilanterol trifenatate",POWDER,100 ug/1; 62.5 ug/1; 25 ug/1,GlaxoSmithKline LLC,2026-11-11
+00173089201,package,0173-0892,Nucala,,mepolizumab,"INJECTION, SOLUTION",100 mg/mL,GlaxoSmithKline LLC,2026-11-11
+00173089242,package,0173-0892,Nucala,,mepolizumab,"INJECTION, SOLUTION",100 mg/mL,GlaxoSmithKline LLC,2026-11-11
+00173089310,package,0173-0893,Trelegy Ellipta,,"fluticasone furoate, umeclidinium bromide and vilanterol trifenatate",POWDER,200 ug/1; 62.5 ug/1; 25 ug/1,GlaxoSmithKline LLC,2026-11-11
+00173089803,package,0173-0898,Jemperli,,dostarlimab,INJECTION,50 mg/mL,GlaxoSmithKline LLC,2026-11-11
+00173090913,package,0173-0909,ZEJULA,,niraparib,"TABLET, FILM COATED",100 mg/1,GlaxoSmithKline LLC,2026-11-11
+00173091213,package,0173-0912,ZEJULA,,niraparib,"TABLET, FILM COATED",200 mg/1,GlaxoSmithKline LLC,2026-11-11
+00173091513,package,0173-0915,ZEJULA,,niraparib,"TABLET, FILM COATED",300 mg/1,GlaxoSmithKline LLC,2026-11-11
+00186037020,package,0186-0370,SYMBICORT,,Budesonide and Formoterol Fumarate Dihydrate,AEROSOL,160 ug/1; 4.5 ug/1,AstraZeneca Pharmaceuticals LP,2026-11-11
+00186037028,package,0186-0370,SYMBICORT,,Budesonide and Formoterol Fumarate Dihydrate,AEROSOL,160 ug/1; 4.5 ug/1,AstraZeneca Pharmaceuticals LP,2026-11-11
+00186037220,package,0186-0372,SYMBICORT,,Budesonide and Formoterol Fumarate Dihydrate,AEROSOL,80 ug/1; 4.5 ug/1,AstraZeneca Pharmaceuticals LP,2026-11-11
+00186037228,package,0186-0372,SYMBICORT,,Budesonide and Formoterol Fumarate Dihydrate,AEROSOL,80 ug/1; 4.5 ug/1,AstraZeneca Pharmaceuticals LP,2026-11-11
+00186077760,package,0186-0777,BRILINTA,,Ticagrelor,TABLET,90 mg/1,AstraZeneca Pharmaceuticals LP,2026-11-11
+00254303509,package,0254-3035,TIOPRONIN,,TIOPRONIN,"TABLET, DELAYED RELEASE",300 mg/1,"Par Health USA, LLC",2026-11-11
+00259161001,package,0259-1610,Xeomin,,incobotulinumtoxinA,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",100 [USP'U]/1,"Merz Pharmaceuticals, LLC",2026-11-11
+00264310511,package,0264-3105,Cefazolin Sodium,,Cefazolin Sodium,SOLUTION,2 g/50mL,B. Braun Medical Inc.,2026-11-11
+00270055615,package,0270-0556,KINEVAC,,sincalide,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",5 ug/5mL,Bracco Diagnostics Inc.,2026-11-11
+00299382230,package,0299-3822,ORACEA,,DOXYCYCLINE,CAPSULE,40 mg/1,"Galderma Laboratories, L.P.",2026-11-11
+00310062560,package,0310-0625,KOSELUGO,,SELUMETINIB,CAPSULE,25 mg/1,AstraZeneca Pharmaceuticals LP,2026-11-11
+00310066812,package,0310-0668,Lynparza,,olaparib,"TABLET, FILM COATED",100 mg/1,AstraZeneca Pharmaceuticals LP,2026-11-11
+00310066860,package,0310-0668,Lynparza,,olaparib,"TABLET, FILM COATED",100 mg/1,AstraZeneca Pharmaceuticals LP,2026-11-11
+00310067912,package,0310-0679,Lynparza,,olaparib,"TABLET, FILM COATED",150 mg/1,AstraZeneca Pharmaceuticals LP,2026-11-11
+00310067960,package,0310-0679,Lynparza,,olaparib,"TABLET, FILM COATED",150 mg/1,AstraZeneca Pharmaceuticals LP,2026-11-11
+00310111030,package,0310-1110,LOKELMA,,sodium zirconium cyclosilicate,"POWDER, FOR SUSPENSION",10 g/10g,AstraZeneca Pharmaceuticals LP,2026-11-11
+00310111039,package,0310-1110,LOKELMA,,sodium zirconium cyclosilicate,"POWDER, FOR SUSPENSION",10 g/10g,AstraZeneca Pharmaceuticals LP,2026-11-11
+00310134930,package,0310-1349,TAGRISSO,,osimertinib,"TABLET, FILM COATED",40 mg/1,AstraZeneca Pharmaceuticals LP,2026-11-11
+00310135030,package,0310-1350,TAGRISSO,,osimertinib,"TABLET, FILM COATED",80 mg/1,AstraZeneca Pharmaceuticals LP,2026-11-11
+00310173030,package,0310-1730,FASENRA,,Benralizumab,"INJECTION, SOLUTION",30 mg/mL,AstraZeneca Pharmaceuticals LP,2026-11-11
+00310183030,package,0310-1830,FASENRA,,Benralizumab,"INJECTION, SOLUTION",30 mg/mL,AstraZeneca Pharmaceuticals LP,2026-11-11
+00310304000,package,0310-3040,SAPHNELO,,Anifrolumab-fnia,"INJECTION, SOLUTION",300 mg/2mL,AstraZeneca Pharmaceuticals LP,2026-11-11
+00310351260,package,0310-3512,CALQUENCE,,acalabrutinib,"TABLET, FILM COATED",100 mg/1,AstraZeneca Pharmaceuticals LP,2026-11-11
+00310450012,package,0310-4500,IMFINZI,,Durvalumab,"INJECTION, SOLUTION",120 mg/2.4mL,AstraZeneca Pharmaceuticals LP,2026-11-11
+00310450525,package,0310-4505,IMJUDO,,tremelimumab,"INJECTION, SOLUTION",25 mg/1.25mL,AstraZeneca Pharmaceuticals LP,2026-11-11
+00310453530,package,0310-4535,IMJUDO,,tremelimumab,"INJECTION, SOLUTION",300 mg/15mL,AstraZeneca Pharmaceuticals LP,2026-11-11
+00310461150,package,0310-4611,IMFINZI,,Durvalumab,"INJECTION, SOLUTION",500 mg/10mL,AstraZeneca Pharmaceuticals LP,2026-11-11
+00310461612,package,0310-4616,BREZTRI,,"budesonide, glycopyrrolate, and formoterol fumarate","AEROSOL, METERED",160 ug/1; 9 ug/1; 4.8 ug/1,AstraZeneca Pharmaceuticals LP,2026-11-11
+00310737020,package,0310-7370,Budesonide and Formoterol Fumarate Dihydrate,,Budesonide and Formoterol Fumarate Dihydrate,AEROSOL,160 ug/1; 4.5 ug/1,AstraZeneca Pharmaceuticals LP,2026-11-11
+00310737220,package,0310-7372,Budesonide and Formoterol Fumarate Dihydrate,,Budesonide and Formoterol Fumarate Dihydrate,AEROSOL,80 ug/1; 4.5 ug/1,AstraZeneca Pharmaceuticals LP,2026-11-11
+00310950002,package,0310-9500,TRUQAP,,capivasertib,"TABLET, FILM COATED",160 mg/1,AstraZeneca Pharmaceuticals LP,2026-11-11
+00310950101,package,0310-9501,TRUQAP,,capivasertib,"TABLET, FILM COATED",200 mg/1,AstraZeneca Pharmaceuticals LP,2026-11-11
+00338004902,package,0338-0049,Sodium Chloride,,Sodium Chloride,"INJECTION, SOLUTION",9 g/1000mL,Baxter Healthcare Corporation,2026-11-11
+00338006301,package,0338-0063,DOXIL,,doxorubicin hydrochloride,"INJECTION, SUSPENSION, LIPOSOMAL",2 mg/mL,Baxter Healthcare Company,2026-11-11
+00338010820,package,0338-0108,NOREPINEPHRINE BITARTRATE,,norepinephrine bitartrate,"INJECTION, SOLUTION",8 mg/250mL,Baxter Healthcare Corporation,2026-11-11
+00338012612,package,0338-0126,MYXREDLIN,,insulin human,"INJECTION, SOLUTION",1 [iU]/mL,Baxter Healthcare Corporation,2026-11-11
+00338032201,package,0338-0322,RECOTHROM,,thrombin topical recombinant,KIT,,Baxter Healthcare Corporation,2026-11-11
+00338070948,package,0338-0709,Potassium Chloride,,POTASSIUM CHLORIDE,"INJECTION, SOLUTION",7.46 g/1000mL,Baxter Healthcare Corporation,2026-11-11
+00338130148,package,0338-1301,Cefepime,,cefepime,"INJECTION, SOLUTION",1 g/50mL,Baxter Healthcare Corporation,2026-11-11
+00338358301,package,0338-3583,VANCOMYCIN HYDROCHLORIDE,,VANCOMYCIN HYDROCHLORIDE,"INJECTION, SOLUTION",1 g/200mL,Baxter Healthcare Corporation,2026-11-11
+00338500241,package,0338-5002,Ceftriaxone,,Ceftriaxone Sodium,"INJECTION, SOLUTION",1 g/50mL,Baxter Healthcare Company,2026-11-11
+00338500341,package,0338-5003,Ceftriaxone,,Ceftriaxone Sodium,"INJECTION, SOLUTION",2 g/50mL,Baxter Healthcare Company,2026-11-11
+00338963812,package,0338-9638,Zosyn,,piperacillin sodium and tazobactam sodium,"INJECTION, SOLUTION",4 g/100mL; .5 g/100mL,Baxter Healthcare Corporation,2026-11-11
+00338966701,package,0338-9667,DOXIL,,doxorubicin hydrochloride,"INJECTION, SUSPENSION, LIPOSOMAL",2 mg/mL,Baxter Healthcare Corporation,2026-11-11
+00378326694,package,0378-3266,Etoposide,,etoposide,CAPSULE,50 mg/1,Mylan Pharmaceuticals Inc.,2026-11-11
+00378334053,package,0378-3340,XULANE,,norelgestromin and ethinyl estradiol,PATCH,150 ug/d; 35 ug/d,Mylan Pharmaceuticals Inc.,2026-11-11
+00378427193,package,0378-4271,Ambrisentan,,ambrisentan,"TABLET, FILM COATED",10 mg/1,Mylan Pharmaceuticals Inc.,2026-11-11
+00378667828,package,0378-6678,Sunitinib Malate,,sunitinib malate,CAPSULE,12.5 mg/1,Mylan Pharmaceuticals Inc.,2026-11-11
+00378668028,package,0378-6680,Sunitinib Malate,,sunitinib malate,CAPSULE,50 mg/1,Mylan Pharmaceuticals Inc.,2026-11-11
+00378696112,package,0378-6961,Glatiramer Acetate,,Glatiramer,"INJECTION, SOLUTION",40 mg/mL,Mylan Pharmaceuticals Inc.,2026-11-11
+00378750232,package,0378-7502,BREYNA,,Budesonide and Formoterol Fumarate,"AEROSOL, METERED",80 ug/1; 4.5 ug/1,Mylan Pharmaceuticals Inc.,2026-11-11
+00378750332,package,0378-7503,BREYNA,,Budesonide and Formoterol Fumarate,"AEROSOL, METERED",160 ug/1; 4.5 ug/1,Mylan Pharmaceuticals Inc.,2026-11-11
+00378876793,package,0378-8767,Buprenorphine and Naloxone,,Buprenorphine and Naloxone,FILM,8 mg/1; 2 mg/1,Mylan Pharmaceuticals Inc.,2026-11-11
+00378912498,package,0378-9124,FENTANYL,,FENTANYL,PATCH,100 ug/h,Mylan Pharmaceuticals Inc.,2026-11-11
+00378932032,package,0378-9320,Wixela Inhub,,fluticasone propionate and salmeterol,POWDER,100 ug/1; 50 ug/1,Mylan Pharmaceuticals Inc.,2026-11-11
+00378932132,package,0378-9321,Wixela Inhub,,fluticasone propionate and salmeterol,POWDER,250 ug/1; 50 ug/1,Mylan Pharmaceuticals Inc.,2026-11-11
+00378932232,package,0378-9322,Wixela Inhub,,fluticasone propionate and salmeterol,POWDER,500 ug/1; 50 ug/1,Mylan Pharmaceuticals Inc.,2026-11-11
+00409000710,package,0409-0007,Lidocaine Hydrochloride and Epinephrine,,LIDOCAINE HYDROCHLORIDE and EPINEPHRINE,"INJECTION, SOLUTION",10 mg/mL; 10 ug/mL,"Hospira, Inc.",2026-11-11
+00409036601,package,0409-0366,Docetaxel,,DOCETAXEL,"INJECTION, SOLUTION",20 mg/mL,"Hospira, Inc.",2026-11-11
+00409036701,package,0409-0367,Docetaxel,,DOCETAXEL,"INJECTION, SOLUTION",20 mg/mL,"Hospira, Inc.",2026-11-11
+00409127332,package,0409-1273,Diazepam,,DIAZEPAM,"INJECTION, SOLUTION",5 mg/mL,"Hospira, Inc.",2026-11-11
+00409188602,package,0409-1886,LEVETIRACETAM,,LEVETIRACETAM,"INJECTION, SOLUTION",100 mg/mL,"Hospira, Inc.",2026-11-11
+00409189101,package,0409-1891,Morphine Sulfate,,MORPHINE SULFATE,"INJECTION, SOLUTION",4 mg/mL,"Hospira, Inc.",2026-11-11
+00409263450,package,0409-2634,Hydromorphone Hydrochloride,,Hydromorphone Hydrochloride,"INJECTION, SOLUTION",10 mg/mL,"Hospira, Inc.",2026-11-11
+00409318910,package,0409-3189,rocuronium bromide,,rocuronium bromide,"INJECTION, SOLUTION",10 mg/mL,"Hospira, Inc.",2026-11-11
+00409427601,package,0409-4276,Lidocaine Hydrochloride,,LIDOCAINE HYDROCHLORIDE,"INJECTION, SOLUTION",10 mg/mL,"Hospira, Inc.",2026-11-11
+00409475503,package,0409-4755,Ondansetron,,ONDANSETRON,"INJECTION, SOLUTION",2 mg/mL,"Hospira, Inc.",2026-11-11
+00409610210,package,0409-6102,Furosemide,,FUROSEMIDE,"INJECTION, SOLUTION",10 mg/mL,"Hospira, Inc.",2026-11-11
+00409909422,package,0409-9094,Fentanyl Citrate,,FENTANYL CITRATE,"INJECTION, SOLUTION",50 ug/mL,"Hospira, Inc.",2026-11-11
+00469012599,package,0469-0125,Xtandi,,enzalutamide,CAPSULE,40 mg/1,"Astellas Pharma US, Inc.",2026-11-11
+00469052002,package,0469-0520,CRESEMBA,,isavuconazonium sulfate,CAPSULE,100 mg/1,"Astellas Pharma US, Inc.",2026-11-11
+00469061773,package,0469-0617,Prograf,,Tacrolimus,"CAPSULE, GELATIN COATED",1 mg/1,"Astellas Pharma US, Inc.",2026-11-11
+00469062599,package,0469-0625,Xtandi,,enzalutamide,TABLET,40 mg/1,"Astellas Pharma US, Inc.",2026-11-11
+00469142590,package,0469-1425,Xospata,,gilteritinib,TABLET,40 mg/1,"Astellas Pharma US, Inc.",2026-11-11
+00469266030,package,0469-2660,VEOZAH,,fezolinetant,"TABLET, FILM COATED",45 mg/1,"Astellas Pharma US, Inc.",2026-11-11
+00469342510,package,0469-3425,VYLOY,,ZOLBETUXIMAB,"INJECTION, POWDER, FOR SUSPENSION",20 mg/mL,"Astellas Pharma US, Inc.",2026-11-11
+00480123208,package,0480-1232,Risperidone,,Risperidone,KIT,,"Teva Pharmaceuticals, Inc.",2026-11-11
+00480124521,package,0480-1245,Lenalidomide,,Lenalidomide,CAPSULE,20 mg/1,"Teva Pharmaceuticals, Inc.",2026-11-11
+00480134208,package,0480-1342,Risperidone,,Risperidone,KIT,,"Teva Pharmaceuticals, Inc.",2026-11-11
+00480145308,package,0480-1453,Risperidone,,Risperidone,KIT,,"Teva Pharmaceuticals, Inc.",2026-11-11
+00480347868,package,0480-3478,Naloxone Hydrochloride,,Naloxone Hydrochloride,"SPRAY, METERED",4 mg/.1mL,"Teva Pharmaceuticals, Inc.",2026-11-11
+00480366722,package,0480-3667,Liraglutide,,liraglutide,INJECTION,6 mg/mL,"Teva Pharmaceuticals USA, Inc.",2026-11-11
+00480449056,package,0480-4490,Tasimelteon,,Tasimelteon,"CAPSULE, GELATIN COATED",20 mg/1,"Teva Pharmaceuticals, Inc.",2026-11-11
+00480725046,package,0480-7250,Liraglutide,,Liraglutide,"INJECTION, SOLUTION",6 mg/mL,"Teva Pharmaceuticals, Inc.",2026-11-11
+00517037405,package,0517-0374,PROVAYBLUE,,methylene blue,INJECTION,5 mg/mL,"American Regent, Inc.",2026-11-11
+00517065001,package,0517-0650,Injectafer,,Ferric Carboxymaltose Injection,"INJECTION, SOLUTION",50 mg/mL,"American Regent, Inc.",2026-11-11
+00517100425,package,0517-1004,Atropine Sulfate,,ATROPINE SULFATE,"INJECTION, SOLUTION",.4 mg/mL,"American Regent, Inc.",2026-11-11
+00517231005,package,0517-2310,Venofer,,iron sucrose,"INJECTION, SOLUTION",20 mg/mL,"American Regent, Inc.",2026-11-11
+00517234010,package,0517-2340,Venofer,,iron sucrose,"INJECTION, SOLUTION",20 mg/mL,"American Regent, Inc.",2026-11-11
+00517430001,package,0517-4300,PACLITAXEL PROTEIN BOUND PARTICLES ALBUMIN BOUND,,Paclitaxel,"INJECTION, POWDER, LYOPHILIZED, FOR SUSPENSION",100 mg/20mL,"American Regent, Inc.",2026-11-11
+00536340501,package,0536-3405,Nicotine,,Nicotine Polacrilex,"GUM, CHEWING",4 mg/1,Rugby Laboratories,2026-11-11
+00536589588,package,0536-5895,Nicotine,,Nicotine,PATCH,14 mg/24h,Rugby Laboratories,2026-11-11
+00536589688,package,0536-5896,Nicotine,,Nicotine,PATCH,21 mg/24h,Rugby Laboratories,2026-11-11
+00548500100,package,0548-5001,Ganirelix Acetate,,Ganirelix Acetate,INJECTION,250 ug/.5mL,"Amphastar Pharmaceuticals, Inc.",2026-11-11
+00548835101,package,0548-8351,Baqsimi,,glucagon,POWDER,3 mg/1,"Amphastar Pharmaceuticals, Inc.",2026-11-11
+00548835202,package,0548-8352,Baqsimi,,glucagon,POWDER,3 mg/1,"Amphastar Pharmaceuticals, Inc.",2026-11-11
+00562780505,package,0562-7805,RhoGAM Ultra-Filtered PLUS,,HUMAN RHO(D) IMMUNE GLOBULIN,"INJECTION, SOLUTION",300 ug/1,Kedrion Biopharma Inc,2026-11-11
+00574709012,package,0574-7090,Hydrocortisone Acetate,,HYDROCORTISONE ACETATE,SUPPOSITORY,25 mg/1,Padagis US LLC,2026-11-11
+00591240530,package,0591-2405,Ambrisentan,,Ambrisentan,"TABLET, FILM COATED",5 mg/1,"Actavis Pharma, Inc.",2026-11-11
+00591240630,package,0591-2406,Ambrisentan,,Ambrisentan,"TABLET, FILM COATED",10 mg/1,"Actavis Pharma, Inc.",2026-11-11
+00591292754,package,0591-2927,Levalbuterol tartrate HFA inhalation,,levalbuterol tartrate,"AEROSOL, METERED",45 ug/1,"Actavis Pharma, Inc.",2026-11-11
+00597002402,package,0597-0024,Combivent Respimat,,ipratropium bromide and albuterol,"SPRAY, METERED",20 ug/1; 100 ug/1,"Boehringer Ingelheim Pharmaceuticals, Inc.",2026-11-11
+00597003510,package,0597-0035,SPEVIGO,,spesolimab-sbzo,INJECTION,60 mg/mL,"Boehringer Ingelheim Pharmaceuticals, Inc.",2026-11-11
+00597010061,package,0597-0100,Spiriva Respimat,,tiotropium bromide inhalation spray,"SPRAY, METERED",3.124 ug/1,"Boehringer Ingelheim Pharmaceuticals, Inc.",2026-11-11
+00597014030,package,0597-0140,Tradjenta,,linagliptin,"TABLET, FILM COATED",5 mg/1,"Boehringer Ingelheim Pharmaceuticals, Inc.",2026-11-11
+00597014360,package,0597-0143,Ofev,,nintedanib,CAPSULE,100 mg/1,"Boehringer Ingelheim Pharmaceuticals, Inc.",2026-11-11
+00597014560,package,0597-0145,Ofev,,nintedanib,CAPSULE,150 mg/1,"Boehringer Ingelheim Pharmaceuticals, Inc.",2026-11-11
+00597015230,package,0597-0152,Jardiance,,Empagliflozin,"TABLET, FILM COATED",10 mg/1,"Boehringer Ingelheim Pharmaceuticals, Inc.",2026-11-11
+00597015330,package,0597-0153,Jardiance,,Empagliflozin,"TABLET, FILM COATED",25 mg/1,"Boehringer Ingelheim Pharmaceuticals, Inc.",2026-11-11
+00597015561,package,0597-0155,Stiolto Respimat,,tiotropium bromide and olodaterol,"SPRAY, METERED",3.124 ug/1; 2.736 ug/1,"Boehringer Ingelheim Pharmaceuticals, Inc.",2026-11-11
+00597016061,package,0597-0160,Spiriva Respimat,,tiotropium bromide inhalation spray,"SPRAY, METERED",1.562 ug/1,"Boehringer Ingelheim Pharmaceuticals, Inc.",2026-11-11
+00597019705,package,0597-0197,Praxbind,,idarucizumab,INJECTION,50 mg/mL,"Boehringer Ingelheim Pharmaceuticals, Inc.",2026-11-11
+00597037597,package,0597-0375,Cyltezo,,adalimumab-adbm,KIT,,"Boehringer Ingelheim Pharmaceuticals, Inc.",2026-11-11
+00597049550,package,0597-0495,Cyltezo,,adalimumab-adbm,KIT,,"Boehringer Ingelheim Pharmaceuticals, Inc.",2026-11-11
+00597054522,package,0597-0545,Adalimumab-adbm,,Adalimumab-adbm,KIT,,"Boehringer Ingelheim Pharmaceuticals, Inc.",2026-11-11
+00597057550,package,0597-0575,Adalimumab-adbm,,Adalimumab-adbm,KIT,,"Boehringer Ingelheim Pharmaceuticals, Inc.",2026-11-11
+00597062020,package,0597-0620,SPEVIGO,,spesolimab-sbzo,INJECTION,150 mg/1,"Boehringer Ingelheim Pharmaceuticals, Inc.",2026-11-11
+00597731321,package,0597-7313,JASCAYD,,nerandomilast,"TABLET, FILM COATED",18 mg/1,"Boehringer Ingelheim Pharmaceuticals, Inc.",2026-11-11
+00597925786,package,0597-9257,HERNEXEOS,,zongertinib,"TABLET, FILM COATED",60 mg/1,"Boehringer Ingelheim Pharmaceuticals, Inc.",2026-11-11
+00603188016,package,0603-1880,Lidocaine,,lidocaine,PATCH,50 mg/g,"Par Health USA, LLC",2026-11-11
+00641047725,package,0641-0477,Phenobarbital Sodium,,Phenobarbital Sodium,INJECTION,130 mg/mL,Hikma Pharmaceuticals USA Inc.,2026-11-11
+00641600125,package,0641-6001,Ativan,,Lorazepam,INJECTION,2 mg/mL,Hikma Pharmaceuticals USA Inc.,2026-11-11
+00641604001,package,0641-6040,INFUMORPH 500,,morphine sulfate,"INJECTION, SOLUTION",25 mg/mL,Hikma Pharmaceuticals USA Inc.,2026-11-11
+00641607825,package,0641-6078,Ondansetron,,Ondansetron,INJECTION,2 mg/mL,Hikma Pharmaceuticals USA Inc.,2026-11-11
+00642747001,package,0642-7470,SLYND,,Drospirenone,KIT,,"Exeltis USA, Inc.",2026-11-11
+00781300407,package,0781-3004,Omnitrope,,Somatropin,"INJECTION, SOLUTION",10 mg/1.5mL,Sandoz Inc,2026-11-11
+00781323434,package,0781-3234,Glatopa,,Glatiramer Acetate,"INJECTION, SOLUTION",20 mg/mL,Sandoz Inc,2026-11-11
+00781325089,package,0781-3250,Glatopa,,Glatiramer Acetate,"INJECTION, SOLUTION",40 mg/mL,Sandoz Inc,2026-11-11
+00781353191,package,0781-3531,Paclitaxel,,Paclitaxel,"INJECTION, POWDER, LYOPHILIZED, FOR SUSPENSION",100 mg/20mL,Sandoz Inc,2026-11-11
+00781729685,package,0781-7296,Albuterol Sulfate,,Albuterol Sulfate,"AEROSOL, METERED",108 ug/1,Sandoz Inc,2026-11-11
+00944265804,package,0944-2658,GAMMAGARD,S/D,Immune Globulin Intravenous (Human),KIT,,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+00944270004,package,0944-2700,GAMMAGARD Liquid,,Immune Globulin Infusion (Human),"INJECTION, SOLUTION",100 mg/mL,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+00944270005,package,0944-2700,GAMMAGARD Liquid,,Immune Globulin Infusion (Human),"INJECTION, SOLUTION",100 mg/mL,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+00944270006,package,0944-2700,GAMMAGARD Liquid,,Immune Globulin Infusion (Human),"INJECTION, SOLUTION",100 mg/mL,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+00944270007,package,0944-2700,GAMMAGARD Liquid,,Immune Globulin Infusion (Human),"INJECTION, SOLUTION",100 mg/mL,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+00944304510,package,0944-3045,ADVATE,,Antihemophilic Factor (Recombinant),KIT,,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+00944304610,package,0944-3046,ADVATE,,Antihemophilic Factor (Recombinant),KIT,,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+00944304710,package,0944-3047,ADVATE,,Antihemophilic Factor (Recombinant),KIT,,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+00944305102,package,0944-3051,ADVATE,,Antihemophilic Factor (Recombinant),KIT,,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+00944305302,package,0944-3053,ADVATE,,Antihemophilic Factor (Recombinant),KIT,,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+00944305402,package,0944-3054,ADVATE,,Antihemophilic Factor (Recombinant),KIT,,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+00944394602,package,0944-3946,HEMOFIL M,,antihemophilic factor human,KIT,,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+00944755102,package,0944-7551,VONVENDI,,von Willebrand Factor (Recombinant),KIT,,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+00944755302,package,0944-7553,VONVENDI,,von Willebrand Factor (Recombinant),KIT,,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+10019095501,package,10019-955,Cyclophosphamide,,cyclophosphamide,"INJECTION, POWDER, FOR SOLUTION",500 mg/25mL,Baxter Healthcare Company,2026-11-11
+10019095601,package,10019-956,Cyclophosphamide,,cyclophosphamide,"INJECTION, POWDER, FOR SOLUTION",1 g/50mL,Baxter Healthcare Company,2026-11-11
+10122062010,package,10122-620,KENGREAL,,cangrelor,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",50 mg/1,"Chiesi USA, Inc.",2026-11-11
+10144034260,package,10144-342,Inbrija,,levodopa,CAPSULE,42 mg/1,"Merz Pharmaceuticals, LLC",2026-11-11
+11523116705,package,11523-1167,Afrin,Original,Oxymetazoline hydrochloride,SPRAY,.05 g/100mL,Bayer HealthCare LLC.,2026-11-11
+12496010001,package,12496-0100,SUBLOCADE,,buprenorphine,SOLUTION,100 mg/1,Indivior Inc.,2026-11-11
+12496030001,package,12496-0300,SUBLOCADE,,buprenorphine,SOLUTION,300 mg/1,Indivior Inc.,2026-11-11
+12496120803,package,12496-1208,Suboxone,,"buprenorphine hydrochloride, naloxone hydrochloride","FILM, SOLUBLE",8 mg/1; 2 mg/1,INDIVIOR INC.,2026-11-11
+13533031801,package,13533-318,HyperRAB,,Rabies Immune Globulin (Human),"INJECTION, SOLUTION",300 [iU]/mL,"GRIFOLS USA, LLC",2026-11-11
+13533031805,package,13533-318,HyperRAB,,Rabies Immune Globulin (Human),"INJECTION, SOLUTION",300 [iU]/mL,"GRIFOLS USA, LLC",2026-11-11
+13533070501,package,13533-705,Prolastin-C Liquid,,Alpha1-Proteinase Inhibitor (Human),"INJECTION, SOLUTION",1000 mg/20mL,"GRIFOLS USA, LLC",2026-11-11
+13533080020,package,13533-800,Gamunex-C,,Immune Globulin (Human),INJECTION,10 g/100mL,"GRIFOLS USA, LLC",2026-11-11
+13533080024,package,13533-800,Gamunex-C,,Immune Globulin (Human),INJECTION,10 g/100mL,"GRIFOLS USA, LLC",2026-11-11
+13533080040,package,13533-800,Gamunex-C,,Immune Globulin (Human),INJECTION,10 g/100mL,"GRIFOLS USA, LLC",2026-11-11
+13533080071,package,13533-800,Gamunex-C,,Immune Globulin (Human),INJECTION,10 g/100mL,"GRIFOLS USA, LLC",2026-11-11
+13668021930,package,13668-219,aripiprazole,,aripiprazole,TABLET,15 mg/1,Torrent Pharmaceuticals Limited,2026-11-11
+14789025010,package,14789-250,Emerphed,,Ephedrine Sulfate,INJECTION,5 mg/mL,Nexus Pharamaceuticals Inc.,2026-11-11
+15054004301,package,15054-0043,Onivyde,,IRINOTECAN HYDROCHLORIDE,"INJECTION, POWDER, FOR SOLUTION",4.3 mg/mL,"Ipsen Biopharmaceuticals, Inc.",2026-11-11
+15054050001,package,15054-0500,Dysport,,Botulinum Toxin Type A,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",500 U/1,"Ipsen Biopharmaceuticals, Inc.",2026-11-11
+15054053006,package,15054-0530,Dysport,,Botulinum Toxin Type A,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",300 U/1,"Ipsen Biopharmaceuticals, Inc.",2026-11-11
+15054106004,package,15054-1060,SOMATULINE DEPOT,,lanreotide acetate,INJECTION,60 mg/.2mL,"Ipsen Biopharmaceuticals, Inc.",2026-11-11
+15054109004,package,15054-1090,SOMATULINE DEPOT,,lanreotide acetate,INJECTION,90 mg/.3mL,"Ipsen Biopharmaceuticals, Inc.",2026-11-11
+15054112004,package,15054-1120,SOMATULINE DEPOT,,lanreotide acetate,INJECTION,120 mg/.5mL,"Ipsen Biopharmaceuticals, Inc.",2026-11-11
+16714024801,package,16714-248,Fosaprepitant,,Fosaprepitant dimeglumine,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",150 mg/5mL,NorthStar RxLLC,2026-11-11
+16714064410,none,,,,,,,,
+16729011411,package,16729-114,Etoposide,,Etoposide,INJECTION,20 mg/mL,Accord Healthcare Inc.,2026-11-11
+16729018929,package,16729-189,Mycophenolic Acid,,Mycophenolic Acid,"TABLET, DELAYED RELEASE",360 mg/1,Accord Healthcare Inc.,2026-11-11
+17772010330,package,17772-103,Trokendi XR,,topiramate,"CAPSULE, EXTENDED RELEASE",100 mg/1,"Supernus Pharmaceuticals, Inc.",2026-11-11
+17772013330,package,17772-133,QELBREE,,viloxazine hydrochloride,"CAPSULE, EXTENDED RELEASE",200 mg/1,"Supernus Pharmaceuticals, Inc",2026-11-11
+18657011704,package,18657-117,HYLENEX Recombinant,,Hyaluronidase,"INJECTION, SOLUTION",150 [USP'U]/mL,"Antares Pharma, Inc.",2026-11-11
+23155034542,package,23155-345,propofol,,propofol,"INJECTION, EMULSION",10 mg/mL,Heritage Pharmaceuticals Inc. d/b/a Avet Pharmaceuticals Inc.,2026-11-11
+23155066142,package,23155-661,Isoproterenol Hydrochloride,,Isoproterenol Hydrochloride,"INJECTION, SOLUTION",.2 mg/mL,Heritage Pharmaceuticals Inc. d/b/a Avet Pharmaceuticals Inc.,2026-11-11
+24201010024,package,24201-100,Acetaminophen,,Acetaminophen,"INJECTION, SOLUTION",10 mg/mL,Hikma Pharmaceuticals USA Inc.,2026-11-11
+24208073006,package,24208-730,Proparacaine Hydrochloride,,Proparacaine Hydrochloride,SOLUTION/ DROPS,5 mg/mL,Bausch & Lomb Incorporated,2026-11-11
+24338005008,package,24338-050,Gliadel,,carmustine,WAFER,7.7 mg/1,"Azurity Pharmaceuticals, Inc.",2026-11-11
+24338015020,package,24338-150,TRIPTODUR,,triptorelin,KIT,,"Azurity Pharmaceuticals, Inc.",2026-11-11
+24357070107,package,24357-701,Anecream,,Lidocaine 4%,CREAM,4 g/100g,Focus Health Group,2026-11-11
+24478014803,package,24478-148,ONYDA XR,,Clonidine hydrochloride,"SUSPENSION, EXTENDED RELEASE",.1 mg/mL,"NextWave Pharmaceuticals, Inc",2026-11-11
+25021024504,package,25021-245,Docetaxel,,Docetaxel Anhydrous,"INJECTION, SOLUTION",20 mg/mL,Sagent Pharmaceuticals,2026-11-11
+25021025550,package,25021-255,Paclitaxel,,Paclitaxel,"INJECTION, SOLUTION",6 mg/mL,Sagent Pharmaceuticals,2026-11-11
+25021067376,package,25021-673,glydo,,lidocaine hydrochloride,JELLY,20 mg/mL,Sagent Pharmaceuticals,2026-11-11
+25021067377,package,25021-673,glydo,,lidocaine hydrochloride,JELLY,20 mg/mL,Sagent Pharmaceuticals,2026-11-11
+25021081630,package,25021-816,Leucovorin Calcium,,leucovorin calcium,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",350 mg/17.5mL,Sagent Pharmaceuticals,2026-11-11
+25021082682,package,25021-826,zoledronic acid,,zoledronic acid,"INJECTION, SOLUTION",.04 mg/mL,Sagent Pharmaceuticals,2026-11-11
+25021083082,package,25021-830,zoledronic acid,,zoledronic acid,"INJECTION, SOLUTION",.05 mg/mL,Sagent Pharmaceuticals,2026-11-11
+25682000101,package,25682-001,SOLIRIS,,ECULIZUMAB,"INJECTION, SOLUTION, CONCENTRATE",300 mg/30mL,Alexion Pharmaceuticals Inc.,2026-11-11
+25682002501,package,25682-025,Ultomiris,,ravulizumab,"SOLUTION, CONCENTRATE",300 mg/3mL,Alexion Pharmaceuticals Inc.,2026-11-11
+31722003523,package,31722-035,AMINOCAPROIC ACID,,aminocaproic acid,SOLUTION,.25 g/mL,"Camber Pharmaceuticals, Inc.",2026-11-11
+31722030132,package,31722-301,Eltrombopag,,Eltrombopag olamine,"POWDER, FOR SUSPENSION",25 mg/1,"Camber Pharmaceuticals, Inc.",2026-11-11
+31722030801,package,31722-308,Olanzapine,,Olanzapine,"INJECTION, POWDER, FOR SOLUTION",10 mg/2mL,"Camber Pharmaceuticals, Inc.",2026-11-11
+31722073190,package,31722-731,Irbesartan,,Irbesartan,TABLET,300 mg/1,"Camber Pharmaceuticals, Inc.",2026-11-11
+31722083260,package,31722-832,Valganciclovir,,Valganciclovir,"TABLET, FILM COATED",450 mg/1,"Camber Pharmaceuticals, Inc.",2026-11-11
+31722084130,package,31722-841,ELTROMBOPAG,,ELTROMBOPAG,"TABLET, FILM COATED",12.5 mg/1,"Camber Pharmaceuticals, Inc.",2026-11-11
+31722084230,package,31722-842,ELTROMBOPAG,,ELTROMBOPAG,"TABLET, FILM COATED",25 mg/1,"Camber Pharmaceuticals, Inc.",2026-11-11
+31722084330,package,31722-843,ELTROMBOPAG,,ELTROMBOPAG,"TABLET, FILM COATED",50 mg/1,"Camber Pharmaceuticals, Inc.",2026-11-11
+31722084430,package,31722-844,ELTROMBOPAG,,ELTROMBOPAG,"TABLET, FILM COATED",75 mg/1,"Camber Pharmaceuticals, Inc.",2026-11-11
+42023023710,package,42023-237,Vasostrict,,Vasopressin,INJECTION,.2 [USP'U]/mL,"Par Health USA, LLC",2026-11-11
+42023031510,package,42023-315,Adrenalin (epinephrine in sodium chloride),,Epinephrine in Sodium Chloride,INJECTION,16 ug/mL,"Par Health USA, LLC",2026-11-11
+42367052125,package,42367-521,BELRAPZO,,bendamustine hydrochloride,INJECTION,100 mg/4mL,"Eagle Pharmaceuticals, Inc",2026-11-11
+42388002446,package,42388-024,CABOMETYX,,cabozantinib,TABLET,20 mg/1,"Exelixis, Inc.",2026-11-11
+42388002546,package,42388-025,CABOMETYX,,cabozantinib,TABLET,40 mg/1,"Exelixis, Inc.",2026-11-11
+42494041625,package,42494-416,Phenobarbital Sodium,,Phenobarbital Sodium,INJECTION,130 mg/mL,Cameron Pharmaceuticals,2026-11-11
+42747020301,package,42747-203,CRYSVITA,,Burosumab,INJECTION,20 mg/mL,"Kyowa Kirin, Inc.",2026-11-11
+42747030401,package,42747-304,CRYSVITA,,Burosumab,INJECTION,30 mg/mL,"Kyowa Kirin, Inc.",2026-11-11
+42747076101,package,42747-761,POTELIGEO,,mogamulizumab-kpkc,INJECTION,4 mg/mL,"Kyowa Kirin, Inc.",2026-11-11
+42858049340,package,42858-493,Buprenorphine,,Buprenorphine,PATCH,10 ug/h,Rhodes Pharmaceuticals LLC,2026-11-11
+42858075040,package,42858-750,Buprenorphine,,Buprenorphine,PATCH,5 ug/h,Rhodes Pharmaceuticals LLC,2026-11-11
+42858083940,package,42858-839,Buprenorphine,,Buprenorphine,PATCH,20 ug/h,Rhodes Pharmaceuticals LLC,2026-11-11
+43066001610,package,43066-016,CARDENE IV,,nicardipine hydrochloride,"INJECTION, SOLUTION",.2 mg/mL,Baxter Healthcare Corporation,2026-11-11
+43598069750,package,43598-697,Vigabatrin,,Vigabatrin,"POWDER, FOR SOLUTION",50 mg/mL,"Dr. Reddy¿s Laboratories Inc.,",2026-11-11
+44087111701,package,44087-1117,Gonal-f RFF Redi-ject,,FOLLITROPIN,"INJECTION, SOLUTION",900 [iU]/1.5mL,"EMD Serono, Inc.",2026-11-11
+44087353501,package,44087-3535,BAVENCIO,,avelumab,"INJECTION, SOLUTION, CONCENTRATE",20 mg/mL,"EMD Serono, Inc.",2026-11-11
+44087500003,package,44087-5000,TEPMETKO,,Tepotinib Hydrochloride,TABLET,225 mg/1,"EMD Serono, Inc.",2026-11-11
+44087500006,package,44087-5000,TEPMETKO,,Tepotinib Hydrochloride,TABLET,225 mg/1,"EMD Serono, Inc.",2026-11-11
+44206025105,package,44206-251,AlbuRx,,ALBUMIN (HUMAN),SOLUTION,12.5 g/50mL,CSL Behring AG,2026-11-11
+44206025110,package,44206-251,AlbuRx,,ALBUMIN (HUMAN),SOLUTION,12.5 g/50mL,CSL Behring AG,2026-11-11
+44206031025,package,44206-310,ALBURX,,ALBUMIN (HUMAN),SOLUTION,12.5 g/250mL,CSL Behring AG,2026-11-11
+44206043605,package,44206-436,Privigen,,Human Immunoglobulin G,LIQUID,5 g/50mL,CSL Behring AG,2026-11-11
+44206043710,package,44206-437,Privigen,,Human Immunoglobulin G,LIQUID,10 g/100mL,CSL Behring AG,2026-11-11
+44206043820,package,44206-438,Privigen,,Human Immunoglobulin G,LIQUID,20 g/200mL,CSL Behring AG,2026-11-11
+44206043940,package,44206-439,Privigen,,Human Immunoglobulin G,LIQUID,40 g/400mL,CSL Behring AG,2026-11-11
+44206045525,package,44206-455,Hizentra,,HUMAN IMMUNOGLOBULIN G,LIQUID,.2 g/mL,CSL Behring AG,2026-11-11
+44206045722,package,44206-457,Hizentra,,HUMAN IMMUNOGLOBULIN G,LIQUID,.2 g/mL,CSL Behring AG,2026-11-11
+44206045824,package,44206-458,Hizentra,,HUMAN IMMUNOGLOBULIN G,LIQUID,.2 g/mL,CSL Behring AG,2026-11-11
+44567062124,package,44567-621,Calcium Gluconate in Sodium Chloride,,Calcium Gluconate,"INJECTION, SOLUTION",20 mg/mL,"WG Critical Care, LLC",2026-11-11
+45629008901,product,45629-089,FOTIVDA,,Tivozanib,CAPSULE,.89 mg/1,"AVEO Pharmaceuticals, Inc.",2026-11-11
+45629008902,package,45629-089,FOTIVDA,,Tivozanib,CAPSULE,.89 mg/1,"AVEO Pharmaceuticals, Inc.",2026-11-11
+45802015065,package,45802-150,Alogliptin,,Alogliptin,"TABLET, FILM COATED",25 mg/1,Padagis Israel Pharmaceuticals Ltd,2026-11-11
+47335017795,package,47335-177,ILUMYA,,tildrakizumab-asmn,"INJECTION, SOLUTION",100 mg/mL,"Sun Pharmaceutical Industries, Inc.",2026-11-11
+47335030383,package,47335-303,Odomzo,,sonidegib,CAPSULE,200 mg/1,"Sun Pharmaceutical Industries, Inc.",2026-11-11
+47335032688,package,47335-326,NALTREXONE HYDROCHLORIDE,,NALTREXONE HYDROCHLORIDE,"TABLET, FILM COATED",50 mg/1,"Sun Pharmaceutical Industries, Inc.",2026-11-11
+47335040181,package,47335-401,YONSA,,abiraterone acetate,TABLET,125 mg/1,"Sun Pharmaceutical Industries, Inc.",2026-11-11
+47426020101,package,47426-201,CINVANTI,,aprepitant,"INJECTION, EMULSION",130 mg/18mL,"Heron Therapeutics, Inc.",2026-11-11
+47781035603,package,47781-356,Buprenorphine and Naloxone,Sublingual Film,Buprenorphine and Naloxone,FILM,4 mg/1; 1 mg/1,Alvogen Inc.,2026-11-11
+47781035703,package,47781-357,Buprenorphine and Naloxone,Sublingual Film,Buprenorphine and Naloxone,FILM,8 mg/1; 2 mg/1,Alvogen Inc.,2026-11-11
+47781056801,package,47781-568,lisdexamfetamine dimesylate,,lisdexamfetamine dimesylate,CAPSULE,70 mg/1,Alvogen Inc.,2026-11-11
+47781065289,package,47781-652,teriparatide,,teriparatide,"INJECTION, SOLUTION",250 ug/mL,"Alvogen, Inc.",2026-11-11
+48433023015,package,48433-230,Strong Iodine Solution,,Strong Iodine Solution,SOLUTION/ DROPS,700 mg/mL; 1400 mg/mL,"Safecor Health, LLC",2026-11-11
+49401008835,package,49401-088,BENLYSTA,,belimumab,SOLUTION,200 mg/mL,GlaxoSmithKline LLC,2026-11-11
+49401008847,package,49401-088,BENLYSTA,,belimumab,SOLUTION,200 mg/mL,GlaxoSmithKline LLC,2026-11-11
+49401010101,package,49401-101,BENLYSTA,,belimumab,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",120 mg/1.5mL,GlaxoSmithKline LLC,2026-11-11
+49401010201,package,49401-102,BENLYSTA,,belimumab,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",400 mg/5mL,GlaxoSmithKline LLC,2026-11-11
+49483060350,package,49483-603,Ibuprofen,,Ibuprofen,"TABLET, FILM COATED",600 mg/1,"TIME CAP LABORATORIES, INC",2026-11-11
+49483060450,package,49483-604,Ibuprofen,,Ibuprofen,"TABLET, FILM COATED",800 mg/1,"TIME CAP LABORATORIES, INC",2026-11-11
+49502010202,package,49502-102,Epinephrine,,Epinephrine,INJECTION,.3 mg/.3mL,Viatris Specialty LLC,2026-11-11
+49502040124,package,49502-401,TOBI Podhaler,,Tobramycin,CAPSULE,28 mg/1,Viatris Specialty LLC,2026-11-11
+49502080693,package,49502-806,YUPELRI,,revefenacin,SOLUTION,175 ug/3mL,Viatris Specialty LLC,2026-11-11
+49702022813,package,49702-228,Tivicay,,dolutegravir sodium,"TABLET, FILM COATED",50 mg/1,ViiV Healthcare Company,2026-11-11
+49702023113,package,49702-231,Triumeq,,"abacavir sulfate, dolutegravir sodium, lamivudine","TABLET, FILM COATED",600 mg/1; 50 mg/1; 300 mg/1,ViiV Healthcare Company,2026-11-11
+49702024015,package,49702-240,Cabenuva,,cabotegravir and rilpivirine,KIT,,ViiV Healthcare Company,2026-11-11
+49702024213,package,49702-242,Juluca,,dolutegravir sodium and rilpivirine hydrochloride,"TABLET, FILM COATED",50 mg/1; 25 mg/1,ViiV Healthcare Company,2026-11-11
+49702024613,package,49702-246,Dovato,,dolutegravir sodium and lamivudine,"TABLET, FILM COATED",50 mg/1; 300 mg/1,ViiV Healthcare Company,2026-11-11
+49702024633,package,49702-246,Dovato,,dolutegravir sodium and lamivudine,"TABLET, FILM COATED",50 mg/1; 300 mg/1,ViiV Healthcare Company,2026-11-11
+49702025018,package,49702-250,Rukobia,,fostemsavir tromethamine,"TABLET, FILM COATED, EXTENDED RELEASE",600 mg/1,ViiV Healthcare Company,2026-11-11
+49702025315,package,49702-253,Cabenuva,,cabotegravir and rilpivirine,KIT,,ViiV Healthcare Company,2026-11-11
+49702026423,package,49702-264,Apretude,,Cabotegravir,KIT,,ViiV Healthcare Company,2026-11-11
+49884072008,package,49884-720,sapropterin dihydrochloride,,sapropterin dihydrochloride,TABLET,100 mg/1,"Par Health USA, LLC",2026-11-11
+50222034604,package,50222-346,Adbry,,tralokinumab-ldrm,"INJECTION, SOLUTION",150 mg/mL,LEO Pharma Inc.,2026-11-11
+50222035002,package,50222-350,Adbry,,tralokinumab-ldrm,"INJECTION, SOLUTION",300 mg/2mL,LEO Pharma Inc.,2026-11-11
+50242004062,package,50242-040,XOLAIR,,omalizumab,"INJECTION, SOLUTION",150 mg/1.2mL,"Genentech, Inc.",2026-11-11
+50242004164,package,50242-041,Cathflo Activase,,Alteplase,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",2.2 mg/2mL,"Genentech, Inc.",2026-11-11
+50242004413,package,50242-044,Activase,,Alteplase,KIT,,"Genentech, Inc.",2026-11-11
+50242005121,package,50242-051,Rituxan,,rituximab,"INJECTION, SOLUTION",10 mg/mL,"Genentech, Inc.",2026-11-11
+50242005306,package,50242-053,Rituxan,,rituximab,"INJECTION, SOLUTION",10 mg/mL,"Genentech, Inc.",2026-11-11
+50242006001,package,50242-060,Avastin,,bevacizumab,"INJECTION, SOLUTION",100 mg/4mL,"Genentech, Inc.",2026-11-11
+50242006101,package,50242-061,Avastin,,bevacizumab,"INJECTION, SOLUTION",400 mg/16mL,"Genentech, Inc.",2026-11-11
+50242007001,package,50242-070,Gazyva,,obinutuzumab,"INJECTION, SOLUTION, CONCENTRATE",1000 mg/40mL,"Genentech, Inc.",2026-11-11
+50242007701,package,50242-077,Herceptin Hylecta,,Trastuzumab and hyaluronidase-oysk,"INJECTION, SOLUTION",600 mg/5mL; 10000 U/5mL,"Genentech, Inc.",2026-11-11
+50242007908,package,50242-079,Itovebi,,Inavolisib,"TABLET, FILM COATED",9 mg/1,"Genentech, Inc.",2026-11-11
+50242008408,package,50242-084,Itovebi,,Inavolisib,"TABLET, FILM COATED",3 mg/1,"Genentech, Inc.",2026-11-11
+50242008527,package,50242-085,Activase,,Alteplase,KIT,,"Genentech, Inc.",2026-11-11
+50242008701,package,50242-087,KADCYLA,,ADO-TRASTUZUMAB EMTANSINE,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",20 mg/mL,"Genentech, Inc.",2026-11-11
+50242008801,package,50242-088,KADCYLA,,ADO-TRASTUZUMAB EMTANSINE,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",20 mg/mL,"Genentech, Inc.",2026-11-11
+50242010040,package,50242-100,Pulmozyme,,dornase alfa,SOLUTION,1 mg/mL,"Genentech, Inc.",2026-11-11
+50242010301,package,50242-103,POLIVY,,polatuzumab vedotin,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",30 mg/1.88mL,"Genentech, Inc.",2026-11-11
+50242010501,package,50242-105,POLIVY,,polatuzumab vedotin,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",140 mg/7.52mL,"Genentech, Inc.",2026-11-11
+50242012047,package,50242-120,TNKase,,tenecteplase,KIT,,"Genentech, Inc.",2026-11-11
+50242012101,none,,,,,,,,
+50242012301,package,50242-123,ESBRIET,,PIRFENIDONE,"TABLET, COATED",801 mg/1,"Genentech, Inc.",2026-11-11
+50242012501,package,50242-125,Columvi,,Glofitamab,"SOLUTION, CONCENTRATE",2.5 mg/2.5mL,"Genentech, Inc.",2026-11-11
+50242012701,package,50242-127,Columvi,,Glofitamab,CONCENTRATE,10 mg/10mL,"Genentech, Inc.",2026-11-11
+50242013001,package,50242-130,ALECENSA,,ALECTINIB HYDROCHLORIDE,CAPSULE,150 mg/1,"Genentech, Inc.",2026-11-11
+50242013201,package,50242-132,Herceptin,,Trastuzumab,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",150 mg/7.4mL,"Genentech, Inc.",2026-11-11
+50242013501,package,50242-135,ACTEMRA,,tocilizumab,"INJECTION, SOLUTION, CONCENTRATE",80 mg/4mL,"Genentech, Inc.",2026-11-11
+50242013601,package,50242-136,ACTEMRA,,tocilizumab,"INJECTION, SOLUTION, CONCENTRATE",200 mg/10mL,"Genentech, Inc.",2026-11-11
+50242013701,package,50242-137,ACTEMRA,,tocilizumab,"INJECTION, SOLUTION, CONCENTRATE",400 mg/20mL,"Genentech, Inc.",2026-11-11
+50242013801,package,50242-138,Actemra,,tocilizumab,"INJECTION, SOLUTION",162 mg/.9mL,"Genentech, Inc.",2026-11-11
+50242014001,package,50242-140,ERIVEDGE,,vismodegib,CAPSULE,150 mg/1,"Genentech, Inc.",2026-11-11
+50242014201,package,50242-142,Lunsumio,,Mosunetuzumab,CONCENTRATE,30 mg/30mL,"Genentech, Inc.",2026-11-11
+50242014301,package,50242-143,Actemra ACTPen,,tocilizumab,"INJECTION, SOLUTION",162 mg/.9mL,"Genentech, Inc.",2026-11-11
+50242014501,package,50242-145,PERJETA,,Pertuzumab,"INJECTION, SOLUTION, CONCENTRATE",30 mg/mL,"Genentech, Inc.",2026-11-11
+50242015001,package,50242-150,OCREVUS,,ocrelizumab,INJECTION,300 mg/10mL,"Genentech, Inc.",2026-11-11
+50242015901,package,50242-159,Lunsumio,,Mosunetuzumab,CONCENTRATE,1 mg/mL,"Genentech, Inc.",2026-11-11
+50242017601,package,50242-176,TNKase,,tenecteplase,KIT,,"Genentech, Inc.",2026-11-11
+50242021401,product,50242-214,Xolair PFS,,omalizumab,"INJECTION, SOLUTION",75 mg/.5mL,"Genentech, Inc.",2026-11-11
+50242021403,package,50242-214,Xolair PFS,,omalizumab,"INJECTION, SOLUTION",75 mg/.5mL,"Genentech, Inc.",2026-11-11
+50242021455,package,50242-214,Xolair PFS,,omalizumab,"INJECTION, SOLUTION",75 mg/.5mL,"Genentech, Inc.",2026-11-11
+50242021501,product,50242-215,Xolair PFS,,omalizumab,"INJECTION, SOLUTION",150 mg/mL,"Genentech, Inc.",2026-11-11
+50242021503,package,50242-215,Xolair PFS,,omalizumab,"INJECTION, SOLUTION",150 mg/mL,"Genentech, Inc.",2026-11-11
+50242021555,package,50242-215,Xolair PFS,,omalizumab,"INJECTION, SOLUTION",150 mg/mL,"Genentech, Inc.",2026-11-11
+50242022701,package,50242-227,Xolair,,omalizumab,"INJECTION, SOLUTION",300 mg/2mL,"Genentech, Inc.",2026-11-11
+50242022755,package,50242-227,Xolair,,omalizumab,"INJECTION, SOLUTION",300 mg/2mL,"Genentech, Inc.",2026-11-11
+50242024501,package,50242-245,Phesgo,,"pertuzumab, trastuzumab, and hyaluronidase-zzxf","INJECTION, SOLUTION",1200 mg/15mL; 600 mg/15mL; 30000 U/15mL,"Genentech, Inc.",2026-11-11
+50242026001,package,50242-260,Phesgo,,"pertuzumab, trastuzumab, and hyaluronidase-zzxf","INJECTION, SOLUTION",600 mg/10mL; 600 mg/10mL; 20000 U/10mL,"Genentech, Inc.",2026-11-11
+50242091701,package,50242-917,TECENTRIQ,,atezolizumab,"INJECTION, SOLUTION",1200 mg/20mL,"Genentech, Inc.",2026-11-11
+50242091801,package,50242-918,TECENTRIQ,,atezolizumab,"INJECTION, SOLUTION",840 mg/14mL,"Genentech, Inc.",2026-11-11
+50242092001,package,50242-920,Hemlibra,,emicizumab,"INJECTION, SOLUTION",30 mg/mL,"Genentech, Inc.",2026-11-11
+50242092101,package,50242-921,Hemlibra,,emicizumab,"INJECTION, SOLUTION",60 mg/.4mL,"Genentech, Inc.",2026-11-11
+50242092201,package,50242-922,Hemlibra,,emicizumab,"INJECTION, SOLUTION",105 mg/.7mL,"Genentech, Inc.",2026-11-11
+50242092301,package,50242-923,Hemlibra,,emicizumab,"INJECTION, SOLUTION",150 mg/mL,"Genentech, Inc.",2026-11-11
+50242093001,package,50242-930,Hemlibra,,emicizumab,"INJECTION, SOLUTION",300 mg/2mL,"Genentech, Inc.",2026-11-11
+50419017106,package,50419-171,Stivarga,,regorafenib,"TABLET, FILM COATED",40 mg/1,Bayer HealthCare Pharmaceuticals Inc.,2026-11-11
+50419039501,package,50419-395,NUBEQA,,darolutamide,"TABLET, FILM COATED",300 mg/1,Bayer HealthCare Pharmaceuticals Inc.,2026-11-11
+50419042201,package,50419-422,Skyla,,Levonorgestrel,INTRAUTERINE DEVICE,13.5 mg/1,Bayer HealthCare Pharmaceuticals Inc.,2026-11-11
+50419042301,package,50419-423,Mirena,,Levonorgestrel,INTRAUTERINE DEVICE,52 mg/1,Bayer HealthCare Pharmaceuticals Inc.,2026-11-11
+50419042401,package,50419-424,Kyleena,,Levonorgestrel,INTRAUTERINE DEVICE,19.5 mg/1,Bayer HealthCare Pharmaceuticals Inc.,2026-11-11
+50419054001,package,50419-540,Kerendia,,finerenone,"TABLET, FILM COATED",10 mg/1,Bayer HealthCare Pharmaceuticals Inc.,2026-11-11
+50458014030,package,50458-140,INVOKANA,,canagliflozin,"TABLET, FILM COATED",100 mg/1,"Janssen Pharmaceuticals, Inc.",2026-11-11
+50458014130,package,50458-141,INVOKANA,,canagliflozin,"TABLET, FILM COATED",300 mg/1,"Janssen Pharmaceuticals, Inc.",2026-11-11
+50458030611,package,50458-306,RISPERDAL CONSTA,,risperidone,KIT,,"Janssen Pharmaceuticals, Inc.",2026-11-11
+50458030711,package,50458-307,RISPERDAL CONSTA,,risperidone,KIT,,"Janssen Pharmaceuticals, Inc.",2026-11-11
+50458030811,package,50458-308,RISPERDAL CONSTA,,risperidone,KIT,,"Janssen Pharmaceuticals, Inc.",2026-11-11
+50458056101,package,50458-561,INVEGA SUSTENNA,,paliperidone palmitate,INJECTION,78 mg/.5mL,"Janssen Pharmaceuticals, Inc.",2026-11-11
+50458056201,package,50458-562,INVEGA SUSTENNA,,paliperidone palmitate,INJECTION,117 mg/.75mL,"Janssen Pharmaceuticals, Inc.",2026-11-11
+50458056301,package,50458-563,INVEGA SUSTENNA,,paliperidone palmitate,INJECTION,156 mg/mL,"Janssen Pharmaceuticals, Inc.",2026-11-11
+50458056401,package,50458-564,INVEGA SUSTENNA,,paliperidone palmitate,INJECTION,234 mg/1.5mL,"Janssen Pharmaceuticals, Inc.",2026-11-11
+50458057990,package,50458-579,Xarelto,,rivaroxaban,"TABLET, FILM COATED",20 mg/1,"Janssen Pharmaceuticals, Inc.",2026-11-11
+50458060601,package,50458-606,INVEGA TRINZA,,paliperidone palmitate,"INJECTION, SUSPENSION, EXTENDED RELEASE",273 mg/.88mL,"Janssen Pharmaceuticals, Inc",2026-11-11
+50458060701,package,50458-607,INVEGA TRINZA,,paliperidone palmitate,"INJECTION, SUSPENSION, EXTENDED RELEASE",410 mg/1.32mL,"Janssen Pharmaceuticals, Inc",2026-11-11
+50458060801,package,50458-608,INVEGA TRINZA,,paliperidone palmitate,"INJECTION, SUSPENSION, EXTENDED RELEASE",546 mg/1.75mL,"Janssen Pharmaceuticals, Inc",2026-11-11
+50458060901,package,50458-609,INVEGA TRINZA,,paliperidone palmitate,"INJECTION, SUSPENSION, EXTENDED RELEASE",819 mg/2.63mL,"Janssen Pharmaceuticals, Inc",2026-11-11
+50458061101,package,50458-611,INVEGA HAFYERA,,paliperidone palmitate,"INJECTION, SUSPENSION, EXTENDED RELEASE",1092 mg/3.5mL,"Janssen Pharmaceuticals, Inc",2026-11-11
+50458061201,package,50458-612,INVEGA HAFYERA,,paliperidone palmitate,"INJECTION, SUSPENSION, EXTENDED RELEASE",1560 mg/5mL,"Janssen Pharmaceuticals, Inc",2026-11-11
+50474070062,package,50474-700,Cimzia,,certolizumab pegol,KIT,,"UCB, Inc.",2026-11-11
+50474071079,package,50474-710,Cimzia,,certolizumab pegol,"INJECTION, SOLUTION",200 mg/mL,"UCB, Inc.",2026-11-11
+50474071081,package,50474-710,Cimzia,,certolizumab pegol,"INJECTION, SOLUTION",200 mg/mL,"UCB, Inc.",2026-11-11
+50474078184,package,50474-781,Bimzelx,,bimekizumab,"INJECTION, SOLUTION",160 mg/mL,"UCB, Inc.",2026-11-11
+50474078185,package,50474-781,Bimzelx,,bimekizumab,"INJECTION, SOLUTION",160 mg/mL,"UCB, Inc.",2026-11-11
+50474078284,package,50474-782,Bimzelx,,bimekizumab,"INJECTION, SOLUTION",320 mg/2mL,"UCB, Inc.",2026-11-11
+50474078378,package,50474-783,Bimzelx,,bimekizumab,"INJECTION, SOLUTION",320 mg/2mL,"UCB, Inc.",2026-11-11
+50484001030,package,50484-010,COLLAGENASE SANTYL,,COLLAGENASE SANTYL,OINTMENT,250 [arb'U]/g,"SMITH & NEPHEW, INC",2026-11-11
+50484001090,package,50484-010,COLLAGENASE SANTYL,,COLLAGENASE SANTYL,OINTMENT,250 [arb'U]/g,"SMITH & NEPHEW, INC",2026-11-11
+50632001001,package,50632-010,RabAvert,,Rabies Vaccine,KIT,,Bavarian Nordic A/S,2026-11-11
+50633012011,package,50633-120,DigiFab,,ovine digoxin immune fab,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",40 mg/1,BTG International Inc.,2026-11-11
+50742035401,package,50742-354,MESNA,,MESNA,"TABLET, FILM COATED",400 mg/1,"Ingenus Pharmaceuticals, LLC",2026-11-11
+50742036430,package,50742-364,Buprenorphine and Naloxone,,buprenorphine and naloxone,FILM,8 mg/1; 2 mg/1,"INGENUS PHARMACEUTICALS, LLC",2026-11-11
+50881000560,package,50881-005,JAKAFI,,ruxolitinib,TABLET,5 mg/1,Incyte Corporation,2026-11-11
+50881000603,package,50881-006,ZYNYZ,,retifanlimab-dlwr,INJECTION,25 mg/mL,Incyte Corporation,2026-11-11
+50881000705,package,50881-007,OPZELURA,,ruxolitinib,CREAM,15 mg/g,Incyte Corporation,2026-11-11
+50881001060,package,50881-010,JAKAFI,,ruxolitinib,TABLET,10 mg/1,Incyte Corporation,2026-11-11
+50881001303,package,50881-013,MONJUVI,,Tafasitamab-cxix,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",200 mg/5mL,Incyte Corporation,2026-11-11
+50881001560,package,50881-015,JAKAFI,,ruxolitinib,TABLET,15 mg/1,Incyte Corporation,2026-11-11
+50881002060,package,50881-020,JAKAFI,,ruxolitinib,TABLET,20 mg/1,Incyte Corporation,2026-11-11
+50881002560,package,50881-025,JAKAFI,,ruxolitinib,TABLET,25 mg/1,Incyte Corporation,2026-11-11
+51144000260,package,51144-002,TUKYSA,,tucatinib,TABLET,150 mg/1,SEAGEN INC.,2026-11-11
+51144000301,package,51144-003,TIVDAK,,tisotumab vedotin,"INJECTION, POWDER, FOR SOLUTION",40 mg/4mL,SEAGEN INC.,2026-11-11
+51144002001,package,51144-020,PADCEV,EJFV,ENFORTUMAB VEDOTIN,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",20 mg/2mL,SEAGEN INC.,2026-11-11
+51144003001,package,51144-030,PADCEV,EJFV,ENFORTUMAB VEDOTIN,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",30 mg/3mL,SEAGEN INC.,2026-11-11
+51144005001,package,51144-050,ADCETRIS,,brentuximab vedotin,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",50 mg/10.5mL,SEAGEN INC.,2026-11-11
+51167010602,package,51167-106,Trikafta,,"Elexacaftor, Tezacaftor, and Ivacaftor",KIT,,Vertex Pharmaceuticals Incorporated,2026-11-11
+51167012101,package,51167-121,ALYFTREK,,"vanzacaftor, tezacaftor, and deutivacaftor","TABLET, FILM COATED",10 mg/1; 50 mg/1; 125 mg/1,Vertex Pharmaceuticals Incorporated,2026-11-11
+51167012201,package,51167-122,ORKAMBI,,lumacaftor and ivacaftor,GRANULE,75 mg/1; 94 mg/1,Vertex Pharmaceuticals Incorporated,2026-11-11
+51167020001,package,51167-200,Kalydeco,,ivacaftor,"TABLET, FILM COATED",150 mg/1,Vertex Pharmaceuticals Incorporated,2026-11-11
+51167030001,package,51167-300,Kalydeco,,ivacaftor,GRANULE,50 mg/1,Vertex Pharmaceuticals Incorporated,2026-11-11
+51167033101,package,51167-331,Trikafta,,"Elexacaftor, Tezacaftor, and Ivacaftor",KIT,,Vertex Pharmaceuticals Incorporated,2026-11-11
+51167044501,package,51167-445,Trikafta,,"Elexacaftor, Tezacaftor, and Ivacaftor",KIT,,Vertex Pharmaceuticals Incorporated,2026-11-11
+51167044601,package,51167-446,Trikafta,,"Elexacaftor, Tezacaftor, and Ivacaftor",KIT,,Vertex Pharmaceuticals Incorporated,2026-11-11
+51167060001,package,51167-600,Kalydeco,,ivacaftor,GRANULE,25 mg/1,Vertex Pharmaceuticals Incorporated,2026-11-11
+51267089099,package,51267-890,Contrave,Extended-Release,naltrexone hydrochloride and bupropion hydrochloride,"TABLET, EXTENDED RELEASE",8 mg/1; 90 mg/1,Nalpropion Pharmaceuticals LLC,2026-11-11
+51672419601,package,51672-4196,Deferiprone,,Deferiprone,TABLET,500 mg/1,"Sun Pharmaceutical Industries, Inc.",2026-11-11
+51754425003,package,51754-4250,Akovaz,,ephedrine sulfate,INJECTION,5 mg/mL,"Exela Pharma Sciences, LLC",2026-11-11
+51759020210,package,51759-202,AJOVY,,fremanezumab-vfrm,INJECTION,225 mg/1.5mL,"Teva Pharmaceuticals USA, Inc.",2026-11-11
+51759020410,package,51759-204,AJOVY,,fremanezumab-vfrm,INJECTION,225 mg/1.5mL,"Teva Pharmaceuticals USA, Inc.",2026-11-11
+51759040202,package,51759-402,Simlandi,,adalimumab-ryvk,KIT,,"Teva Pharmaceuticals USA, Inc.",2026-11-11
+51759052010,package,51759-520,UZEDY,,risperidone,"INJECTION, SUSPENSION, EXTENDED RELEASE",100 mg/.28mL,"Teva Pharmaceuticals USA, Inc.",2026-11-11
+51759063010,package,51759-630,UZEDY,,risperidone,"INJECTION, SUSPENSION, EXTENDED RELEASE",125 mg/.35mL,"Teva Pharmaceuticals USA, Inc.",2026-11-11
+51759096010,package,51759-960,UZEDY,,risperidone,"INJECTION, SUSPENSION, EXTENDED RELEASE",250 mg/.7mL,"Teva Pharmaceuticals USA, Inc.",2026-11-11
+52015008001,package,52015-080,Dificid,,fidaxomicin,"TABLET, FILM COATED",200 mg/1,Merck Sharp & Dohme LLC,2026-11-11
+52246057004,package,52246-570,Spinosad,,spinosad,SUSPENSION,9 mg/mL,ParaPRO LLC,2026-11-11
+52652300101,package,52652-3001,Qbrelis,,lisinopril,SOLUTION,1 mg/mL,"Azurity Pharmaceuticals, Inc.",2026-11-11
+52652500101,package,52652-5001,Katerzia,,Amlodipine,SUSPENSION,1 mg/mL,"Azurity Pharmaceuticals, Inc.",2026-11-11
+52652800101,package,52652-8001,ZONISADE,,ZONISAMIDE,SUSPENSION,100 mg/5mL,"Azurity Pharmaceuticals, Inc.",2026-11-11
+52652900101,package,52652-9001,Eprontia,,Topiramate,SOLUTION,25 mg/mL,"Azurity Pharmaceuticals, Inc.",2026-11-11
+52817062008,package,52817-620,Baclofen,,Baclofen,SOLUTION,10 mg/5mL,"TRUPHARMA, LLC",2026-11-11
+52937000120,package,52937-001,Vascepa,,icosapent ethyl,CAPSULE,1000 mg/1,Amarin Pharma Inc.,2026-11-11
+53746051501,package,53746-515,Spironolactone,,Spironolactone,TABLET,100 mg/1,Amneal Pharmaceuticals of New York LLC,2026-11-11
+54092054701,package,54092-547,MOTEGRITY,,PRUCALOPRIDE,"TABLET, FILM COATED",2 mg/1,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+54092070104,package,54092-701,VPRIV,,velaglucerase alfa,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",2.5 mg/mL,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+54123092930,package,54123-929,Zubsolv,,buprenorphine hydrochloride and naloxone hydrochloride,"TABLET, ORALLY DISINTEGRATING",2.9 mg/1; .71 mg/1,"Orexo US, Inc.",2026-11-11
+54123095730,package,54123-957,Zubsolv,,buprenorphine hydrochloride and naloxone hydrochloride,"TABLET, ORALLY DISINTEGRATING",5.7 mg/1; 1.4 mg/1,"Orexo US, Inc.",2026-11-11
+54123098630,package,54123-986,Zubsolv,,buprenorphine hydrochloride and naloxone hydrochloride,"TABLET, ORALLY DISINTEGRATING",8.6 mg/1; 2.1 mg/1,"Orexo US, Inc.",2026-11-11
+54288010515,package,54288-105,Dehydrated Alcohol,,Alcohol,"INJECTION, SOLUTION",1 mL/mL,"BPI Labs, LLC",2026-11-11
+54288013710,package,54288-137,Phenobarbital Sodium,,Phenobarbital Sodium,INJECTION,130 mg/mL,BPI Labs LLC,2026-11-11
+54436020004,package,54436-200,XYOSTED,,testosterone enanthate,INJECTION,100 mg/.5mL,"Antares Pharma, Inc.",2026-11-11
+54436025004,package,54436-250,XYOSTED,,testosterone enanthate,INJECTION,50 mg/.5mL,"Antares Pharma, Inc.",2026-11-11
+54436027504,package,54436-275,XYOSTED,,testosterone enanthate,INJECTION,75 mg/.5mL,"Antares Pharma, Inc.",2026-11-11
+55111049704,package,55111-497,capecitabine,,capecitabine,TABLET,500 mg/1,Dr. Reddy's Laboratories Limited,2026-11-11
+55111052601,package,55111-526,Tacrolimus,,Tacrolimus,CAPSULE,1 mg/1,Dr. Reddy's Laboratories Limited,2026-11-11
+55135013201,package,55135-132,TRODELVY,,SACITUZUMAB GOVITECAN,"POWDER, FOR SOLUTION",180 mg/1,"Gilead Sciences, Inc.",2026-11-11
+55150018810,package,55150-188,Tranexamic Acid,,Tranexamic Acid,"INJECTION, SOLUTION",100 mg/mL,Eugia US LLC,2026-11-11
+55150025930,package,55150-259,Acetylcysteine,,Acetylcysteine,"INJECTION, SOLUTION",6 g/30mL,Eugia US LLC,2026-11-11
+55150038601,package,55150-386,CARBOPLATIN,,CARBOPLATIN,"INJECTION, SOLUTION",600 mg/60mL,Eugia US LLC,2026-11-11
+55150043101,package,55150-431,DACTINOMYCIN,,DACTINOMYCIN,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",.5 mg/mL,Eugia US LLC,2026-11-11
+55150043401,package,55150-434,DEXRAZOXANE,,DEXRAZOXANE,KIT,,Eugia US LLC,2026-11-11
+55292082001,package,55292-820,Enjaymo,,sutimlimab-jome,"INJECTION, SOLUTION, CONCENTRATE",50 mg/mL,"Recordati Rare Diseases, Inc.",2026-11-11
+55513002104,package,55513-021,ARANESP,,darbepoetin alfa,"INJECTION, SOLUTION",40 ug/.4mL,"Amgen, Inc",2026-11-11
+55513002304,package,55513-023,ARANESP,,darbepoetin alfa,"INJECTION, SOLUTION",60 ug/.3mL,"Amgen, Inc",2026-11-11
+55513002504,package,55513-025,ARANESP,,darbepoetin alfa,"INJECTION, SOLUTION",100 ug/.5mL,"Amgen, Inc",2026-11-11
+55513002801,package,55513-028,ARANESP,,darbepoetin alfa,"INJECTION, SOLUTION",200 ug/.4mL,"Amgen, Inc",2026-11-11
+55513003201,package,55513-032,ARANESP,,darbepoetin alfa,"INJECTION, SOLUTION",500 ug/mL,"Amgen, Inc",2026-11-11
+55513005704,package,55513-057,ARANESP,,darbepoetin alfa,"INJECTION, SOLUTION",25 ug/.42mL,"Amgen, Inc",2026-11-11
+55513005901,package,55513-059,IMDELLTRA (AMG757),,Tarlatamab-dlle,KIT,,"Amgen, Inc",2026-11-11
+55513007701,package,55513-077,IMDELLTRA (AMG757),,Tarlatamab-dlle,KIT,,"Amgen, Inc",2026-11-11
+55513009804,package,55513-098,ARANESP,,darbepoetin alfa,"INJECTION, SOLUTION",10 ug/.4mL,"Amgen, Inc",2026-11-11
+55513011101,package,55513-111,ARANESP,,darbepoetin alfa,"INJECTION, SOLUTION",300 ug/.6mL,"Amgen, Inc",2026-11-11
+55513011201,package,55513-112,TEZSPIRE,,tezepelumab-ekko,"INJECTION, SOLUTION",210 mg/1.9mL,Amgen Inc,2026-11-11
+55513012301,package,55513-123,TEZSPIRE,,tezepelumab-ekko,"INJECTION, SOLUTION",210 mg/1.9mL,Amgen Inc,2026-11-11
+55513013201,package,55513-132,Kanjinti,,trastuzumab-anns,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",420 mg/20mL,"Amgen, Inc",2026-11-11
+55513014101,package,55513-141,Kanjinti,,trastuzumab-anns,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",150 mg/7.15mL,"Amgen, Inc",2026-11-11
+55513016001,package,55513-160,BLINCYTO,,blinatumomab,KIT,,"Amgen, Inc",2026-11-11
+55513019001,package,55513-190,Neulasta,,pegfilgrastim,INJECTION,6 mg/.6mL,"Amgen, Inc",2026-11-11
+55513019201,package,55513-192,Neulasta,,pegfilgrastim,KIT,,"Amgen, Inc",2026-11-11
+55513020601,package,55513-206,MVASI,,bevacizumab-awwb,"INJECTION, SOLUTION",100 mg/4mL,"Amgen, Inc",2026-11-11
+55513020701,package,55513-207,MVASI,,bevacizumab-awwb,"INJECTION, SOLUTION",400 mg/16mL,"Amgen, Inc",2026-11-11
+55513022101,package,55513-221,Nplate,,romiplostim,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",250 ug/.5mL,"Amgen, Inc",2026-11-11
+55513022201,package,55513-222,Nplate,,romiplostim,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",500 ug/mL,"Amgen, Inc",2026-11-11
+55513022301,package,55513-223,Nplate,,romiplostim,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",125 ug/.25mL,"Amgen, Inc",2026-11-11
+55513036955,package,55513-369,Otezla,,apremilast,KIT,,"Amgen, Inc",2026-11-11
+55513048824,package,55513-488,LUMAKRAS,,sotorasib,"TABLET, COATED",120 mg/1,"Amgen, Inc",2026-11-11
+55513050450,package,55513-504,LUMAKRAS,,sotorasib,"TABLET, COATED",320 mg/1,"Amgen, Inc",2026-11-11
+55513051260,package,55513-512,LUMAKRAS,,sotorasib,"TABLET, COATED",240 mg/1,"Amgen, Inc",2026-11-11
+55513053010,package,55513-530,NEUPOGEN,,Filgrastim,"INJECTION, SOLUTION",300 ug/mL,"Amgen, Inc",2026-11-11
+55513054610,package,55513-546,NEUPOGEN,,Filgrastim,"INJECTION, SOLUTION",480 ug/1.6mL,"Amgen, Inc",2026-11-11
+55513067001,package,55513-670,AVSOLA,,infliximab-axxq,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",100 mg/10mL,"Amgen, Inc",2026-11-11
+55513071021,package,55513-710,Prolia,,denosumab,INJECTION,60 mg/mL,"Amgen, Inc",2026-11-11
+55513073001,package,55513-730,XGEVA,,denosumab,INJECTION,120 mg/1.7mL,"Amgen, Inc",2026-11-11
+55513074010,package,55513-740,PARSABIV,,etelcalcetide,"INJECTION, SOLUTION",2.5 mg/.5mL,"Amgen, Inc",2026-11-11
+55513074110,package,55513-741,PARSABIV,,etelcalcetide,"INJECTION, SOLUTION",5 mg/mL,"Amgen, Inc",2026-11-11
+55513084301,package,55513-843,AIMOVIG,,erenumab-aooe,"INJECTION, SOLUTION",140 mg/mL,"Amgen, Inc",2026-11-11
+55513095401,package,55513-954,Vectibix,,panitumumab,SOLUTION,100 mg/5mL,"Amgen, Inc",2026-11-11
+55513095601,package,55513-956,Vectibix,,panitumumab,SOLUTION,400 mg/20mL,"Amgen, Inc",2026-11-11
+55513099802,package,55513-998,Evenity,,romosozumab-aqqg,"INJECTION, SOLUTION",105 mg/1.17mL,"Amgen, Inc",2026-11-11
+55566750102,package,55566-7501,Menopur,,menotropins,KIT,,Ferring Pharmaceuticals Inc.,2026-11-11
+55566830301,package,55566-8303,FIRMAGON,,Degarelix,KIT,,Ferring Pharmaceuticals Inc.,2026-11-11
+55566840301,package,55566-8403,FIRMAGON,,Degarelix,KIT,,Ferring Pharmaceuticals Inc.,2026-11-11
+57599080000,none,,,,,,,,
+57894003001,package,57894-030,REMICADE,,INFLIXIMAB,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",100 mg/10mL,"Janssen Biotech, Inc.",2026-11-11
+57894005427,package,57894-054,Stelara,,ustekinumab,SOLUTION,130 mg/26mL,"Janssen Biotech, Inc.",2026-11-11
+57894006003,package,57894-060,STELARA,,ustekinumab,"INJECTION, SOLUTION",45 mg/.5mL,"Janssen Biotech, Inc.",2026-11-11
+57894006103,package,57894-061,STELARA,,ustekinumab,"INJECTION, SOLUTION",90 mg/mL,"Janssen Biotech, Inc.",2026-11-11
+57894007102,package,57894-071,Simponi,,golimumab,"INJECTION, SOLUTION",100 mg/mL,"Janssen Biotech, Inc.",2026-11-11
+57894008060,package,57894-080,LAZCLUZE,,lazertinib,"TABLET, FILM COATED",80 mg/1,"Janssen Biotech, Inc.",2026-11-11
+57894016001,package,57894-160,INFLIXIMAB,,INFLIXIMAB,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",100 mg/10mL,"Janssen Biotech, Inc.",2026-11-11
+57894024030,package,57894-240,LAZCLUZE,,lazertinib,"TABLET, FILM COATED",240 mg/1,"Janssen Biotech, Inc.",2026-11-11
+57894035001,package,57894-350,SIMPONI ARIA,,golimumab,SOLUTION,50 mg/4mL,"Janssen Biotech, Inc.",2026-11-11
+57894044901,package,57894-449,TECVAYLI,,teclistamab-cqyv,INJECTION,10 mg/mL,"Janssen Biotech, Inc.",2026-11-11
+57894045001,package,57894-450,TECVAYLI,,teclistamab-cqyv,INJECTION,90 mg/mL,"Janssen Biotech, Inc.",2026-11-11
+57894046901,package,57894-469,TALVEY,,talquetamab-tgvs,INJECTION,3 mg/1.5mL,"Janssen Biotech, Inc.",2026-11-11
+57894047001,package,57894-470,TALVEY,,talquetamab-tgvs,INJECTION,40 mg/mL,"Janssen Biotech, Inc.",2026-11-11
+57894050101,package,57894-501,Rybrevant,,amivantamab-vmjw,INJECTION,350 mg/1,"Janssen Biotech, Inc.",2026-11-11
+57894050301,package,57894-503,Darzalex Faspro,,daratumumab and hyaluronidase-fihj (human recombinant),INJECTION,1800 mg/15mL; 30000 U/15mL,"Janssen Biotech, Inc.",2026-11-11
+57894050505,package,57894-505,Darzalex IV,,Daratumumab,"INJECTION, SOLUTION, CONCENTRATE",100 mg/5mL,"Janssen Biotech, Inc.",2026-11-11
+57894050520,package,57894-505,Darzalex IV,,Daratumumab,"INJECTION, SOLUTION, CONCENTRATE",100 mg/5mL,"Janssen Biotech, Inc.",2026-11-11
+57894064001,package,57894-640,TREMFYA,,Guselkumab,INJECTION,100 mg/mL,"Janssen Biotech, Inc.",2026-11-11
+57894064006,package,57894-640,TREMFYA,,Guselkumab,INJECTION,100 mg/mL,"Janssen Biotech, Inc.",2026-11-11
+57894064011,package,57894-640,TREMFYA,,Guselkumab,INJECTION,100 mg/mL,"Janssen Biotech, Inc.",2026-11-11
+57894065002,package,57894-650,TREMFYA,,Guselkumab,INJECTION,200 mg/20mL,"Janssen Biotech, Inc.",2026-11-11
+57894065102,package,57894-651,TREMFYA,,guselkumab,INJECTION,200 mg/2mL,"Janssen Biotech, Inc.",2026-11-11
+57894065104,package,57894-651,TREMFYA,,guselkumab,INJECTION,200 mg/2mL,"Janssen Biotech, Inc.",2026-11-11
+57894065122,package,57894-651,TREMFYA,,guselkumab,INJECTION,200 mg/2mL,"Janssen Biotech, Inc.",2026-11-11
+57962000712,package,57962-007,Imbruvica,,Ibrutinib,SUSPENSION,70 mg/mL,Pharmacyclics LLC,2026-11-11
+57962001428,package,57962-014,Imbruvica,,Ibrutinib,"TABLET, FILM COATED",140 mg/1,Pharmacyclics LLC,2026-11-11
+57962014009,package,57962-140,Imbruvica,,Ibrutinib,CAPSULE,140 mg/1,Pharmacyclics LLC,2026-11-11
+57962028028,package,57962-280,Imbruvica,,Ibrutinib,"TABLET, FILM COATED",280 mg/1,Pharmacyclics LLC,2026-11-11
+57962042028,package,57962-420,Imbruvica,,Ibrutinib,"TABLET, FILM COATED",420 mg/1,Pharmacyclics LLC,2026-11-11
+57970010001,package,57970-100,DALVANCE,,Dalbavancin,"INJECTION, POWDER, FOR SOLUTION",500 mg/25mL,"Allergan, Inc.",2026-11-11
+58160082311,package,58160-823,Shingrix,,"Zoster Vaccine Recombinant, Adjuvanted",KIT,,GlaxoSmithKline Biologicals SA,2026-11-11
+58181304205,package,58181-3042,Gleostine,,lomustine,"CAPSULE, GELATIN COATED",100 mg/1,"NextSource Biotechnology, LLC",2026-11-11
+58284022801,package,58284-228,BRIXADI,,BUPRENORPHINE,INJECTION,128 mg/.36mL,Braeburn Inc.,2026-11-11
+58284026401,package,58284-264,BRIXADI,,BUPRENORPHINE,INJECTION,64 mg/.18mL,Braeburn Inc.,2026-11-11
+58284029601,package,58284-296,BRIXADI,,BUPRENORPHINE,INJECTION,96 mg/.27mL,Braeburn Inc.,2026-11-11
+58394001603,package,58394-016,Xyntha,,antihemophilic factor (recombinant),KIT,,Wyeth BioPharma Division of Wyeth Pharmaceuticals LLC,2026-11-11
+58394063503,package,58394-635,BeneFIX,,coagulation factor ix (recombinant),KIT,,Wyeth BioPharma Division of Wyeth Pharmaceuticals LLC,2026-11-11
+58394063603,package,58394-636,BeneFIX,,coagulation factor ix (recombinant),KIT,,Wyeth BioPharma Division of Wyeth Pharmaceuticals LLC,2026-11-11
+58394063703,package,58394-637,BeneFIX,,coagulation factor ix (recombinant),KIT,,Wyeth BioPharma Division of Wyeth Pharmaceuticals LLC,2026-11-11
+58406002104,package,58406-021,ENBREL,,etanercept,SOLUTION,50 mg/mL,Immunex Corporation,2026-11-11
+58406004404,package,58406-044,ENBREL,,etanercept,SOLUTION,50 mg/mL,Immunex Corporation,2026-11-11
+58468003002,package,58468-0030,Thyrogen,,THYROTROPIN ALFA,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",.9 mg/mL,Genzyme Corporation,2026-11-11
+58468004001,package,58468-0040,Fabrazyme,,AGALSIDASE BETA,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",5 mg/mL,Genzyme Corporation,2026-11-11
+58468004101,package,58468-0041,Fabrazyme,,AGALSIDASE BETA,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",5 mg/mL,Genzyme Corporation,2026-11-11
+58468016001,package,58468-0160,Lumizyme,,ALGLUCOSIDASE ALFA,"INJECTION, POWDER, FOR SOLUTION",5 mg/mL,Genzyme Corporation,2026-11-11
+58468022501,package,58468-0225,Cablivi,,caplacizumab,KIT,,Genzyme Corporation,2026-11-11
+58468042601,package,58468-0426,Nexviazyme,,avalglucosidase alfa-ngpt,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",100 mg/10mL,Genzyme Corporation,2026-11-11
+58468466301,package,58468-4663,Cerezyme,,IMIGLUCERASE,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",40 U/mL,Genzyme Corporation,2026-11-11
+59137052004,package,59137-520,Rasuvo,,methotrexate,"INJECTION, SOLUTION",15 mg/.3mL,Medexus Pharma Inc.,2026-11-11
+59137053004,package,59137-530,Rasuvo,,methotrexate,"INJECTION, SOLUTION",20 mg/.4mL,Medexus Pharma Inc.,2026-11-11
+59137054004,package,59137-540,Rasuvo,,methotrexate,"INJECTION, SOLUTION",25 mg/.5mL,Medexus Pharma Inc.,2026-11-11
+59148001871,none,,,,,,,,
+59148001971,none,,,,,,,,
+59148003513,package,59148-035,Rexulti,,brexpiprazole,TABLET,.25 mg/1,"Otsuka America Pharmaceutical, Inc.",2026-11-11
+59148003613,package,59148-036,Rexulti,,brexpiprazole,TABLET,.5 mg/1,"Otsuka America Pharmaceutical, Inc.",2026-11-11
+59148003713,package,59148-037,Rexulti,,brexpiprazole,TABLET,1 mg/1,"Otsuka America Pharmaceutical, Inc.",2026-11-11
+59148003813,package,59148-038,Rexulti,,brexpiprazole,TABLET,2 mg/1,"Otsuka America Pharmaceutical, Inc.",2026-11-11
+59148003913,package,59148-039,Rexulti,,brexpiprazole,TABLET,3 mg/1,"Otsuka America Pharmaceutical, Inc.",2026-11-11
+59148004013,package,59148-040,Rexulti,,brexpiprazole,TABLET,4 mg/1,"Otsuka America Pharmaceutical, Inc.",2026-11-11
+59148004580,package,59148-045,ABILIFY MAINTENA,,aripiprazole,KIT,,"Otsuka America Pharmaceutical, Inc.",2026-11-11
+59148007280,package,59148-072,ABILIFY MAINTENA,,aripiprazole,KIT,,"Otsuka America Pharmaceutical, Inc.",2026-11-11
+59148010280,package,59148-102,Abilify Asimtufii,,Aripiprazole,"INJECTION, SUSPENSION, EXTENDED RELEASE",720 mg/2.4mL,"Otsuka America Pharmaceutical, Inc",2026-11-11
+59148011480,package,59148-114,Abilify Asimtufii,,Aripiprazole,"INJECTION, SUSPENSION, EXTENDED RELEASE",960 mg/3.2mL,"Otsuka America Pharmaceutical, Inc",2026-11-11
+59148023212,package,59148-232,ABILIFY MAINTENA,,aripiprazole,KIT,,"Otsuka America Pharmaceutical, Inc.",2026-11-11
+59148024512,package,59148-245,ABILIFY MAINTENA,,aripiprazole,KIT,,"Otsuka America Pharmaceutical, Inc.",2026-11-11
+59212014603,package,59212-146,NuvaRing,,etonogestrel and ethinyl estradiol,"INSERT, EXTENDED RELEASE",.12 mg/d; .015 mg/d,Advanz Pharma (US) Corp.,2026-11-11
+59212056210,package,59212-562,Plaquenil,,Hydroxychloroquine Sulfate,TABLET,200 mg/1,Advanz Pharma (US) Corp.,2026-11-11
+59310030240,package,59310-302,QVAR REDIHALER,,Beclomethasone Dipropionate HFA,"AEROSOL, METERED",40 ug/1,"Teva Respiratory, LLC",2026-11-11
+59310030480,package,59310-304,QVAR REDIHALER,,Beclomethasone Dipropionate HFA,"AEROSOL, METERED",80 ug/1,"Teva Respiratory, LLC",2026-11-11
+59310061031,package,59310-610,CINQAIR,,Reslizumab,"INJECTION, SOLUTION, CONCENTRATE",10 mg/mL,"Teva Respiratory, LLC",2026-11-11
+59338077501,package,59338-775,Feraheme,,ferumoxytol,INJECTION,510 mg/17mL,"AMAG Pharmaceuticals, Inc",2026-11-11
+59365512901,package,59365-5129,ParaGard T 380A,,Copper,INTRAUTERINE DEVICE,313.4 mg/1,"CooperSurgical, Inc.",2026-11-11
+59385002560,package,59385-025,BELBUCA,,buprenorphine hydrochloride,"FILM, SOLUBLE",600 ug/1,BioDelivery Sciences International Inc,2026-11-11
+59385002660,package,59385-026,BELBUCA,,buprenorphine hydrochloride,"FILM, SOLUBLE",750 ug/1,BioDelivery Sciences International Inc,2026-11-11
+59385002760,package,59385-027,BELBUCA,,buprenorphine hydrochloride,"FILM, SOLUBLE",900 ug/1,BioDelivery Sciences International Inc,2026-11-11
+59572040500,package,59572-405,Revlimid,,Lenalidomide,CAPSULE,5 mg/1,Celgene Corporation,2026-11-11
+59572040528,package,59572-405,Revlimid,,Lenalidomide,CAPSULE,5 mg/1,Celgene Corporation,2026-11-11
+59572041000,package,59572-410,Revlimid,,Lenalidomide,CAPSULE,10 mg/1,Celgene Corporation,2026-11-11
+59572041028,package,59572-410,Revlimid,,Lenalidomide,CAPSULE,10 mg/1,Celgene Corporation,2026-11-11
+59572041521,package,59572-415,Revlimid,,Lenalidomide,CAPSULE,15 mg/1,Celgene Corporation,2026-11-11
+59572042521,package,59572-425,Revlimid,,Lenalidomide,CAPSULE,25 mg/1,Celgene Corporation,2026-11-11
+59572050121,package,59572-501,Pomalyst,,pomalidomide,CAPSULE,1 mg/1,Celgene Corporation,2026-11-11
+59572050221,package,59572-502,Pomalyst,,pomalidomide,CAPSULE,2 mg/1,Celgene Corporation,2026-11-11
+59572050321,package,59572-503,Pomalyst,,pomalidomide,CAPSULE,3 mg/1,Celgene Corporation,2026-11-11
+59572050421,package,59572-504,Pomalyst,,pomalidomide,CAPSULE,4 mg/1,Celgene Corporation,2026-11-11
+59572070530,package,59572-705,Idhifa,,enasidenib mesylate,"TABLET, FILM COATED",50 mg/1,Celgene Corporation,2026-11-11
+59572071030,package,59572-710,Idhifa,,enasidenib mesylate,"TABLET, FILM COATED",100 mg/1,Celgene Corporation,2026-11-11
+59572071101,package,59572-711,Reblozyl,,Luspatercept,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",25 mg/1,Celgene Corporation,2026-11-11
+59572072012,package,59572-720,Inrebic,,Fedratinib Hydrochloride,CAPSULE,100 mg/1,Celgene Corporation,2026-11-11
+59572074007,package,59572-740,ONUREG,,azacitidine,"TABLET, FILM COATED",300 mg/1,Celgene Corporation,2026-11-11
+59572077501,package,59572-775,Reblozyl,,Luspatercept,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",75 mg/1,Celgene Corporation,2026-11-11
+59572098401,package,59572-984,ISTODAX,,romidepsin,KIT,,Celgene Corporation,2026-11-11
+59676003056,package,59676-030,BALVERSA,,Erdafitinib,"TABLET, FILM COATED",3 mg/1,Janssen Products LP,2026-11-11
+59676004056,package,59676-040,BALVERSA,,Erdafitinib,"TABLET, FILM COATED",4 mg/1,Janssen Products LP,2026-11-11
+59676027801,package,59676-278,EDURANT,,rilpivirine hydrochloride,"TABLET, FILM COATED",25 mg/1,"Janssen Products, LP",2026-11-11
+59676031001,package,59676-310,PROCRIT,,Erythropoietin,"INJECTION, SOLUTION",10000 [iU]/mL,"Janssen Products, LP",2026-11-11
+59676032004,package,59676-320,PROCRIT,,Erythropoietin,"INJECTION, SOLUTION",20000 [iU]/mL,"Janssen Products, LP",2026-11-11
+59676034001,package,59676-340,PROCRIT,,Erythropoietin,"INJECTION, SOLUTION",40000 [iU]/mL,"Janssen Products, LP",2026-11-11
+59676057530,package,59676-575,PREZCOBIX,,DARUNAVIR ETHANOLATE and COBICISTAT,"TABLET, FILM COATED",800 mg/1; 150 mg/1,"Janssen Products, LP",2026-11-11
+59676060012,package,59676-600,ERLEADA,,Apalutamide,"TABLET, FILM COATED",60 mg/1,"Janssen Products, LP",2026-11-11
+59676060430,package,59676-604,ERLEADA,,Apalutamide,"TABLET, FILM COATED",240 mg/1,"Janssen Products, LP",2026-11-11
+59676061001,package,59676-610,YONDELIS,,Trabectedin,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",.05 mg/mL,"Janssen Products, LP",2026-11-11
+59676080030,package,59676-800,Symtuza,,"Darunavir, Cobicistat, Emtricitabine, and Tenofovir alafenamide","TABLET, FILM COATED",800 mg/1; 150 mg/1; 200 mg/1; 10 mg/1,Janssen Products LP,2026-11-11
+59762135001,package,59762-1350,Rifabutin,,rifabutin,CAPSULE,150 mg/1,Mylan Pharmaceuticals Inc.,2026-11-11
+59767002401,package,59767-024,PERTZYE,,pancrelipase,"CAPSULE, DELAYED RELEASE",24000 [USP'U]/1; 90750 [USP'U]/1; 86250 [USP'U]/1,"Digestive Care, Inc.",2026-11-11
+59767002402,package,59767-024,PERTZYE,,pancrelipase,"CAPSULE, DELAYED RELEASE",24000 [USP'U]/1; 90750 [USP'U]/1; 86250 [USP'U]/1,"Digestive Care, Inc.",2026-11-11
+60219126601,package,60219-1266,Oseltamivir Phosphate,,Oseltamivir,CAPSULE,75 mg/1,Amneal Pharmaceuticals LLC,2026-11-11
+60505363103,package,60505-3631,Dasatinib,,Dasatinib,"TABLET, FILM COATED",100 mg/1,Apotex Corp.,2026-11-11
+60505380102,package,60505-3801,Nilotinib,,nilotinib,CAPSULE,150 mg/1,Apotex Corp.,2026-11-11
+60505381603,package,60505-3816,Dasatinib,,Dasatinib,"TABLET, FILM COATED",80 mg/1,Apotex Corp.,2026-11-11
+60505381703,package,60505-3817,Dasatinib,,Dasatinib,"TABLET, FILM COATED",140 mg/1,Apotex Corp.,2026-11-11
+60505432701,package,60505-4327,Abiraterone Acetate,,Abiraterone Acetate,TABLET,250 mg/1,Apotex Corp.,2026-11-11
+60505612801,package,60505-6128,Irinotecan Hydrochloride,,Irinotecan Hydrochloride,"INJECTION, SOLUTION",20 mg/mL,Apotex Corp.,2026-11-11
+60505613206,package,60505-6132,Oxaliplatin,,oxaliplatin,"INJECTION, SOLUTION",5 mg/mL,Apotex Corp.,2026-11-11
+60505622800,package,60505-6228,Bendamustine Hydrochloride,,Bendamustine Hydrochloride,"INJECTION, SOLUTION",25 mg/mL,Apotex Corp,2026-11-11
+60505628900,package,60505-6289,eribulin mesylate,,eribulin mesylate,INJECTION,.5 mg/mL,Apotex Corp.,2026-11-11
+60687025286,package,60687-252,Ondansetron,,Ondansetron,SOLUTION,4 mg/5mL,American Health Packaging,2026-11-11
+60687066291,package,60687-662,Albuterol Sulfate,,Albuterol Sulfate,INHALANT,90 ug/1,American Health Packaging,2026-11-11
+60687071801,package,60687-718,Dexamethasone,,Dexamethasone,TABLET,4 mg/1,American Health Packaging,2026-11-11
+60687072901,package,60687-729,Dexamethasone,,Dexamethasone,TABLET,6 mg/1,American Health Packaging,2026-11-11
+60842002102,package,60842-021,Auvi-Q,,epinephrine,"INJECTION, SOLUTION",.1 mg/.1mL,"kaleo, Inc",2026-11-11
+60842002202,package,60842-022,Auvi-Q,,epinephrine,"INJECTION, SOLUTION",.15 mg/.15mL,"kaleo, Inc",2026-11-11
+60842002302,package,60842-023,Auvi-Q,,epinephrine,"INJECTION, SOLUTION",.3 mg/.3mL,"kaleo, Inc",2026-11-11
+60923046502,package,60923-465,Vyondys 53,,golodirsen,INJECTION,50 mg/mL,"Sarepta Therapeutics, Inc.",2026-11-11
+61314024063,package,61314-240,JUBBONTI,,denosumab,INJECTION,60 mg/mL,Sandoz Inc,2026-11-11
+61314031810,package,61314-318,ZARXIO,,filgrastim-sndz,"INJECTION, SOLUTION",300 ug/.5mL,Sandoz Inc.,2026-11-11
+61314032520,package,61314-325,Adalimumab,,adalimumab-adaz,"INJECTION, SOLUTION",80 mg/.8mL,Sandoz Inc,2026-11-11
+61314032610,package,61314-326,ZARXIO,,filgrastim-sndz,"INJECTION, SOLUTION",480 ug/.8mL,Sandoz Inc.,2026-11-11
+61314032720,package,61314-327,Adalimumab,,adalimumab-adaz,"INJECTION, SOLUTION",40 mg/.4mL,Sandoz Inc,2026-11-11
+61314032764,package,61314-327,Adalimumab,,adalimumab-adaz,"INJECTION, SOLUTION",40 mg/.4mL,Sandoz Inc,2026-11-11
+61314063705,package,61314-637,Prednisolone Acetate,,Prednisolone Acetate,SUSPENSION/ DROPS,10 mg/mL,Sandoz Inc,2026-11-11
+61703033950,package,61703-339,Carboplatin,,Carboplatin,"INJECTION, SOLUTION",10 mg/mL,"Hospira, Inc.",2026-11-11
+61703034250,package,61703-342,Paclitaxel,,PACLITAXEL,"INJECTION, SOLUTION",6 mg/mL,"Hospira, Inc.",2026-11-11
+61755000502,package,61755-005,EYLEA,,aflibercept,"INJECTION, SOLUTION",40 mg/mL,"Regeneron Pharmaceuticals, Inc.",2026-11-11
+61755000801,package,61755-008,LIBTAYO,,cemiplimab-rwlc,INJECTION,50 mg/mL,"Regeneron Pharmaceuticals, Inc.",2026-11-11
+61755002002,package,61755-020,Praluent,,alirocumab,"INJECTION, SOLUTION",75 mg/mL,"Regeneron Pharmaceuticals, Inc.",2026-11-11
+61755002102,package,61755-021,Praluent,,alirocumab,"INJECTION, SOLUTION",150 mg/mL,"Regeneron Pharmaceuticals, Inc.",2026-11-11
+61874007560,package,61874-075,Viberzi,,Eluxadoline,"TABLET, FILM COATED",75 mg/1,"Allergan, Inc.",2026-11-11
+61874010060,package,61874-100,Viberzi,,Eluxadoline,"TABLET, FILM COATED",100 mg/1,"Allergan, Inc.",2026-11-11
+61874011530,package,61874-115,Vraylar,,cariprazine,"CAPSULE, GELATIN COATED",1.5 mg/1,"Allergan, Inc.",2026-11-11
+61874013030,package,61874-130,Vraylar,,cariprazine,"CAPSULE, GELATIN COATED",3 mg/1,"Allergan, Inc.",2026-11-11
+61874014530,package,61874-145,Vraylar,,cariprazine,"CAPSULE, GELATIN COATED",4.5 mg/1,"Allergan, Inc.",2026-11-11
+61874016030,package,61874-160,Vraylar,,cariprazine,"CAPSULE, GELATIN COATED",6 mg/1,"Allergan, Inc.",2026-11-11
+61958090101,package,61958-0901,Cayston,,aztreonam,KIT,,"Gilead Sciences, Inc.",2026-11-11
+61958110101,package,61958-1101,COMPLERA,,"emtricitabine, rilpivirine hydrochloride, and tenofovir disoproxil fumarate","TABLET, FILM COATED",200 mg/1; 25 mg/1; 300 mg/1,"Gilead Sciences, Inc.",2026-11-11
+61958120101,package,61958-1201,Stribild,,"elvitegravir, cobicistat, emtricitabine, and tenofovir disoproxil fumarate","TABLET, FILM COATED",150 mg/1; 150 mg/1; 200 mg/1; 300 mg/1,"Gilead Sciences, Inc.",2026-11-11
+61958170201,package,61958-1702,Zydelig,,idelalisib,"TABLET, FILM COATED",150 mg/1,"Gilead Sciences, Inc.",2026-11-11
+61958180101,package,61958-1801,Harvoni,,LEDIPASVIR and SOFOSBUVIR,"TABLET, FILM COATED",90 mg/1; 400 mg/1,"Gilead Sciences, Inc",2026-11-11
+61958190101,package,61958-1901,Genvoya,,"elvitegravir, cobicistat, emtricitabine, and tenofovir alafenamide",TABLET,150 mg/1; 150 mg/1; 200 mg/1; 10 mg/1,"Gilead Sciences, Inc.",2026-11-11
+61958200201,package,61958-2002,DESCOVY,,emtricitabine and tenofovir alafenamide,TABLET,200 mg/1; 25 mg/1,"Gilead Sciences, Inc.",2026-11-11
+61958200202,package,61958-2002,DESCOVY,,emtricitabine and tenofovir alafenamide,TABLET,200 mg/1; 25 mg/1,"Gilead Sciences, Inc.",2026-11-11
+61958210101,package,61958-2101,ODEFSEY,,"emtricitabine, rilpivirine hydrochloride, and tenofovir alafenamide",TABLET,200 mg/1; 25 mg/1; 25 mg/1,"Gilead Sciences, Inc.",2026-11-11
+61958220101,package,61958-2201,Epclusa,,Velpatasvir and Sofosbuvir,"TABLET, FILM COATED",100 mg/1; 400 mg/1,"Gilead Sciences, Inc.",2026-11-11
+61958230101,package,61958-2301,VEMLIDY,,tenofovir alafenamide,TABLET,25 mg/1,"Gilead Sciences, Inc.",2026-11-11
+61958240101,package,61958-2401,Vosevi,,"SOFOSBUVIR, VELPATASVIR, and VOXILAPREVIR","TABLET, FILM COATED",400 mg/1; 100 mg/1; 100 mg/1,"Gilead Sciences, Inc.",2026-11-11
+61958250101,package,61958-2501,Biktarvy,,"bictegravir sodium, emtricitabine, and tenofovir alafenamide fumarate",TABLET,50 mg/1; 200 mg/1; 25 mg/1,"Gilead Sciences, Inc.",2026-11-11
+61958250103,package,61958-2501,Biktarvy,,"bictegravir sodium, emtricitabine, and tenofovir alafenamide fumarate",TABLET,50 mg/1; 200 mg/1; 25 mg/1,"Gilead Sciences, Inc.",2026-11-11
+61958250501,package,61958-2505,Biktarvy,,"bictegravir sodium, emtricitabine, and tenofovir alafenamide fumarate",TABLET,30 mg/1; 120 mg/1; 15 mg/1,"Gilead Sciences, Inc.",2026-11-11
+61958290102,package,61958-2901,Veklury,,remdesivir,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",100 mg/1,"Gilead Sciences, Inc.",2026-11-11
+61958300101,package,61958-3001,Sunlenca,,LENACAPAVIR SODIUM,"TABLET, FILM COATED",300 mg/1,"Gilead Sciences, Inc.",2026-11-11
+61958300103,package,61958-3001,Sunlenca,,LENACAPAVIR SODIUM,"TABLET, FILM COATED",300 mg/1,"Gilead Sciences, Inc.",2026-11-11
+61958300201,package,61958-3002,Sunlenca,,LENACAPAVIR SODIUM,KIT,,"Gilead Sciences, Inc.",2026-11-11
+61958300501,package,61958-3005,Sunlenca,,LENACAPAVIR SODIUM,KIT,,"Gilead Sciences, Inc.",2026-11-11
+61958340101,package,61958-3401,Yeztugo,,LENACAPAVIR SODIUM,"TABLET, FILM COATED",300 mg/1,"Gilead Sciences, Inc.",2026-11-11
+61958340201,package,61958-3402,Yeztugo,,LENACAPAVIR SODIUM,KIT,,"Gilead Sciences, Inc.",2026-11-11
+62135068130,package,62135-681,Metformin Hydrochloride,,Metformin Hydrochloride,TABLET,625 mg/1,"Chartwell RX, LLC",2026-11-11
+62332055660,package,62332-556,sacubitril and valsartan,,sacubitril and valsartan,"TABLET, FILM COATED",24 mg/1; 26 mg/1,Alembic Pharmaceuticals Inc.,2026-11-11
+62484001505,package,62484-0015,XROMI,,Hydroxyurea,SOLUTION,100 mg/mL,"Nova Laboratories, Ltd.",2026-11-11
+62484002002,package,62484-0020,PURIXAN,,Purixan,SUSPENSION,20 mg/mL,"Nova Laboratories, Ltd",2026-11-11
+62541040510,package,62541-405,PANCREAZE,,"PANCRELIPASE LIPASE, PANCRELIPASE AMYLASE, and PANCRELIPASE PROTEASE","CAPSULE, DELAYED RELEASE",21000 [USP'U]/1; 83900 [USP'U]/1; 54700 [USP'U]/1,VIVUS LLC,2026-11-11
+62541040610,package,62541-406,PANCREAZE,,"PANCRELIPASE LIPASE, PANCRELIPASE AMYLASE, and PANCRELIPASE PROTEASE","CAPSULE, DELAYED RELEASE",37000 [USP'U]/1; 149900 [USP'U]/1; 97300 [USP'U]/1,VIVUS LLC,2026-11-11
+62756097083,package,62756-970,Buprenorphine and Naloxone,,Buprenorphine and Naloxone,TABLET,8 mg/1; 2 mg/1,"Sun Pharmaceutical Industries, Inc.",2026-11-11
+62856021201,package,62856-212,LEQEMBI,,lecanemab,"INJECTION, SOLUTION",100 mg/mL,Eisai Inc.,2026-11-11
+62856038901,package,62856-389,Halaven,,eribulin mesylate,INJECTION,.5 mg/mL,Eisai Inc.,2026-11-11
+62856070430,package,62856-704,Lenvima,,Lenvatinib,CAPSULE,4 mg/1,Eisai Inc.,2026-11-11
+62856070830,package,62856-708,Lenvima,,Lenvatinib,CAPSULE,4 mg/1,Eisai Inc.,2026-11-11
+62856071030,package,62856-710,Lenvima,,Lenvatinib,CAPSULE,10 mg/1,Eisai Inc.,2026-11-11
+62856071230,package,62856-712,Lenvima,,Lenvatinib,CAPSULE,4 mg/1,Eisai Inc.,2026-11-11
+62856071430,package,62856-714,Lenvima,,Lenvatinib,KIT,,Eisai Inc.,2026-11-11
+62856071830,package,62856-718,Lenvima,,Lenvatinib,KIT,,Eisai Inc.,2026-11-11
+62856072030,package,62856-720,Lenvima,,Lenvatinib,CAPSULE,10 mg/1,Eisai Inc.,2026-11-11
+62935016360,package,62935-163,Fensolvi,,Leuprolide Acetate,"INJECTION, SUSPENSION, EXTENDED RELEASE",45 mg/.375mL,TOLMAR Inc.,2026-11-11
+62935022710,package,62935-227,Eligard,,Leuprolide acetate,"INJECTION, SUSPENSION, EXTENDED RELEASE",22.5 mg/.375mL,TOLMAR Inc.,2026-11-11
+62935046150,package,62935-461,Eligard,,Leuprolide acetate,"INJECTION, SUSPENSION, EXTENDED RELEASE",45 mg/.375mL,TOLMAR Inc.,2026-11-11
+63020018030,package,63020-180,Alunbrig,,brigatinib,"TABLET, FILM COATED",180 mg/1,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+63020022521,package,63020-225,Fruzaqla,,fruquintinib,CAPSULE,5 mg/1,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+63020023002,package,63020-230,NINLARO,,ixazomib,CAPSULE,2.3 mg/1,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+63020039002,package,63020-390,NINLARO,,ixazomib,CAPSULE,3 mg/1,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+63020040002,package,63020-400,NINLARO,,ixazomib,CAPSULE,4 mg/1,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+63020053330,package,63020-533,Iclusig,,ponatinib hydrochloride,"TABLET, FILM COATED",30 mg/1,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+63020053430,package,63020-534,Iclusig,,ponatinib hydrochloride,"TABLET, FILM COATED",45 mg/1,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+63020053530,package,63020-535,Iclusig,,ponatinib hydrochloride,"TABLET, FILM COATED",15 mg/1,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+63090034030,package,63090-340,NUPLAZID,,pimavanserin tartrate,CAPSULE,34 mg/1,Acadia Pharmaceuticals Inc.,2026-11-11
+63323001302,package,63323-013,Thiamine,,THIAMINE HYDROCHLORIDE,"INJECTION, SOLUTION",100 mg/mL,"Fresenius Kabi USA, LLC",2026-11-11
+63323010605,package,63323-106,magnesium sulfate,,MAGNESIUM SULFATE HEPTAHYDRATE,"INJECTION, SOLUTION",40 mg/mL,"Fresenius Kabi USA, LLC",2026-11-11
+63323011310,package,63323-113,Pentam 300,,PENTAMIDINE ISETHIONATE,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",300 mg/3mL,"Fresenius Kabi USA, LLC",2026-11-11
+63323011751,package,63323-117,Fluorouracil,,FLUOROURACIL,"INJECTION, SOLUTION",50 mg/mL,"Fresenius Kabi USA, LLC",2026-11-11
+63323016101,package,63323-161,Ketorolac Tromethamine,,KETOROLAC TROMETHAMINE,"INJECTION, SOLUTION",15 mg/mL,"Fresenius Kabi USA, LLC",2026-11-11
+63323016201,package,63323-162,Ketorolac Tromethamine,,KETOROLAC TROMETHAMINE,"INJECTION, SOLUTION",30 mg/mL,"Fresenius Kabi USA, LLC",2026-11-11
+63323022905,package,63323-229,Protamine Sulfate,,PROTAMINE SULFATE,"INJECTION, SOLUTION",10 mg/mL,"Fresenius Kabi USA, LLC",2026-11-11
+63323026206,package,63323-262,Heparin Sodium,,HEPARIN SODIUM,"INJECTION, SOLUTION",5000 [USP'U]/mL,"Fresenius Kabi USA, LLC",2026-11-11
+63323026929,package,63323-269,Diprivan,,PROPOFOL,"INJECTION, EMULSION",10 mg/mL,"Fresenius Kabi USA, LLC",2026-11-11
+63323026965,package,63323-269,Diprivan,,PROPOFOL,"INJECTION, EMULSION",10 mg/mL,"Fresenius Kabi USA, LLC",2026-11-11
+63323027810,package,63323-278,Vinblastine Sulfate,,VINBLASTINE SULFATE,INJECTION,1 mg/mL,"Fresenius Kabi USA, LLC",2026-11-11
+63323043400,package,63323-434,Acetaminophen,,ACETAMINOPHEN,INJECTION,10 mg/mL,"Fresenius Kabi USA, LLC",2026-11-11
+63323052277,package,63323-522,Heparin Sodium,,HEPARIN SODIUM,"INJECTION, SOLUTION",5000 [USP'U]/100mL,"Fresenius Kabi USA, LLC",2026-11-11
+63323059303,package,63323-593,Glucagon,,Glucagon,KIT,,"Fresenius Kabi USA, LLC",2026-11-11
+63323059613,package,63323-596,Glucagon,,Glucagon,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",1 mg/mL,"Fresenius Kabi USA, LLC",2026-11-11
+63323076350,package,63323-763,Paclitaxel,,Paclitaxel,"INJECTION, SOLUTION",6 mg/mL,"Fresenius Kabi USA, LLC",2026-11-11
+63459010310,package,63459-103,Truxima,,rituximab-abbs,"INJECTION, SOLUTION",10 mg/mL,"Cephalon, Inc.",2026-11-11
+63459010450,package,63459-104,Truxima,,rituximab-abbs,"INJECTION, SOLUTION",10 mg/mL,"Cephalon, Inc.",2026-11-11
+63459034804,package,63459-348,Bendeka,,bendamustine hydrochloride,"INJECTION, SOLUTION",25 mg/mL,"Teva Pharmaceuticals USA, Inc.",2026-11-11
+63833038602,package,63833-386,Kcentra,,"PROTHROMBIN, COAGULATION FACTOR VII HUMAN, COAGULATION FACTOR IX HUMAN, COAGULATION FACTOR X HUMAN, Protein C, Protein S Human, and Water",KIT,,CSL Behring GmbH,2026-11-11
+63833038702,package,63833-387,Kcentra,,"PROTHROMBIN, COAGULATION FACTOR VII HUMAN, COAGULATION FACTOR IX HUMAN, COAGULATION FACTOR X HUMAN, Protein C, Protein S Human, and Water",KIT,,CSL Behring GmbH,2026-11-11
+63833061502,package,63833-615,Humate-P,,antihemophilic factor/von willebrand factor complex (human),KIT,,CSL Behring GmbH,2026-11-11
+63833061602,package,63833-616,Humate-P,,antihemophilic factor/von willebrand factor complex (human),KIT,,CSL Behring GmbH,2026-11-11
+63833061702,package,63833-617,Humate-P,,antihemophilic factor/von willebrand factor complex (human),KIT,,CSL Behring GmbH,2026-11-11
+64281011006,package,64281-110,Provocholine Inhalation Solution,,Methacholine Chloride Inhalation Solution,KIT,,Methapharm Inc.,2026-11-11
+64406000801,package,64406-008,TYSABRI,,natalizumab,INJECTION,300 mg/15mL,Biogen Inc.,2026-11-11
+64406002003,package,64406-020,Vumerity,,diroximel fumarate,CAPSULE,231 mg/1,Biogen Inc.,2026-11-11
+64406005801,package,64406-058,Spinraza,,Nusinersen,"INJECTION, SOLUTION",2.4 mg/mL,Biogen Inc.,2026-11-11
+64406010901,package,64406-109,QALSODY,,tofersen,INJECTION,100 mg/15mL,Biogen Inc.,2026-11-11
+64764010560,package,64764-105,Eohilia,,Budesonide,SUSPENSION,2 mg/10mL,"TAKEDA PHARMACEUTICALS AMERICA, INC.",2026-11-11
+64764010821,package,64764-108,ENTYVIO Pen,,vedolizumab,"INJECTION, SOLUTION",108 mg/.68mL,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+64764014005,package,64764-140,ADZYNMA,,Apadamtase Alfa,KIT,,"TAKEDA PHARMACEUTICALS AMERICA, INC.",2026-11-11
+64764014505,package,64764-145,ADZYNMA,,Apadamtase Alfa,KIT,,"TAKEDA PHARMACEUTICALS AMERICA, INC.",2026-11-11
+64764030020,package,64764-300,Entyvio,,vedolizumab,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",300 mg/5mL,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+64764073030,package,64764-730,Trintellix,,vortioxetine,"TABLET, FILM COATED",10 mg/1,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+64764075030,package,64764-750,Trintellix,,vortioxetine,"TABLET, FILM COATED",20 mg/1,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+64842072709,package,64842-0727,INQOVI,,CEDAZURIDINE and DECITABINE,"TABLET, FILM COATED",100 mg/1; 35 mg/1,"Taiho Pharmaceutical Co., Ltd.",2026-11-11
+64842102001,package,64842-1020,LONSURF,,trifluridine and tipiracil,"TABLET, FILM COATED",20 mg/1; 8.19 mg/1,"Taiho Pharmaceutical Co., Ltd.",2026-11-11
+64842102003,package,64842-1020,LONSURF,,trifluridine and tipiracil,"TABLET, FILM COATED",20 mg/1; 8.19 mg/1,"Taiho Pharmaceutical Co., Ltd.",2026-11-11
+64842102501,package,64842-1025,LONSURF,,trifluridine and tipiracil,"TABLET, FILM COATED",15 mg/1; 6.14 mg/1,"Taiho Pharmaceutical Co., Ltd.",2026-11-11
+64842102503,package,64842-1025,LONSURF,,trifluridine and tipiracil,"TABLET, FILM COATED",15 mg/1; 6.14 mg/1,"Taiho Pharmaceutical Co., Ltd.",2026-11-11
+64896066101,package,64896-661,RYTARY,,Carbidopa and Levodopa,"CAPSULE, EXTENDED RELEASE",95 mg/1; 23.75 mg/1,Amneal Pharmaceuticals LLC,2026-11-11
+64896066201,package,64896-662,RYTARY,,Carbidopa and Levodopa,"CAPSULE, EXTENDED RELEASE",145 mg/1; 36.25 mg/1,Amneal Pharmaceuticals LLC,2026-11-11
+64896066301,package,64896-663,RYTARY,,Carbidopa and Levodopa,"CAPSULE, EXTENDED RELEASE",195 mg/1; 48.75 mg/1,Amneal Pharmaceuticals LLC,2026-11-11
+64896066930,none,,,,,,,,
+64950021703,package,64950-217,Isoniazid,,isoniazid,TABLET,300 mg/1,Genus Lifesciences,2026-11-11
+65162005827,package,65162-058,Sevelamer Carbonate,,Sevelamer Carbonate,"TABLET, FILM COATED",800 mg/1,Amneal Pharmaceuticals LLC,2026-11-11
+65162022621,package,65162-226,YUVAFEM,,Estradiol,TABLET,10 ug/1,Amneal Pharmaceuticals LLC,2026-11-11
+65162035803,package,65162-358,ZAFEMY,,Norelgestromin and Ethinyl Estradiol,PATCH,150 ug/d; 35 ug/d,Amneal Pharmaceuticals LLC,2026-11-11
+65219058401,package,65219-584,TYENNE,,Tocilizumab-aazg,"INJECTION, SOLUTION",162 mg/.9mL,"Fresenius Kabi USA, LLC",2026-11-11
+65219058604,package,65219-586,TYENNE,,Tocilizumab-aazg,"INJECTION, SOLUTION",162 mg/.9mL,"Fresenius Kabi USA, LLC",2026-11-11
+65219059004,package,65219-590,TYENNE,,Tocilizumab-aazg,"INJECTION, SOLUTION, CONCENTRATE",80 mg/4mL,"Fresenius Kabi USA, LLC",2026-11-11
+65219059210,package,65219-592,TYENNE,,Tocilizumab-aazg,"INJECTION, SOLUTION, CONCENTRATE",200 mg/10mL,"Fresenius Kabi USA, LLC",2026-11-11
+65219059420,package,65219-594,TYENNE,,Tocilizumab-aazg,"INJECTION, SOLUTION, CONCENTRATE",400 mg/20mL,"Fresenius Kabi USA, LLC",2026-11-11
+65219059601,package,65219-596,TYENNE,,Tocilizumab-aazg,"INJECTION, SOLUTION",162 mg/.9mL,"Fresenius Kabi USA, LLC",2026-11-11
+65219061299,package,65219-612,Adalimumab-aacf,,adalimumab,KIT,,"Fresenius Kabi USA, LLC",2026-11-11
+65219082401,package,65219-824,Otulfi,,ustekinumab-aauz,"INJECTION, SOLUTION",45 mg/.5mL,"Fresenius Kabi USA, LLC",2026-11-11
+65219082626,package,65219-826,Otulfi,,ustekinumab-aauz,"INJECTION, SOLUTION",90 mg/mL,"Fresenius Kabi USA, LLC",2026-11-11
+65250013304,package,65250-133,EXPAREL,,bupivacaine,"INJECTION, SUSPENSION, LIPOSOMAL",13.3 mg/mL,"Pacira Pharmaceuticals, Inc.",2026-11-11
+65250013309,package,65250-133,EXPAREL,,bupivacaine,"INJECTION, SUSPENSION, LIPOSOMAL",13.3 mg/mL,"Pacira Pharmaceuticals, Inc.",2026-11-11
+65250026609,package,65250-266,EXPAREL,,bupivacaine,"INJECTION, SUSPENSION, LIPOSOMAL",13.3 mg/mL,"Pacira Pharmaceuticals, Inc.",2026-11-11
+65597040601,package,65597-406,Enhertu,,fam-trastuzumab deruxtecan-nxki,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",100 mg/5mL,Daiichi Sankyo Inc.,2026-11-11
+65597050404,package,65597-504,VANFLYTA,,QUIZARTINIB,"TABLET, FILM COATED",17.7 mg/1,Daiichi Sankyo Inc.,2026-11-11
+65597080101,package,65597-801,DATROWAY,,Datopotamab Deruxtecan,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",100 mg/5mL,Daiichi Sankyo Inc.,2026-11-11
+65628027205,package,65628-272,Konvomep,,omeprazole and sodium bicarbonate,KIT,,"Azurity Pharmaceuticals, Inc.",2026-11-11
+65628027210,package,65628-272,Konvomep,,omeprazole and sodium bicarbonate,KIT,,"Azurity Pharmaceuticals, Inc.",2026-11-11
+65649030302,package,65649-303,XIFAXAN,,rifaximin,TABLET,550 mg/1,"Salix Pharmaceuticals, Inc.",2026-11-11
+65757030001,package,65757-300,VIVITROL,,naltrexone,KIT,,"Alkermes, Inc.",2026-11-11
+65757040103,package,65757-401,ARISTADA,,aripiprazole lauroxil,"INJECTION, SUSPENSION, EXTENDED RELEASE",441 mg/1.6mL,"Alkermes, Inc.",2026-11-11
+65757040203,package,65757-402,ARISTADA,,aripiprazole lauroxil,"INJECTION, SUSPENSION, EXTENDED RELEASE",662 mg/2.4mL,"Alkermes, Inc.",2026-11-11
+65757040303,package,65757-403,ARISTADA,,aripiprazole lauroxil,"INJECTION, SUSPENSION, EXTENDED RELEASE",882 mg/3.2mL,"Alkermes, Inc.",2026-11-11
+65757040403,package,65757-404,ARISTADA,,aripiprazole lauroxil,"INJECTION, SUSPENSION, EXTENDED RELEASE",1064 mg/3.9mL,"Alkermes, Inc.",2026-11-11
+66658011303,package,66658-113,KEPIVANCE,,palifermin,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",5.16 mg/1.2mL,Swedish Orphan Biovitrum AB (publ),2026-11-11
+66658023101,none,,,,,,,,
+66658023407,package,66658-234,Kineret,,anakinra,"INJECTION, SOLUTION",100 mg/.67mL,Swedish Orphan Biovitrum AB (publ),2026-11-11
+66733094823,package,66733-948,ERBITUX,,cetuximab,SOLUTION,2 mg/mL,ImClone LLC,2026-11-11
+66733095823,package,66733-958,ERBITUX,,cetuximab,SOLUTION,2 mg/mL,ImClone LLC,2026-11-11
+66794015601,package,66794-156,Gablofen,,Baclofen Injection,"INJECTION, SOLUTION",1000 ug/mL,Piramal Critical Care Inc,2026-11-11
+66794015701,package,66794-157,Gablofen,,Baclofen Injection,"INJECTION, SOLUTION",2000 ug/mL,Piramal Critical Care Inc,2026-11-11
+66887000301,package,66887-003,XIAFLEX,,collagenase clostridium histolyticum,KIT,,"Endo USA, Inc.",2026-11-11
+66887000410,package,66887-004,Testopel,,testosterone,PELLET,75 mg/1,"Endo USA, Inc.",2026-11-11
+66993001968,package,66993-019,Albuterol Sulfate,HFA,albuterol sulfate,"AEROSOL, METERED",90 ug/1,Prasco Laboratories,2026-11-11
+66993007896,package,66993-078,Fluticasone Propionate,HFA,fluticasone propionate,"AEROSOL, METERED",44 ug/1,Prasco Laboratories,2026-11-11
+66993007996,package,66993-079,Fluticasone Propionate,HFA,fluticasone propionate,"AEROSOL, METERED",110 ug/1,Prasco Laboratories,2026-11-11
+66993008096,package,66993-080,Fluticasone Propionate,HFA,fluticasone propionate,"AEROSOL, METERED",220 ug/1,Prasco Laboratories,2026-11-11
+66993008696,package,66993-086,Fluticasone Propionate and Salmeterol HFA,,fluticasone propionate and salmeterol xinafoate,"AEROSOL, METERED",45 ug/1; 21 ug/1,Prasco Laboratories,2026-11-11
+66993008796,package,66993-087,Fluticasone Propionate and Salmeterol HFA,,fluticasone propionate and salmeterol xinafoate,"AEROSOL, METERED",115 ug/1; 21 ug/1,Prasco Laboratories,2026-11-11
+66993008896,package,66993-088,Fluticasone Propionate and Salmeterol HFA,,fluticasone propionate and salmeterol xinafoate,"AEROSOL, METERED",230 ug/1; 21 ug/1,Prasco Laboratories,2026-11-11
+66993013497,package,66993-134,Umeclidinium and Vilanterol Ellipta,,umeclidinium bromide and vilanterol trifenatate,POWDER,62.5 ug/1; 25 ug/1,Prasco Laboratories,2026-11-11
+66993013597,package,66993-135,Fluticasone Furoate and Vilanterol,,fluticasone furoate and vilanterol,POWDER,100 ug/1; 25 ug/1,Prasco Laboratories,2026-11-11
+66993013697,package,66993-136,Fluticasone Furoate and Vilanterol,,fluticasone furoate and vilanterol,POWDER,200 ug/1; 25 ug/1,Prasco Laboratories,2026-11-11
+66993037025,package,66993-370,medroxyprogesterone acetate,,medroxyprogesterone acetate,"INJECTION, SUSPENSION",150 mg/mL,Prasco Laboratories,2026-11-11
+66993037179,package,66993-371,medroxyprogesterone acetate,,medroxyprogesterone acetate,"INJECTION, SUSPENSION",150 mg/mL,Prasco Laboratories,2026-11-11
+66993045630,package,66993-456,DAPAGLIFLOZIN,,DAPAGLIFLOZIN,"TABLET, FILM COATED",5 mg/1,Prasco Laboratories,2026-11-11
+66993045730,package,66993-457,DAPAGLIFLOZIN,,DAPAGLIFLOZIN,"TABLET, FILM COATED",10 mg/1,Prasco Laboratories,2026-11-11
+66993049528,package,66993-495,Teriparatide,,Teriparatide,"INJECTION, SOLUTION",250 ug/mL,Prasco Laboratories,2026-11-11
+67108356509,package,67108-3565,MESNEX,,MESNA,"TABLET, FILM COATED",400 mg/1,Baxter Healthcare Company,2026-11-11
+67386013051,package,67386-130,Vyepti,,eptinezumab-jjmr,INJECTION,100 mg/mL,Lundbeck Pharmaceuticals LLC,2026-11-11
+67457022005,package,67457-220,Isosulfan Blue,,Isosulfan Blue,"INJECTION, SOLUTION",10 mg/mL,Mylan Institutional LLC,2026-11-11
+67457042312,package,67457-423,Dexamethasone Sodium Phosphate,,Dexamethasone Sodium Phosphate,"INJECTION, SOLUTION",4 mg/mL,Mylan Institutional LLC,2026-11-11
+67457053035,package,67457-530,LEUCOVORIN CALCIUM,,LEUCOVORIN CALCIUM,"INJECTION, POWDER, LYOPHILIZED, FOR SUSPENSION",350 mg/17.5mL,Mylan Institutional LLC,2026-11-11
+67457082399,package,67457-823,Vancomycin Hydrochloride,,Vancomycin Hydrochloride,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",1.25 g/25mL,Mylan Institutional LLC,2026-11-11
+67919003001,package,67919-030,ZERBAXA,,ceftolozane and tazobactam,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",1 g/10mL; .5 g/10mL,Merck Sharp & Dohme LLC,2026-11-11
+67919004104,package,67919-041,SIVEXTRO,,tedizolid phosphate,"TABLET, FILM COATED",200 mg/1,Merck Sharp & Dohme LLC,2026-11-11
+67979000201,package,67979-002,SUPPRELIN,LA,histrelin acetate,IMPLANT,50 mg/1,"Endo USA, Inc.",2026-11-11
+68001035525,package,68001-355,Palonosetron,,Palonosetron,"INJECTION, SOLUTION",.05 mg/mL,BluePoint Laboratories,2026-11-11
+68135030002,package,68135-300,Kuvan,,SAPROPTERIN DIHYDROCHLORIDE,TABLET,100 mg/1,BioMarin Pharmaceutical Inc.,2026-11-11
+68135067345,package,68135-673,Palynziq,,pegvaliase-pqpz,"INJECTION, SOLUTION",20 mg/mL,BioMarin Pharmaceutical Inc.,2026-11-11
+68180015106,package,68180-151,MIRABEGRON,,mirabegron,"TABLET, FILM COATED, EXTENDED RELEASE",25 mg/1,"Lupin Pharmaceuticals, Inc.",2026-11-11
+68180015206,package,68180-152,MIRABEGRON,,mirabegron,"TABLET, FILM COATED, EXTENDED RELEASE",50 mg/1,"Lupin Pharmaceuticals, Inc.",2026-11-11
+68180044001,package,68180-440,cephalexin,,Cephalexin,FOR SUSPENSION,125 mg/5mL,"Lupin Pharmaceuticals, Inc.",2026-11-11
+68180065907,package,68180-659,rifampin,,rifampin,CAPSULE,300 mg/1,"Lupin Pharmaceuticals, Inc.",2026-11-11
+68180096412,package,68180-964,Tiotropium Bromide,,Tiotropium Bromide,CAPSULE,18 ug/1,"Lupin Pharmaceuticals, Inc.",2026-11-11
+68462013508,package,68462-135,abiraterone acetate,,abiraterone acetate,TABLET,250 mg/1,"Glenmark Pharmaceuticals Inc., USA",2026-11-11
+68462030529,package,68462-305,Norethindrone,,Norethindrone,TABLET,.35 mg/1,"Glenmark Pharmaceuticals Inc., USA",2026-11-11
+68462058476,package,68462-584,Aprepitant,,Aprepitant,CAPSULE,80 mg/1,"Glenmark Pharmaceuticals Inc., USA",2026-11-11
+68462068301,package,68462-683,sirolimus,,sirolimus,"TABLET, FILM COATED",1 mg/1,"Glenmark Pharmaceuticals Inc., USA",2026-11-11
+68516461802,package,68516-4618,Alphanate,,Antihemophilic Factor/von Willebrand Factor Complex (Human),KIT,,"GRIFOLS USA, LLC",2026-11-11
+68516462002,package,68516-4620,Alphanate,,Antihemophilic Factor/von Willebrand Factor Complex (Human),KIT,,"GRIFOLS USA, LLC",2026-11-11
+68546017060,package,68546-170,Austedo,,Deutetrabenazine,"TABLET, COATED",6 mg/1,"Teva Neuroscience, Inc.",2026-11-11
+68546017160,package,68546-171,Austedo,,Deutetrabenazine,"TABLET, COATED",9 mg/1,"Teva Neuroscience, Inc.",2026-11-11
+68546017260,package,68546-172,Austedo,,Deutetrabenazine,"TABLET, COATED",12 mg/1,"Teva Neuroscience, Inc.",2026-11-11
+68546032512,package,68546-325,Copaxone,,Glatiramer Acetate,"INJECTION, SOLUTION",40 mg/mL,"Teva Neuroscience, Inc.",2026-11-11
+68546047156,package,68546-471,AUSTEDO XR,,deutetrabenazine,"TABLET, FILM COATED, EXTENDED RELEASE",12 mg/1,"Teva Neuroscience, Inc.",2026-11-11
+68546047256,package,68546-472,AUSTEDO XR,,deutetrabenazine,"TABLET, FILM COATED, EXTENDED RELEASE",24 mg/1,"Teva Neuroscience, Inc.",2026-11-11
+68546047356,package,68546-473,AUSTEDO XR,,deutetrabenazine,"TABLET, FILM COATED, EXTENDED RELEASE",30 mg/1,"Teva Neuroscience, Inc.",2026-11-11
+68682023101,package,68682-231,Azathioprine,,Azathioprine,TABLET,75 mg/1,Oceanside Pharmaceuticals,2026-11-11
+68682030930,package,68682-309,budesonide,,budesonide,"TABLET, EXTENDED RELEASE",9 mg/1,Oceanside Pharmaceuticals,2026-11-11
+68682065220,package,68682-652,Diazepam,,diazepam,GEL,10 mg/2mL,Oceanside Pharmaceuticals,2026-11-11
+68727071201,package,68727-712,ZEPZELCA,,Lurbinectedin,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",.5 mg/mL,"Jazz Pharmaceuticals, Inc.",2026-11-11
+68727090003,package,68727-900,Rylaze,,asparaginase erwinia chrysanthemi (recombinant)-rywn,INJECTION,20 mg/mL,"Jazz Pharmaceuticals, Inc.",2026-11-11
+68817013450,package,68817-134,ABRAXANE,,Paclitaxel,"INJECTION, POWDER, LYOPHILIZED, FOR SUSPENSION",100 mg/20mL,"Abraxis BioScience, LLC",2026-11-11
+68875010201,package,68875-0102,Gattex,,teduglutide,KIT,,"Takeda Pharmaceuticals America, Inc.",2026-11-11
+68982085004,package,68982-850,Octagam Immune Globulin (Human),,Immune Globulin,SOLUTION,100 mg/mL,Octapharma USA Inc,2026-11-11
+68992301001,package,68992-3010,Envarsus,XR,Tacrolimus,"TABLET, EXTENDED RELEASE",1 mg/1,"Veloxis Pharmaceuticals, Inc",2026-11-11
+68992301003,package,68992-3010,Envarsus,XR,Tacrolimus,"TABLET, EXTENDED RELEASE",1 mg/1,"Veloxis Pharmaceuticals, Inc",2026-11-11
+68992304001,package,68992-3040,Envarsus,XR,Tacrolimus,"TABLET, EXTENDED RELEASE",4 mg/1,"Veloxis Pharmaceuticals, Inc",2026-11-11
+68992304003,package,68992-3040,Envarsus,XR,Tacrolimus,"TABLET, EXTENDED RELEASE",4 mg/1,"Veloxis Pharmaceuticals, Inc",2026-11-11
+68992307501,package,68992-3075,Envarsus,XR,Tacrolimus,"TABLET, EXTENDED RELEASE",.75 mg/1,"Veloxis Pharmaceuticals, Inc",2026-11-11
+68992307503,package,68992-3075,Envarsus,XR,Tacrolimus,"TABLET, EXTENDED RELEASE",.75 mg/1,"Veloxis Pharmaceuticals, Inc",2026-11-11
+69097014260,package,69097-142,ALBUTEROL SULFATE,,albuterol sulfate,INHALANT,90 ug/1,Cipla USA Inc.,2026-11-11
+69488000301,package,69488-003,Lutathera,,Lutetium Lu 177 dotatate,INJECTION,10 mCi/mL,"Advanced Accelerator Applications USA, Inc",2026-11-11
+69488001061,none,,,,,,,,
+69616027830,package,69616-278,Fycompa,,perampanel,TABLET,8 mg/1,"Catalyst Pharmaceuticals, Inc.",2026-11-11
+69639010101,package,69639-101,AKYNZEO,,Netupitant and Palonosetron,CAPSULE,300 mg/1; .5 mg/1,"Helsinn Therapeutics (U.S.), Inc.",2026-11-11
+69911047802,package,69911-478,AFSTYLA,"Antihemophilic Factor (Recombinant), Single Chain","ANTIHEMOPHILIC FACTOR, HUMAN RECOMBINANT",KIT,,CSL Behring Lengnau AG,2026-11-11
+69911048102,package,69911-481,AFSTYLA,"Antihemophilic Factor (Recombinant), Single Chain","ANTIHEMOPHILIC FACTOR, HUMAN RECOMBINANT",KIT,,CSL Behring Lengnau AG,2026-11-11
+69911086702,package,69911-867,IDELVION,,Coagulation Factor IX Recombinant Human,KIT,,CSL Behring Lengnau AG,2026-11-11
+70010022805,package,70010-228,Gabapentin,,Gabapentin,"TABLET, FILM COATED",800 mg/1,Granules Pharmaceuticals Inc.,2026-11-11
+70069012101,package,70069-121,Tropicamide,,Tropicamide,SOLUTION/ DROPS,10 mg/mL,"Somerset Therapeutics, LLC",2026-11-11
+70100042402,package,70100-424,Indocyanine Green,,Indocyanine Green and Water,KIT,,Renew Pharmaceuticals Limited,2026-11-11
+70114010101,package,70114-101,UDENYCA,,pegfilgrastim-cbqv,"INJECTION, SOLUTION",6 mg/.6mL,"Coherus Oncology, Inc.",2026-11-11
+70114022002,package,70114-220,YUSIMRY,,adalimumab-aqvh,"INJECTION, SOLUTION",40 mg/.8mL,Coherus BioSciences Inc,2026-11-11
+70121104905,package,70121-1049,Triamcinolone Acetonide,,Triamcinolone Acetonide,"INJECTION, SUSPENSION",40 mg/mL,Amneal Pharmaceuticals LLC,2026-11-11
+70121157305,package,70121-1573,Methylprednisolone acetate,,Methylprednisolone acetate,"INJECTION, SUSPENSION",40 mg/mL,Amneal Pharmaceuticals LLC,2026-11-11
+70127010010,package,70127-100,Epidiolex,,cannabidiol,SOLUTION,100 mg/mL,"Jazz Pharmaceuticals, Inc.",2026-11-11
+70127010060,package,70127-100,Epidiolex,,cannabidiol,SOLUTION,100 mg/mL,"Jazz Pharmaceuticals, Inc.",2026-11-11
+70255001002,package,70255-010,MEKTOVI,,BINIMETINIB,"TABLET, FILM COATED",15 mg/1,Array BioPharma Inc.,2026-11-11
+70255002501,package,70255-025,BRAFTOVI,,Encorafenib,CAPSULE,75 mg/1,Array BioPharma Inc.,2026-11-11
+70255002503,package,70255-025,BRAFTOVI,,Encorafenib,CAPSULE,75 mg/1,Array BioPharma Inc.,2026-11-11
+70370106001,package,70370-1060,INGREZZA,,Valbenazine,CAPSULE,60 mg/1,"Neurocrine Biosciences, Inc.",2026-11-11
+70370108001,package,70370-1080,INGREZZA,,Valbenazine,CAPSULE,80 mg/1,"Neurocrine Biosciences, Inc.",2026-11-11
+70370204001,package,70370-2040,INGREZZA,,Valbenazine,CAPSULE,40 mg/1,"Neurocrine Biosciences, Inc.",2026-11-11
+70370404001,package,70370-4040,INGREZZA Sprinkle,,Valbenazine,CAPSULE,40 mg/1,"Neurocrine Biosciences, Inc.",2026-11-11
+70377001123,package,70377-011,EVEROLIMUS,,everolimus,TABLET,5 mg/1,Biocon Pharma Inc.,2026-11-11
+70437024018,package,70437-240,Nerlynx,,neratinib,TABLET,40 mg/1,"Puma Biotechnology, Inc.",2026-11-11
+70437024033,package,70437-240,Nerlynx,,neratinib,TABLET,40 mg/1,"Puma Biotechnology, Inc.",2026-11-11
+70510232102,package,70510-2321,RADICAVA ORS,,EDARAVONE,KIT,,Shionogi Inc.,2026-11-11
+70510232201,package,70510-2322,RADICAVA ORS,,EDARAVONE,KIT,,Shionogi Inc.,2026-11-11
+70512001430,package,70512-014,Lidocaine 4% Patch,,Lidocaine 4%,PATCH,40 mg/g,SOLA Pharmaceuticals,2026-11-11
+70539000102,package,70539-001,Tymlos,,abaloparatide,"INJECTION, SOLUTION",3.12 mg/1.56mL,"Radius Health, Inc.",2026-11-11
+70594004402,package,70594-044,Vancomycin,,Vancomycin,"INJECTION, SOLUTION",2 g/400mL,Xellia Pharmaceuticals USA LLC,2026-11-11
+70700027322,package,70700-273,Estradiol valerate,,Estradiol valerate,INJECTION,10 mg/mL,"Xiromed, LLC",2026-11-11
+70700027422,package,70700-274,Estradiol valerate,,Estradiol valerate,INJECTION,20 mg/mL,"Xiromed, LLC",2026-11-11
+70700027522,package,70700-275,Estradiol valerate,,Estradiol valerate,INJECTION,40 mg/mL,"Xiromed, LLC",2026-11-11
+70710116003,package,70710-1160,Mirabegron,,Mirabegron,"TABLET, EXTENDED RELEASE",50 mg/1,Zydus Pharmaceuticals (USA) Inc.,2026-11-11
+70710119003,package,70710-1190,norelgestromin and ethinyl estradiol,,norelgestromin and ethinyl estradiol,PATCH,150 ug/mg; 35 ug/mg,Zydus Pharmaceuticals USA Inc.,2026-11-11
+70710153001,package,70710-1530,DOXORUBICIN HYDROCHLORIDE,,doxorubicin hydrochloride,"INJECTABLE, LIPOSOMAL",2 mg/mL,Zydus Pharmaceuticals USA Inc.,2026-11-11
+70710153101,package,70710-1531,DOXORUBICIN HYDROCHLORIDE,,doxorubicin hydrochloride,"INJECTABLE, LIPOSOMAL",2 mg/mL,Zydus Pharmaceuticals USA Inc.,2026-11-11
+70710185207,package,70710-1852,Indomethacin,,Indomethacin,SUPPOSITORY,50 mg/1,Zydus Pharmaceuticals USA Inc.,2026-11-11
+70720095036,package,70720-950,ZOLADEX,,goserelin,IMPLANT,3.6 mg/1,TerSera Therapeutics LLC,2026-11-11
+70720095130,package,70720-951,ZOLADEX,,goserelin,IMPLANT,10.8 mg/1,TerSera Therapeutics LLC,2026-11-11
+70756062925,package,70756-629,Phenylephrine Hydrochloride,,Phenylephrine Hydrochloride,SOLUTION/ DROPS,25 mg/mL,Lifestar Pharma LLC,2026-11-11
+70954059610,package,70954-596,Prucalopride,,Prucalopride,TABLET,1 mg/1,"ANI Pharmaceuticals, Inc.",2026-11-11
+71104080201,package,71104-802,ELOCTATE,,"Antihemophilic Factor (Recombinant), Fc Fusion Protein",KIT,,Bioverativ Therapeutics Inc.,2026-11-11
+71104080301,package,71104-803,ELOCTATE,,"Antihemophilic Factor (Recombinant), Fc Fusion Protein",KIT,,Bioverativ Therapeutics Inc.,2026-11-11
+71104080501,package,71104-805,ELOCTATE,,"Antihemophilic Factor (Recombinant), Fc Fusion Protein",KIT,,Bioverativ Therapeutics Inc.,2026-11-11
+71104080601,package,71104-806,ELOCTATE,,"Antihemophilic Factor (Recombinant), Fc Fusion Protein",KIT,,Bioverativ Therapeutics Inc.,2026-11-11
+71104080701,package,71104-807,ELOCTATE,,"Antihemophilic Factor (Recombinant), Fc Fusion Protein",KIT,,Bioverativ Therapeutics Inc.,2026-11-11
+71104080801,package,71104-808,ELOCTATE,,"Antihemophilic Factor (Recombinant), Fc Fusion Protein",KIT,,Bioverativ Therapeutics Inc.,2026-11-11
+71104097901,package,71104-979,ALTUVIIIO,,"Antihemophilic Factor (Recombinant), Fc-VWF-XTEN Fusion Protein-ehtl",KIT,,Bioverativ Therapeutics Inc.,2026-11-11
+71104098201,package,71104-982,ALTUVIIIO,,"Antihemophilic Factor (Recombinant), Fc-VWF-XTEN Fusion Protein-ehtl",KIT,,Bioverativ Therapeutics Inc.,2026-11-11
+71104098401,package,71104-984,ALTUVIIIO,,"Antihemophilic Factor (Recombinant), Fc-VWF-XTEN Fusion Protein-ehtl",KIT,,Bioverativ Therapeutics Inc.,2026-11-11
+71288003221,package,71288-032,Ampicillin and Sulbactam,,Ampicillin sodium and Sulbactam sodium,"INJECTION, POWDER, FOR SOLUTION",2 g/1; 1 g/1,Meitheal Pharmaceuticals Inc.,2026-11-11
+71288011450,package,71288-114,GEMCITABINE,,GEMCITABINE HYDROCHLORIDE,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",1 g/1,Meitheal Pharmaceuticals Inc.,2026-11-11
+71288011530,package,71288-115,Azacitidine,,Azacitidine,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",100 mg/1,Meitheal Pharmaceuticals Inc.,2026-11-11
+71288011920,package,71288-119,Decitabine,,Decitabine,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",50 mg/20mL,Meitheal Pharmaceuticals Inc.,2026-11-11
+71288016750,package,71288-167,Pemetrexed,,Pemetrexed disodium,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",500 mg/50mL,Meitheal Pharmaceuticals Inc.,2026-11-11
+71288040905,package,71288-409,Palonosetron Hydrochloride,,Palonosetron Hydrochloride,"INJECTION, SOLUTION",.25 mg/5mL,Meitheal Pharmaceuticals Inc.,2026-11-11
+71288080651,package,71288-806,Zoledronic Acid,,Zoledronic Acid,"INJECTION, SOLUTION",5 mg/100mL,Meitheal Pharmaceuticals Inc.,2026-11-11
+71332000101,package,71332-001,TAVALISSE,,FOSTAMATINIB,TABLET,100 mg/1,"Rigel Pharmaceuticals, Inc.",2026-11-11
+71332000201,package,71332-002,TAVALISSE,,FOSTAMATINIB,TABLET,150 mg/1,"Rigel Pharmaceuticals, Inc.",2026-11-11
+71332000660,package,71332-006,Gavreto,,Pralsetinib,CAPSULE,100 mg/1,"Rigel Pharmaceuticals, Inc.",2026-11-11
+71336100301,package,71336-1003,AMVUTTRA,,VUTRISIRAN,INJECTION,25 mg/.5mL,"Alnylam Pharmaceuticals, Inc.",2026-11-11
+71369002010,package,71369-020,DOPTELET,,avatrombopag maleate,"TABLET, FILM COATED",20 mg/1,"AkaRx, Inc.",2026-11-11
+71369002015,package,71369-020,DOPTELET,,avatrombopag maleate,"TABLET, FILM COATED",20 mg/1,"AkaRx, Inc.",2026-11-11
+71369002030,package,71369-020,DOPTELET,,avatrombopag maleate,"TABLET, FILM COATED",20 mg/1,"AkaRx, Inc.",2026-11-11
+71699002530,package,71699-025,Xcopri,,cenobamate,"TABLET, FILM COATED",25 mg/1,"SK Life Science, Inc.",2026-11-11
+71699005030,package,71699-050,Xcopri,,cenobamate,"TABLET, FILM COATED",50 mg/1,"SK Life Science, Inc.",2026-11-11
+71699010030,package,71699-100,Xcopri,,cenobamate,"TABLET, FILM COATED",100 mg/1,"SK Life Science, Inc.",2026-11-11
+71699015030,package,71699-150,Xcopri,,cenobamate,"TABLET, FILM COATED",150 mg/1,"SK Life Science, Inc.",2026-11-11
+71699020030,package,71699-200,Xcopri,,cenobamate,"TABLET, FILM COATED",200 mg/1,"SK Life Science, Inc.",2026-11-11
+71715000227,package,71715-002,NUZYRA,,omadacycline,"TABLET, FILM COATED",150 mg/1,"Paratek Pharmaceuticals, Inc.",2026-11-11
+71770012030,package,71770-120,Siklos,,hydroxyurea,"TABLET, FILM COATED",1000 mg/1,Medunik,2026-11-11
+71837100002,package,71837-1000,BIZENGRI,,Zenocutuzumab,INJECTION,20 mg/mL,"Partner Therapeutics, Inc.",2026-11-11
+71837584305,package,71837-5843,Leukine,,SARGRAMOSTIM,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",250 ug/mL,"Partner Therapeutics, Inc.",2026-11-11
+71921017820,package,71921-178,abiraterone acetate,,abiraterone acetate,TABLET,250 mg/1,"Florida Pharmaceutical Products, LLC.",2026-11-11
+72060011040,package,72060-110,CAPLYTA,,lumateperone,CAPSULE,10.5 mg/1,"Intra-Cellular Therapies, Inc",2026-11-11
+72060012140,package,72060-121,CAPLYTA,,lumateperone,CAPSULE,21 mg/1,"Intra-Cellular Therapies, Inc",2026-11-11
+72060014240,package,72060-142,CAPLYTA,,lumateperone,CAPSULE,42 mg/1,"Intra-Cellular Therapies, Inc",2026-11-11
+72065012012,package,72065-120,Gvoke HypoPen,0.5 mg Auto-Injector,"glucagon injection, solution","INJECTION, SOLUTION",.5 mg/.1mL,"Xeris Pharmaceuticals, Inc.",2026-11-11
+72065012112,package,72065-121,Gvoke HypoPen,1 mg Auto-Injector,"glucagon injection, solution","INJECTION, SOLUTION",1 mg/.2mL,"Xeris Pharmaceuticals, Inc.",2026-11-11
+72205003092,package,72205-030,Abiraterone,,Abiraterone acetate,TABLET,250 mg/1,Novadoz Pharmaceuticals LLC,2026-11-11
+72205005401,package,72205-054,Fosaprepitant,,Fosaprepitant,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",150 mg/5mL,Novadoz Pharmaceuticals LLC,2026-11-11
+72237010207,package,72237-102,XPOVIO,,selinexor,"TABLET, FILM COATED",40 mg/1,Karyopharm Therapeutics Inc.,2026-11-11
+72237010305,package,72237-103,XPOVIO,,selinexor,"TABLET, FILM COATED",50 mg/1,Karyopharm Therapeutics Inc.,2026-11-11
+72237010401,package,72237-104,XPOVIO,,selinexor,"TABLET, FILM COATED",60 mg/1,Karyopharm Therapeutics Inc.,2026-11-11
+72237010601,package,72237-106,XPOVIO,,selinexor,"TABLET, FILM COATED",10 mg/1,Karyopharm Therapeutics Inc.,2026-11-11
+72252051002,package,72252-510,Valtoco,,diazepam,SPRAY,10 mg/.1mL,"Neurelis, Inc",2026-11-11
+72252051005,package,72252-510,Valtoco,,diazepam,SPRAY,10 mg/.1mL,"Neurelis, Inc",2026-11-11
+72252051504,package,72252-515,Valtoco,,diazepam,SPRAY,7.5 mg/.1mL,"Neurelis, Inc",2026-11-11
+72252051510,package,72252-515,Valtoco,,diazepam,SPRAY,7.5 mg/.1mL,"Neurelis, Inc",2026-11-11
+72252052010,package,72252-520,Valtoco,,diazepam,SPRAY,10 mg/.1mL,"Neurelis, Inc",2026-11-11
+72266024805,package,72266-248,Sincalide,,Sincalide,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",5 ug/5mL,FOSUN PHARMA USA INC,2026-11-11
+72482010012,package,72482-100,Vonjo,,Pacritinib,CAPSULE,100 mg/1,"Sobi, Inc.",2026-11-11
+72485062513,package,72485-625,Ciprofloxacin and dexamethasone,,Ciprofloxacin and dexamethasone,SUSPENSION/ DROPS,3 mg/mL; 1 mg/mL,ARMAS PHARMACEUTICALS INC.,2026-11-11
+72511039302,package,72511-393,REPATHA,,Evolocumab,"INJECTION, SOLUTION",140 mg/mL,Amgen USA Inc.,2026-11-11
+72511050101,package,72511-501,REPATHA,,Evolocumab,"INJECTION, SOLUTION",140 mg/mL,Amgen USA Inc.,2026-11-11
+72511076002,package,72511-760,REPATHA,,Evolocumab,"INJECTION, SOLUTION",140 mg/mL,Amgen USA Inc.,2026-11-11
+72512093001,package,72512-930,Qutenza,,capsaicin,KIT,,Averitas Pharma Inc,2026-11-11
+72579001102,package,72579-011,BRUKINSA,,zanubrutinib,CAPSULE,80 mg/1,"BeOne Medicines USA, Inc.",2026-11-11
+72579012201,package,72579-122,BRUKINSA,,zanubrutinib,"TABLET, FILM COATED",160 mg/1,"BeOne Medicines USA, Inc.",2026-11-11
+72606002501,package,72606-025,ZYMFENTRA,,infliximab-dyyb,KIT,,CELLTRION USA Inc.,2026-11-11
+72606002502,package,72606-025,ZYMFENTRA,,infliximab-dyyb,KIT,,CELLTRION USA Inc.,2026-11-11
+72606002801,package,72606-028,STEQEYMA,,ustekinumab-stba,"INJECTION, SOLUTION",90 mg/mL,"CELLTRION USA, Inc.",2026-11-11
+72606003010,package,72606-030,Yuflyma,,adalimumab-aaty,KIT,,"CELLTRION USA, Inc.",2026-11-11
+72611078502,package,72611-785,Temsirolimus,,Temsirolimus Injection,KIT,,"Almaject, Inc.",2026-11-11
+72618300002,package,72618-3000,NURTEC ODT,,rimegepant sulfate,"TABLET, ORALLY DISINTEGRATING",75 mg/1,Pfizer Laboratories Div Pfizer Inc,2026-11-11
+72626260101,package,72626-2601,Ledipasvir and Sofosbuvir,,Ledipasvir and Sofosbuvir,"TABLET, FILM COATED",90 mg/1; 400 mg/1,Asegua Therapeutics LLC,2026-11-11
+72626270101,package,72626-2701,Sofosbuvir and Velpatasvir,,Velpatasvir and Sofosbuvir,"TABLET, FILM COATED",100 mg/1; 400 mg/1,Asegua Therapeutics LLC,2026-11-11
+72694051501,package,72694-515,asparlas,,calaspargase pegol,"INJECTION, SOLUTION",750 U/mL,Servier Pharmaceuticals LLC,2026-11-11
+72694061760,package,72694-617,TIBSOVO,,ivosidenib,"TABLET, FILM COATED",250 mg/1,Servier Pharmaceutical LLC,2026-11-11
+72694072840,package,72694-728,VORANIGO,,vorasidenib,"TABLET, FILM COATED",40 mg/1,Servier Pharmaceuticals LLC,2026-11-11
+72694087910,package,72694-879,VORANIGO,,vorasidenib,"TABLET, FILM COATED",10 mg/1,Servier Pharmaceuticals LLC,2026-11-11
+72893000501,package,72893-005,Folotyn,,pralatrexate,INJECTION,40 mg/2mL,Acrotech Biopharma Inc,2026-11-11
+72903085301,package,72903-853,ELAHERE,,MIRVETUXIMAB SORAVTANSINE,"INJECTION, SOLUTION",5 mg/mL,"ImmunoGen, Inc.",2026-11-11
+72974012001,package,72974-120,Orgovyx,,relugolix,"TABLET, FILM COATED",120 mg/1,"Sumitomo Pharma America, Inc.",2026-11-11
+72974041501,package,72974-415,Myfembree,,"relugolix, estradiol hemihydrate, and norethindrone acetate","TABLET, FILM COATED",40 mg/1; 1 mg/1; .5 mg/1,"Sumitomo Pharma America, Inc",2026-11-11
+73070010315,package,73070-103,Insulin Aspart,,insulin aspart,"INJECTION, SOLUTION",100 [iU]/mL,"Novo Nordisk Pharma, Inc.",2026-11-11
+73090042101,package,73090-421,Sylvant,,Siltuximab,"INJECTION, POWDER, FOR SOLUTION",400 mg/1,"Recordati Rare Diseases, Inc.",2026-11-11
+73150015006,package,73150-150,BRIUMVI,,ublituximab,"INJECTION, SOLUTION, CONCENTRATE",150 mg/6mL,"TG Therapeutics, Inc.",2026-11-11
+73154005060,package,73154-050,IBSRELA,,tenapanor hydrochloride,TABLET,53.2 mg/1,"Ardelyx, Inc.",2026-11-11
+73207010130,package,73207-101,QINLOCK,,Ripretinib,TABLET,50 mg/1,"Deciphera Pharmaceuticals, LLC",2026-11-11
+73289006402,package,73289-0064,MOTPOLY XR,,lacosamide,"CAPSULE, EXTENDED RELEASE",150 mg/1,"Aucta Pharmaceuticals, Inc.",2026-11-11
+73336007530,package,73336-075,GEMTESA,,vibegron,"TABLET, FILM COATED",75 mg/1,"Sumitomo Pharma America, Inc.",2026-11-11
+73336007590,package,73336-075,GEMTESA,,vibegron,"TABLET, FILM COATED",75 mg/1,"Sumitomo Pharma America, Inc.",2026-11-11
+73362000501,package,73362-005,Skytrofa,,Lonapegsomatropin-tcgd,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",4.3 mg/1,"Ascendis Pharma Endocrinology, Inc.",2026-11-11
+73362000601,package,73362-006,Skytrofa,,Lonapegsomatropin-tcgd,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",5.2 mg/1,"Ascendis Pharma Endocrinology, Inc.",2026-11-11
+73362000801,package,73362-008,Skytrofa,,Lonapegsomatropin-tcgd,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",7.6 mg/1,"Ascendis Pharma Endocrinology, Inc.",2026-11-11
+73362000901,package,73362-009,Skytrofa,,Lonapegsomatropin-tcgd,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",9.1 mg/1,"Ascendis Pharma Endocrinology, Inc.",2026-11-11
+73362001001,package,73362-010,Skytrofa,,Lonapegsomatropin-tcgd,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",11 mg/1,"Ascendis Pharma Endocrinology, Inc.",2026-11-11
+73362001101,package,73362-011,Skytrofa,,Lonapegsomatropin-tcgd,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",13.3 mg/1,"Ascendis Pharma Endocrinology, Inc.",2026-11-11
+73475304105,package,73475-3041,VYVGART,,EFGARTIGIMOD ALFA,INJECTION,20 mg/mL,argenx US,2026-11-11
+73475310203,package,73475-3102,VYVGART Hytrulo,,efgartigimod alfa and hyaluronidase (human recombinant),"INJECTION, SOLUTION",180 mg/mL; 2000 U/mL,argenx US,2026-11-11
+73535020801,package,73535-208,MONJUVI,,Tafasitamab-cxix,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",200 mg/5mL,Incyte Corporation,2026-11-11
+73536050001,package,73536-500,BESREMi,,ROPEGINTERFERON ALFA-2B,INJECTION,500 ug/mL,PharmaEssentia USA,2026-11-11
+73556016801,package,73556-168,TAVNEOS,,avacopan,CAPSULE,10 mg/1,"ChemoCentryx, Inc.",2026-11-11
+73562011001,package,73562-110,Zenpep,,"pancrelipase lipase, pancrelipase protease, pancrelipase amylase","CAPSULE, DELAYED RELEASE",10000 [USP'U]/1; 32000 [USP'U]/1; 42000 [USP'U]/1,"Aimmune Therapeutics, Inc.",2026-11-11
+73562011201,package,73562-112,Zenpep,,"pancrelipase lipase, pancrelipase protease, pancrelipase amylase","CAPSULE, DELAYED RELEASE",20000 [USP'U]/1; 63000 [USP'U]/1; 84000 [USP'U]/1,"Aimmune Therapeutics, Inc.",2026-11-11
+73562011401,package,73562-114,Zenpep,,"pancrelipase lipase, pancrelipase protease, pancrelipase amylase","CAPSULE, DELAYED RELEASE",40000 [USP'U]/1; 126000 [USP'U]/1; 168000 [USP'U]/1,"Aimmune Therapeutics, Inc.",2026-11-11
+73562011601,package,73562-116,Zenpep,,"pancrelipase lipase, pancrelipase protease, pancrelipase amylase","CAPSULE, DELAYED RELEASE",25000 [USP'U]/1; 79000 [USP'U]/1; 105000 [USP'U]/1,"Aimmune Therapeutics, Inc.",2026-11-11
+73650031614,product,73650-316,TZIELD,,teplizumab-mzwv,INJECTION,1 mg/mL,"Provention Bio, Inc.",2026-11-11
+74527002202,package,74527-022,MARGENZA,,margetuximab-cmkb,"INJECTION, SOLUTION, CONCENTRATE",25 mg/mL,"MacroGenics, Inc",2026-11-11
+74676590201,package,74676-5902,Trelstar,,triptorelin pamoate,KIT,,Verity Pharmaceuticals Inc.,2026-11-11
+74676590401,package,74676-5904,Trelstar,,triptorelin pamoate,KIT,,Verity Pharmaceuticals Inc.,2026-11-11
+75987013015,package,75987-130,TEPEZZA,,teprotumumab,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",500 mg/1,"Horizon Therapeutics USA, Inc.",2026-11-11
+76075010101,package,76075-101,KYPROLIS,,carfilzomib,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",60 mg/30mL,"Onyx Pharmaceuticals, Inc.",2026-11-11
+76075010201,package,76075-102,KYPROLIS,,carfilzomib,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",30 mg/15mL,"Onyx Pharmaceuticals, Inc.",2026-11-11
+76075010301,package,76075-103,KYPROLIS,,carfilzomib,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",10 mg/5mL,"Onyx Pharmaceuticals, Inc.",2026-11-11
+76125015010,package,76125-150,KEDRAB,,HUMAN RABIES VIRUS IMMUNE GLOBULIN,"INJECTION, SOLUTION",150 [iU]/mL,Kedrion Biopharma Inc.,2026-11-11
+76125079025,package,76125-790,Albuked,,Albumin (Human),SOLUTION,2.5 g/50mL,"KEDRION BIOPHARMA, INC.",2026-11-11
+76329331801,package,76329-3318,Epinephrine,,Epinephrine,INJECTION,.1 mg/mL,"International Medication Systems, Limited",2026-11-11
+78206011801,package,78206-118,CELESTONE SOLUSPAN,,Betamethasone Acetate and Betamethasone Sodium Phosphate,"INJECTION, SUSPENSION",3 mg/mL; 3 mg/mL,Organon LLC,2026-11-11
+78206013101,package,78206-131,Follistim AQ,,follitropin,"INJECTION, SOLUTION",900 [iU]/1.08mL,Organon LLC,2026-11-11
+78206014501,package,78206-145,Nexplanon,,etonogestrel,IMPLANT,68 mg/1,Organon LLC,2026-11-11
+78206016201,package,78206-162,Renflexis,,infliximab,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",100 mg/1,Organon LLC,2026-11-11
+78206018401,package,78206-184,Hadlima,,adalimumab-bwwd,SOLUTION,40 mg/.8mL,Organon LLC,2026-11-11
+78206018601,package,78206-186,Hadlima,,adalimumab-bwwd,SOLUTION,40 mg/.4mL,Organon LLC,2026-11-11
+78206018701,package,78206-187,Hadlima,,adalimumab-bwwd,SOLUTION,40 mg/.4mL,Organon LLC,2026-11-11
+78613020130,package,78613-201,SYNDROS,,Dronabinol,SOLUTION,5 mg/mL,"Benuvia Operations, LLC",2026-11-11
+79952011001,package,79952-110,ZYNLONTA,,loncastuximab tesirine,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",10 mg/2mL,"ADC Therapeutics America, Inc.",2026-11-11
+80446040101,package,80446-401,KIMMTRAK,,TEBENTAFUSP,"INJECTION, SOLUTION, CONCENTRATE",100 ug/.5mL,Immunocore Commercial LLC,2026-11-11
+80610011560,package,80610-115,ZORYVE,,roflumilast,CREAM,1.5 mg/g,"Arcutis Biotherapeutics, Inc.",2026-11-11
+80610013060,package,80610-130,ZORYVE,,roflumilast,CREAM,3 mg/g,"Arcutis Biotherapeutics, Inc.",2026-11-11
+80610043060,package,80610-430,ZORYVE,,roflumilast,"AEROSOL, FOAM",3 mg/g,"Arcutis Biotherapeutics, Inc.",2026-11-11
+80725061025,package,80725-610,LEUKERAN,,chlorambucil,"TABLET, FILM COATED",2 mg/1,Waylis Therapeutics LLC,2026-11-11
+80739081218,package,80739-812,KRAZATI,,adagrasib,"TABLET, COATED",200 mg/1,"Mirati Therapeutics, Inc",2026-11-11
+81298965503,package,81298-9655,Norepinephrine,,Norepinephrine Bitartrate,SOLUTION,32 ug/mL,"Long Grove Pharmaceuticals, LLC",2026-11-11
+81520010030,package,81520-100,VOQUEZNA,,vonoprazan fumarate,TABLET,13.36 mg/1,Phathom Pharmaceuticals Inc.,2026-11-11
+81665010830,package,81665-108,isoniazid,,isoniazid,TABLET,300 mg/1,OMNIVIUM PHARMACEUTICALS LLC.,2026-11-11
+81864010130,package,81864-101,Ojjaara,,Momelotinib,TABLET,200 mg/1,GlaxoSmithKline LLC,2026-11-11
+81864010230,package,81864-102,Ojjaara,,Momelotinib,TABLET,150 mg/1,GlaxoSmithKline LLC,2026-11-11
+81864010330,package,81864-103,Ojjaara,,Momelotinib,TABLET,100 mg/1,GlaxoSmithKline LLC,2026-11-11
+81960003103,package,81960-031,pemgarda,,pemivibart,INJECTION,125 mg/mL,"Invivyd, Inc",2026-11-11
+81968004560,package,81968-045,AUVELITY,,"dextromethorphan hydrobromide, bupropion hydrochloride","TABLET, MULTILAYER, EXTENDED RELEASE",45 mg/1; 105 mg/1,"Axsome Therapeutics, Inc.",2026-11-11
+81968035101,package,81968-351,SUNOSI,,solriamfetol,"TABLET, FILM COATED",150 mg/1,"Axsome Therapeutics, Inc.",2026-11-11
+82154044901,package,82154-0449,Pegasys,,peginterferon alfa-2a,"INJECTION, SOLUTION",180 ug/mL,pharmaand GmbH,2026-11-11
+82154078501,package,82154-0785,Rubraca,,rucaparib,"TABLET, FILM COATED",300 mg/1,pharmaand GmbH,2026-11-11
+82228071228,package,82228-712,Attruby,,acoramidis hydrochloride,"TABLET, FILM COATED",356 mg/1,"BridgeBio Pharma, Inc.",2026-11-11
+82448010014,package,82448-100,OGSIVEO,,nirogacestat,"TABLET, FILM COATED",100 mg/1,"SpringWorks Therapeutics, Inc.",2026-11-11
+82448015014,package,82448-150,OGSIVEO,,nirogacestat,"TABLET, FILM COATED",150 mg/1,"SpringWorks Therapeutics, Inc.",2026-11-11
+82705000201,package,82705-002,EPKINLY,,epcoritamab-bysp,"INJECTION, SOLUTION",4 mg/.8mL,"Genmab US, Inc.",2026-11-11
+82705001001,package,82705-010,EPKINLY,,epcoritamab-bysp,"INJECTION, SOLUTION",48 mg/.8mL,"Genmab US, Inc.",2026-11-11
+82959011101,package,82959-111,RYTELO,,imetelstat sodium,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",188 mg/1,Geron Corporation,2026-11-11
+82959011201,package,82959-112,RYTELO,,imetelstat sodium,"INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION",47 mg/1,Geron Corporation,2026-11-11
+83257000541,package,83257-005,Fulphila,,pegfilgrastim-jmdb,INJECTION,6 mg/.6mL,Biocon Biologics Inc.,2026-11-11
+83257001532,package,83257-015,Insulin Glargine,,insulin Glargine-yfgn,"INJECTION, SOLUTION",100 [iU]/mL,Biocon Biologics Inc.,2026-11-11
+83257002541,package,83257-025,YESINTEK,,ustekinumab,"INJECTION, SOLUTION",90 mg/mL,Biocon Biologics Inc.,2026-11-11
+83634045110,package,83634-451,Desmopressin Acetate,,desmopressin acetate,"INJECTION, SOLUTION",4 ug/mL,"Avenacy, LLC",2026-11-11
+84651020093,package,84651-200,IBTROZI,,taletrectinib,CAPSULE,272 mg/1,Nuvation Bio Inc.,2026-11-11
+89130202001,none,,,,,,,,

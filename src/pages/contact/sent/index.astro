@@ -1,0 +1,21 @@
+---
+import '../../../styles/contact.css';
+import Base from '../../../layouts/Base.astro';
+import Arrow from '../../../components/Arrow.astro';
+import Draft from '../../../components/Draft.astro';
+import PageHead from '../../../components/PageHead.astro';
+import { CONTACT_EMAIL } from '../../../lib/site';
+---
+
+<Base title="Message sent" description="Your message to ClinX was sent." unlisted>
+  <PageHead title="Message sent" trail={[{ label: 'ClinX' }, { label: 'Contact', href: '/contact/' }]}>
+    <p class="lede head-tag">
+      <span>Thank you. Your message is on its way to {CONTACT_EMAIL}, and a reply will come from that address.</span>
+      <Draft />
+    </p>
+    <div class="btn-row sent-actions">
+      <a class="btn" href="/scorecard/">Open the scorecard <Arrow /></a>
+      <a class="btn ghost" href="/">Home</a>
+    </div>
+  </PageHead>
+</Base>

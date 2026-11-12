@@ -1,0 +1,77 @@
+---
+import '../../styles/pages.css';
+import Base from '../../layouts/Base.astro';
+import Arrow from '../../components/Arrow.astro';
+import Draft from '../../components/Draft.astro';
+import PageHead from '../../components/PageHead.astro';
+import { REFERRALFINDERX_URL } from '../../lib/site';
+---
+
+<Base title="Products" description="Products from ClinX. The first is ReferralFinderX, a directory of specialist offices for referral teams.">
+  <PageHead title="Products" trail={[{ label: 'ClinX' }]}>
+    <p class="lede">Tools built for the people who keep clinics running. The open data on this site is free and stands apart from them.</p>
+  </PageHead>
+
+  <section class="product" aria-labelledby="referralfinderx">
+    <div class="product-say">
+      <img src="/brand/referralfinderx-mark.svg" alt="" width="88" height="88" />
+      <h2 id="referralfinderx">ReferralFinderX</h2>
+      <p>A directory of specialist offices for referral teams. Built from the referral desk up.</p>
+      <a class="btn" href={REFERRALFINDERX_URL}>Visit ReferralFinderX <Arrow /></a>
+    </div>
+    <dl class="product-facts">
+      <div>
+        <dt>Search by</dt>
+        <dd>
+          <ul class="chips">
+            <li>Location</li>
+            <li>Specialty</li>
+            <li>Age</li>
+            <li>Insurance</li>
+          </ul>
+        </dd>
+      </div>
+      <div>
+        <dt>Get what a referral needs</dt>
+        <dd>
+          <ul class="chips">
+            <li>Fax</li>
+            <li>Phone</li>
+            <li>Address</li>
+            <li>Taking new patients</li>
+          </ul>
+        </dd>
+      </div>
+      <div>
+        <dt>Every detail</dt>
+        <dd>
+          <ul class="chips">
+            <li>Dated</li>
+          </ul>
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <div class="after-product">
+    <section class="split" aria-labelledby="who">
+      <h2 id="who">Who it is for</h2>
+      <div class="split-body">
+        <p class="head-tag"><Draft /></p>
+        <p>
+          ReferralFinderX is for the referral teams at clinics and community health centers. Coordinators search for a specialist office, then get the details a referral needs. Each detail is dated, so the team can see how current it is.
+        </p>
+        <p>It is based in Rhode Island.</p>
+      </div>
+    </section>
+
+    <section class="split" aria-labelledby="apart">
+      <h2 id="apart">Kept apart from the open data</h2>
+      <div class="split-body">
+        <p>
+          The <a href="/scorecard/">340B Scorecard</a>, its data and its code are free and open. They do not depend on ReferralFinderX, and nothing on the scorecard is there to sell it.
+        </p>
+      </div>
+    </section>
+  </div>
+</Base>

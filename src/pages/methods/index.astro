@@ -1,0 +1,112 @@
+---
+import '../../styles/pages.css';
+import Base from '../../layouts/Base.astro';
+import OnPage from '../../components/OnPage.astro';
+import PageHead from '../../components/PageHead.astro';
+import { buildViews, comparabilityFollowOns, comparabilityParagraph, compareNames, formatFigure, getDataset } from '../../lib/data';
+import { renderInline, renderSections } from '../../lib/markdown';
+import { drawFiguresInText } from '../../lib/money';
+import { stateName } from '../../lib/states';
+
+const data = getDataset();
+const views = buildViews(data);
+const byFiling = new Map(views.map((v) => [v.filing.filingId, v]));
+// A difference in a state's report belongs to a row of that report: it is named by the entity and links to the state's page.
+const filingById = new Map(data.filings.map((f) => [f.filingId, f]));
+const entityById = new Map(data.entities.map((e) => [e.entityId, e]));
+const whose = (filingId: string): { name: string; href: string } | null => {
+  const v = byFiling.get(filingId);
+  if (v) return { name: v.entity.nameAsFiled, href: `${v.entity.path}#differences` };
+  const f = filingById.get(filingId);
+  const e = f && entityById.get(f.entityId);
+  if (!f || !e) return null;
+  return { name: f.recordKind === 'state_report_totals' ? `${stateName(f.state)}: statewide totals` : e.nameAsFiled, href: `/scorecard/${f.state.toLowerCase()}/#differences` };
+};
+
+// The comparability paragraph gets its own heading below, so it is taken out of section 5 here.
+const paragraph = comparabilityParagraph(data);
+const followOns = comparabilityFollowOns(data);
+const sections = renderSections(followOns.reduce((text, p) => text.replace(p, ''), data.methodsMarkdown.replace(paragraph, '')));
+const intro = sections.find((s) => s.title === '');
+const numbered = sections.filter((s) => s.title !== '');
+
+const differences = [...data.discrepancies].sort((a, b) => {
+  const nameA = whose(a.filingId)?.name ?? a.filingId;
+  const nameB = whose(b.filingId)?.name ?? b.filingId;
+  return compareNames(nameA, nameB) || a.rule.localeCompare(b.rule);
+});
+const formCount = differences.filter((d) => d.basis === 'form').length;
+const comparisonCount = differences.length - formCount;
+---
+
+<Base
+  title="Methods"
+  description="Where the figures come from, how they were checked, how each measure is calculated, and every difference found between the figures of one filing or report."
+>
+  <PageHead title="Methods" trail={[{ label: '340B Scorecard' }]}>
+    <p class="lede">Where the figures come from, how they were checked, and how each measure is calculated.</p>
+    <OnPage title="Methods" items={numbered.map((s) => ({ id: s.id, label: s.title.replace(/^\d+\.\s*/, '') }))} />
+  </PageHead>
+
+  <div class="prose doc-page">
+  {intro && <Fragment set:html={intro.html} />}
+
+  {
+    numbered.map((s) => (
+      <>
+        <h2 id={s.id}>{s.title}</h2>
+        <Fragment set:html={s.html} />
+
+        {s.title.startsWith('4.') && (
+          <>
+            <h3 id="all-differences">All differences, by filing</h3>
+            <p>
+              {differences.length} differences across {new Set(differences.map((d) => d.filingId)).size} filings, reports and report rows: {formCount} under a <code>form</code> rule and {comparisonCount} under a <code>comparison</code> rule. Nothing was changed; both figures are kept as filed.
+            </p>
+            <div class="table-wrap wide all-differences" tabindex="0" role="group" aria-label="All differences, a table that scrolls sideways">
+              <table>
+                <caption><span>Every difference found between two figures in one filing or report</span></caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Filing or report row</th>
+                    <th scope="col">Rule</th>
+                    <th scope="col">Basis</th>
+                    <th scope="col" class="num">Expected</th>
+                    <th scope="col" class="num">Filed</th>
+                    <th scope="col" class="num">Difference</th>
+                    <th scope="col">Note</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {differences.map((d) => {
+                    const owner = whose(d.filingId);
+                    return (
+                      <tr>
+                        <th scope="row">{owner ? <a href={owner.href}>{owner.name}</a> : d.filingId}</th>
+                        <td><code>{d.rule.split('=').map((part, i) => (i === 0 ? part : <>=<wbr />{part}</>))}</code></td>
+                        <td><code>{d.basis}</code></td>
+                        <td class="num">{formatFigure(d.expected, d.unit)}</td>
+                        <td class="num">{formatFigure(d.filed, d.unit)}</td>
+                        <td class="num">{formatFigure(d.difference, d.unit, true)}</td>
+                        <td>{drawFiguresInText(d.note)}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
+
+        {s.title.startsWith('5.') && (
+          <>
+            <h3 id="not-comparable">Why two filers' shares are not directly comparable</h3>
+            <p set:html={renderInline(paragraph.replace("**Why two filers' shares are not directly comparable.**", '').trim())} />
+            {followOns.map((p) => <p set:html={renderInline(p)} />)}
+          </>
+        )}
+      </>
+    ))
+  }
+  </div>
+</Base>

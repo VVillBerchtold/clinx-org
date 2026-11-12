@@ -1,0 +1,35 @@
+---
+import '../../../styles/article.css';
+import Base from '../../../layouts/Base.astro';
+import Arrow from '../../../components/Arrow.astro';
+import Draft from '../../../components/Draft.astro';
+import PageHead from '../../../components/PageHead.astro';
+import article from '../../../content/no-phi.md?raw';
+import { renderSections } from '../../../lib/markdown';
+import { ARTICLE_TITLE } from '../../../lib/site';
+
+const sections = renderSections(article);
+---
+
+<Base title={ARTICLE_TITLE} description="How to build a tool that reads a sensitive file on the reader's own computer, keeps only totals, and cannot send anything.">
+  <PageHead wide title={ARTICLE_TITLE} trail={[{ label: 'Writing', href: '/writing/' }, { label: 'Article' }]}>
+    <p class="byline">By Will Berchtold <span aria-hidden="true">·</span> 4 minute read <Draft /></p>
+  </PageHead>
+  <article class="article">
+    {
+      sections.map((section) => (
+        <section aria-labelledby={section.title === '' ? undefined : section.id}>
+          {section.title !== '' && <h2 id={section.id}>{section.title}</h2>}
+          <Fragment set:html={section.html} />
+        </section>
+      ))
+    }
+  </article>
+  <div class="prod article-end">
+    <div>
+      <strong>Try it</strong>
+      <p>The demo reads a made-up claims file of 50,000 rows. Keep the network panel open while it runs.</p>
+    </div>
+    <a class="btn" href="/writing/no-phi/demo/">Open the demo <Arrow /></a>
+  </div>
+</Base>

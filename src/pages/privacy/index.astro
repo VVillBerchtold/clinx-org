@@ -1,0 +1,95 @@
+---
+import '../../styles/pages.css';
+import Base from '../../layouts/Base.astro';
+import Arrow from '../../components/Arrow.astro';
+import Draft from '../../components/Draft.astro';
+import PageHead from '../../components/PageHead.astro';
+import { CONTACT_EMAIL } from '../../lib/site';
+---
+
+<Base title="Privacy and security" description="What this site collects, how files you open stay on your computer, and how the site is protected.">
+  <PageHead title="Privacy and security" trail={[{ label: 'ClinX' }]} wide>
+    <p class="lede head-tag">
+      <span>This site keeps nothing about you. There is nothing to sign in to. The one thing it ever receives is a message you choose to send through the contact form.</span>
+      <Draft />
+    </p>
+  </PageHead>
+
+  <ul class="stats" aria-label="What this site uses">
+    <li><strong>0</strong><span>cookies</span></li>
+    <li><strong>0</strong><span>trackers or analytics</span></li>
+    <li><strong>0</strong><span>accounts or sign-ins</span></li>
+    <li><strong>0</strong><span>requests to other sites</span></li>
+  </ul>
+
+  <div class="after-product">
+    <section class="split" aria-labelledby="collects">
+      <h2 id="collects">What the site collects</h2>
+      <div class="split-body">
+        <p>Nothing, unless you send a message. The pages set no cookies, store nothing in your browser and load nothing from any other site: no fonts, no scripts, no images, no counters.</p>
+        <p class="head-tag">
+          <span>The service that hosts these pages sees the internet address each request comes from, as every web host does. The site itself adds nothing more.</span>
+          <Draft />
+        </p>
+      </div>
+    </section>
+
+    <section class="split" aria-labelledby="contact-form">
+      <h2 id="contact-form">The contact form</h2>
+      <div class="split-body">
+        <p class="head-tag">
+          <span>The <a href="/contact/">contact form</a> is the one place where the site receives anything. What you type is turned into an email and sent to {CONTACT_EMAIL} through the mail service of the company that hosts the site. The site keeps no copy and writes none of it to a log.</span>
+          <Draft />
+        </p>
+        <p>Your email address is used to reply to you and for nothing else. Please leave patient details out of a message; the form stops a message that looks like it holds them.</p>
+      </div>
+    </section>
+
+    <section class="split" aria-labelledby="files">
+      <h2 id="files">Files you open stay with you</h2>
+      <div class="split-body">
+        <p>
+          Any tool here that reads a file reads it inside your browser, on your own computer. The file is not uploaded. A page that reads a file is not allowed to connect to anything or to post a form, so it has no way to send the file or anything worked out from it.
+        </p>
+        <p>You can check this yourself. The demo counts every request the page makes and shows the count while it reads a file.</p>
+        <div class="btn-row">
+          <a class="btn ghost" href="/writing/no-phi/demo/">Open the demo <Arrow /></a>
+          <a class="btn ghost" href="/writing/no-phi/">How it works</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="split" aria-labelledby="protected">
+      <h2 id="protected">How the site is protected</h2>
+      <div class="split-body">
+        <ul>
+          <li><strong>Plain pages.</strong> Every page is a finished file. There is no database and no sign-in. One small program runs, only when the contact form is sent, and it keeps nothing.</li>
+          <li><strong>Only its own code runs.</strong> Each page tells your browser to refuse any script, style, image or font that does not come from this site.</li>
+          <li><strong>No way out.</strong> Each page also tells your browser to refuse every outgoing connection the page tries to make. Only the contact page may post a form, and only to this site.</li>
+          <li><strong>No framing.</strong> Other sites cannot show these pages inside their own.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="split" aria-labelledby="data">
+      <h2 id="data">What is in the data</h2>
+      <div class="split-body">
+        <p>
+          The data comes from public filings that hospitals and health centers make to their states. The filings report totals for an organization. Nothing here describes a patient.
+        </p>
+        <p>Filed figures are never changed. Where two figures in one filing differ, both are kept and the difference is listed in <a href="/methods/#all-differences">Methods</a>.</p>
+      </div>
+    </section>
+
+    <section class="split" aria-labelledby="report">
+      <h2 id="report">Report a problem</h2>
+      <div class="split-body">
+        <p class="head-tag">
+          <span>If you find a security problem with this site, please write to <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> or use the <a href="/contact/">contact form</a> before telling anyone else.</span>
+          <Draft />
+        </p>
+        <p>For a figure that looks wrong, see <a href="/about/#corrections">how to report a correction</a>.</p>
+      </div>
+    </section>
+  </div>
+</Base>

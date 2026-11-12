@@ -1,0 +1,138 @@
+---
+import '../../styles/pages.css';
+import Base from '../../layouts/Base.astro';
+import Draft from '../../components/Draft.astro';
+import OnPage from '../../components/OnPage.astro';
+import PageHead from '../../components/PageHead.astro';
+import { buildStateDrugViews, formatDate, getDataset, stateDrugCsv } from '../../lib/data';
+import { stateName } from '../../lib/states';
+import { PREVIEW, REPOSITORIES } from '../../lib/site';
+import { renderSections } from '../../lib/markdown';
+
+const data = getDataset();
+// Files this site makes from the dataset: each state's drug rows, all filers in one file.
+const sha256Hex = async (text: string): Promise<string> =>
+  Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text))), (b) => b.toString(16).padStart(2, '0')).join('');
+const drugFiles = await Promise.all(buildStateDrugViews(data).map(async (view) => ({ view, sha256: await sha256Hex(stateDrugCsv(view)) })));
+// The three repositories. Their names become links once the site is public.
+const repositories = [
+  { name: 'The filings dataset', href: REPOSITORIES.dataset, what: 'The data, its checks and its changelog. Corrections are reported here.' },
+  { name: 'The registry tracker', href: REPOSITORIES.tracker, what: 'Keeps dated copies of the federal 340B registry and reports what changed.' },
+  { name: 'This site', href: REPOSITORIES.site, what: 'The pages you are reading, built from the dataset.' },
+];
+const dictionary = renderSections(data.dictionaryMarkdown);
+const intro = dictionary.find((s) => s.title === '');
+const fileSections = dictionary.filter((s) => s.title !== '');
+
+const describe: Record<string, string> = {
+  '340b-state-filings.json': 'Every table below in one document, with the dataset version and licence',
+  'filings.csv': 'One row per filing, or per row a state printed about an entity, with the form it was made on and its kind of record',
+  'entities.csv': 'One row per filer, or per entity a state names, with the type and city as printed where a state prints them',
+  'line_items.csv': 'One row per printed row of a schedule, of a one-page report, or of a state report\'s tables',
+  'measures.csv': 'One row per filing and measure, with its formula (a state report has none)',
+  'discrepancies.csv': 'Each place where two figures of one filing or report differ',
+  'vendors.csv': 'Each name as filed that has a normalized name',
+  'attachments.csv': 'Pages a filer added to the form, and documents a state lists beside a report',
+};
+---
+
+<Base
+  title="Data"
+  description="Download the 340B state filings dataset as CSV and JSON files, read the data dictionary, and see the dataset version."
+>
+  <PageHead title="Data" trail={[{ label: '340B Scorecard' }]}>
+    <p class="lede">Every figure on this site, as files you can download. Each one is kept as filed or printed and cites the page of the PDF it was read from.</p>
+    <OnPage
+      title="Data"
+      items={[
+        { id: 'downloads', label: 'Downloads' },
+        { id: 'version', label: 'Version' },
+        { id: 'repositories', label: 'Code' },
+        { id: 'data-dictionary', label: 'Data dictionary' },
+      ]}
+    />
+  </PageHead>
+
+  <section class="split" aria-labelledby="downloads">
+    <h2 id="downloads">Downloads</h2>
+    <div class="split-body">
+      <ul class="files">
+        {
+          data.downloads.map((name) => (
+            <li>
+              <div>
+                <strong>{name}</strong>
+                <p>{describe[name] ?? ''}</p>
+              </div>
+              <a class="btn ghost" href={`/data/${name}`} download aria-label={`Download ${name}`}>Download</a>
+              <span class="hash"><span class="visually-hidden">SHA-256: </span>{data.hashes[name]}</span>
+            </li>
+          ))
+        }
+        {
+          drugFiles.map(({ view, sha256 }) => (
+            <li>
+              <div>
+                <strong>{view.csvName}</strong>
+                <p>
+                  One line per drug row of {view.drug.scheduleName} in the {stateName(view.state)} filings for {view.reportingYear}, all {view.views.length} filers in one file. Made by this site from line_items.csv, with the filer&rsquo;s name, the code each row is grouped by, and the name the FDA&rsquo;s drug code directory lists for that code. <a href={`${view.path}#how`}>How it is put together</a> <Draft />
+                </p>
+              </div>
+              <a class="btn ghost" href={view.csvPath} download aria-label={`Download ${view.csvName}`}>Download</a>
+              <span class="hash"><span class="visually-hidden">SHA-256: </span>{sha256}</span>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="small muted">The line under each file is its SHA-256, so you can confirm your copy matches.</p>
+    </div>
+  </section>
+
+  <section class="split" aria-labelledby="version">
+    <h2 id="version">Version</h2>
+    <div class="split-body">
+      <dl class="facts">
+        <dt>Dataset version</dt>
+        <dd>{data.version}</dd>
+        <dt>Dataset commit</dt>
+        <dd><span class="mono">{data.commit}</span></dd>
+        <dt>Filings and reports retrieved up to</dt>
+        <dd>{formatDate(data.dataDate)}</dd>
+        <dt>Licence</dt>
+        <dd>Data: Creative Commons Attribution 4.0 (CC BY 4.0). Code: MIT.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="split" aria-labelledby="repositories">
+    <h2 id="repositories">Code</h2>
+    <div class="split-body">
+      <p class="head-tag"><span>Everything behind this site is open.{PREVIEW && ' The three repositories open to the public when the site goes live.'}</span> <Draft /></p>
+      <ul class="repos">
+        {
+          repositories.map((r) => (
+            <li>
+              <strong>{PREVIEW ? r.name : <a href={r.href}>{r.name}</a>}</strong>
+              <span>{r.what}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="split" aria-labelledby="data-dictionary">
+    <h2 id="data-dictionary">Data dictionary</h2>
+    <div class="split-body prose doc">
+      {intro && <Fragment set:html={intro.html} />}
+      {
+        fileSections.map((s) => (
+          <>
+            <h3 id={s.id}>{s.title}</h3>
+            <Fragment set:html={s.html} />
+          </>
+        ))
+      }
+    </div>
+  </section>
+</Base>

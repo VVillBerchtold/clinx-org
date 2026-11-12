@@ -1,0 +1,6 @@
+---
+import { PREVIEW } from '../lib/site';
+/** Marks wording that waits for the owner's approval. Shows nothing once the site is out of preview. */
+---
+
+{PREVIEW && <span class="tag">Draft wording</span>}

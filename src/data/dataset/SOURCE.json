@@ -1,0 +1,20 @@
+{
+  "dataset_version": "0.4.0",
+  "dataset_commit": "50b0dc549a71790d53ca61d53aaf563d4148031f",
+  "dataset_commit_had_uncommitted_changes": false,
+  "small_claim_counts_left_out_by_this_site": 0,
+  "files": {
+    "340b-state-filings.json": "1c63f85108b69ae907ed9b80c8f213600bbe5df55c800c854e27378840dfe3f9",
+    "attachments.csv": "154111cf25d084d6eb6d532233883839d8ff3d9eba06ff7218c0aaf5a0263ac5",
+    "discrepancies.csv": "9eb09d7feb870e3325bf7b05b6175200ca70f4f9804531a05a2113cc7c8d5531",
+    "entities.csv": "11466edd2382a9175d71f538910d67439fe806806c6e44842a112f8c7e6944a8",
+    "external-share-dark.svg": "71d93a040ea4742c4d883e7c82b280f81a9d6af60f125001b85bd1c9bb1c866d",
+    "external-share-light.svg": "07bbb9e93b818afd8cdb19ef639cad3d2e5f2e9c70b5d88d60dababf69cb0a37",
+    "filings.csv": "a2671f97edec906e95a56cf02f34f3d10296af82b69fa4f9ff0c780060af0b10",
+    "line_items.csv": "ff140087798864fbbac805258241221035bce1dc2e2de3905915d576b00d8b14",
+    "measures.csv": "6ec83e2c1d78a48b1e02df907cb3161f2b86fb9149c5da4254211ba9b5491843",
+    "vendors.csv": "390ff9979310f94f5754d6544f905a27704fd964e3bae027cb0529303861e768",
+    "METHODS.md": "8825010e1cb044190eef64148badc5da53f4cb627679e91bb7dc2b74f5af19a1",
+    "DATA_DICTIONARY.md": "9511f9824a141a7deb005de4e46471f49a8eda358b4508868bbc0fc928bd1015"
+  }
+}

@@ -1,0 +1,48 @@
+---
+import Cited from './Cited.astro';
+import { pdfHref, type FilingView } from '../lib/data';
+import { formatPercentMicro, formatUsd } from '../lib/money';
+
+/** The three measures of a filing, each with its formula and a link to the page it was worked out from. */
+interface Props {
+  view: FilingView;
+  /** The formulas as measures.csv words them. */
+  formulas: { margin: string; external: string };
+  caption: string;
+}
+
+const { view, formulas, caption } = Astro.props;
+const pdf = (page: number) => pdfHref(view.filing, page);
+const share = view.shareMicro === null ? 'Not calculated: the gross margin is not above zero' : formatPercentMicro(view.shareMicro, 1);
+---
+
+<h2 id="measures">Calculated measures</h2>
+<div class="table-wrap">
+  <table>
+    <caption><span>{caption}</span></caption>
+    <thead>
+      <tr>
+        <th scope="col">Measure</th>
+        <th scope="col">Formula</th>
+        <th scope="col" class="num">Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">Gross margin</th>
+        <td>{formulas.margin}</td>
+        <td class="num"><Cited value={formatUsd(view.grossMarginCents)} href={pdf(view.marginPage)} label={view.cite.margin} /></td>
+      </tr>
+      <tr>
+        <th scope="row">External cost</th>
+        <td>{formulas.external}</td>
+        <td class="num"><Cited value={formatUsd(view.externalCostCents)} href={pdf(view.externalPage)} label={view.cite.external} /></td>
+      </tr>
+      <tr>
+        <th scope="row">Share of margin</th>
+        <td>External cost divided by gross margin, shown as a percentage to one decimal</td>
+        <td class="num"><Cited value={share} href={pdf(view.sharePage)} label={view.cite.share} /></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

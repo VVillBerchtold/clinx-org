@@ -1,0 +1,13 @@
+---
+/**
+ * A large figure that counts up once when it comes into view. The value is printed in the page,
+ * so it reads the same without the script. A hidden copy holds the final width so nothing moves.
+ */
+interface Props {
+  /** The digits as shown, for example "36.8". */
+  value: string;
+}
+const { value } = Astro.props;
+---
+
+<span class="count" data-count={value}><span class="count-size" aria-hidden="true">{value}</span><span class="count-live">{value}</span></span>

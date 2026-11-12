@@ -1,0 +1,49 @@
+---
+import '../../../styles/contact.css';
+import Base from '../../../layouts/Base.astro';
+import Draft from '../../../components/Draft.astro';
+import PageHead from '../../../components/PageHead.astro';
+import { CONTACT_LIMITS } from '../../../lib/contact-topics';
+import { CONTACT_EMAIL } from '../../../lib/site';
+
+const limit = CONTACT_LIMITS.message.toLocaleString('en-US');
+const problems = [
+  { id: 'missing', title: 'Something was left blank', text: 'The form needs your name, your email, a subject and a message.' },
+  { id: 'email', title: 'The email address did not look right', text: 'Check it for a typo. It is used only to reply to you.' },
+  { id: 'too-long', title: 'The message was too long', text: `A message can be up to ${limit} characters. For anything longer, write to ${CONTACT_EMAIL}.` },
+  {
+    id: 'patient-details',
+    title: 'The message looked like it held patient details',
+    text: 'It had something shaped like a Social Security number, a date of birth or a medical record number, so it was stopped. Please take that part out and send it again. Nothing ClinX does needs patient details.',
+  },
+  { id: 'too-many', title: 'Too many messages in a short time', text: 'Wait a minute, then send it again.' },
+  { id: 'not-sent', title: 'The message could not be delivered', text: `Something went wrong on this site's side, and no copy of your message was kept. Please write to ${CONTACT_EMAIL} instead.` },
+];
+---
+
+<Base title="Your message was not sent" description="The contact form could not send your message, and what to do about it." unlisted>
+  <PageHead title="Your message was not sent" trail={[{ label: 'ClinX' }, { label: 'Contact', href: '/contact/' }]}>
+    <p class="lede head-tag">
+      <span>Nothing was sent and nothing was kept. Go back and your message should still be in the form.</span>
+      <Draft />
+    </p>
+  </PageHead>
+
+  <div class="problems">
+    {
+      problems.map((problem) => (
+        <section class="problem" id={problem.id} aria-labelledby={`${problem.id}-title`}>
+          <h2 id={`${problem.id}-title`}>{problem.title}</h2>
+          <p>{problem.text}</p>
+        </section>
+      ))
+    }
+  </div>
+  <div class="btn-row problem-actions">
+    <a class="btn" href="/contact/" data-back>Back to your message</a>
+    <a class="btn ghost" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+  </div>
+  <script>
+    import '../../../scripts/contact-form';
+  </script>
+</Base>
