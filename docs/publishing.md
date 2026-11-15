@@ -102,7 +102,7 @@ What the program will not do:
 - **It sets a limit and says so.** More than 60 questions a minute from one address gets "too many requests" and a time to try again. The host does this count, approximately, and the site keeps none of it.
 - **It sends a person who opens the address in a browser** to the part of the Data page that explains it.
 
-The program that answers lives in its own folder, `clinx-mcp`, with its own tests. `npm run sync:mcp` copies it into `worker/mcp/` and records a fingerprint of each file and the commit it came from. `npm run check:data` fails if a copy was changed here, or was made from work that was not committed.
+The program that answers lives in its own repository, [clinx-mcp](https://github.com/VVillBerchtold/clinx-mcp), with its own tests. `npm run sync:mcp` copies it into `worker/mcp/` and records a fingerprint of each file and the commit it came from. `npm run check:data` fails if a copy was changed here, or was made from work that was not committed.
 
 To try it on your own computer, build the site, start the local host and ask it something:
 

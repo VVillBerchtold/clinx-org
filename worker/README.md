@@ -7,7 +7,7 @@ Every page of the site is a plain file. This folder is the single exception: one
 | `index.ts` | The door. Passes `/api/contact` to the form's sender and `/mcp` to the door for assistants, and answers "not found" for anything else that reaches it |
 | `contact.ts` | Checks a posted form, turns it into one email to one fixed address, and sends the reader to a "sent" or "problem" page |
 | `assistants.ts` | The host's side of the door for assistants: reads the tables from the site's own files, turns away an address that asks far too often, and counts what is asked by kind |
-| `mcp/` | The program that answers assistants. It is written and tested in its own folder (`clinx-mcp`) and copied in by `npm run sync:mcp`. Never edited here: `npm run check:data` fails if a copy differs from its record in `mcp/SOURCE.json` |
+| `mcp/` | The program that answers assistants. It is written and tested in its own repository ([clinx-mcp](https://github.com/VVillBerchtold/clinx-mcp)) and copied in by `npm run sync:mcp`. Never edited here: `npm run check:data` fails if a copy differs from its record in `mcp/SOURCE.json` |
 
 It stores no message and no question, and logs nothing a visitor typed. The one thing kept is a count of assistants' lookups by kind, with no words and no address in it.
 

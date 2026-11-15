@@ -95,6 +95,7 @@ export const REPOSITORIES = {
   dataset: 'https://github.com/VVillBerchtold/clinx-340b',
   bills: 'https://github.com/VVillBerchtold/clinx-340b-bills',
   tracker: 'https://github.com/VVillBerchtold/clinx-radar',
+  assistants: 'https://github.com/VVillBerchtold/clinx-mcp',
   site: 'https://github.com/VVillBerchtold/clinx-org',
 } as const;
 
