@@ -6,7 +6,7 @@
 
 The site is built with [Astro](https://astro.build) and TypeScript. A build reads the dataset and writes every page as an ordinary HTML file into `dist/`. The host only hands those files out. There is no database behind the pages and no sign-in.
 
-One small program runs on the host: the contact form's sender in `worker/`. See [Publishing and the contact form](publishing.md).
+One small program runs on the host, in `worker/`. It sends the contact form's message on, and it answers AI assistants that look things up in the open tables. See [Publishing and the contact form](publishing.md).
 
 ## Each state has its own form
 

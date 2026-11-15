@@ -9,6 +9,6 @@ import { PREVIEW, SITE_URL } from '../lib/site';
 export const GET: APIRoute = () => {
   const text = PREVIEW
     ? 'User-agent: *\nDisallow: /\n'
-    : `User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: ${SITE_URL}/sitemap.xml\n`;
+    : `User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /mcp\n\nSitemap: ${SITE_URL}/sitemap.xml\n`;
   return new Response(text, { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
 };

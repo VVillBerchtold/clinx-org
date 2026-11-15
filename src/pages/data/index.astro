@@ -64,6 +64,7 @@ const describe: Record<string, string> = {
       title="Data"
       items={[
         { id: 'downloads', label: 'Downloads' },
+        { id: 'assistants', label: 'AI assistants' },
         { id: 'version', label: 'Version' },
         { id: 'repositories', label: 'Code' },
         { id: 'data-dictionary', label: 'Data dictionary' },
@@ -115,6 +116,29 @@ const describe: Record<string, string> = {
         }
       </ul>
       <p class="small muted">The line under each file is its SHA-256, so you can confirm your copy matches.</p>
+    </div>
+  </section>
+
+  <section class="split" aria-labelledby="assistants">
+    <h2 id="assistants">Ask through an AI assistant</h2>
+    <div class="split-body">
+      <p>
+        The laws, bills, federal notices and calendar can also be read by an AI assistant. You ask a question in plain words; the assistant looks it up in the same tables as the files above and gives you the rows, each with its official link.
+      </p>
+      <dl class="facts">
+        <dt>Address</dt>
+        <dd><span class="mono">https://clinx.org/mcp</span></dd>
+        <dt>What it reads</dt>
+        <dd>State laws, bills, federal notices, the calendar</dd>
+        <dt>What it changes</dt>
+        <dd>Nothing. It only reads</dd>
+        <dt>Cost</dt>
+        <dd>Free. No key and no account</dd>
+      </dl>
+      <p>To use it, open an assistant that accepts connectors, also called MCP servers, add a new one and give it the address. The filings themselves are not part of it; they are the files above.</p>
+      <p>Questions to try: Which states have a contract pharmacy law, and when did each take effect? What is on the 340B calendar for Minnesota in January? Is a federal 340B notice open for comment right now?</p>
+      <p>An assistant can misread a row or leave one out. Ask it for the official link and read the source before you rely on an answer.</p>
+      <p>The site counts what assistants ask for by kind. It never keeps the words of a question, and never who asked. <a href="/privacy/#assistants">What is counted</a></p>
     </div>
   </section>
 

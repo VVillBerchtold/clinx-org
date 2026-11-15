@@ -1,6 +1,7 @@
 // ClinX.org on Cloudflare. The host serves every page and file in dist/ by itself.
-// One small program (worker/index.ts) runs only for paths under /api/: today that is the
-// contact form, which sends a message on as an email and keeps nothing.
+// One small program (worker/index.ts) runs only for two addresses: /api/contact, the contact form,
+// which sends a message on as an email and keeps nothing; and /mcp, the door for AI assistants,
+// which answers questions from the site's own open tables and only reads.
 // The security headers for pages come from public/_headers, which the build copies into dist/.
 {
   "name": "clinx-org",
@@ -11,13 +12,22 @@
     "directory": "./dist",
     "not_found_handling": "404-page",
     "html_handling": "auto-trailing-slash",
-    // Only /api/ reaches the program. Every other request is answered from the files.
-    "run_worker_first": ["/api/*"]
+    // The program reads the open tables from these same files, under this name.
+    "binding": "ASSETS",
+    // Only /api/ and /mcp reach the program. Every other request is answered from the files.
+    "run_worker_first": ["/api/*", "/mcp"]
   },
   // The form's mail can go to this one address and nowhere else.
   "send_email": [{ "name": "EMAIL", "destination_address": "will@clinx.org" }],
   // At most 5 posts a minute from one visitor address (the host counts approximately).
-  "ratelimits": [{ "name": "CONTACT_LIMIT", "namespace_id": "1001", "simple": { "limit": 5, "period": 60 } }],
+  // At most 60 questions a minute to /mcp from one visitor address (counted the same way).
+  "ratelimits": [
+    { "name": "CONTACT_LIMIT", "namespace_id": "1001", "simple": { "limit": 5, "period": 60 } },
+    { "name": "MCP_LIMIT", "namespace_id": "1002", "simple": { "limit": 60, "period": 60 } }
+  ],
+  // Counts of what assistants ask at /mcp, by kind: which tool, which state, found or not. Never
+  // the words searched for, never an address. The host keeps them three months, then drops them.
+  "analytics_engine_datasets": [{ "binding": "MCP_USAGE", "dataset": "clinx_mcp_usage" }],
   "vars": {
     "CONTACT_TO": "will@clinx.org",
     "CONTACT_FROM": "form@clinx.org",

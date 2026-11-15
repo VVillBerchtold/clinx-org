@@ -5,6 +5,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { shapeProblems, valueProblems } from './dataset-shape.mjs';
 import { BILL_FILES, billsProblems } from './bills-shape.mjs';
+import { MCP_DIR, MCP_FILES } from './sync-mcp.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const dir = join(root, 'src', 'data', 'dataset');
@@ -69,9 +70,26 @@ const shape = shapeProblems(dataTexts);
 if (shape.length === 0) shape.push(...valueProblems(dataTexts));
 problems.push(...shape);
 
+// The server for assistants is a third copy with its own record (scripts/sync-mcp.mjs).
+const mcpRecordPath = join(MCP_DIR, 'SOURCE.json');
+if (!existsSync(mcpRecordPath)) {
+  console.error('check-data: worker/mcp/SOURCE.json is missing. Run: node scripts/sync-mcp.mjs');
+  process.exit(1);
+}
+const mcpRecord = JSON.parse(readFileSync(mcpRecordPath, 'utf8'));
+for (const name of MCP_FILES) {
+  if (!existsSync(join(MCP_DIR, name))) problems.push(`worker/mcp/${name}: missing`);
+  else if (sha256(join(MCP_DIR, name)) !== mcpRecord.files[name]) problems.push(`worker/mcp/${name}: hash differs from worker/mcp/SOURCE.json`);
+}
+for (const name of readdirSync(MCP_DIR)) {
+  if (name !== 'SOURCE.json' && !MCP_FILES.includes(name)) problems.push(`worker/mcp/${name}: not a file of the server for assistants`);
+}
+if (mcpRecord.source_commit === null || mcpRecord.source_commit_had_uncommitted_changes) problems.push('worker/mcp: copied from a folder with changes that were not committed. Commit them there and run: node scripts/sync-mcp.mjs');
+
 if (problems.length > 0) {
   for (const p of problems) console.error(`check-data: ${p}`);
   process.exit(1);
 }
+console.log(`check-data: the server for assistants matches its record (version ${mcpRecord.server_version}, ${String(mcpRecord.source_commit).slice(0, 7)}).`);
 console.log(`check-data: ${Object.keys(record.files).length} files match SOURCE.json (dataset version ${record.dataset_version}).`);
 console.log(`check-data: the bills table matches its record (${billsRecord.bills} bills, retrieved ${billsRecord.retrieved}).`);

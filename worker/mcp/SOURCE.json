@@ -1,0 +1,16 @@
+{
+  "server_version": "0.1.0",
+  "source_commit": "45ad2b9a5f019c2c5ee4f466ee9dc0aa0983f68c",
+  "source_commit_had_uncommitted_changes": false,
+  "files": {
+    "core.js": "62078b5058ace759a999cd614956e5a96263696287736a2959eac886c91aadce",
+    "tools.js": "2a7963412ca35df63109a8370ba55ebb5b397d9731792a1a7b9afbd9e6cfd2fc",
+    "tables.js": "757989df0dbc7a1a5df07bdcb84f5e6e7106a65ba80356794dcbcad24de5e0d4",
+    "tables.d.ts": "06c47f4c9b272fa958775fbaf972283f78b0f58fd0aefcc3c9b482e530561bef",
+    "http.js": "e96d2387aaaab12c15f7e3bf9330ffc4a4eeabc4684015057a4281b96836257f",
+    "http.d.ts": "f17ffa181ba7f757f8b7787230d191c63272f4ef4bdfc0a8c7c5eda9f2d53f29",
+    "usage.js": "c2c2c6c494ed6c0bedb37011a7f154783617537e2299f94c27a43ecdf4a93e97",
+    "usage.d.ts": "f7f399a635f0077c2bd5d5f46719fb0bb72a071409835a319a410035675705ee",
+    "index.d.ts": "fcdff5adde713619024b701340c0bda2788c6b1f8bdb7d269d794e9aaf900c62"
+  }
+}

@@ -328,6 +328,7 @@ else {
   } else {
     if (!robots.includes(`Sitemap: ${SITE}/sitemap.xml`)) fail('robots.txt', 'does not point to the sitemap');
     if (!/^Disallow:\s*\/api\/\s*$/m.test(robots)) fail('robots.txt', 'does not keep crawlers off /api/');
+    if (!/^Disallow:\s*\/mcp\s*$/m.test(robots)) fail('robots.txt', 'does not keep crawlers off /mcp');
     const extra = unlistedPages.filter((p) => !ALWAYS_UNLISTED.includes(p));
     if (extra.length > 0) fail('robots.txt', `lets crawlers in, but ${extra.length} page(s) still ask to stay unlisted, e.g. ${extra[0]}`);
     for (const p of ALWAYS_UNLISTED) if (!unlistedPages.includes(p)) fail(p, 'must ask search engines not to list it');

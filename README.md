@@ -25,6 +25,8 @@ And it lists the bills in Congress and the state legislatures that name 340B: wh
 
 It lists the federal rules and notices that name 340B too: what each one does about 340B in a sentence, the day comments close and the day it takes effect, all on the same calendar. One page sets out the 340B rebate pilot, from the federal notice that opened it.
 
+An AI assistant can read the laws, bills, notices and calendar as well, at `clinx.org/mcp`. It only reads, and the site keeps no question it is asked.
+
 Four states are in the scorecard today: Rhode Island, Vermont, Minnesota and Idaho. Each state has its own form, so the site never adds two states together or sets them side by side as if they were alike.
 
 ## Where the numbers come from
@@ -71,7 +73,7 @@ A promise on a web page is easy to make. Each one below is kept by something tha
 | `src/styles/` | The look. Every colour, typeface and spacing value is in `tokens.css`. |
 | `src/scripts/` | The small scripts that run in the browser: sorting, the drug search, menus, the article's demo. |
 | `public/` | Files served as they are: the downloads, the security headers, the pictures. |
-| `worker/` | The one program that runs on the host. It sends the contact form's message on as an email and keeps nothing. |
+| `worker/` | The one program that runs on the host. It sends the contact form's message on as an email, and it answers AI assistants that look things up in the open tables. It keeps no message and no question. |
 | `scripts/` | Tools that run at build time or once a month: the copy step, the checks, the refresh, publishing. |
 | `reference/` | Drug names from the FDA's public directory, with a record of the day they were read. |
 | `refresh/` | Dated copies of the federal registry for the monthly comparison. They hold no person's name. |

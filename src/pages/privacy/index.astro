@@ -10,14 +10,14 @@ import { CONTACT_EMAIL } from '../../lib/site';
 <Base title="Privacy and security" crumbs={[{ name: 'Privacy and security', path: '/privacy/' }]} description="What this site collects, how files you open stay on your computer, and how the site is protected.">
   <PageHead title="Privacy and security" trail={[{ label: 'ClinX' }]} wide>
     <p class="lede head-tag">
-      <span>This site keeps nothing about you. There is nothing to sign in to. The one thing it ever receives is a message you choose to send through the contact form.</span>
+      <span>This site keeps nothing about you. There is nothing to sign in to. It receives two things only: a message you choose to send through the contact form, and a lookup an AI assistant sends to the open tables, which is answered and not kept.</span>
       <Draft />
     </p>
   </PageHead>
 
   <ul class="stats" aria-label="What this site uses">
     <li><strong>0</strong><span>cookies</span></li>
-    <li><strong>0</strong><span>trackers or analytics</span></li>
+    <li><strong>0</strong><span>trackers</span></li>
     <li><strong>0</strong><span>accounts or sign-ins</span></li>
     <li><strong>0</strong><span>requests to other sites</span></li>
   </ul>
@@ -26,7 +26,7 @@ import { CONTACT_EMAIL } from '../../lib/site';
     <section class="split" aria-labelledby="collects">
       <h2 id="collects">What the site collects</h2>
       <div class="split-body">
-        <p>Nothing, unless you send a message. The pages set no cookies, store nothing in your browser and load nothing from any other site: no fonts, no scripts, no images, no counters.</p>
+        <p>Nothing about you. The pages set no cookies, store nothing in your browser and load nothing from any other site: no fonts, no scripts, no images, no counters. Reading a page or downloading a file is not counted by the site.</p>
         <p class="head-tag">
           <span>The service that hosts these pages sees the internet address each request comes from, as every web host does. The site itself adds nothing more.</span>
           <Draft />
@@ -42,6 +42,24 @@ import { CONTACT_EMAIL } from '../../lib/site';
           <Draft />
         </p>
         <p>Your email address is used to reply to you and for nothing else. Please leave patient details out of a message; the form stops a message that looks like it holds them.</p>
+      </div>
+    </section>
+
+    <section class="split" aria-labelledby="assistants">
+      <h2 id="assistants">Lookups from AI assistants</h2>
+      <div class="split-body">
+        <p>
+          An AI assistant can look things up in the open tables of laws, bills, federal notices and dates (<a href="/data/#assistants">how</a>). The site sees the lookup the assistant sends, not what you typed to the assistant. It answers from its own files and keeps no copy of the lookup.
+        </p>
+        <p>The site does count lookups by kind, so the work goes to the tables people use. One count holds only this:</p>
+        <ul>
+          <li>which lookup it was, such as finding bills or opening one law;</li>
+          <li>the state asked about, and which filters were set;</li>
+          <li>whether an answer was found, and the public law, bill or notice that was opened;</li>
+          <li>the name the assistant program gives itself.</li>
+        </ul>
+        <p>A count never holds the words searched for, a date or anything else typed in, an internet address, or anything that could tell one person from another. The host keeps the counts for three months and then drops them.</p>
+        <p>To keep one sender from flooding the service, the host counts how many lookups an internet address sends in a minute and asks it to wait past 60. The site keeps none of that.</p>
       </div>
     </section>
 
@@ -63,7 +81,7 @@ import { CONTACT_EMAIL } from '../../lib/site';
       <h2 id="protected">How the site is protected</h2>
       <div class="split-body">
         <ul>
-          <li><strong>Plain pages.</strong> Every page is a finished file. There is no database and no sign-in. One small program runs, only when the contact form is sent, and it keeps nothing.</li>
+          <li><strong>Plain pages.</strong> Every page is a finished file. There is no sign-in, and no store of anything about a reader. One small program runs, only when the contact form is sent or an AI assistant sends a lookup. It keeps no message and no lookup, only the counts by kind described above.</li>
           <li><strong>Only its own code runs.</strong> Each page tells your browser to refuse any script, style, image or font that does not come from this site.</li>
           <li><strong>No way out.</strong> Each page also tells your browser to refuse every outgoing connection the page tries to make. Only the contact page may post a form, and only to this site.</li>
           <li><strong>No framing.</strong> Other sites cannot show these pages inside their own.</li>

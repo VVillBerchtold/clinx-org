@@ -1,6 +1,6 @@
 # Publishing and the contact form
 
-**In short:** the site is a folder of files served from clinx.org. Publishing is a deliberate act by a person. One small program runs on the host, for the contact form only, and it keeps nothing.
+**In short:** the site is a folder of files served from clinx.org. Publishing is a deliberate act by a person. One small program runs on the host, for the contact form and for AI assistants that look things up in the open tables. It keeps no message and no question.
 
 ## The host
 
@@ -8,7 +8,7 @@ The site is served by Cloudflare. `wrangler.jsonc` is the whole configuration, a
 
 - the files in `dist/` are served as they are;
 - one address, `clinx.org`, and no spare or preview addresses;
-- one program, `worker/index.ts`, which runs only for paths under `/api/`.
+- one program, `worker/index.ts`, which runs only for paths under `/api/` and for `/mcp`.
 
 The security headers come from `public/_headers`, which the build copies into `dist/`. The page security policy is also repeated in a tag on every page, so it holds on any host.
 
@@ -37,7 +37,7 @@ One setting decides whether the site is a private preview or public: `PREVIEW` i
 
 | | `PREVIEW = true` | `PREVIEW = false` |
 |---|---|---|
-| `robots.txt` | turns every crawler away | opens the pages (not `/api/`) |
+| `robots.txt` | turns every crawler away | opens the pages (not `/api/` or `/mcp`) |
 | Each page | asks search engines not to list it | may be listed |
 | `sitemap.xml` | not written | written from the pages that were built |
 | Wording that waits for approval | carries a "Draft wording" tag | no tags |
@@ -84,3 +84,66 @@ deploy/node_modules/.bin/wrangler dev --config wrangler.jsonc
 ```
 
 The form sends through the host's mail service, which clinx.org is set up for. If a message cannot be sent, the form answers "could not be delivered" and shows the address to write to.
+
+## The door for assistants
+
+`https://clinx.org/mcp` lets an AI assistant look things up in the open tables: state laws, bills, federal notices and the calendar. It speaks the Model Context Protocol (MCP), which is how assistants are given outside sources to read. It only reads.
+
+What happens to a question:
+
+1. The assistant posts a small request to `/mcp`, for example "find the bills in Rhode Island".
+2. `worker/assistants.ts` hands it to the program in `worker/mcp/`, which reads the tables from the site's own files in `/data/`, the same ones anyone can download. Nothing is fetched from anywhere else.
+3. The rows go back to the assistant, each with its official link.
+
+What the program will not do:
+
+- **It changes nothing.** There is nothing to sign in to and nothing to write to.
+- **It keeps no question.** No words searched for, no dates typed, and no internet address are stored or logged.
+- **It sets a limit and says so.** More than 60 questions a minute from one address gets "too many requests" and a time to try again. The host does this count, approximately, and the site keeps none of it.
+- **It sends a person who opens the address in a browser** to the part of the Data page that explains it.
+
+The program that answers lives in its own folder, `clinx-mcp`, with its own tests. `npm run sync:mcp` copies it into `worker/mcp/` and records a fingerprint of each file and the commit it came from. `npm run check:data` fails if a copy was changed here, or was made from work that was not committed.
+
+To try it on your own computer, build the site, start the local host and ask it something:
+
+```bash
+deploy/node_modules/.bin/wrangler dev --config wrangler.jsonc --port 8799
+```
+
+```bash
+curl -s http://127.0.0.1:8799/mcp -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+```
+
+## The counts for the door for assistants
+
+The site counts what assistants ask for by kind, so the work can go to the tables that are used. Each question adds one row with eight plain values and nothing else:
+
+| Value | Example | Never |
+|---|---|---|
+| The kind of request | `tools/call` | |
+| The tool | `find_bills` | |
+| How it went | `answered`, `mistake`, `limited` | |
+| The place asked about | `RI`, `US`, `FED` | |
+| The filters set | `kind=contract-pharmacy text` | the words searched for, or a date typed |
+| The public row opened | `ri-2025-hb5634` | an id that was typed and not found |
+| The name the assistant program gives itself | a chat app's or an editor's name | a person, an address, a device |
+| The protocol version | `2025-06-18` | |
+
+The rows go to the host's counting service (Workers Analytics Engine, the set named `clinx_mcp_usage` in `wrangler.jsonc`), which keeps them for three months. The Privacy page says the same to readers. A change to what is counted is a change to that page too.
+
+To read the counts, a person needs a read-only token from the host with one permission, Account Analytics: Read. It cannot change the site. The token and the account's id stay on that person's own computer, in two small files that are never committed:
+
+```
+~/.config/clinx/cloudflare-usage.token
+~/.config/clinx/cloudflare-account-id
+```
+
+Then:
+
+```bash
+npm run usage:mcp -- --days 30
+```
+
+It prints short tables: requests a day, which tools were used and how each went, which states were asked about, which filters, which rows were opened most, and which assistant programs connected.
+
+If a publish is refused with a message about Analytics Engine, the counting service needs switching on once for the account, in the host's dashboard.
