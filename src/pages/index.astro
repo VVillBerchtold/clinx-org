@@ -7,7 +7,7 @@ import Count from '../components/Count.astro';
 import Draft from '../components/Draft.astro';
 import Meter from '../components/Meter.astro';
 import StateStandings from '../components/StateStandings.astro';
-import { GROUP_LABEL, GROUP_ORDER, buildReportViews, buildViews, getDataset, groupTotals, sharedValue, viewsInGroup } from '../lib/data';
+import { GROUP_LABEL, GROUP_ORDER, buildReportViews, buildTotalsViews, buildViews, getDataset, groupTotals, sharedValue, viewsInGroup } from '../lib/data';
 import { formatPercentMicro, formatUsd, formatUsdMillions, ratioMicro, usdRounded } from '../lib/money';
 import { REFERRALFINDERX_URL, numberWord, numberWordCap } from '../lib/site';
 import { STATE_REGISTRY, statesWith, tileMapSvg } from '../lib/states';
@@ -15,12 +15,13 @@ import { STATE_REGISTRY, statesWith, tileMapSvg } from '../lib/states';
 const data = getDataset();
 const views = buildViews(data);
 const reports = buildReportViews(data);
+const totalsReports = buildTotalsViews(data);
 const live = statesWith('live');
 const law = statesWith('law');
 const n = (x: number): string => x.toLocaleString('en-US');
 const tone = { health_center: 'hc', hospital: 'hosp' } as const;
 
-/** One block per state in the scorecard: its filings, grouped by type of filer, or its state report's totals. */
+/** One block per state in the scorecard: its filings, grouped by type of filer, its state report's totals, or the totals of a report that prints nothing else. */
 const features = live.map((s) => {
   const href = STATE_REGISTRY[s.code]?.href;
   if (!href) throw new Error(`State ${s.code} has no page`);
@@ -49,6 +50,22 @@ const features = live.map((s) => {
     });
     const whole = usdRounded(totalCents);
     return { kind: 'report' as const, ...s, href, report, rows, totalText: formatUsd(totalCents).replace(/\.00$/, ''), scaleEnd: `${whole.figure} ${whole.unit}`.trim(), years: report.filing.reportingYear };
+  }
+  const totals = totalsReports.find((r) => r.state === s.code);
+  if (totals) {
+    // The report's own chart of totals, in the order it prints them, on one scale: a round number of millions above every amount.
+    const HUNDRED_MILLION_CENTS = 10_000_000_000;
+    const amounts = totals.chart.figures.map((f) => f.cell.value!);
+    const scaleCents = Math.ceil(Math.max(...amounts) / HUNDRED_MILLION_CENTS) * HUNDRED_MILLION_CENTS;
+    const rows = totals.chart.figures.map((f) => ({
+      label: f.figure.label,
+      detail: `${f.cell.printed}, as ${totals.spec.asWord}`,
+      shareMicro: ratioMicro(f.cell.value!, scaleCents)!,
+      tone: 'plain' as const,
+      amount: usdRounded(f.cell.value!),
+    }));
+    const end = usdRounded(scaleCents);
+    return { kind: 'totals' as const, ...s, href, totals, rows, scaleEnd: `${end.figure.replace(/\.0+$/, '')} ${end.unit}`.trim(), years: totals.filing.reportingYear };
   }
   const mine = views.filter((v) => v.entity.state === s.code);
   const spec = mine[0]!.spec;
@@ -147,6 +164,28 @@ const differenceCount = data.discrepancies.length;
                 label={`${f.name}: net 340B revenue as printed, as parts of the statewide total`}
                 rows={f.rows}
                 scale={['$0', `${f.scaleEnd}, the statewide total`]}
+              />
+              <p class="small muted">Amounts beside the bars are rounded. The {f.name} page gives every figure as printed, each linked to its page of the report.</p>
+            </article>
+          ) : f.kind === 'totals' ? (
+            <article class="state-feature band-body" aria-labelledby={`live-${f.code}`}>
+              <header>
+                <div>
+                  <p class="kicker"><span class="dot" aria-hidden="true" />{f.years} data · the state's own report, totals only</p>
+                  <h3 id={`live-${f.code}`}>{f.name}</h3>
+                </div>
+                <dl>
+                  <div><dt>{f.totals.spec.countOf.noun[0]!.toUpperCase() + f.totals.spec.countOf.noun.slice(1)}</dt><dd><Count value={String(f.totals.count)} /></dd></div>
+                  <div><dt>Form</dt><dd class="small-dd">{f.totals.filing.formRevision}</dd></div>
+                </dl>
+                <a class="btn" href={f.href}>Open {f.name} <Arrow /></a>
+              </header>
+              <p class="state-feature-say">Statewide totals as the state's report prints them: what {f.totals.count} {f.totals.spec.countOf.noun} reported, added together. The report gives no figure for any one entity, so no share of margin is calculated for {f.name}.</p>
+              <Meter
+                id={`home-meter-${f.code.toLowerCase()}`}
+                label={`${f.name}: the ${numberWord(f.rows.length)} statewide totals of the report's chart, as printed`}
+                rows={f.rows}
+                scale={['$0', f.scaleEnd]}
               />
               <p class="small muted">Amounts beside the bars are rounded. The {f.name} page gives every figure as printed, each linked to its page of the report.</p>
             </article>

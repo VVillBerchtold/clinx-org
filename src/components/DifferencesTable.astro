@@ -20,7 +20,7 @@ interface Props {
 
 const { differences, name, spec, owners, heading, lead } = Astro.props;
 const asWord = spec.asWord.charAt(0).toUpperCase() + spec.asWord.slice(1);
-const source = spec.layout === 'one-page' ? 'page' : spec.layout === 'state-report' ? 'report' : 'form';
+const source = spec.layout === 'one-page' ? 'page' : spec.layout === 'state-report' || spec.layout === 'state-totals' ? 'report' : 'form';
 
 const basisMeaning = {
   form: `The ${source} itself says the two figures agree.`,

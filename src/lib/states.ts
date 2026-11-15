@@ -82,10 +82,16 @@ export const STATE_REGISTRY: Readonly<Record<string, StateEntry>> = {
     sources: [{ label: 'Senate Bill 25-071', href: 'https://content.leg.colorado.gov/sites/default/files/2025a_071_signed.pdf' }],
   },
   ID: {
-    status: 'law',
+    status: 'live',
+    href: '/scorecard/id/',
+    summary: "2025 data · statewide totals, from the state's report",
     visibility: 'totals',
-    stands: 'Covered entities report by April 1 each year. The filings are confidential. The State Controller publishes the figures added together by November 15.',
-    sources: [{ label: 'Idaho Code 41-351', href: 'https://legislature.idaho.gov/statutesrules/idstat/Title41/T41CH3/SECT41-351/' }],
+    stands: "Idaho's law has covered entities report by April 1 each year and keeps those filings confidential. Before November 15 each year the State Controller publishes a report of the figures added together. What is public is that report.",
+    sources: [
+      { label: 'Idaho Code 41-351', href: 'https://legislature.idaho.gov/statutesrules/idstat/Title41/T41CH3/SECT41-351/' },
+      { label: "The State Controller's report (PDF)", href: 'https://idaho-sco-central-registry-documents.s3.us-gov-west-1.amazonaws.com/340B+Program+Reports/CY2025+340B+Program+Report.pdf' },
+      { label: 'Where the state lists it', href: 'https://transparent.idaho.gov/featured-resources' },
+    ],
   },
   IN: {
     status: 'law',

@@ -4,18 +4,21 @@ import '../../styles/scorecard.css';
 import Base from '../../layouts/Base.astro';
 import PageHead from '../../components/PageHead.astro';
 import StateStandings from '../../components/StateStandings.astro';
-import { buildReportViews, buildViews, countPhrase, getDataset } from '../../lib/data';
+import { buildReportViews, buildTotalsViews, buildViews, countPhrase, getDataset } from '../../lib/data';
 import { numberWordCap } from '../../lib/site';
 import { STATE_REGISTRY, statesWith, tileMapSvg } from '../../lib/states';
 
 const data = getDataset();
 const views = buildViews(data);
 const reports = buildReportViews(data);
+const totalsReports = buildTotalsViews(data);
 const live = statesWith('live');
 const law = statesWith('law');
 const countIn = (code: string): string => {
   const report = reports.find((r) => r.state === code);
   if (report) return `${report.entities.length} rows`;
+  const totals = totalsReports.find((r) => r.state === code);
+  if (totals) return `${totals.count} ${totals.spec.countOf.noun}`;
   return countPhrase(views.filter((v) => v.entity.state === code));
 };
 ---

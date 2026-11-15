@@ -10,7 +10,7 @@ One small program runs on the host: the contact form's sender in `worker/`. See 
 
 ## Each state has its own form
 
-Rhode Island's filers use the state's nine-schedule form. Vermont's hospitals use a different report. Minnesota publishes its own table of entities. The forms do not ask for the same things.
+Rhode Island's filers use the state's nine-schedule form. Vermont's hospitals use a different report. Minnesota publishes its own table of entities. Idaho publishes statewide totals only, with no figure for any one entity. The forms do not ask for the same things.
 
 `src/lib/forms.ts` is the one place that knows a form: which rows a view reads, how the three measures are worked out, and which words fit ("filing" or "report", "calendar year" or "fiscal year"). Pages follow the form, never the state's two letters. If the dataset names a form that file does not know, the build stops.
 

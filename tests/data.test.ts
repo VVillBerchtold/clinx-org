@@ -42,8 +42,8 @@ describe('csv reader', () => {
 });
 
 describe('dataset loaders', () => {
-  it('has 27 filings: 14 for Rhode Island (7 health centers and 7 hospital filings) and 13 for Vermont, and 27 records of the Minnesota state publication', () => {
-    expect(data.filings).toHaveLength(27 + 27);
+  it('has 27 filings: 14 for Rhode Island (7 health centers and 7 hospital filings) and 13 for Vermont, 27 records of the Minnesota state publication and one of the Idaho state publication', () => {
+    expect(data.filings).toHaveLength(27 + 27 + 1);
     expect(data.filings.filter((f) => f.recordKind === 'filing')).toHaveLength(27);
     expect(allViews).toHaveLength(27);
     expect(views).toHaveLength(14);
@@ -89,8 +89,8 @@ describe('dataset loaders', () => {
   });
 
   it('counts rows and differences from the data', () => {
-    expect(data.rowCount).toBe(2989 + 157 + 70);
-    expect(data.discrepancies).toHaveLength(22 + 4 + 7);
+    expect(data.rowCount).toBe(2989 + 157 + 70 + 105);
+    expect(data.discrepancies).toHaveLength(22 + 4 + 7 + 3);
   });
 
   it('finds the comparability paragraph in METHODS.md', () => {

@@ -1,5 +1,5 @@
 import { parseCsv } from './csv';
-import { anyFormSpec, entityType as toEntityType, formSpec, recordKind as toRecordKind, reportFormSpec, type DrugScheduleSpec, type EntityType, type FormSpec, type RecordKind, type ReportFormSpec, type ReportGroup, type RowKey } from './forms';
+import { anyFormSpec, entityType as toEntityType, formSpec, recordKind as toRecordKind, reportFormSpec, totalsFormSpec, type DrugScheduleSpec, type EntityType, type FormSpec, type RecordKind, type ReportFormSpec, type ReportGroup, type RowKey, type SubmissionRow, type TotalsFigure, type TotalsFormSpec, type TotalsRow, type TotalsTableSpec } from './forms';
 import { amountScale, claimsSortValue, largestBy, type AmountScale, type ClaimsStatus } from './drugs';
 import { centsToDecimal, foldName, groupDrugRows, toCsv, type DrugGroup } from './drug-groups';
 import { fdaNameFor, fdaTitle, getFdaNames, type FdaName, type FdaNames, type FdaSource } from './fda-names';
@@ -17,9 +17,12 @@ export type { EntityType } from './forms';
  * build. Schedule I signer details are not in the data. For Rhode Island's form Schedules A, D and E are
  * loaded as rows (and G as drug rows); for
  * Vermont's form every printed row of the page is loaded (it has no claim counts); for Minnesota's
- * form the two tables and the page notes. Which rows a filing's form allows is set in forms.ts; a row
- * outside the list stops the build. A record's kind (filing, state report row, state report totals)
- * decides which view reads it: buildViews reads filings, buildReportViews reads the state's report.
+ * form the two tables and the page notes; for Idaho's form every printed cell of the statewide report
+ * and its page notes (its claim counts are statewide totals in the amount column, never a drug row's).
+ * Which rows a filing's form allows is set in forms.ts; a row outside the list stops the build. A
+ * record's kind and its form's layout decide which view reads it: buildViews reads filings,
+ * buildReportViews a state's report with a row for each entity, buildTotalsViews a state's report of
+ * statewide totals only.
  */
 
 /** The two kinds of filer whose own filings carry the three measures. */
@@ -81,6 +84,8 @@ export interface LineItem {
   amountAsFiled: string;
   /** Whole cents for a dollar amount; null for a percentage, a cell with no figure (N/A, N/R) or text. */
   amountCents: Cents | null;
+  /** A figure printed as words and letters ("$812.9M") or a note cell, exactly as printed; blank otherwise. */
+  answerAsFiled: string;
   unit: Unit;
   page: number;
   note: string;
@@ -360,6 +365,7 @@ export function buildDataset(raw: RawDataset): Dataset {
       descriptionAsFiled: r['description_as_filed']!,
       amountAsFiled,
       amountCents: unit === 'usd' ? parseCents(amountAsFiled) : null,
+      answerAsFiled: r['answer_as_filed']!,
       unit,
       page: toPage(r['page']!, `${r['filing_id']} schedule ${schedule}`),
       note: r['note']!,
@@ -747,7 +753,7 @@ function oneRow(rows: readonly LineItem[], schedule: string, line: string, who: 
 
 export function buildReportViews(data: Dataset): ReportView[] {
   const entityById = new Map(data.entities.map((e) => [e.entityId, e]));
-  const reportFilings = data.filings.filter((f) => f.recordKind !== 'filing');
+  const reportFilings = data.filings.filter((f) => f.recordKind !== 'filing' && anyFormSpec(f.form).layout === 'state-report');
   const states = [...new Set(reportFilings.map((f) => f.state))].sort();
   return states.map((state) => {
     const mine = reportFilings.filter((f) => f.state === state);
@@ -861,6 +867,177 @@ export function buildReportViews(data: Dataset): ReportView[] {
 export function reportViewFor(data: Dataset, state: string): ReportView {
   const found = buildReportViews(data).find((v) => v.state === state);
   if (!found) throw new Error(`${state}: no state report in the dataset`);
+  return found;
+}
+
+// ---------------------------------------------------------------------------
+// A state's own report that prints statewide totals only (Idaho): one record, no row that names an entity.
+// There is no filing of an entity's own and no measure. Nothing here branches on the state.
+
+/** One printed figure with where it is: the row, its value for drawing and what a link to it leads to. */
+export interface TotalsCell {
+  row: LineItem;
+  /** The cell as the report prints it. */
+  printed: string;
+  /** Whole cents for dollars, the plain number for a count; null for a percentage or a figure printed in words. */
+  value: number | null;
+  cite: string;
+}
+
+export interface TotalsTableRow {
+  row: TotalsRow;
+  figure: TotalsCell;
+  pct: TotalsCell;
+}
+
+export interface TotalsTableView {
+  spec: TotalsTableSpec;
+  rows: TotalsTableRow[];
+  /** The printed total row's figure: the scale the table's bars are drawn to. */
+  totalValue: number;
+  /** The table's detail rows added together, in the unit of `totalValue`. */
+  rowsSum: number;
+  above: LineItem[];
+  below: LineItem[];
+  /** The one page of the PDF the table is on. */
+  page: number;
+}
+
+export interface TotalsSubmissionRow {
+  row: SubmissionRow;
+  count: TotalsCell;
+  pct: TotalsCell | null;
+  notes: TotalsCell | null;
+}
+
+export interface TotalsView {
+  state: string;
+  spec: TotalsFormSpec;
+  /** The statewide record: the report PDF, its hash and the date it was retrieved. */
+  filing: Filing;
+  highlights: { figure: TotalsFigure; cell: TotalsCell }[];
+  chart: { title: LineItem; figures: { figure: TotalsFigure; cell: TotalsCell }[] };
+  submissions: { rows: TotalsSubmissionRow[]; above: LineItem[] };
+  /** The count the site's lists give for the state (the submissions the report says it received). */
+  count: number;
+  payerTables: TotalsTableView[];
+  usesTable: TotalsTableView;
+  summary: LineItem[];
+  closing: LineItem[];
+  differences: Discrepancy[];
+  /** The first and last page of the PDF a figure or a quoted sentence comes from. */
+  pages: { first: number; last: number };
+}
+
+/** A printed count ("1,916,995") as a number; anything else stops the build. */
+function parseCount(text: string, what: string): number {
+  if (!/^(\d{1,3}(,\d{3})+|\d+)$/.test(text.trim())) throw new Error(`${what}: the count "${text}" cannot be read`);
+  return Number(text.trim().replaceAll(',', ''));
+}
+
+export function buildTotalsViews(data: Dataset): TotalsView[] {
+  const records = data.filings.filter((f) => f.recordKind !== 'filing' && anyFormSpec(f.form).layout === 'state-totals');
+  const states = [...new Set(records.map((f) => f.state))].sort();
+  return states.map((state) => {
+    const mine = records.filter((f) => f.state === state);
+    if (mine.length !== 1 || mine[0]!.recordKind !== 'state_report_totals') throw new Error(`${state}: expected one statewide record, found ${mine.length}`);
+    const filing = mine[0]!;
+    const spec = totalsFormSpec(filing.form);
+    const who = filing.filingId;
+    const rows = data.lineItems.filter((r) => r.filingId === who);
+    const used = new Set<LineItem>();
+    const take = (schedule: string, line: string): LineItem => {
+      const row = oneRow(rows, schedule, line, who);
+      if (row.page > filing.pageCount) throw new Error(`${who}: page ${row.page} is beyond the ${filing.pageCount} pages of the report`);
+      used.add(row);
+      return row;
+    };
+    const cell = (row: LineItem, label: string, heading: string): TotalsCell => {
+      const where = `${who} ${row.schedule} ${row.line}`;
+      if (row.labelAsFiled !== label) throw new Error(`${where}: labelled "${row.labelAsFiled}", expected "${label}"`);
+      if (row.descriptionAsFiled !== heading) throw new Error(`${where}: under the heading "${row.descriptionAsFiled}", expected "${heading}"`);
+      const printed = row.unit === 'none' ? row.answerAsFiled : row.amountAsFiled;
+      if (printed === '') throw new Error(`${where}: the cell is blank`);
+      let value: number | null = null;
+      if (row.unit === 'usd') {
+        value = row.amountCents;
+        if (value === null || value < 0) throw new Error(`${where}: the amount "${printed}" cannot be drawn`);
+      } else if (row.unit === 'count') value = parseCount(printed, where);
+      const what = heading === '' ? label : `${label}, ${heading}`;
+      return { row, printed, value, cite: `${what}, page ${row.page} of the report PDF` };
+    };
+    const notes = (lines: readonly string[]): LineItem[] => lines.map((line) => take(spec.notes.schedule, line));
+    const lone = (group: { schedule: string; figures: readonly TotalsFigure[] }) => group.figures.map((figure) => ({ figure, cell: cell(take(group.schedule, figure.line), figure.label, '') }));
+
+    const table = (t: TotalsTableSpec): TotalsTableView => {
+      const tableRows = t.rows.map((row) => {
+        const figure = cell(take(t.schedule, `${row.id}_${t.figureSuffix}`), row.label, t.figureHeading);
+        const pct = cell(take(t.schedule, `${row.id}_${t.pctSuffix}`), row.label, t.pctHeading);
+        for (const c of [figure, pct]) if (c.row.rowKind !== row.kind) throw new Error(`${who}: ${c.row.schedule} ${c.row.line} is a ${c.row.rowKind} row, expected ${row.kind}`);
+        if (figure.row.unit !== t.figureUnit || pct.row.unit !== 'percent') throw new Error(`${who}: ${t.schedule} ${row.id} has a figure with the wrong unit`);
+        if (figure.row.page !== pct.row.page) throw new Error(`${who}: ${t.schedule} ${row.id} is on two pages`);
+        return { row, figure, pct };
+      });
+      const totals = tableRows.filter((r) => r.row.kind === 'total');
+      if (totals.length !== 1 || tableRows[tableRows.length - 1] !== totals[0]) throw new Error(`${who}: ${t.schedule} must end with its one total row`);
+      const totalValue = totals[0]!.figure.value!;
+      const details = tableRows.filter((r) => r.row.kind !== 'total').map((r) => r.figure.value!);
+      if (totalValue <= 0 || details.some((v) => v > totalValue)) throw new Error(`${who}: ${t.schedule} has a row above its total, so its bars cannot share one scale`);
+      const pagesOf = new Set(tableRows.map((r) => r.figure.row.page));
+      if (pagesOf.size !== 1) throw new Error(`${who}: ${t.schedule} is on more than one page`);
+      return { spec: t, rows: tableRows, totalValue, rowsSum: sumCents(details), above: notes(t.above), below: notes(t.below), page: [...pagesOf][0]! };
+    };
+
+    const s = spec.submissions;
+    const submissions = {
+      rows: s.rows.map((row) => ({
+        row,
+        count: cell(take(s.schedule, row.countLine), row.label, s.countHeading),
+        pct: row.pctLine ? cell(take(s.schedule, row.pctLine), row.label, s.countHeading) : null,
+        notes: row.notesLine ? cell(take(s.schedule, row.notesLine), row.label, s.notesHeading) : null,
+      })),
+      above: notes(s.above),
+    };
+    for (const r of submissions.rows) {
+      if (r.count.row.unit !== 'count' || (r.pct && r.pct.row.unit !== 'percent') || (r.notes && r.notes.row.unit !== 'none')) throw new Error(`${who}: ${s.schedule}, "${r.row.label}" has a cell with the wrong unit`);
+    }
+
+    const highlights = lone(spec.highlights);
+    const chart = { title: take(spec.notes.schedule, spec.chart.title), figures: lone(spec.chart) };
+    if (chart.figures.some((f) => f.cell.row.unit !== 'usd')) throw new Error(`${who}: the chart has a label that is not in dollars`);
+    const payerTables = spec.payerTables.map(table);
+    const usesTable = table(spec.usesTable);
+    const summary = notes(spec.notes.summary);
+    const closing = notes(spec.notes.closing);
+    const countRow = oneRow(rows, spec.countOf.schedule, spec.countOf.line, who);
+    const count = parseCount(countRow.amountAsFiled, `${who} ${countRow.schedule} ${countRow.line}`);
+
+    // Every row of the record is drawn, or named in the form as kept but not drawn. A row this page does not know stops the build.
+    const drawn = [...used];
+    for (const line of spec.notes.notDrawn) used.add(oneRow(rows, spec.notes.schedule, line, who));
+    const stray = rows.filter((r) => !used.has(r));
+    if (stray.length > 0) throw new Error(`${who}: ${stray.length} row(s) the page does not know, the first is ${stray[0]!.schedule} ${stray[0]!.line}`);
+
+    // The sums the dataset lists as differences must be the ones this site's own rows give.
+    const differences = data.discrepancies.filter((d) => d.filingId === who);
+    for (const t of [...payerTables, usesTable]) {
+      const listed = differences.find((d) => d.rule === `${t.spec.schedule}.rows=total`);
+      const read = (text: string): number | null => (t.spec.figureUnit === 'usd' ? parseCents(text) : Number(text));
+      if (t.rowsSum !== t.totalValue) {
+        if (!listed) throw new Error(`${who}: the rows of ${t.spec.schedule} do not add up to its total, and the dataset lists no difference`);
+        if (read(listed.expected) !== t.rowsSum || read(listed.filed) !== t.totalValue) throw new Error(`${who}: the listed sum of ${t.spec.schedule} differs from the rows added together`);
+      } else if (listed) throw new Error(`${who}: the dataset lists a difference for ${t.spec.schedule}, but its rows add up to its total`);
+    }
+
+    const pagesUsed = drawn.map((r) => r.page).sort((a, b) => a - b);
+    return { state, spec, filing, highlights, chart, submissions, count, payerTables, usesTable, summary, closing, differences, pages: { first: pagesUsed[0]!, last: pagesUsed[pagesUsed.length - 1]! } };
+  });
+}
+
+/** The statewide-totals view of one state; a state without one stops the build. */
+export function totalsViewFor(data: Dataset, state: string): TotalsView {
+  const found = buildTotalsViews(data).find((v) => v.state === state);
+  if (!found) throw new Error(`${state}: no report of statewide totals in the dataset`);
   return found;
 }
 

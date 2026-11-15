@@ -19,7 +19,7 @@ You do not need to be a programmer to find your way around here. This page expla
 - Every figure is a link. It opens the filing's own PDF at the page the figure was read from.
 - It gives no opinions. It does not grade a filer or say why a figure is what it is.
 
-Three states are in the scorecard today: Rhode Island, Vermont and Minnesota. Each state has its own form, so the site never adds two states together or sets them side by side as if they were alike.
+Four states are in the scorecard today: Rhode Island, Vermont, Minnesota and Idaho. Each state has its own form, so the site never adds two states together or sets them side by side as if they were alike.
 
 ## Where the numbers come from
 

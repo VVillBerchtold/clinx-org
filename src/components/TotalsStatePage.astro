@@ -1,0 +1,304 @@
+---
+import '../styles/home.css';
+import '../styles/scorecard.css';
+import Base from '../layouts/Base.astro';
+import Cited from './Cited.astro';
+import DifferencesTable from './DifferencesTable.astro';
+import OnPage from './OnPage.astro';
+import PageHead from './PageHead.astro';
+import { formatDate, getDataset, pdfHref, totalsViewFor, type LineItem, type TotalsCell, type TotalsTableView } from '../lib/data';
+import { barPercentOfScale } from '../lib/meter';
+import { numberWord, numberWordCap } from '../lib/site';
+import { STATE_REGISTRY, stateName } from '../lib/states';
+
+/**
+ * A state's page when the state prints a report of statewide totals only: the report's headline
+ * figures, who reported, each total split by payer, what the savings were used for, and the places
+ * where the report's own figures differ. No row names an entity, so there is no page per entity and
+ * no measure. The words that depend on the form come from forms.ts; the figures and the report's own
+ * sentences come from the dataset.
+ */
+interface Props {
+  code: string;
+}
+
+const { code } = Astro.props;
+const data = getDataset();
+const report = totalsViewFor(data, code);
+const { spec, filing, highlights, chart, submissions, payerTables, usesTable, differences } = report;
+const name = stateName(code);
+const entry = STATE_REGISTRY[code];
+const year = filing.reportingYear;
+const pdf = (page: number) => pdfHref(filing, page);
+const pageLabel = (page: number) => `Page ${page} of the report PDF`;
+const samePage = (rows: readonly LineItem[]): number => {
+  const pages = [...new Set(rows.map((r) => r.page))];
+  if (pages.length !== 1) throw new Error(`${filing.filingId}: sentences quoted together are on ${pages.length} pages`);
+  return pages[0]!;
+};
+
+// The chart's bars: one scale, a round number of millions above every figure.
+const MILLION_CENTS = 100_000_000;
+const STEP_CENTS = 100 * MILLION_CENTS;
+const chartCents = chart.figures.map((f) => f.cell.value!);
+const scaleCents = Math.max(STEP_CENTS, Math.ceil(Math.max(...chartCents) / STEP_CENTS) * STEP_CENTS);
+const scaleMillions = (scaleCents / MILLION_CENTS).toLocaleString('en-US');
+const chartPage = samePage([chart.title, ...chart.figures.map((f) => f.cell.row)]);
+
+const tables = [...payerTables, usesTable];
+const anchor = (t: TotalsTableView): string => `table-${t.spec.schedule.replaceAll('_', '-')}`;
+const quoteCaption = (rows: readonly LineItem[], where: string): string => `${rows.length === 1 ? 'The sentence' : `The ${numberWord(rows.length)} sentences`} the report prints ${where}, word for word.`;
+---
+
+<Base
+  title={`${name} 340B report: ${year} statewide totals`}
+  crumbs={[{ name: 'Scorecard', path: '/scorecard/' }, { name, path: `/scorecard/${code.toLowerCase()}/` }]}
+  description={`The statewide 340B totals the ${spec.agency} printed for ${year}: ${tables.map((t) => t.spec.heading.toLowerCase().replace(/^340b /, '340B ')).join(', ')}, as printed, with the places where the report's figures differ. Every figure links to its page of the report.`}
+>
+  <PageHead title={name} trail={[{ label: 'Scorecard', href: '/scorecard/' }, { label: `${year} data, state report` }]}>
+    <p class="lede">
+      The {spec.agency} adds together what covered entities reported for {year} and prints the totals in one report. It gives statewide totals only, so no figure here belongs to any one entity. Every figure below is the state's, as printed, and links to its page of the report.
+    </p>
+    <OnPage
+      title={name}
+      items={[
+        { id: 'headline', label: 'Headline figures' },
+        { id: 'who-reported', label: 'Who reported' },
+        { id: 'by-payer', label: 'Totals by payer type' },
+        { id: 'savings', label: 'Use of savings' },
+        { id: 'differences', label: 'Differences' },
+        { id: 'read-with-care', label: 'Read it with care' },
+        { id: 'sources', label: 'Where the figures come from' },
+      ]}
+    />
+  </PageHead>
+
+  <div class="prose">
+    <h2 id="headline">Headline figures</h2>
+    <p>
+      The report opens with {numberWord(highlights.length)} figures under its own heading, {spec.highlights.heading}. Where the report rounds a figure, it is shown here the way the report rounds it. The tables further down give the full amounts.
+    </p>
+    <ul class="stats report-tiles">
+      {
+        highlights.map((h) => (
+          <li>
+            <strong><Cited value={h.cell.printed} href={pdf(h.cell.row.page)} label={h.cell.cite} /></strong>
+            <span>{h.figure.label}</span>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="table-wrap wide stack report-totals" id="table-chart">
+      <table role="table">
+        <caption><span>{chart.title.labelAsFiled}: the labels of the report's chart, as {spec.asWord}</span></caption>
+        <thead role="rowgroup">
+          <tr role="row">
+            <th role="columnheader" scope="col">Label as {spec.asWord}</th>
+            <th role="columnheader" scope="col" class="num">Amount as {spec.asWord}</th>
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          {
+            chart.figures.map((f) => (
+              <tr role="row" class="tone-plain">
+                <th role="rowheader" scope="row">{f.figure.label}</th>
+                <td role="cell" class="num share" data-label={`Amount as ${spec.asWord}`}>
+                  <span class="rail">
+                    <span class="rail-track">
+                      <svg class="bar" width={`${barPercentOfScale(f.cell.value!, scaleCents)}%`} height="10" aria-hidden="true" focusable="false" />
+                    </span>
+                    <Cited value={f.cell.printed} href={pdf(f.cell.row.page)} label={f.cell.cite} />
+                  </span>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="small muted">
+      The report draws these {numberWord(chart.figures.length)} amounts as a chart, in whole dollars. The bars here are drawn to one scale: the full width is ${scaleMillions} million.{' '}
+      <Cited value="Open the chart" href={pdf(chartPage)} label={pageLabel(chartPage)} />
+    </p>
+    <figure class="page-quote">
+      <blockquote>
+        {report.summary.map((r) => <p>{r.labelAsFiled}</p>)}
+      </blockquote>
+      <figcaption>
+        {numberWordCap(report.summary.length)} paragraphs of the report's summary, word for word.{' '}
+        <Cited value="Open the page" href={pdf(samePage(report.summary))} label={pageLabel(samePage(report.summary))} />
+      </figcaption>
+    </figure>
+
+    <h2 id="who-reported">Who reported</h2>
+    <p>The report says how many submissions it adds together. It does not name the entities that sent them.</p>
+    <figure class="page-quote">
+      <blockquote>
+        {submissions.above.map((r) => <p>{r.labelAsFiled}</p>)}
+      </blockquote>
+      <figcaption>
+        {quoteCaption(submissions.above, 'above the table')}{' '}
+        <Cited value="Open the page" href={pdf(samePage(submissions.above))} label={pageLabel(samePage(submissions.above))} />
+      </figcaption>
+    </figure>
+    <div class="table-wrap printed" id="table-submissions">
+      <table>
+        <caption><span>Submissions as {spec.asWord}, {year} data</span></caption>
+        <thead>
+          <tr>
+            <th scope="col">{spec.submissions.rowHeading}</th>
+            <th scope="col" class="num">{spec.submissions.countHeading}</th>
+            <th scope="col">{spec.submissions.notesHeading}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            submissions.rows.map((r) => (
+              <tr>
+                <th scope="row">{r.row.label}</th>
+                <td class="num">
+                  <Cited value={r.count.printed} href={pdf(r.count.row.page)} label={r.count.cite} />
+                  {r.pct && (
+                    <>
+                      {' '}
+                      (<Cited value={r.pct.printed} href={pdf(r.pct.row.page)} label={r.pct.cite} />)
+                    </>
+                  )}
+                </td>
+                <td class:list={{ blank: !r.notes }}>{r.notes?.printed}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="by-payer">Totals by payer type</h2>
+    <p>
+      The report splits {numberWord(payerTables.length)} totals by who paid. Each table is shown as {spec.asWord}, under the report's own heading. In each table the bars are drawn to one scale: the full width is the table's {payerTables[0]!.rows.at(-1)!.row.label} row.
+    </p>
+    {
+      tables.map((t) => {
+        const total = t.rows.at(-1)!;
+        const details = t.rows.slice(0, -1);
+        const figureCell = (c: TotalsCell, bar: boolean) => (
+          <td role="cell" class="num share" data-label={t.spec.figureHeading}>
+            <span class="rail">
+              <span class="rail-track">{bar && <svg class="bar" width={`${barPercentOfScale(c.value!, t.totalValue)}%`} height="10" aria-hidden="true" focusable="false" />}</span>
+              <Cited value={c.printed} href={pdf(c.row.page)} label={c.cite} />
+            </span>
+          </td>
+        );
+        const pctCell = (c: TotalsCell) => (
+          <td role="cell" class="num" data-label={t.spec.pctHeading}>
+            <Cited value={c.printed} href={pdf(c.row.page)} label={c.cite} />
+          </td>
+        );
+        return (
+          <>
+            {t === usesTable && (
+              <>
+                <h2 id="savings">Use of savings</h2>
+                <p>The report's last table gives the amount of 340B savings applied to each use, as {spec.asWord}. The names of the uses are the report's own words.</p>
+              </>
+            )}
+            <h3 id={t.spec.schedule.replaceAll('_', '-')}>{t.spec.heading}</h3>
+            <figure class="page-quote">
+              <blockquote>
+                {t.above.map((r) => <p>{r.labelAsFiled}</p>)}
+              </blockquote>
+              <figcaption>
+                {quoteCaption(t.above, 'above the table')}{' '}
+                <Cited value="Open the page" href={pdf(samePage(t.above))} label={pageLabel(samePage(t.above))} />
+              </figcaption>
+            </figure>
+            <div class:list={['table-wrap', 'wide', 'stack', 'report-totals', { 'long-labels': t === usesTable }]} id={anchor(t)}>
+              <table role="table">
+                <caption><span>{t.spec.heading} as {spec.asWord}, {year} data</span></caption>
+                <thead role="rowgroup">
+                  <tr role="row">
+                    <th role="columnheader" scope="col">{t.spec.rowHeading}</th>
+                    <th role="columnheader" scope="col" class="num">{t.spec.figureHeading}</th>
+                    <th role="columnheader" scope="col" class="num">{t.spec.pctHeading}</th>
+                  </tr>
+                </thead>
+                <tbody role="rowgroup">
+                  {details.map((r) => (
+                    <tr role="row" class="tone-plain">
+                      <th role="rowheader" scope="row">{r.row.label}</th>
+                      {figureCell(r.figure, true)}
+                      {pctCell(r.pct)}
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot role="rowgroup">
+                  <tr role="row">
+                    <th role="rowheader" scope="row">{total.row.label}</th>
+                    {figureCell(total.figure, false)}
+                    {pctCell(total.pct)}
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+            {t.below.length > 0 && (
+              <figure class="page-quote">
+                <blockquote>
+                  {t.below.map((r) => <p>{r.labelAsFiled}</p>)}
+                </blockquote>
+                <figcaption>
+                  The note the report prints under the table, word for word.{' '}
+                  <Cited value="Open the page" href={pdf(samePage(t.below))} label={pageLabel(samePage(t.below))} />
+                </figcaption>
+              </figure>
+            )}
+          </>
+        );
+      })
+    }
+    <figure class="page-quote">
+      <blockquote>
+        {report.closing.map((r) => <p>{r.labelAsFiled}</p>)}
+      </blockquote>
+      <figcaption>
+        The report's closing paragraph, word for word.{' '}
+        <Cited value="Open the page" href={pdf(samePage(report.closing))} label={pageLabel(samePage(report.closing))} />
+      </figcaption>
+    </figure>
+
+    <DifferencesTable
+      differences={differences}
+      name={name}
+      spec={spec}
+      lead={`${numberWordCap(differences.length)} ${differences.length === 1 ? 'place' : 'places'} where two figures of the report differ. Nothing was changed; both figures are kept as ${spec.asWord}.`}
+    />
+
+    <section aria-labelledby="read-with-care">
+      <div class="note">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="2"></circle><path d="M10 9v5M10 6v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+        <div>
+          <p><strong id="read-with-care">Read it with care.</strong> These are totals the state published. They are not what any one entity filed, and no figure here can be traced to an entity. The entities' own filings are not in this dataset, so the totals cannot be checked against them.</p>
+          <p>No measure is calculated for {name}. The other states' measures are worked out for each filer, and this report has one set of figures for the whole state. So {name}'s figures are shown as the state printed them, and the states are not added together or compared. <a href="/methods/#5-measures">Methods</a> sets out each calculation.</p>
+        </div>
+      </div>
+    </section>
+
+    <h2 id="sources">Where the figures come from</h2>
+    {entry?.stands && <p>{entry.stands}</p>}
+    {entry?.sources && <div class="btn-row">{entry.sources.map((src) => <a class="btn ghost" href={src.href}>{src.label}</a>)}</div>}
+    <dl class="facts panel">
+      <dt>Report PDF</dt>
+      <dd><a href={pdfHref(filing, 1)}>Open the report on the {spec.publisher}</a></dd>
+      <dt>Title</dt>
+      <dd>{filing.formRevision}</dd>
+      <dt>Period</dt>
+      <dd>{filing.periodAsFiled}</dd>
+      <dt>SHA-256</dt>
+      <dd><span class="mono">{filing.pdfSha256}</span></dd>
+      <dt>Retrieved</dt>
+      <dd>{formatDate(filing.retrievedAt)}</dd>
+      <dt>Pages used</dt>
+      <dd>{report.pages.first} to {report.pages.last} of {filing.pageCount}</dd>
+    </dl>
+  </div>
+</Base>

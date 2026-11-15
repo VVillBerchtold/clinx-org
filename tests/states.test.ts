@@ -22,13 +22,26 @@ describe('states', () => {
       }
     }
   });
-  it('has Rhode Island and Vermont live, and keeps Vermont\'s law and Board links', () => {
-    expect(statesWith('live').map((s) => s.code)).toEqual(['MN', 'RI', 'VT']);
+  it('has Idaho, Minnesota, Rhode Island and Vermont live, and keeps Vermont\'s law and Board links', () => {
+    expect(statesWith('live').map((s) => s.code)).toEqual(['ID', 'MN', 'RI', 'VT']);
     const vt = STATE_REGISTRY['VT']!;
     expect(vt.href).toBe('/scorecard/vt/');
     expect(vt.summary).toBe('Fiscal year 2025 · marked draft by the state');
     expect(vt.sources?.map((x) => x.href)).toContain('https://gmcboard.vermont.gov/node/24841');
     expect(vt.listingNote?.quote).toBe('Brattleboro Memorial Hospital - did not report in 2026 for FY 2025');
+  });
+  it('keeps Idaho\'s law, its report and the state page that lists it, in the law\'s own words for the date', () => {
+    const id = STATE_REGISTRY['ID']!;
+    expect(id.status).toBe('live');
+    expect(id.href).toBe('/scorecard/id/');
+    expect(id.visibility).toBe('totals');
+    expect(id.stands).toContain('Before November 15');
+    expect(id.stands).not.toMatch(/by November 15/);
+    expect(id.sources?.map((x) => x.href)).toEqual([
+      'https://legislature.idaho.gov/statutesrules/idstat/Title41/T41CH3/SECT41-351/',
+      'https://idaho-sco-central-registry-documents.s3.us-gov-west-1.amazonaws.com/340B+Program+Reports/CY2025+340B+Program+Report.pdf',
+      'https://transparent.idaho.gov/featured-resources',
+    ]);
   });
   it('draws every state, links the live ones and carries no style attribute', () => {
     const svg = tileMapSvg('t');
@@ -36,6 +49,7 @@ describe('states', () => {
     expect(svg.split('<a ').length - 1).toBe(statesWith('live').length);
     expect(svg).toContain('href="/scorecard/ri/"');
     expect(svg).toContain('href="/scorecard/vt/"');
+    expect(svg).toContain('href="/scorecard/id/"');
     expect(svg).not.toMatch(/\sstyle=/);
   });
 });

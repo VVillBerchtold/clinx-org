@@ -16,7 +16,7 @@ export const CSV_HEADERS = {
 export const DATA_FILES = [...Object.keys(CSV_HEADERS), '340b-state-filings.json', 'external-share-dark.svg', 'external-share-light.svg'].sort();
 
 /** The forms this site can show. Must match FORMS in src/lib/forms.ts. */
-export const KNOWN_FORMS = ['ri-oag-340b', 'vt-gmcb-340b-financial', 'mn-mdh-340b-report'];
+export const KNOWN_FORMS = ['ri-oag-340b', 'vt-gmcb-340b-financial', 'mn-mdh-340b-report', 'id-sco-340b-report'];
 
 /** The kinds of record a filing may be (filings.csv `record_kind`). Must match RECORD_KINDS in src/lib/forms.ts. */
 export const KNOWN_RECORD_KINDS = ['filing', 'state_report_row', 'state_report_totals'];

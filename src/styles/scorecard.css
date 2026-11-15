@@ -344,3 +344,66 @@
     min-width: 11rem;
   }
 }
+
+/* A state's report of statewide totals. The headline figures are long ("1,916,995"), so they are set
+   smaller than the site's other stat strips, and each keeps the dotted line of a linked figure. */
+ul.stats.report-tiles {
+  margin-top: var(--s4);
+  padding: 0;
+}
+/* The tiles sit inside running text, whose lists space their items; these are one joined row. */
+ul.stats.report-tiles li {
+  margin-top: 0;
+}
+ul.stats.report-tiles strong {
+  font: 800 clamp(1.5rem, 2.7vw, 2.25rem) / 1.1 var(--display);
+  letter-spacing: -0.03em;
+}
+ul.stats.report-tiles strong a {
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.18em;
+}
+/* Its tables: a label, a figure with its bar, a percentage. The figure column has one width in every
+   table of the page, so the tables line up under each other. */
+.report-totals {
+  margin-top: var(--s5);
+}
+.report-totals td.share {
+  --fig: 9.5rem;
+  width: 52%;
+  min-width: 17rem;
+}
+.report-totals td.share .rail-track {
+  min-width: 5rem;
+}
+/* The TOTAL row is the scale the bars are drawn to, so it carries no bar of its own. */
+.report-totals tfoot .rail-track {
+  visibility: hidden;
+}
+.report-totals thead th:last-child,
+.report-totals td:last-child:not(.share) {
+  width: 9.5rem;
+}
+.report-totals thead th:last-child {
+  white-space: normal;
+}
+.report-totals.long-labels tbody th[scope='row'] {
+  min-width: 14rem;
+  max-width: 26rem;
+}
+.prose .page-quote + .report-totals,
+.prose h3 + .page-quote {
+  margin-top: var(--s4);
+}
+@media (max-width: 760px) {
+  .report-totals td.share {
+    width: auto;
+    min-width: 14.5rem;
+  }
+  .report-totals thead th:last-child,
+  .report-totals td:last-child:not(.share) {
+    width: auto;
+  }
+}
