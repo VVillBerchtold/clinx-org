@@ -1,0 +1,81 @@
+---
+/**
+ * One kind of 340B law across the states: every law of that kind with its state, its name and
+ * what it does, each opening on its state's page, beside a map of the states that have one.
+ * Everything shown comes from the dataset's laws table (src/lib/laws.ts).
+ */
+import '../styles/scorecard.css';
+import '../styles/laws.css';
+import Base from '../layouts/Base.astro';
+import PageHead from './PageHead.astro';
+import { KIND_PAGES, LAWS_HOME, getLaws, kindOpening, kindPath, lawName, lawsMapSvg, lawsOfKind, lawsPath, type KindInfo } from '../lib/laws';
+import { stateName } from '../lib/states';
+
+interface Props {
+  kind: KindInfo;
+}
+const { kind } = Astro.props;
+const laws = getLaws();
+const own = lawsOfKind(laws, kind.kind);
+const states = new Set(own.map((l) => l.state)).size;
+const page = KIND_PAGES[kind.kind];
+const count = `${own.length} ${own.length === 1 ? 'law' : 'laws'} in ${states} ${states === 1 ? 'state' : 'states'}`;
+const others = laws.kinds.filter((k) => k.kind !== kind.kind).map((k) => ({ ...k, count: lawsOfKind(laws, k.kind).length })).filter((k) => k.count > 0);
+---
+
+<Base
+  title={`${page.heading}, state by state`}
+  crumbs={[
+    { name: 'State laws', path: LAWS_HOME },
+    { name: kind.label, path: kindPath(kind.kind) },
+  ]}
+  description={`${count}. ${kindOpening(kind)} See each state's law, what it does and where to read it.`}
+>
+  <PageHead title={page.heading} trail={[{ label: 'State laws', href: LAWS_HOME }, { label: kind.label }]}>
+    <p class="lede">{count}. {kindOpening(kind)}</p>
+  </PageHead>
+
+  <div class="law-layout">
+    <ul class="law-rows">
+      {
+        own.map((l) => (
+          <li>
+            <a href={`${lawsPath(l.state)}#${l.lawId}`}>
+              <strong>{stateName(l.state)}</strong>
+              <span class="law-row-name">{lawName(l)}</span>
+              <span class="law-row-year">{l.sessionYear}</span>
+              <span class="law-row-what">{l.summary}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <aside class="law-aside" aria-label="Where these laws are, and the other kinds">
+      <div class="law-map">
+        <h2 class="label">Where these laws are</h2>
+        <Fragment set:html={lawsMapSvg(laws, 'kind-laws-map', { kind: kind.kind })} />
+        <ul class="legend">
+          <li><span class="key live" aria-hidden="true"></span>Has a law of this kind</li>
+          <li><span class="key" aria-hidden="true"></span>None listed</li>
+        </ul>
+      </div>
+      <div class="law-index">
+        <h2 class="label">Other kinds of law</h2>
+        <ul class="kind-index compact">
+          {
+            others.map((k) => (
+              <li>
+                <a href={kindPath(k.kind)}>
+                  <strong>{k.label}</strong>
+                  <span class="kind-count">{k.count}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <a class="law-all" href={LAWS_HOME}>All state laws</a>
+      </div>
+    </aside>
+  </div>
+</Base>

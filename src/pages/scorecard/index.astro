@@ -1,10 +1,12 @@
 ---
 import '../../styles/home.css';
 import '../../styles/scorecard.css';
+import '../../styles/laws.css';
 import Base from '../../layouts/Base.astro';
 import PageHead from '../../components/PageHead.astro';
 import StateStandings from '../../components/StateStandings.astro';
 import { buildReportViews, buildTotalsViews, buildViews, countPhrase, getDataset } from '../../lib/data';
+import { LAWS_HOME, getLaws, statesByLaws } from '../../lib/laws';
 import { numberWordCap } from '../../lib/site';
 import { STATE_REGISTRY, statesWith, tileMapSvg } from '../../lib/states';
 
@@ -14,6 +16,8 @@ const reports = buildReportViews(data);
 const totalsReports = buildTotalsViews(data);
 const live = statesWith('live');
 const law = statesWith('law');
+const laws = getLaws();
+const lawStates = statesByLaws(laws).withLaws.length;
 const countIn = (code: string): string => {
   const report = reports.find((r) => r.state === code);
   if (report) return `${report.entities.length} rows`;
@@ -65,5 +69,17 @@ const countIn = (code: string): string => {
       <p>What each state makes public differs. A state is added here once what it makes public can be copied and every figure has been checked against the page it came from.</p>
     </div>
     <StateStandings />
+  </section>
+
+  <section class="section" aria-labelledby="laws-title">
+    <div class="section-head">
+      <h2 id="laws-title">Every state law that names 340B</h2>
+      <p>Reporting is one kind of law. Contract pharmacy, payer and Medicaid laws are listed too.</p>
+    </div>
+    <a class="law-door" href={LAWS_HOME}>
+      <strong>{laws.laws.length} laws in {lawStates} states</strong>
+      <span>What each law does, who it applies to and where to read it.</span>
+      <svg viewBox="0 0 18 18" fill="none" aria-hidden="true" focusable="false"><path d="M3 9h12M10 4l5 5-5 5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+    </a>
   </section>
 </Base>

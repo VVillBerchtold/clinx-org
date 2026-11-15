@@ -1,0 +1,486 @@
+/* State laws about 340B: the way in (map and kinds), each state's page and each kind's page. */
+
+/* ---------- The way in: the map on the left, the kinds on the right, the advice under the map ---------- */
+
+.law-top {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+  grid-template-areas: 'map kinds' 'advice kinds';
+  grid-template-rows: auto 1fr;
+  gap: 2rem 3.5rem;
+  align-items: start;
+}
+.law-top .law-map {
+  grid-area: map;
+}
+.law-top .law-index {
+  grid-area: kinds;
+}
+.law-top .law-advice {
+  grid-area: advice;
+}
+
+/* ---------- The map (a state with a law is a link) ---------- */
+
+.law-map {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+.lawmap .has .tile {
+  fill: var(--accent);
+  opacity: 1;
+}
+.lawmap .has .abbr {
+  fill: var(--bg);
+  font-weight: 700;
+}
+.lawmap a {
+  text-decoration: none;
+}
+.lawmap .here .tile {
+  stroke: var(--ink);
+  stroke-width: 3;
+}
+
+/* ---------- All states: the kinds beside the map ---------- */
+
+.law-index {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+.kind-index {
+  list-style: none;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  overflow: hidden;
+}
+.kind-index li + li {
+  border-top: 1px solid var(--line);
+}
+.kind-index a {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.125rem 1rem;
+  align-items: baseline;
+  padding: 0.875rem 1.25rem;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.kind-index a:hover,
+.kind-index a:focus-visible {
+  background: color-mix(in srgb, var(--accent-wash) 60%, transparent);
+}
+.kind-index strong {
+  font: 700 1.125rem/1.2 var(--display);
+  letter-spacing: -0.01em;
+}
+.kind-index a:hover strong {
+  color: var(--accent);
+}
+.kind-count {
+  color: var(--muted);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.kind-what {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-size: var(--text-sm);
+  line-height: 1.4;
+}
+.law-index-note {
+  color: var(--muted);
+  font-size: var(--text-xs);
+}
+/* The short form beside a kind's page: a name and a count on one line. */
+.kind-index.compact a {
+  padding: 0.625rem 1rem;
+}
+.kind-index.compact strong {
+  font: 650 var(--text-sm) / 1.3 var(--body);
+  letter-spacing: 0;
+}
+
+/* A kind, as a small label. */
+.kind {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: var(--pill);
+  background: var(--accent-wash);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent);
+  color: var(--ink);
+  font-weight: 650;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  white-space: nowrap;
+  text-decoration: none;
+}
+a.kind:hover,
+a.kind:focus-visible {
+  box-shadow: inset 0 0 0 1px var(--accent);
+  color: var(--accent);
+}
+
+/* ---------- A kind's page: its laws, one row each ---------- */
+
+.law-rows {
+  list-style: none;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  overflow: hidden;
+}
+.law-rows li + li {
+  border-top: 1px solid var(--line);
+}
+.law-rows a {
+  display: grid;
+  grid-template-columns: minmax(0, 10rem) minmax(0, 1fr) auto;
+  gap: 0.125rem 1.25rem;
+  align-items: baseline;
+  padding: 0.7rem 1.25rem;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.law-rows a:hover,
+.law-rows a:focus-visible {
+  background: color-mix(in srgb, var(--accent-wash) 60%, transparent);
+}
+.law-rows strong {
+  font-weight: 650;
+}
+.law-rows a:hover strong {
+  color: var(--accent);
+}
+.law-row-name {
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+.law-row-year {
+  color: var(--muted);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.law-row-what {
+  grid-column: 2 / -1;
+  max-width: var(--measure);
+  font-size: var(--text-sm);
+  line-height: 1.45;
+}
+
+/* ---------- The way in: free to use ---------- */
+
+.law-use {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1.25rem 3.5rem;
+  align-items: center;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+}
+.law-use > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+.law-use h2 {
+  font: 750 clamp(1.375rem, 2.2vw, 1.75rem) / 1.12 var(--display);
+  letter-spacing: -0.02em;
+}
+.law-use p {
+  max-width: var(--measure);
+  color: var(--muted);
+}
+
+/* ---------- A state's page ---------- */
+
+.law-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 19rem);
+  gap: 2rem 3.5rem;
+  align-items: start;
+}
+.law-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s5);
+  min-width: 0;
+}
+.law {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s5);
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  scroll-margin-top: 5rem;
+}
+.law:target {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-wash);
+}
+.law-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.law-kinds {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+.law-head h2 {
+  font: 750 clamp(1.5rem, 2.6vw, 2rem) / 1.12 var(--display);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.law-summary {
+  max-width: var(--measure);
+  font-size: var(--text-lg);
+  line-height: 1.45;
+}
+.law-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--bg);
+  overflow: hidden;
+}
+/* Each cell draws its right and bottom rule; the box clips the ones on the outer edge. */
+.law-facts > div {
+  margin: 0 -1px -1px 0;
+  padding: 0.75rem 1rem;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.law-facts dt,
+.law-parts dt {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.law-facts dd {
+  margin: 0.125rem 0 0;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.law-parts {
+  display: grid;
+  gap: var(--s4);
+  margin: 0;
+}
+.law-parts > div {
+  display: grid;
+  grid-template-columns: minmax(0, 9.5rem) minmax(0, 1fr);
+  gap: 0.25rem 1.5rem;
+}
+.law-parts dt {
+  padding-top: 0.2rem;
+}
+.law-parts dd {
+  margin: 0;
+  max-width: var(--measure);
+}
+.law-quote {
+  margin: 0;
+  padding: 1rem 1.25rem;
+  border-left: 4px solid var(--accent);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  background: var(--accent-wash);
+}
+.law-quote blockquote {
+  margin: 0;
+}
+.law-quote blockquote p {
+  max-width: var(--measure);
+  font-size: var(--text-base);
+  line-height: 1.5;
+}
+.law-quote blockquote p::before {
+  content: '\201C';
+}
+.law-quote blockquote p::after {
+  content: '\201D';
+}
+.law-quote figcaption {
+  margin-top: var(--s2);
+  color: var(--muted);
+  font-size: var(--text-xs);
+}
+.law-links {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.625rem;
+}
+.law-source {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  height: 100%;
+  padding: 0.7rem 1rem;
+  border-radius: var(--r-md);
+  box-shadow: inset 0 0 0 1px var(--tick);
+  text-decoration: none;
+  transition: box-shadow 0.15s;
+}
+.law-source:hover,
+.law-source:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+.law-source span {
+  color: var(--muted);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+.law-source strong {
+  font-weight: 650;
+  font-size: var(--text-sm);
+}
+.law-source:hover strong {
+  color: var(--accent);
+}
+.law-saved {
+  flex-basis: 100%;
+  color: var(--muted);
+  font-size: var(--text-xs);
+}
+
+/* Beside the laws: the scorecard link and the map of other states. */
+.law-aside {
+  position: sticky;
+  top: 5rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s5);
+}
+.law-score {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1.125rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  text-decoration: none;
+  transition: transform 0.25s, border-color 0.25s;
+}
+.law-score:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+.law-score strong {
+  font: 700 1.1875rem/1.2 var(--display);
+  letter-spacing: -0.015em;
+}
+.law-score span:last-child {
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+.law-all {
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+/* The link from the scorecard's list of states. */
+.law-door {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.375rem 2rem;
+  align-items: center;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  text-decoration: none;
+  transition: transform 0.25s, border-color 0.25s;
+}
+.law-door:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+}
+.law-door strong {
+  font: 800 clamp(1.5rem, 2.8vw, 2.125rem) / 1.08 var(--display);
+  letter-spacing: -0.025em;
+}
+.law-door span {
+  max-width: var(--measure);
+  color: var(--muted);
+}
+.law-door svg {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  width: 1.75rem;
+  height: 1.75rem;
+  color: var(--accent);
+  transition: transform 0.2s;
+}
+.law-door:hover svg {
+  transform: translateX(4px);
+}
+
+@media (max-width: 900px) {
+  .law-top {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'map' 'kinds' 'advice';
+    grid-template-rows: none;
+  }
+  .law-layout,
+  .law-use {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .law-aside {
+    position: static;
+  }
+  .law-aside .law-map,
+  .law-aside .law-index {
+    max-width: 26rem;
+  }
+}
+@media (max-width: 700px) {
+  .law-rows a {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .law-row-name,
+  .law-row-what {
+    grid-column: 1 / -1;
+  }
+  .law-row-year {
+    grid-row: 1;
+    grid-column: 2;
+  }
+  .law-parts > div {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .law-score,
+  .law-door,
+  .law-door svg {
+    transition: none;
+  }
+  .law-score:hover,
+  .law-door:hover {
+    transform: none;
+  }
+}

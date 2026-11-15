@@ -1,9 +1,11 @@
 ---
 import Draft from './Draft.astro';
+import { getLaws, lawsOf, lawsPath } from '../lib/laws';
 import { STATE_REGISTRY, VISIBILITY_LABEL, statesWith } from '../lib/states';
 
 /** The states with a 340B reporting law that are not in the scorecard yet, A to Z. */
 const law = statesWith('law');
+const laws = getLaws();
 ---
 
 <ul class="standings">
@@ -30,6 +32,14 @@ const law = statesWith('law');
                 </a>
               </li>
             ))}
+            {lawsOf(laws, s.code).length > 0 && (
+              <li>
+                <a href={lawsPath(s.code)}>
+                  All 340B laws
+                  <span class="visually-hidden"> in {s.name}</span>
+                </a>
+              </li>
+            )}
           </ul>
         </li>
       );
@@ -37,6 +47,6 @@ const law = statesWith('law');
   }
 </ul>
 <p class="scale-note standings-note">
-  <span>Read from each state's law and the state's own pages on 11 November 2026.</span>
+  <span>Read from each state's law and the state's own pages between 11 and 15 November 2026.</span>
   <Draft />
 </p>

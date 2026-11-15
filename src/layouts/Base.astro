@@ -26,6 +26,8 @@ interface Props {
 const { title, description, bleed = false, postsForm = false, unlisted = false, crumbs = [], about = [] } = Astro.props;
 const data = getDataset();
 const path = Astro.url.pathname;
+/** True for the menu link of the section this page is in. */
+const here = (link: { href: string }): boolean => path.startsWith(link.href);
 const refreshFiles = import.meta.glob<{ last_refresh: string }>('../../refresh/last-refresh.json', { eager: true, import: 'default' });
 const lastRefresh = Object.values(refreshFiles)[0]?.last_refresh;
 const fullTitle = path === '/' ? title : `${title} | ${SITE_NAME}`;
@@ -74,13 +76,34 @@ const labels: Node[] = unlisted ? [] : [...about, ...(crumbs.length > 0 ? [trail
         <nav class="site-nav" aria-label="Main">
           <ul>
             {
-              NAV.map((item) => (
-                <li>
-                  <a href={item.href} aria-current={path.startsWith(item.href) ? 'page' : undefined}>
-                    {item.label}
-                  </a>
-                </li>
-              ))
+              NAV.map((item) =>
+                'items' in item ? (
+                  <li>
+                    <details class:list={['nav-drop', { on: item.items.some(here) }]}>
+                      <summary>
+                        {item.label}
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                      </summary>
+                      <ul class="nav-panel">
+                        {item.items.map((sub) => (
+                          <li>
+                            <a href={sub.href} aria-current={here(sub) ? 'page' : undefined}>
+                              <strong>{sub.label}</strong>
+                              {sub.note && <span>{sub.note}</span>}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </details>
+                  </li>
+                ) : (
+                  <li>
+                    <a href={item.href} aria-current={here(item) ? 'page' : undefined}>
+                      {item.label}
+                    </a>
+                  </li>
+                ),
+              )
             }
           </ul>
         </nav>
@@ -92,13 +115,28 @@ const labels: Node[] = unlisted ? [] : [...about, ...(crumbs.length > 0 ? [trail
           <nav aria-label="Main">
             <ul>
               {
-                NAV.map((item) => (
-                  <li>
-                    <a href={item.href} aria-current={path.startsWith(item.href) ? 'page' : undefined}>
-                      {item.label}
-                    </a>
-                  </li>
-                ))
+                NAV.map((item) =>
+                  'items' in item ? (
+                    <li class="nav-sub">
+                      <span class="nav-sub-head">{item.label}</span>
+                      <ul>
+                        {item.items.map((sub) => (
+                          <li>
+                            <a href={sub.href} aria-current={here(sub) ? 'page' : undefined}>
+                              {sub.label}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </li>
+                  ) : (
+                    <li>
+                      <a href={item.href} aria-current={here(item) ? 'page' : undefined}>
+                        {item.label}
+                      </a>
+                    </li>
+                  ),
+                )
               }
             </ul>
           </nav>
@@ -123,10 +161,11 @@ const labels: Node[] = unlisted ? [] : [...about, ...(crumbs.length > 0 ? [trail
             <a class="mark" href="/" aria-label="ClinX home"><Wordmark /></a>
             <p>Open healthcare data and tools, built by Will Berchtold in Rhode Island.</p>
           </div>
-          <nav aria-label="340B Scorecard">
-            <h2>340B Scorecard</h2>
+          <nav aria-label="340B">
+            <h2>340B</h2>
             <ul>
               <li><a href="/scorecard/">Scorecard</a></li>
+              <li><a href="/laws/">State laws</a></li>
               <li><a href="/data/">Data</a></li>
               <li><a href="/methods/">Methods</a></li>
             </ul>

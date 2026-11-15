@@ -1,0 +1,23 @@
+---
+/**
+ * One page per state that has a 340B law (/laws/ri/) and one per kind of law (/laws/reporting/).
+ * A state with no listed law has no page. The two layouts live in src/components.
+ */
+import LawsKind from '../../../components/LawsKind.astro';
+import LawsState from '../../../components/LawsState.astro';
+import { getLaws, lawsOfKind, statesByLaws, type KindInfo } from '../../../lib/laws';
+import type { StateTile } from '../../../lib/states';
+
+export function getStaticPaths() {
+  const laws = getLaws();
+  return [
+    ...statesByLaws(laws).withLaws.map((state) => ({ params: { slug: state.code.toLowerCase() }, props: { state } })),
+    ...laws.kinds.filter((kind) => lawsOfKind(laws, kind.kind).length > 0).map((kind) => ({ params: { slug: kind.kind }, props: { kind } })),
+  ];
+}
+
+type Props = { state: StateTile; kind?: undefined } | { kind: KindInfo; state?: undefined };
+const { state, kind } = Astro.props;
+---
+
+{state ? <LawsState state={state} /> : <LawsKind kind={kind} />}

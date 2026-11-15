@@ -28,8 +28,27 @@ export const CSP_FORM_META = CSP_FORM.replace("; frame-ancestors 'none'", '');
 /** Where the contact form's mail goes, and the address shown beside it. */
 export const CONTACT_EMAIL = 'will@clinx.org';
 
-export const NAV: readonly { href: string; label: string }[] = [
-  { href: '/scorecard/', label: 'Scorecard' },
+export interface NavLink {
+  href: string;
+  label: string;
+  /** One line under the label, shown where the link sits inside a group. */
+  note?: string;
+}
+/** A menu entry that opens a short list of pages instead of going to one. */
+export interface NavGroup {
+  label: string;
+  items: readonly NavLink[];
+}
+
+/** The main menu. 340B is a group: the Scorecard and the state laws sit side by side under it. */
+export const NAV: readonly (NavLink | NavGroup)[] = [
+  {
+    label: '340B',
+    items: [
+      { href: '/scorecard/', label: 'Scorecard', note: 'The 340B figures each state publishes' },
+      { href: '/laws/', label: 'State laws', note: 'The 340B laws each state has passed' },
+    ],
+  },
   { href: '/data/', label: 'Data' },
   { href: '/methods/', label: 'Methods' },
   { href: '/writing/', label: 'Writing' },

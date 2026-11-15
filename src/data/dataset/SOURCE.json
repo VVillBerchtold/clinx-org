@@ -1,10 +1,11 @@
 {
-  "dataset_version": "0.5.0",
-  "dataset_commit": "e9d1aabef62ecbc6afda3a7d323b9c2d1e17f95e",
+  "dataset_version": "0.6.0",
+  "dataset_commit": "759a51bd50993fb8b55883151c46008d34432db5",
   "dataset_commit_had_uncommitted_changes": false,
   "small_claim_counts_left_out_by_this_site": 0,
   "files": {
-    "340b-state-filings.json": "10744f972a2786ea1672be102a37c6dbfc3db9184bf644e99b7d4745967714c2",
+    "340b-state-filings.json": "5da044b5d6215fcaf0f02fc3c30505d1df90b00d252ed77debc66f83bf49a3c8",
+    "340b-state-laws.json": "834fe74caf5cdef5561d9d97758fcb8791a44a897cf43f55c51a40b08697f646",
     "attachments.csv": "154111cf25d084d6eb6d532233883839d8ff3d9eba06ff7218c0aaf5a0263ac5",
     "discrepancies.csv": "5c24e9b17364febce4ca196ab1c509eaa4769f65be1afa1c4cc1a0a520174dbf",
     "entities.csv": "38ef99b3e6996d9cb6633c42df628a431ad2c48c055538b98723ad9c6abfdd67",
@@ -13,8 +14,10 @@
     "filings.csv": "8114ee96734b2c3c82892d1f77e0445c4478de8825d3da1c1850f97320752a8b",
     "line_items.csv": "4ddb41e16860c0b47528a5d366438e08ae8662470ec9ec6b4258ac22da077eb6",
     "measures.csv": "6ec83e2c1d78a48b1e02df907cb3161f2b86fb9149c5da4254211ba9b5491843",
+    "state-laws-not-listed.csv": "d518c92ee8da362652ef5eb603ed74cc9d1ed6e36dc3dc946d344852c02a3f26",
+    "state-laws.csv": "9801d91f19c06082787aa0dc5d2fc6ebec5f65da3b2925e6d6501587e6940e52",
     "vendors.csv": "390ff9979310f94f5754d6544f905a27704fd964e3bae027cb0529303861e768",
-    "METHODS.md": "3e1f1092d0a52763dec5e4679ba468d6f4d44da96a969f591864a5a61b16aa54",
-    "DATA_DICTIONARY.md": "e1656fb52765982c3f51dd4309588ca1857274161b3aaacdce3cc29bf02e790a"
+    "METHODS.md": "d640001fadabe3b27592fd017ea6c200f0fbfd189695640dfa332008f3df015a",
+    "DATA_DICTIONARY.md": "a2c66d629b38e939eecae9e5aa4113f1a327067481af3fefa83c5be5c4df5a5d"
   }
 }

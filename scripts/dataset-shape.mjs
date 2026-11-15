@@ -9,11 +9,16 @@ export const CSV_HEADERS = {
   'filings.csv': ['filing_id', 'entity_id', 'state', 'reporting_year', 'form_revision', 'reporting_basis_as_filed', 'recertification_date_as_filed', 'corporate_address_as_filed', 'source_url', 'source_file', 'retrieved_at', 'pdf_sha256', 'pdf_bytes', 'page_count', 'scanned', 'form', 'status_as_filed', 'status_notice_as_filed', 'period_as_filed', 'submission_as_filed', 'cover_page_url', 'record_kind'],
   'line_items.csv': ['filing_id', 'schedule', 'line', 'row_kind', 'label_as_filed', 'name_as_filed', 'normalized_vendor', 'category', 'description_as_filed', 'ndc_as_filed', 'amount_as_filed', 'amount', 'unit', 'claims_as_filed', 'claims', 'claims_withheld', 'answer_as_filed', 'page', 'verification', 'note'],
   'measures.csv': ['filing_id', 'measure', 'formula', 'value'],
+  'state-laws-not-listed.csv': ['state', 'name', 'reason', 'source_url'],
+  'state-laws.csv': ['law_id', 'state', 'kinds', 'title', 'citation', 'bill', 'session_year', 'act', 'signed_date', 'effective_date', 'binds', 'summary', 'limits', 'enforcement', 'quote', 'source_url', 'source_form', 'source_text', 'source_sha256', 'more_url', 'more_text', 'more_sha256', 'source_note', 'retrieved'],
   'vendors.csv': ['normalized_name', 'vendor_type', 'alias_as_filed', 'note'],
 };
 
 /** Every file in the dataset's data/ folder. */
-export const DATA_FILES = [...Object.keys(CSV_HEADERS), '340b-state-filings.json', 'external-share-dark.svg', 'external-share-light.svg'].sort();
+export const DATA_FILES = [...Object.keys(CSV_HEADERS), '340b-state-filings.json', '340b-state-laws.json', 'external-share-dark.svg', 'external-share-light.svg'].sort();
+
+/** The kinds a state law may have (state-laws.csv `kinds`, joined by "|"). Must match LAW_KINDS in src/lib/laws.ts. */
+export const KNOWN_LAW_KINDS = ['contract-pharmacy', 'payer-nondiscrimination', 'reporting', 'medicaid', 'use-of-savings', 'study', 'other'];
 
 /** The forms this site can show. Must match FORMS in src/lib/forms.ts. */
 export const KNOWN_FORMS = ['ri-oag-340b', 'vt-gmcb-340b-financial', 'mn-mdh-340b-report', 'id-sco-340b-report'];
@@ -172,6 +177,18 @@ export function valueProblems(files) {
     for (const r of records(name)) {
       if (!KNOWN_UNITS.includes(r.unit)) problems.push(`${name}: ${r.filing_id} has the unit "${r.unit}", which this site does not know`);
     }
+  }
+  // The laws table: a kind this site has no label for, or a link that is not https, is refused.
+  for (const r of 'state-laws.csv' in files ? records('state-laws.csv') : []) {
+    for (const kind of r.kinds.split('|')) {
+      if (!KNOWN_LAW_KINDS.includes(kind)) problems.push(`state-laws.csv: ${r.law_id} has the kind "${kind}", which this site does not know`);
+    }
+    for (const column of ['source_url', 'more_url']) {
+      if (r[column] !== '' && !r[column].startsWith('https://')) problems.push(`state-laws.csv: ${r.law_id} has a ${column} that is not an https link`);
+    }
+  }
+  for (const r of 'state-laws-not-listed.csv' in files ? records('state-laws-not-listed.csv') : []) {
+    if (r.source_url !== '' && !r.source_url.startsWith('https://')) problems.push(`state-laws-not-listed.csv: ${r.state} ${r.name} has a source_url that is not an https link`);
   }
   // The small-number rule, on a finished copy. Sync leaves these counts out on the way in
   // (maskSmallClaimCounts), so this only speaks if a copy was changed by hand afterwards.

@@ -16,6 +16,16 @@ Rhode Island's filers use the state's nine-schedule form. Vermont's hospitals us
 
 Because the forms differ, two states are never added together or set side by side as comparable. Within a state, health centers are compared only with health centers, and hospitals only with hospitals.
 
+## State laws sit beside the Scorecard
+
+The menu's first entry, 340B, opens two things: the Scorecard (what filers report) and State laws (what each state has passed). The laws come from the dataset's laws table and are read by `src/lib/laws.ts`.
+
+- `/laws/` is the way in: a map and the seven kinds of law.
+- A state with a law has its own page (`/laws/ri/`), with each law's summary, who it applies to, its dates, a passage from its text and a link to the state's own page. A state with no law in the table has no page; its tile on the map is not a link.
+- Each kind of law has a page (`/laws/reporting/`) that lists every law of that kind.
+
+The pages show only what a law says. Notes about the source pages, and the laws that were left out of the table, stay in the data files and in Methods.
+
 ## Every figure has a source
 
 A figure is drawn by one component, `src/components/Cited.astro`. It links to the filing's PDF at the page the figure was read from. A sum of several filings links to the table that lists them.

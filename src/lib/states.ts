@@ -71,7 +71,8 @@ export const VISIBILITY_LABEL: Readonly<Record<Visibility, string>> = {
 
 /**
  * Only states that are in the dataset, or whose reporting law was read at its source.
- * Each "law" entry was checked against the pages in `sources` on 11 November 2026.
+ * Each "law" entry was checked against the pages in `sources` on 11 November 2026;
+ * Hawaii and Illinois were added from the dataset's laws table on 15 November 2026.
  */
 export const STATE_REGISTRY: Readonly<Record<string, StateEntry>> = {
   RI: { status: 'live', href: '/scorecard/ri/', summary: 'Calendar year 2025' },
@@ -80,6 +81,12 @@ export const STATE_REGISTRY: Readonly<Record<string, StateEntry>> = {
     visibility: 'unconfirmed',
     stands: 'Hospitals add 340B figures to the yearly report they send the state, under a law passed in 2025. Whether the figures are published for each hospital is not yet confirmed.',
     sources: [{ label: 'Senate Bill 25-071', href: 'https://content.leg.colorado.gov/sites/default/files/2025a_071_signed.pdf' }],
+  },
+  HI: {
+    status: 'law',
+    visibility: 'planned',
+    stands: "From July 1, 2026, covered entities report each year to the state's hospital trade association on their use of contract pharmacies. The law has the association post a yearly report of the figures added together, the first no later than October 1, 2027.",
+    sources: [{ label: 'HRS 481N-6', href: 'https://data.capitol.hawaii.gov/hrscurrent/Vol11_Ch0476-0490/HRS0481N/HRS_0481N-0006.htm' }],
   },
   ID: {
     status: 'live',
@@ -92,6 +99,12 @@ export const STATE_REGISTRY: Readonly<Record<string, StateEntry>> = {
       { label: "The State Controller's report (PDF)", href: 'https://idaho-sco-central-registry-documents.s3.us-gov-west-1.amazonaws.com/340B+Program+Reports/CY2025+340B+Program+Report.pdf' },
       { label: 'Where the state lists it', href: 'https://transparent.idaho.gov/featured-resources' },
     ],
+  },
+  IL: {
+    status: 'law',
+    visibility: 'unconfirmed',
+    stands: 'Covered entities send a 340B report to the General Assembly by August 1 each year. Hospitals with fewer than 100 beds, critical access hospitals, safety-net hospitals and grantees start in 2029. Whether the reports are published is not yet confirmed.',
+    sources: [{ label: 'Public Act 104-0758', href: 'https://www.ilga.gov/Legislation/PublicActs/View/104-0758' }],
   },
   IN: {
     status: 'law',

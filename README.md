@@ -19,6 +19,8 @@ You do not need to be a programmer to find your way around here. This page expla
 - Every figure is a link. It opens the filing's own PDF at the page the figure was read from.
 - It gives no opinions. It does not grade a filer or say why a figure is what it is.
 
+It also lists the state laws that name 340B, state by state and by kind, each with a plain summary and a link to the state's own page.
+
 Four states are in the scorecard today: Rhode Island, Vermont, Minnesota and Idaho. Each state has its own form, so the site never adds two states together or sets them side by side as if they were alike.
 
 ## Where the numbers come from

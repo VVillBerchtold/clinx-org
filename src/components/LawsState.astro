@@ -1,0 +1,167 @@
+---
+/**
+ * One state's laws about 340B: every law with what it does, who it applies to, its dates,
+ * the passage that names the program and links to the official page.
+ * Everything shown comes from the dataset's laws table (src/lib/laws.ts).
+ */
+import '../styles/scorecard.css';
+import '../styles/laws.css';
+import Base from '../layouts/Base.astro';
+import PageHead from './PageHead.astro';
+import { formatDate } from '../lib/data';
+import { LAWS_HOME, getLaws, kindPath, lawName, lawsMapSvg, lawsOf, lawsPath, ownerOf, savedTextUrl, type Law } from '../lib/laws';
+import { numberWordCap } from '../lib/site';
+import { STATE_REGISTRY, type StateTile } from '../lib/states';
+
+interface Props {
+  state: StateTile;
+}
+const { state } = Astro.props;
+const laws = getLaws();
+const own = lawsOf(laws, state.code);
+const labelOf = new Map(laws.kinds.map((k) => [k.kind, k.label]));
+const entry = STATE_REGISTRY[state.code];
+const one = own.length === 1;
+
+/** The identifiers and dates of a law, as label and value pairs. A blank one is left out. */
+const facts = (law: Law): { label: string; value: string }[] => {
+  const name = lawName(law);
+  const rows: { label: string; value: string }[] = [];
+  if (law.citation && law.citation !== name) rows.push({ label: 'In the code', value: law.citation });
+  if (law.bill && law.bill !== name) rows.push({ label: 'Bill', value: law.bill });
+  if (law.act && law.act !== name) rows.push({ label: 'Act', value: law.act });
+  rows.push({ label: 'Session', value: law.sessionYear });
+  if (law.signedDate) rows.push({ label: 'Signed', value: formatDate(law.signedDate) });
+  if (law.effectiveDate) rows.push({ label: 'In effect', value: formatDate(law.effectiveDate) });
+  return rows;
+};
+const pdf = (form: string): string => (form.includes('pdf') ? ' (PDF)' : '');
+---
+
+<Base
+  title={`${state.name} 340B laws`}
+  crumbs={[
+    { name: 'State laws', path: LAWS_HOME },
+    { name: state.name, path: lawsPath(state.code) },
+  ]}
+  description={`${state.name} has ${own.length} ${one ? 'law' : 'laws'} about the 340B program. See what ${one ? 'it' : 'each one'} does, who it applies to and where to read it.`}
+>
+  <PageHead title={`${state.name} 340B laws`} trail={[{ label: 'State laws', href: LAWS_HOME }, { label: state.name }]}>
+    <p class="lede">
+      {numberWordCap(own.length)} {state.name} {one ? 'law names' : 'laws name'} the 340B program. Here is what {one ? 'it' : 'each one'} does, who it applies to and where to read it.
+    </p>
+  </PageHead>
+
+  <div class="law-layout">
+    <div class="law-list">
+      {
+        own.map((law) => (
+          <article class="law" id={law.lawId} aria-labelledby={`${law.lawId}-title`}>
+            <header class="law-head">
+              <ul class="law-kinds" aria-label="What this law does">
+                {law.kinds.map((k) => (
+                  <li>
+                    <a class="kind" href={kindPath(k)}>{labelOf.get(k)}</a>
+                  </li>
+                ))}
+              </ul>
+              <h2 id={`${law.lawId}-title`}>{lawName(law)}</h2>
+            </header>
+
+            <p class="law-summary">{law.summary}</p>
+
+            <dl class="law-facts">
+              {facts(law).map((f) => (
+                <div>
+                  <dt>{f.label}</dt>
+                  <dd>{f.value}</dd>
+                </div>
+              ))}
+            </dl>
+
+            <dl class="law-parts">
+              <div>
+                <dt>Applies to</dt>
+                <dd>{law.binds}</dd>
+              </div>
+              {law.limits && (
+                <div>
+                  <dt>Limits</dt>
+                  <dd>{law.limits}</dd>
+                </div>
+              )}
+              {law.enforcement && (
+                <div>
+                  <dt>Enforcement</dt>
+                  <dd>{law.enforcement}</dd>
+                </div>
+              )}
+            </dl>
+
+            <figure class="law-quote">
+              <blockquote>
+                <p>{law.quote}</p>
+              </blockquote>
+              <figcaption>From the law&rsquo;s text</figcaption>
+            </figure>
+
+            <ul class="law-links">
+              <li>
+                <a class="law-source" href={law.sourceUrl}>
+                  <span>Read the law</span>
+                  <strong>{ownerOf(laws, law.state, law.sourceUrl)}{pdf(law.sourceForm)}</strong>
+                </a>
+              </li>
+              {law.moreUrl && (
+                <li>
+                  <a class="law-source" href={law.moreUrl}>
+                    <span>Related official page</span>
+                    <strong>{ownerOf(laws, law.state, law.moreUrl)}</strong>
+                  </a>
+                </li>
+              )}
+              <li class="law-saved">
+                Last checked {formatDate(law.retrieved)}.{' '}
+                <a href={savedTextUrl(laws, law.sourceText)}>Saved copy of the text<span class="visually-hidden"> of {lawName(law)}</span></a>
+                {law.moreText && (
+                  <>
+                    {' '}and <a href={savedTextUrl(laws, law.moreText)}>of the related page<span class="visually-hidden"> for {lawName(law)}</span></a>
+                  </>
+                )}
+              </li>
+            </ul>
+          </article>
+        ))
+      }
+
+      <div class="note law-advice">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="2" /><path d="M10 9v5M10 6v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+        <div>
+          <p><strong>Plain-language summaries, not legal advice.</strong> Laws change, and court rulings on them are not covered here. Read the state&rsquo;s own page before you rely on one.</p>
+          <p>See something missing or out of date? <a href="/contact/">Tell us</a>.</p>
+        </div>
+      </div>
+    </div>
+
+    <aside class="law-aside" aria-label="More about 340B in the states">
+      {
+        entry?.status === 'live' && entry.href && (
+          <a class="law-score" href={entry.href}>
+            <span class="label">In the Scorecard</span>
+            <strong>{state.name}&rsquo;s 340B figures</strong>
+            <span>{entry.summary}</span>
+          </a>
+        )
+      }
+      <div class="law-map">
+        <h2 class="label">Other states</h2>
+        <Fragment set:html={lawsMapSvg(laws, 'state-laws-map', { current: state.code })} />
+        <ul class="legend">
+          <li><span class="key live" aria-hidden="true"></span>Has a 340B law</li>
+          <li><span class="key" aria-hidden="true"></span>No law listed</li>
+        </ul>
+        <a class="law-all" href={LAWS_HOME}>All state laws</a>
+      </div>
+    </aside>
+  </div>
+</Base>

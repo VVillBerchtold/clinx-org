@@ -1,0 +1,74 @@
+---
+/**
+ * State laws about 340B, the way in: a map (pick a state) and the kinds of law (pick a kind).
+ * The laws themselves are on each state's page and each kind's page (src/pages/laws/[slug]).
+ * Everything shown comes from the dataset's laws table (src/lib/laws.ts).
+ */
+import '../../styles/scorecard.css';
+import '../../styles/laws.css';
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import { LAWS_HOME, getLaws, kindPath, lawsMapSvg, lawsOfKind, statesByLaws } from '../../lib/laws';
+
+const laws = getLaws();
+const { withLaws } = statesByLaws(laws);
+const kinds = laws.kinds.map((k) => ({ ...k, count: lawsOfKind(laws, k.kind).length })).filter((k) => k.count > 0);
+const arrow = 'M3 9h12M10 4l5 5-5 5';
+---
+
+<Base
+  title="State 340B laws: what each state has passed"
+  crumbs={[{ name: 'State laws', path: LAWS_HOME }]}
+  description={`${withLaws.length} states have passed laws about the 340B program, ${laws.laws.length} laws in all. Pick a state to see what each law does, who it applies to and where to read it.`}
+>
+  <PageHead title="State 340B laws" trail={[{ label: '340B' }]}>
+    <p class="lede">
+      {withLaws.length} states have passed laws about the 340B program, {laws.laws.length} laws in all. Pick a state to see what its laws do, who they apply to and where to read them.
+    </p>
+  </PageHead>
+
+  <div class="law-top">
+    <div class="law-map">
+      <Fragment set:html={lawsMapSvg(laws, 'laws-map')} />
+      <ul class="legend">
+        <li><span class="key live" aria-hidden="true"></span>Has a 340B law</li>
+        <li><span class="key" aria-hidden="true"></span>No law listed</li>
+      </ul>
+    </div>
+    <div class="law-index">
+      <h2 class="label">Or pick a kind of law</h2>
+      <ul class="kind-index">
+        {
+          kinds.map((k) => (
+            <li>
+              <a href={kindPath(k.kind)}>
+                <strong>{k.label}</strong>
+                <span class="kind-count">{k.count} {k.count === 1 ? 'law' : 'laws'}</span>
+                <span class="kind-what">{k.description}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="law-index-note">A law that does two things is counted under both.</p>
+    </div>
+    <div class="note law-advice">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="2" /><path d="M10 9v5M10 6v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+      <div>
+        <p><strong>Plain-language summaries, not legal advice.</strong> Laws change, and court rulings on them are not covered here. Read the state&rsquo;s own page before you rely on one.</p>
+        <p>Know of a law that should be here? <a href="/contact/">Tell us</a>.</p>
+      </div>
+    </div>
+  </div>
+
+  <section class="section law-use" aria-labelledby="use-title">
+    <div>
+      <h2 id="use-title">Free to use and build on</h2>
+      <p>Every law here is in one open file, with the text of each official page saved beside it. Download it, check it, or build something with it.</p>
+    </div>
+    <div class="btn-row">
+      <a class="btn" href="/data/">Get the data <svg viewBox="0 0 18 18" width="18" height="18" fill="none" aria-hidden="true" focusable="false"><path d={arrow} stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg></a>
+      <a class="btn ghost" href="/methods/#10-state-laws">How the list is put together</a>
+    </div>
+  </section>
+</Base>
