@@ -12,6 +12,7 @@
     "sync:bills": "node scripts/sync-bills.mjs",
     "sync:mcp": "node scripts/sync-mcp.mjs",
     "usage:mcp": "node scripts/usage/mcp-usage.mjs",
+    "check:live": "node scripts/check-live-mcp.mjs",
     "check:data": "node scripts/check-data.mjs",
     "check": "ASTRO_TELEMETRY_DISABLED=1 astro check",
     "test": "vitest run",

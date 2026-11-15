@@ -1,0 +1,82 @@
+// Asks the live door for assistants real questions and compares the answers with the published tables.
+// Usage: node scripts/check-live-mcp.mjs [site address]     (default https://clinx.org)
+//
+// In plain words: the tests in tests/ prove the program on a developer's computer. This proves
+// the published one. It downloads the four open tables as any reader can, asks clinx.org/mcp the
+// same things through each of its nine tools, and fails if an answer and a table disagree. It
+// also sends a few mistaken and oversized requests and checks each is turned away politely.
+// It only reads, it sends about forty requests, and it is run by hand after a publish.
+const SITE = (process.argv[2] ?? 'https://clinx.org').replace(/\/$/, '');
+const headers = { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream', 'MCP-Protocol-Version': '2025-06-18', 'User-Agent': 'clinx-check' };
+let id = 0; const results = [];
+const ok = (name, pass, detail = '') => { results.push(pass); console.log(`${pass ? 'PASS' : 'FAIL'}  ${name}${detail ? '  ' + detail : ''}`); };
+async function rpc(method, params, extra = {}) {
+  const r = await fetch(`${SITE}/mcp`, { method: 'POST', headers: { ...headers, ...extra }, body: JSON.stringify({ jsonrpc: '2.0', id: ++id, method, params }) });
+  return { status: r.status, body: await r.json().catch(() => null), headers: r.headers };
+}
+const call = async (name, args = {}) => { const { body } = await rpc('tools/call', { name, arguments: args }); return body?.result; };
+const table = async (name) => (await fetch(`${SITE}/data/${name}`, { headers: { 'User-Agent': 'clinx-check' } })).json();
+
+const [laws, bills, notices, events] = await Promise.all(['340b-state-laws.json', '340b-bills.json', '340b-notices.json', '340b-events.json'].map(table));
+const init = await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'clinx-check', version: '1' } });
+ok('initialize (older handshake)', init.status === 200 && init.body?.result?.serverInfo?.name === 'clinx-340b');
+const disc = await rpc('server/discover', {}, { 'MCP-Protocol-Version': '2026-07-28' });
+ok('server/discover (newer protocol)', disc.status === 200 && !!disc.body?.result, JSON.stringify(disc.body?.result ?? disc.body).slice(0, 110));
+const list = await rpc('tools/list', {});
+const names = list.body?.result?.tools?.map((t) => t.name) ?? [];
+ok('tools/list has nine tools', names.length === 9, names.join(', '));
+
+const about = (await call('about_the_data')).structuredContent;
+ok('about_the_data counts match the published files', about.counts.laws === laws.laws.length && about.counts.bills === bills.bills.length && about.counts.notices === notices.notices.length && about.counts.calendar_dates === events.events.length, JSON.stringify(about.counts));
+
+const cp = (await call('find_laws', { kind: 'contract-pharmacy', limit: 100 })).structuredContent;
+const cpTable = laws.laws.filter((l) => (l.kinds ?? []).includes('contract-pharmacy'));
+ok('find_laws by kind matches the laws file', cp.matched === cpTable.length, `${cp.matched} vs ${cpTable.length}`);
+const law = (await call('get_law', { law_id: cpTable[0].law_id })).structuredContent.law;
+ok('get_law returns the same row with its official link', law.law_id === cpTable[0].law_id && law.source_url === cpTable[0].source_url && /^https:\/\//.test(law.source_url), Object.keys(law).filter((k) => /url|page|link/.test(k)).join(','));
+
+for (const state of ['RI', 'TX', 'US']) {
+  const got = (await call('find_bills', { state, limit: 100 })).structuredContent;
+  const want = bills.bills.filter((b) => b.jurisdiction === state).length;
+  ok(`find_bills ${state} matches the bills file`, got.matched === want, `${got.matched} vs ${want}`);
+}
+const oneBill = bills.bills[0];
+const gotBill = (await call('get_bill', { bill_id: oneBill.bill_id })).structuredContent;
+const stepsWant = events.events.filter((e) => e.bill_id === oneBill.bill_id).length;
+ok('get_bill returns the row, its official link and its dated steps', gotBill.bill.bill_id === oneBill.bill_id && gotBill.bill.bill_url === oneBill.bill_url && gotBill.dated_steps.length === stepsWant, `${oneBill.bill_id}: ${gotBill.dated_steps.length} steps vs ${stepsWant}`);
+
+const fn = (await call('find_notices', { limit: 100 })).structuredContent;
+ok('find_notices matches the notices file', fn.matched === notices.notices.length, `${fn.matched} vs ${notices.notices.length}`);
+const open = (await call('find_notices', { open_for_comment: true })).structuredContent;
+ok('find_notices open for comment answers', typeof open.matched === 'number', `${open.matched} open today`);
+const pilot = (await call('get_notice', { notice_id: 'fr-2026-15633' })).structuredContent.notice;
+ok('get_notice for the rebate pilot points to its page', pilot.explained_at === 'https://clinx.org/rebate-pilot/');
+
+const cal = (await call('calendar', { state: 'MN', from: '2027-01-01', to: '2027-01-31' })).structuredContent;
+const calWant = events.events.filter((e) => e.jurisdiction === 'MN' && e.day >= '2027-01-01' && e.day <= '2027-01-31').length;
+ok('calendar for Minnesota in January matches the calendar file', cal.matched === calWant, `${cal.matched} vs ${calWant}`);
+const next = (await call('calendar', { limit: 5 })).structuredContent;
+ok('calendar with no dates starts from today', next.from === about.today && next.events.every((e) => e.day >= about.today), `from ${next.from}`);
+const mn = (await call('state_overview', { state: 'MN' })).structuredContent;
+ok('state_overview MN matches the laws file', mn.laws.count === laws.laws.filter((l) => l.state === 'MN').length, `${mn.laws.count} laws`);
+const fed = (await call('state_overview', { state: 'FED' })).structuredContent;
+ok('state_overview FED counts the notices', fed.notices?.count === notices.notices.length || fed.notices === notices.notices.length, JSON.stringify(fed.notices?.count ?? fed.notices));
+
+for (const [name, args] of [['find_laws', { state: 'ZZ' }], ['get_bill', { bill_id: 'no-such-bill' }], ['calendar', { from: 'next week' }], ['find_bills', { state: 'FED' }], ['no_such_tool', {}]]) {
+  const r = await rpc('tools/call', { name, arguments: args });
+  const said = r.body?.result?.isError ? r.body.result.content[0].text : r.body?.error?.message;
+  ok(`mistake is explained: ${name} ${JSON.stringify(args)}`, !!said, (said ?? '').slice(0, 90));
+}
+const junk = await fetch(`${SITE}/mcp`, { method: 'POST', headers, body: 'not json' });
+ok('a request that is not JSON is refused cleanly', junk.status >= 400 && junk.status < 500, String(junk.status));
+const big = await fetch(`${SITE}/mcp`, { method: 'POST', headers, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'ping', params: { pad: 'x'.repeat(70000) } }) });
+ok('a request over 64 KB is refused', big.status === 413, String(big.status));
+const pre = await fetch(`${SITE}/mcp`, { method: 'OPTIONS', headers: { Origin: 'https://example.org', 'Access-Control-Request-Method': 'POST', 'User-Agent': 'clinx-check' } });
+ok('a web app on another site may ask (CORS)', pre.headers.get('access-control-allow-origin') === '*', String(pre.status));
+const page = await fetch(`${SITE}/mcp`, { headers: { Accept: 'text/html', 'User-Agent': 'clinx-check' }, redirect: 'manual' });
+ok('a browser is sent to the Data page', page.status === 303 && page.headers.get('location') === '/data/#assistants');
+const times = [];
+for (let i = 0; i < 5; i++) { const t = performance.now(); await call('state_overview', { state: 'RI' }); times.push(Math.round(performance.now() - t)); }
+ok('answers come back quickly', Math.max(...times) < 2000, `${times.join(', ')} ms`);
+console.log(`\n${results.filter(Boolean).length} of ${results.length} passed`);
+if (results.includes(false)) process.exit(1);

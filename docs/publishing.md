@@ -99,7 +99,7 @@ What the program will not do:
 
 - **It changes nothing.** There is nothing to sign in to and nothing to write to.
 - **It keeps no question.** No words searched for, no dates typed, and no internet address are stored or logged.
-- **It sets a limit and says so.** More than 60 questions a minute from one address gets "too many requests" and a time to try again. The host does this count, approximately, and the site keeps none of it.
+- **It sets a limit and says so.** About 60 questions a minute from one address; past that it answers "too many requests" and a time to try again. The host does this count, approximately ([how approximately](#checking-the-published-door)), and the site keeps none of it.
 - **It sends a person who opens the address in a browser** to the part of the Data page that explains it.
 
 The program that answers lives in its own repository, [clinx-mcp](https://github.com/VVillBerchtold/clinx-mcp), with its own tests. `npm run sync:mcp` copies it into `worker/mcp/` and records a fingerprint of each file and the commit it came from. `npm run check:data` fails if a copy was changed here, or was made from work that was not committed.
@@ -131,19 +131,55 @@ The site counts what assistants ask for by kind, so the work can go to the table
 
 The rows go to the host's counting service (Workers Analytics Engine, the set named `clinx_mcp_usage` in `wrangler.jsonc`), which keeps them for three months. The Privacy page says the same to readers. A change to what is counted is a change to that page too.
 
-To read the counts, a person needs a read-only token from the host with one permission, Account Analytics: Read. It cannot change the site. The token and the account's id stay on that person's own computer, in two small files that are never committed:
+### Reading the counts
 
-```
-~/.config/clinx/cloudflare-usage.token
-~/.config/clinx/cloudflare-account-id
+Reading them needs two things from the host, Cloudflare: a read-only token and the account's id. Both stay on the reader's own computer, in two small files that are never committed. The token can read usage figures and nothing else; it cannot change the site.
+
+**Make the token** (once):
+
+1. Sign in to Cloudflare and open [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens). By the menus: the person icon, **My Profile**, then **API Tokens**.
+2. Select **Create Token**.
+3. Select **Create Custom Token**.
+4. Give it a name that says what it is for, such as `ClinX usage counts, read only`.
+5. Under **Permissions**, set the three boxes of the one row to **Account**, then **Account Analytics**, then **Read**. Add no other row.
+6. Where the form asks which account the token applies to, choose the account that holds clinx.org. An expiry date is optional.
+7. Select **Continue to summary**, check that the summary lists Account Analytics: Read and nothing more, then select **Create Token**.
+8. The token is shown once. Copy it, and save it before closing the page (next step).
+
+**Save the token.** With the token copied, run this in Terminal. It writes whatever was last copied into the file, so run it straight after copying:
+
+```bash
+pbpaste > "$HOME/.config/clinx/cloudflare-usage.token"
 ```
 
-Then:
+**Save the account's id.** In the Cloudflare dashboard open **Workers & Pages**, find **Account Details**, and select the copy button next to **Account ID**. Then:
+
+```bash
+pbpaste > "$HOME/.config/clinx/cloudflare-account-id"
+```
+
+**Keep both files private to this user:**
+
+```bash
+chmod 600 "$HOME/.config/clinx/cloudflare-usage.token" "$HOME/.config/clinx/cloudflare-account-id"
+```
+
+**Read the counts:**
 
 ```bash
 npm run usage:mcp -- --days 30
 ```
 
-It prints short tables: requests a day, which tools were used and how each went, which states were asked about, which filters, which rows were opened most, and which assistant programs connected.
+It prints short tables: requests a day, which tools were used and how each went, which states were asked about, which filters, which rows were opened most, and which assistant programs connected. If it says the token may be wrong, make a new token and save it again; the old one can be deleted on the same Cloudflare page.
+
+## Checking the published door
+
+After a publish, one command asks the live address real questions through each of its tools and compares every answer with the published tables:
+
+```bash
+npm run check:live
+```
+
+About the limit: the host counts requests per address approximately, and separately on each of its machines. A steady stream from one connection is told to wait after roughly 60 to 80 requests in a minute. A burst spread over many connections can get several hundred through before the limit takes hold. It is a brake on a runaway program, not a wall.
 
 If a publish is refused with a message about Analytics Engine, the counting service needs switching on once for the account, in the host's dashboard.
