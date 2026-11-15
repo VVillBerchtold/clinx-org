@@ -1,0 +1,132 @@
+---
+/**
+ * One federal rule or notice, as a card: what kind of document it is, what it does about 340B in a
+ * sentence, its dates, and links to the Federal Register.
+ * Everything shown comes from the notices table (src/lib/notices.ts).
+ */
+import { formatDate } from '../lib/data';
+import { hostOf } from '../lib/bills';
+import { PILOT_NOTICE, namedInWords, openForComment, typeLabel, writerOf, type Notice, type NoticesData } from '../lib/notices';
+import { PILOT_HOME } from '../lib/pilot';
+
+interface Props {
+  notice: Notice;
+  data: NoticesData;
+}
+const { notice, data } = Astro.props;
+const open = openForComment(notice, data.retrieved);
+
+const facts: { label: string; value: string }[] = [
+  { label: 'Agency', value: writerOf(notice) },
+  { label: 'Published', value: formatDate(notice.published) },
+];
+if (notice.commentsClose) facts.push({ label: open ? 'Comments close' : 'Comments closed', value: formatDate(notice.commentsClose) });
+if (notice.effective) facts.push({ label: notice.effective > data.retrieved ? 'Takes effect' : 'Took effect', value: formatDate(notice.effective) });
+if (notice.docket) facts.push({ label: 'Docket', value: notice.docket.replaceAll(';', ', ') });
+
+// The passage is shown where the title does not already name the program: it answers "where is 340B in this?".
+const showQuote = notice.quote !== '' && !notice.namedIn.includes('title');
+const times = notice.textMentions === 1 ? 'It names 340B once.' : `It names 340B ${notice.textMentions} times.`;
+---
+
+<article class="law bill notice" id={notice.noticeId} aria-labelledby={`${notice.noticeId}-title`}>
+  <header class="law-head">
+    <ul class="law-kinds" aria-label="What this document is">
+      <li>
+        {notice.role ? <span class="kind role">{data.roleLabels.get(notice.role)}</span> : <span class="kind plain">{namedInWords(notice)}</span>}
+      </li>
+      <li>
+        <span class="kind">{typeLabel(notice.type)}</span>
+      </li>
+      {
+        open && (
+          <li>
+            <span class="kind open">Open for comment</span>
+          </li>
+        )
+      }
+    </ul>
+    <h3 id={`${notice.noticeId}-title`}>
+      <span class="bill-no">{notice.citation}</span>
+      <span class="bill-title">{notice.title}</span>
+    </h3>
+  </header>
+
+  {notice.summary && <p class="law-summary">{notice.summary}</p>}
+
+  <dl class="law-parts bill-facts">
+    {
+      facts.map((f) => (
+        <div>
+          <dt>{f.label}</dt>
+          <dd>{f.value}</dd>
+        </div>
+      ))
+    }
+  </dl>
+
+  {
+    notice.datesRead.length > 0 && (
+      <div class="notice-days">
+        <h4 class="label">Other days it sets</h4>
+        <ul>
+          {notice.datesRead.map((d) => (
+            <li>
+              <time datetime={d.day}>{formatDate(d.day)}</time>
+              <span>{d.what}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
+
+  {
+    showQuote && (
+      <details class="bill-quote" open={notice.summary === ''}>
+        <summary>
+          Where it names 340B<span class="visually-hidden">: {notice.citation}</span>
+        </summary>
+        <figure class="law-quote">
+          <blockquote>
+            <p>{notice.quote}</p>
+          </blockquote>
+          <figcaption>From the document&rsquo;s text. {times}</figcaption>
+        </figure>
+      </details>
+    )
+  }
+
+  <ul class="law-links">
+    <li>
+      <a class="law-source" href={notice.noticeUrl}>
+        <span>
+          Official page<span class="visually-hidden"> for {notice.citation}</span>
+        </span>
+        <strong>{hostOf(notice.noticeUrl)}</strong>
+      </a>
+    </li>
+    {
+      notice.pdfUrl && (
+        <li>
+          <a class="law-source" href={notice.pdfUrl}>
+            <span>
+              As printed (PDF)<span class="visually-hidden">: {notice.citation}</span>
+            </span>
+            <strong>{hostOf(notice.pdfUrl)}</strong>
+          </a>
+        </li>
+      )
+    }
+    {
+      notice.noticeId === PILOT_NOTICE && (
+        <li>
+          <a class="law-source" href={PILOT_HOME}>
+            <span>Step by step</span>
+            <strong>The rebate pilot, explained</strong>
+          </a>
+        </li>
+      )
+    }
+  </ul>
+</article>

@@ -23,6 +23,8 @@ It also lists the state laws that name 340B, state by state and by kind, each wi
 
 And it lists the bills in Congress and the state legislatures that name 340B: what each one is, how far it has got, and where to read it on the legislature's own site. A calendar shows the dated steps of those bills and the days each session starts and ends, with a file to add them to your own calendar.
 
+It lists the federal rules and notices that name 340B too: what each one does about 340B in a sentence, the day comments close and the day it takes effect, all on the same calendar. One page sets out the 340B rebate pilot, from the federal notice that opened it.
+
 Four states are in the scorecard today: Rhode Island, Vermont, Minnesota and Idaho. Each state has its own form, so the site never adds two states together or sets them side by side as if they were alike.
 
 ## Where the numbers come from

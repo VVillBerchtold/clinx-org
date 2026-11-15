@@ -97,6 +97,14 @@ const PRINTED_EVENT_WORDS = existsSync(eventsFile)
       .flatMap((words) => [words, escapeHtml(words)])
       .sort((a, b) => b.length - a.length)
   : [];
+// And for federal rules and notices: a title and the passage quoted from the text are the Federal Register's words.
+const noticesFile = join(root, 'src', 'data', 'bills', '340b-notices.json');
+const PRINTED_NOTICE_WORDS = existsSync(noticesFile)
+  ? [...new Set(JSON.parse(readFileSync(noticesFile, 'utf8')).notices.flatMap((n) => [n.title, n.quote, ...n.agencies]))]
+      .filter((words) => BANNED_WORDS.test(words))
+      .flatMap((words) => [words, escapeHtml(words)])
+      .sort((a, b) => b.length - a.length)
+  : [];
 // The site's own way back to the start of a page. It is a navigation label on every page, never a word about a filer.
 const NAV_LABELS = ['Back to top'];
 const EMAIL = /[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}/g;
@@ -268,6 +276,9 @@ for (const file of htmlFiles) {
   }
   if (page.startsWith('/calendar/')) {
     for (const words of PRINTED_EVENT_WORDS) checked = checked.replaceAll(words, ' ');
+  }
+  if (page.startsWith('/notices/') || page.startsWith('/calendar/') || page.startsWith('/rebate-pilot/')) {
+    for (const words of PRINTED_NOTICE_WORDS) checked = checked.replaceAll(words, ' ');
   }
   for (const label of NAV_LABELS) checked = checked.replaceAll(label, ' ');
   const word = BANNED_WORDS.exec(checked);

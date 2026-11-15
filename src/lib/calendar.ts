@@ -1,19 +1,22 @@
 /**
  * The 340B calendar: the dated steps of every bill in the bills table, committee hearings that have
- * one of those bills on the agenda, and the days each legislature's session starts and ends. Read
- * from src/data/bills/340b-events.json, copied in by scripts/sync-bills.mjs.
+ * one of those bills on the agenda, the days each legislature's session starts and ends, and the
+ * dates of federal rules and notices (published, comments close, takes effect, and other days a
+ * document sets). Read from src/data/bills/340b-events.json, copied in by scripts/sync-bills.mjs.
  *
  * In plain words: every row is one thing that happened, or is due to happen, on one day. A step of
- * a bill is in the legislature's own words and links to the legislature's own page. This file reads
+ * a bill is in the legislature's own words and links to the legislature's own page; a date of a
+ * federal notice links to its page in the Federal Register. This file reads
  * the table for the site: what is coming up, what happened and when, one place at a time, and the
  * same dates as a calendar file people can add to their own calendar. Nothing here adds to or
  * changes what the table says.
  */
 import { CONGRESS, billsPath, placeName } from './bills';
+import { AGENCIES, noticeHref } from './notices';
 import { SITE_URL } from './site';
 import { STATES, TILE, stateName, type StateTile } from './states';
 
-/** The kinds of event, in the order a bill meets them; the last three are not steps of a bill. */
+/** The kinds of event: a bill's steps in the order it meets them, a hearing, a session's days, then a federal notice's days. */
 export const EVENT_KINDS = [
   'introduced',
   'sent to committee',
@@ -27,11 +30,17 @@ export const EVENT_KINDS = [
   'hearing',
   'session starts',
   'session ends',
+  'notice published',
+  'comments close',
+  'takes effect',
+  'date set by a notice',
 ] as const;
 export type EventKind = (typeof EVENT_KINDS)[number];
 
 /** Kinds that belong to a legislature, not to one bill. */
 const SESSION_KINDS: readonly EventKind[] = ['session starts', 'session ends'];
+/** Kinds that belong to a federal rule or notice. */
+const NOTICE_KINDS: readonly EventKind[] = ['notice published', 'comments close', 'takes effect', 'date set by a notice'];
 
 export interface CalendarEvent {
   eventId: string;
@@ -39,20 +48,25 @@ export interface CalendarEvent {
   day: string;
   /** "14:30 UTC" for a hearing with a time, else blank: the event is on that day. */
   time: string;
-  /** "US" for Congress, else a state's two letters. */
+  /** "US" for Congress, "FED" for federal agencies, else a state's two letters. */
   place: string;
   kind: EventKind;
-  /** The bill the event belongs to; blank for a session's first or last day. */
+  /** The bill the event belongs to; blank for a session's first or last day and for a notice's date. */
   billId: string;
   /** The bill's number as the legislature writes it. */
   bill: string;
-  /** The official words: the step as recorded, the hearing's name, or the session's name. */
+  /** The federal rule or notice the date belongs to; blank for everything else. */
+  noticeId: string;
+  /**
+   * The official words: the step as recorded, the hearing's name, the session's name, or the title
+   * of the rule or notice. For a day a notice sets, what happens on it, in a few words of ours.
+   */
   what: string;
-  /** The chamber or committee, where the record names one. */
+  /** The chamber or committee, where the record names one; for a notice, the agency that wrote it. */
   body: string;
   /** Where a hearing is held, where the notice says. */
   where: string;
-  /** The legislature's own page. */
+  /** The legislature's own page, or the Federal Register's. */
   link: string;
   /** Where the row comes from, in a few words. */
   source: string;
@@ -96,6 +110,7 @@ export function parseEvents(json: string): CalendarData {
       kind: kindOf(r['kind']),
       billId: text(r, 'bill_id'),
       bill: text(r, 'bill'),
+      noticeId: text(r, 'notice_id'),
       what: text(r, 'what'),
       body: text(r, 'body'),
       where: text(r, 'where'),
@@ -103,9 +118,12 @@ export function parseEvents(json: string): CalendarData {
       source: text(r, 'source'),
     };
     if (!DAY.test(event.day)) throw new Error(`Calendar file: ${event.eventId} has no day`);
-    if (event.place !== CONGRESS) stateName(event.place);
+    if (event.place !== CONGRESS && event.place !== AGENCIES) stateName(event.place);
     if (!/^https?:\/\//.test(event.link)) throw new Error(`Calendar file: ${event.eventId} has no official page`);
-    if (SESSION_KINDS.includes(event.kind) !== (event.billId === '')) throw new Error(`Calendar file: ${event.eventId} should ${event.billId === '' ? '' : 'not '}name a bill`);
+    const ofNotice = NOTICE_KINDS.includes(event.kind);
+    if (ofNotice !== (event.noticeId !== '') || ofNotice !== (event.place === AGENCIES)) throw new Error(`Calendar file: ${event.eventId} should ${ofNotice ? '' : 'not '}be a date of a federal notice`);
+    const ofBill = !ofNotice && !SESSION_KINDS.includes(event.kind);
+    if (ofBill !== (event.billId !== '')) throw new Error(`Calendar file: ${event.eventId} should ${ofBill ? '' : 'not '}name a bill`);
     return event;
   });
   const retrieved = text(document, 'retrieved');
@@ -113,13 +131,17 @@ export function parseEvents(json: string): CalendarData {
   return { retrieved, kindNotes, events: [...events].sort(inOrder) };
 }
 
-/** Earliest first; on one day, Congress then the states A to Z, a bill's steps in the order it meets them. */
+/** Congress first, then federal agencies, then the states. */
+const placeRank = (place: string): number => (place === CONGRESS ? 0 : place === AGENCIES ? 1 : 2);
+
+/** Earliest first; on one day, Congress, federal agencies, then the states A to Z, a bill's steps in the order it meets them. */
 function inOrder(a: CalendarEvent, b: CalendarEvent): number {
   return (
     a.day.localeCompare(b.day) ||
-    Number(a.place !== CONGRESS) - Number(b.place !== CONGRESS) ||
+    placeRank(a.place) - placeRank(b.place) ||
     a.place.localeCompare(b.place) ||
     a.bill.localeCompare(b.bill, 'en', { numeric: true }) ||
+    a.noticeId.localeCompare(b.noticeId) ||
     EVENT_KINDS.indexOf(a.kind) - EVENT_KINDS.indexOf(b.kind) ||
     a.eventId.localeCompare(b.eventId)
   );
@@ -140,9 +162,19 @@ export function getCalendar(): CalendarData {
 /** The address of the calendar. */
 export const CALENDAR_HOME = '/calendar/';
 
-/** The address of one place's calendar: /calendar/congress/ or /calendar/ri/. */
+/** The last part of a place's address: "congress", "agencies" or a state's two letters. */
+export function calendarSlug(place: string): string {
+  return place === CONGRESS ? 'congress' : place === AGENCIES ? 'agencies' : place.toLowerCase();
+}
+
+/** The address of one place's calendar: /calendar/congress/, /calendar/agencies/ or /calendar/ri/. */
 export function calendarPath(place: string): string {
-  return `${CALENDAR_HOME}${place === CONGRESS ? 'congress' : place.toLowerCase()}/`;
+  return `${CALENDAR_HOME}${calendarSlug(place)}/`;
+}
+
+/** "Congress", "Federal agencies", or the state's name. */
+export function calendarPlaceName(place: string): string {
+  return place === AGENCIES ? 'Federal agencies' : placeName(place);
 }
 
 /** The address of the calendar file (.ics) for every place, or for one. */
@@ -158,6 +190,16 @@ export function kindLabel(kind: EventKind): string {
 /** True for the first or last day of a session: an event of the legislature, not of one bill. */
 export function isSessionDay(event: CalendarEvent): boolean {
   return SESSION_KINDS.includes(event.kind);
+}
+
+/** True for a date of a federal rule or notice. */
+export function isNoticeDay(event: CalendarEvent): boolean {
+  return NOTICE_KINDS.includes(event.kind);
+}
+
+/** True for a dated step of a bill: not a hearing, a session's day or a notice's date. */
+export function isBillStep(event: CalendarEvent): boolean {
+  return event.billId !== '' && event.kind !== 'hearing';
 }
 
 /** "Congress" or "the Texas legislature". */
@@ -180,10 +222,10 @@ export function past(events: readonly CalendarEvent[], today: string): CalendarE
   return events.filter((e) => e.day < today).reverse();
 }
 
-/** The newest steps of bills anywhere, newest first. */
+/** The newest steps of bills anywhere and the newest federal rules and notices, newest first. */
 export function latestSteps(data: CalendarData, howMany: number): CalendarEvent[] {
   return data.events
-    .filter((e) => !isSessionDay(e) && e.kind !== 'hearing' && e.day <= data.retrieved)
+    .filter((e) => (isBillStep(e) || e.kind === 'notice published') && e.day <= data.retrieved)
     .reverse()
     .slice(0, howMany);
 }
@@ -242,11 +284,16 @@ export function byYear(events: readonly CalendarEvent[]): YearGroup[] {
   return years;
 }
 
-/** Places with at least one event: Congress first where it has one, then the states A to Z by name. */
+/** Places with at least one event: Congress and federal agencies first where they have one, then the states A to Z by name. */
 export function placesWithEvents(data: CalendarData): string[] {
   const has = new Set(data.events.map((e) => e.place));
   const states = [...STATES].filter((s: StateTile) => has.has(s.code)).sort((a, b) => a.name.localeCompare(b.name, 'en'));
-  return [...(has.has(CONGRESS) ? [CONGRESS] : []), ...states.map((s) => s.code)];
+  return [...[CONGRESS, AGENCIES].filter((place) => has.has(place)), ...states.map((s) => s.code)];
+}
+
+/** The address of the rule or notice a date belongs to: its entry on the notices page. */
+export function eventNoticeHref(event: CalendarEvent): string {
+  return noticeHref(event.noticeId);
 }
 
 /** The address of the bill an event belongs to: its card on its place's bills page. */
@@ -303,8 +350,14 @@ export function fileEvents(data: CalendarData, place?: string): CalendarEvent[] 
   return data.events.filter((e) => e.day >= from && (place === undefined || e.place === place));
 }
 
-/** An event's one-line name in a calendar: "Rhode Island HB 5634: Vote on passage". */
+/**
+ * An event's one-line name in a calendar: "Rhode Island HB 5634: Vote on passage". A date of a
+ * federal notice is named for what happens: "Comments close: " and the document's title, or the
+ * few words that say what the day is.
+ */
 export function eventTitle(event: CalendarEvent): string {
+  if (event.kind === 'date set by a notice') return event.what;
+  if (isNoticeDay(event)) return `${kindLabel(event.kind)}: ${event.what}`;
   if (isSessionDay(event)) return `${placeName(event.place)}: ${event.kind} (${event.what})`;
   return `${placeName(event.place)} ${event.bill}: ${kindLabel(event.kind)}`;
 }

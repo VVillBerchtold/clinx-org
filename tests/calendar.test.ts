@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { EVENT_COLUMNS, EVENT_KINDS as SHAPE_KINDS, billsProblems } from '../scripts/bills-shape.mjs';
 import { CONGRESS, parseBills } from '../src/lib/bills';
-import { EVENT_KINDS, byMonth, byYear, calendarFile, calendarFilePath, calendarPath, comingUp, eventTitle, eventsOf, fileEvents, isSessionDay, kindLabel, latestSteps, parseEvents, past, placesWithEvents, weekdayOf } from '../src/lib/calendar';
+import { EVENT_KINDS, byMonth, byYear, calendarFile, calendarFilePath, calendarPath, calendarPlaceName, comingUp, eventNoticeHref, eventTitle, eventsOf, fileEvents, isBillStep, isNoticeDay, isSessionDay, kindLabel, latestSteps, parseEvents, past, placesWithEvents, weekdayOf } from '../src/lib/calendar';
+import { AGENCIES, parseNotices } from '../src/lib/notices';
 
 // The calendar is read from the copy this site was built from, so these tests follow the real table.
 const modules = import.meta.glob('../src/data/bills/*', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
@@ -9,6 +10,7 @@ const files = Object.fromEntries(Object.entries(modules).map(([path, text]) => [
 delete files['SOURCE.json'];
 const data = parseEvents(files['340b-events.json']!);
 const bills = parseBills(files['340b-bills.json']!);
+const notices = parseNotices(files['340b-notices.json']!);
 
 describe('the calendar table', () => {
   it('is what the shape check expects, and the reader and the check agree on the kinds and columns', () => {
@@ -18,13 +20,15 @@ describe('the calendar table', () => {
     expect([...data.kindNotes.keys()]).toEqual([...EVENT_KINDS]);
   });
 
-  it('is in day order, and every event of a bill points at a bill in the bills table', () => {
+  it('is in day order, and every event points at its bill or its federal notice', () => {
     const days = data.events.map((e) => e.day);
     expect(days).toEqual([...days].sort());
     const known = new Set(bills.bills.map((b) => b.billId));
+    const documents = new Set(notices.notices.map((n) => n.noticeId));
     for (const event of data.events) {
-      if (isSessionDay(event)) expect(event.billId).toBe('');
-      else expect(known.has(event.billId)).toBe(true);
+      if (isSessionDay(event)) expect(event.billId + event.noticeId).toBe('');
+      else if (isNoticeDay(event)) expect(event.billId === '' && event.place === AGENCIES && documents.has(event.noticeId)).toBe(true);
+      else expect(known.has(event.billId) && event.noticeId === '').toBe(true);
       expect(event.link).toMatch(/^https?:\/\//);
       expect(event.what).not.toBe('');
     }
@@ -43,6 +47,22 @@ describe('the calendar table', () => {
     expect(() => parseEvents(broken((e) => (e['link'] = 'somewhere')))).toThrow(/official page/);
     expect(billsProblems({ ...files, '340b-events.json': broken((e) => (e['bill_id'] = 'xx-0-none')) }).join('\n')).toMatch(/does not point at a bill/);
     expect(billsProblems({ ...files, 'events.csv': files['events.csv']!.replace('event_id,', 'id,') }).join('\n')).toMatch(/columns/);
+  });
+
+  it('refuses a date of a federal notice that is not one, or that names no notice in the table', () => {
+    const document = JSON.parse(files['340b-events.json']!);
+    const at = document.events.findIndex((e: Record<string, unknown>) => e['kind'] === 'comments close');
+    expect(at).toBeGreaterThanOrEqual(0);
+    const broken = (change: (event: Record<string, unknown>) => void): string => {
+      const copy = structuredClone(document);
+      change(copy.events[at]);
+      return JSON.stringify(copy);
+    };
+    expect(() => parseEvents(broken((e) => (e['notice_id'] = '')))).toThrow(/date of a federal notice/);
+    expect(() => parseEvents(broken((e) => (e['jurisdiction'] = 'US')))).toThrow(/date of a federal notice/);
+    expect(() => parseEvents(broken((e) => (e['kind'] = 'introduced')))).toThrow(/date of a federal notice/);
+    expect(billsProblems({ ...files, '340b-events.json': broken((e) => (e['notice_id'] = 'fr-1999-00000')) }).join('\n')).toMatch(/does not point at a notice|does not match its name/);
+    expect(billsProblems({ ...files, '340b-events.json': broken((e) => (e['bill_id'] = 'us-119-hr1')) }).join('\n')).toMatch(/does not point at a notice/);
   });
 });
 
@@ -75,15 +95,21 @@ describe('reading the calendar', () => {
     expect(calendarFilePath()).toBe('/calendar/340b.ics');
     expect(calendarFilePath('RI')).toBe('/calendar/ri/340b.ics');
     const places = placesWithEvents(data);
-    expect(places[0]).toBe(CONGRESS);
+    expect(places.slice(0, 2)).toEqual([CONGRESS, AGENCIES]);
+    expect(calendarPath(AGENCIES)).toBe('/calendar/agencies/');
+    expect(calendarFilePath(AGENCIES)).toBe('/calendar/agencies/340b.ics');
+    expect(calendarPlaceName(AGENCIES)).toBe('Federal agencies');
+    expect(calendarPlaceName('RI')).toBe('Rhode Island');
     expect(new Set(places)).toEqual(new Set(data.events.map((e) => e.place)));
     expect(eventsOf(data, 'RI').every((e) => e.place === 'RI')).toBe(true);
   });
 
-  it('lists the newest steps of bills, newest first, never a session day', () => {
+  it('lists the newest steps of bills and the newest federal notices, newest first, never a session day or a deadline', () => {
     const steps = latestSteps(data, 12);
     expect(steps).toHaveLength(12);
     expect(steps.some(isSessionDay)).toBe(false);
+    expect(steps.every((e) => isBillStep(e) || e.kind === 'notice published')).toBe(true);
+    expect(steps.every((e) => e.day <= data.retrieved)).toBe(true);
     expect(steps.map((e) => e.day)).toEqual([...steps.map((e) => e.day)].sort().reverse());
   });
 });
@@ -121,6 +147,17 @@ describe('the calendar file', () => {
   it('names an event by its place, its bill and what happened', () => {
     expect(eventTitle({ ...step, place: 'RI', bill: 'HB 5634', kind: 'vote on passage' })).toBe('Rhode Island HB 5634: Vote on passage');
     expect(eventTitle({ ...sessionDay, place: 'TX', kind: 'session starts', what: '90th Legislature (2027)' })).toBe('Texas: session starts (90th Legislature (2027))');
+  });
+
+  it('names a date of a federal notice for what happens on it', () => {
+    const closes = data.events.find((e) => e.kind === 'comments close')!;
+    const set = data.events.find((e) => e.kind === 'date set by a notice')!;
+    expect(eventTitle(closes)).toBe(`Comments close: ${closes.what}`);
+    expect(eventTitle(set)).toBe(set.what);
+    expect(eventNoticeHref(closes)).toBe(`/notices/#${closes.noticeId}`);
+    const file = calendarFile(data, fileEvents(data, AGENCIES), 'x');
+    expect(file).toContain(`SUMMARY:${'Comments close: '.slice(0, 14)}`);
+    expect(fileEvents(data, AGENCIES).every((e) => e.place === AGENCIES && e.link.startsWith('https://www.federalregister.gov/'))).toBe(true);
   });
 
   it('reaches back two months for every place together, and a year for one place', () => {

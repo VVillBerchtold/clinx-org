@@ -40,7 +40,7 @@ export interface NavGroup {
   items: readonly NavLink[];
 }
 
-/** The main menu. 340B is a group: the Scorecard, the state laws, the bills and the calendar sit side by side under it. */
+/** The main menu. 340B is a group: the Scorecard, the state laws, the bills, the federal notices, the calendar and the rebate pilot sit side by side under it. */
 export const NAV: readonly (NavLink | NavGroup)[] = [
   {
     label: '340B',
@@ -48,7 +48,9 @@ export const NAV: readonly (NavLink | NavGroup)[] = [
       { href: '/scorecard/', label: 'Scorecard', note: 'The 340B figures each state publishes' },
       { href: '/laws/', label: 'State laws', note: 'The 340B laws each state has passed' },
       { href: '/bills/', label: 'Bills', note: 'The 340B bills in Congress and the states' },
-      { href: '/calendar/', label: 'Calendar', note: 'Bill steps, hearings and session days' },
+      { href: '/notices/', label: 'Federal notices', note: 'Federal rules and notices that name 340B' },
+      { href: '/calendar/', label: 'Calendar', note: 'Bill steps, hearings and federal deadlines' },
+      { href: '/rebate-pilot/', label: 'Rebate pilot', note: 'What the federal rebate pilot changes' },
     ],
   },
   { href: '/data/', label: 'Data' },

@@ -1,14 +1,13 @@
 ---
 /**
- * One calendar page for Congress (/calendar/congress/) and one per state with a date on the
- * calendar (/calendar/ri/). The layout lives in src/components.
+ * One calendar page for Congress (/calendar/congress/), one for federal agencies
+ * (/calendar/agencies/) and one per state with a date on the calendar (/calendar/ri/). The layout lives in src/components.
  */
 import CalendarPlace from '../../../components/CalendarPlace.astro';
-import { CONGRESS } from '../../../lib/bills';
-import { getCalendar, placesWithEvents } from '../../../lib/calendar';
+import { calendarSlug, getCalendar, placesWithEvents } from '../../../lib/calendar';
 
 export function getStaticPaths() {
-  return placesWithEvents(getCalendar()).map((place) => ({ params: { slug: place === CONGRESS ? 'congress' : place.toLowerCase() }, props: { place } }));
+  return placesWithEvents(getCalendar()).map((place) => ({ params: { slug: calendarSlug(place) }, props: { place } }));
 }
 
 interface Props {

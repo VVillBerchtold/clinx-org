@@ -1,0 +1,150 @@
+---
+/**
+ * Federal rules and notices that name the 340B program: the dates still ahead, then every document
+ * since January 2025, the ones about 340B first, then the ones with a part on it, then a short list
+ * of the ones that only mention it.
+ * Everything shown comes from the notices table (src/lib/notices.ts) and the calendar made from it.
+ */
+import '../../styles/scorecard.css';
+import '../../styles/laws.css';
+import '../../styles/bills.css';
+import '../../styles/calendar.css';
+import '../../styles/notices.css';
+import Base from '../../layouts/Base.astro';
+import CalendarRows from '../../components/CalendarRows.astro';
+import NoticeCard from '../../components/NoticeCard.astro';
+import PageHead from '../../components/PageHead.astro';
+import { formatDate } from '../../lib/data';
+import { byMonth, calendarFilePath, calendarPath, comingUp, eventsOf, getCalendar } from '../../lib/calendar';
+import { AGENCIES, NOTICES_HOME, NOTICE_TYPES, TYPE_NOTES, getNotices, pilotStart, rankOf, typeLabel } from '../../lib/notices';
+import { PILOT_HOME } from '../../lib/pilot';
+import { numberWordCap } from '../../lib/site';
+
+const data = getNotices();
+const calendar = getCalendar();
+const ahead = comingUp(eventsOf(calendar, AGENCIES), calendar.retrieved);
+const about = data.notices.filter((n) => rankOf(n) === 0);
+const part = data.notices.filter((n) => rankOf(n) === 1);
+const mentions = data.notices.filter((n) => rankOf(n) === 2);
+const pilotDay = pilotStart(data);
+const first = data.notices[data.notices.length - 1]!;
+const since = formatDate(first.published).replace(/^\d+ /, '');
+const count = (n: number): string => `${n} ${n === 1 ? 'document' : 'documents'}`;
+const groups = [
+  { id: 'about', title: 'About 340B', notices: about },
+  { id: 'part', title: 'With a part on 340B', notices: part },
+].filter((g) => g.notices.length > 0);
+---
+
+<Base
+  title="Federal rules and notices on 340B"
+  crumbs={[{ name: 'Federal notices', path: NOTICES_HOME }]}
+  description={`${data.notices.length} rules, proposed rules and notices in the Federal Register since ${since} that name the 340B program: what each one does in a sentence, its comment deadline and the day it takes effect.`}
+>
+  <PageHead title="Federal rules and notices on 340B" trail={[{ label: '340B' }]}>
+    <p class="lede">
+      {numberWordCap(data.notices.length)} rules, proposed rules and notices published in the Federal Register since {since} name the 340B program. Here is what each one does about 340B, the day comments close, the day it takes effect, and where to read it.
+    </p>
+  </PageHead>
+
+  <div class="law-layout">
+    <div class="law-list">
+      {
+        ahead.length > 0 && (
+          <section class="cal-section" id="ahead" aria-labelledby="ahead-title">
+            <h2 id="ahead-title">Dates ahead</h2>
+            {byMonth(ahead).map((group) => (
+              <div class="cal-month">
+                <h3 class="label">{group.label}</h3>
+                <CalendarRows events={group.events} />
+              </div>
+            ))}
+          </section>
+        )
+      }
+
+      {
+        groups.map((group) => (
+          <section class="bill-session" id={group.id} aria-labelledby={`${group.id}-title`}>
+            <header class="bill-session-head">
+              <h2 id={`${group.id}-title`}>{group.title}</h2>
+              <p>{count(group.notices.length)}, newest first</p>
+            </header>
+            {group.notices.map((notice) => (
+              <NoticeCard notice={notice} data={data} />
+            ))}
+          </section>
+        ))
+      }
+
+      {
+        mentions.length > 0 && (
+          <section class="bill-session" id="mentions" aria-labelledby="mentions-title">
+            <header class="bill-session-head">
+              <h2 id="mentions-title">Mention 340B in passing</h2>
+              <p>{count(mentions.length)}</p>
+            </header>
+            <ul class="law-rows notice-rows">
+              {mentions.map((notice) => (
+                <li id={notice.noticeId}>
+                  <a href={notice.noticeUrl}>
+                    <strong>{notice.citation}</strong>
+                    <span class="law-row-name">{notice.title}</span>
+                    <span class="law-row-year">
+                      {typeLabel(notice.type)}, {formatDate(notice.published)}
+                    </span>
+                    <span class="law-row-what">{notice.summary}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
+      <div class="note law-advice">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="2" /><path d="M10 9v5M10 6v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+        <div>
+          <p><strong>The Federal Register is the authority.</strong> The sentence on each document is ours, written after reading it, and covers only what it does about 340B. Titles, agencies and dates are the Federal Register&rsquo;s own. Read the document before you rely on it.</p>
+          <p>See something missing or out of date? <a href="/contact/">Tell us</a>.</p>
+        </div>
+      </div>
+    </div>
+
+    <aside class="law-aside" aria-label="More about federal notices">
+      <a class="law-score" href={PILOT_HOME}>
+        <span class="label">{pilotDay ? `From ${formatDate(pilotDay)}` : 'Explained'}</span>
+        <strong>The 340B rebate pilot</strong>
+        <span>What changes, for which drugs, and the deadlines</span>
+      </a>
+      <a class="law-score" href={calendarPath(AGENCIES)}>
+        <span class="label">Every date</span>
+        <strong>The federal agencies calendar</strong>
+        <span>Published, comments close, takes effect, month by month</span>
+      </a>
+      <div class="cal-file">
+        <h2 class="label">In your own calendar</h2>
+        <p>One file with the federal dates from the last year and everything ahead. Open it in your calendar app, or subscribe to it.</p>
+        <a href={calendarFilePath(AGENCIES)}>Calendar file (.ics)</a>
+      </div>
+      <div class="bill-key notice-key">
+        <h2 class="label">Kinds of document</h2>
+        <dl>
+          {
+            NOTICE_TYPES.map((type) => (
+              <div>
+                <dt>{typeLabel(type)}</dt>
+                <dd>{TYPE_NOTES[type]}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+      <div class="cal-file">
+        <h2 class="label">The table behind this page</h2>
+        <p>Every document here, with its dates and the sentence on it, is one open file you can download, check or build on.</p>
+        <a href="/data/#notices">Get the data</a>
+      </div>
+    </aside>
+  </div>
+</Base>

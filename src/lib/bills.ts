@@ -148,7 +148,9 @@ export function getBills(): BillsData {
 export interface BillsRecord {
   retrieved: string;
   bills: number;
-  /** How many dates the calendar made from the table holds. */
+  /** How many federal rules and notices the notices table holds. */
+  notices: number;
+  /** How many dates the calendar made from both tables holds. */
   events: number;
   /** Each file of the table and its SHA-256, as copied into this site. */
   files: Readonly<Record<string, string>>;

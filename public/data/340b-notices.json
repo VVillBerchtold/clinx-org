@@ -1,0 +1,1183 @@
+{
+ "retrieved": "2026-11-15",
+ "source": "The Federal Register's own data service, federalregister.gov/api/v1",
+ "roles": [
+  {
+   "role": "main",
+   "label": "About 340B"
+  },
+  {
+   "role": "part",
+   "label": "Has a part on 340B"
+  },
+  {
+   "role": "mention",
+   "label": "Mentions 340B"
+  }
+ ],
+ "types": [
+  "Rule",
+  "Proposed Rule",
+  "Notice",
+  "Presidential Document"
+ ],
+ "notices": [
+  {
+   "notice_id": "fr-2026-22792",
+   "document_number": "2026-22792",
+   "citation": "91 FR 72176",
+   "type": "Rule",
+   "action": "Final rule.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Centers for Medicare & Medicaid Services"
+   ],
+   "title": "Medicare Drug Price Negotiation Program and Medicare Prescription Drug Benefit Program",
+   "role": "mention",
+   "summary": "Names 340B only in answers to comments. The agency declines to set compliance safe harbors for cases where 340B covered entities refuse to share claim data, and notes that one comment concerns the 340B payment adjustment proposed in the 2027 hospital outpatient rule.",
+   "names_program_in": [
+    "text"
+   ],
+   "text_mentions": 11,
+   "quote": "… that, when determining Part B expenditures that would have been applicable for MA enrollees, CMS should account for the reduced payment amounts that CMS would make for 340B drugs if the 340B payment policy in the CY 2027 Hospital Outpatient Prospective Payment System Proposed Rule is finalized. Response: We thank the commenter for their …",
+   "published": "2026-11-09",
+   "comments_close": "",
+   "effective": "2026-12-05",
+   "dates": "Effective date: These regulations are effective on December 5, 2026.",
+   "docket": "CMS-4215-F",
+   "pages": 215,
+   "notice_url": "https://www.federalregister.gov/documents/2026/11/09/2026-22792/medicare-drug-price-negotiation-program-and-medicare-prescription-drug-benefit-program",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-11-09/pdf/2026-22792.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2026-22743",
+   "document_number": "2026-22743",
+   "citation": "91 FR 70992",
+   "type": "Rule",
+   "action": "Final rule.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Centers for Medicare & Medicaid Services"
+   ],
+   "title": "Medicare and Medicaid Programs; CY 2027 Payment Policies Under the Physician Fee Schedule and Other Changes to Part B Payment and Coverage Policies; Medicare Shared Savings Program Requirements; and Medicare Prescription Drug Inflation Rebate Program",
+   "role": "part",
+   "summary": "Requires 340B covered entities to report Medicare Part D 340B claim data every quarter to a 340B repository run by the Centers for Medicare & Medicaid Services, for claims from January 1, 2027. The first required submission is due September 30, 2027.",
+   "names_program_in": [
+    "text"
+   ],
+   "text_mentions": 800,
+   "quote": "… data are unavailable and the calculation of the Part D rebate amount in such instances; modifies the methodology finalized in the CY 2026 PFS final rule to account for 340B-eligible units for AIDS Drug Assistance Program (ADAP) clients for the applicable period beginning October 1, 2025; and requires Medicare providers and suppliers that …",
+   "published": "2026-11-09",
+   "comments_close": "",
+   "effective": "2027-01-01",
+   "dates": "These regulations are effective on January 1, 2027.",
+   "docket": "CMS-1848-F",
+   "pages": 1029,
+   "notice_url": "https://www.federalregister.gov/documents/2026/11/09/2026-22743/medicare-and-medicaid-programs-cy-2027-payment-policies-under-the-physician-fee-schedule-and-other",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-11-09/pdf/2026-22743.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": [
+    {
+     "day": "2027-09-30",
+     "what": "Covered entities' first required Part D 340B claim data, for January to June 2027, is due",
+     "words": "will be due September 30, 2027"
+    }
+   ]
+  },
+  {
+   "notice_id": "fr-2026-22739",
+   "document_number": "2026-22739",
+   "citation": "91 FR 70284",
+   "type": "Rule",
+   "action": "Final rule with comment period.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Centers for Medicare & Medicaid Services"
+   ],
+   "title": "Medicare Program: Hospital Outpatient Prospective Payment and Ambulatory Surgical Center Payment Systems; and Quality Reporting Programs; including the Hospital Outpatient Quality Reporting Program and Ambulatory Surgical Center Quality Program; Request for Information on Strengthening the Standardization and Comparability of Hospital Price Transparency (HPT) Data; Prior Authorization; Accrediting Organization (AO) Deeming for Emergency Medical Treatment and Labor Act (EMTALA); and Notices of Closure of Teaching Hospitals and Opportunities To Apply for Available Slots",
+   "role": "part",
+   "summary": "Sets Medicare hospital outpatient payment for drugs bought under 340B at average sales price minus 28 percent for 2027, where minus 33.4 percent had been proposed. Rural sole community hospitals, children's hospitals and the cancer hospitals paid outside the prospective payment system are exempt. Payments for other services at hospitals subject to the 340B remedy offset are reduced by 2.0 percentage points.",
+   "names_program_in": [
+    "text"
+   ],
+   "text_mentions": 841,
+   "quote": "… outpatient quality reporting requirements by applying a reporting factor of 0.9804 to the OPPS payments and copayments for all applicable services. Under the final 340B remedy offset, payments for services at hospitals subject to the 340B remedy offset will be reduced by 2.0 percentage points. ASC Payment Update: For CYs 2019 through …",
+   "published": "2026-11-06",
+   "comments_close": "2027-01-04",
+   "effective": "2027-01-01",
+   "dates": "Effective Date: The provisions of this rule are effective January 1, 2027.",
+   "docket": "CMS-1850-FC",
+   "pages": 479,
+   "notice_url": "https://www.federalregister.gov/documents/2026/11/06/2026-22739/medicare-program-hospital-outpatient-prospective-payment-and-ambulatory-surgical-center-payment",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-11-06/pdf/2026-22739.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2026-22306",
+   "document_number": "2026-22306",
+   "citation": "91 FR 69092",
+   "type": "Rule",
+   "action": "Final rule.",
+   "agencies": [
+    "Labor Department",
+    "Employee Benefits Security Administration"
+   ],
+   "title": "Improving Transparency Into Pharmacy Benefit Manager Fee Disclosure",
+   "role": "mention",
+   "summary": "Names 340B only in a summary of comments, where 340B-related income is given as one example of indirect pay that a third-party administrator should disclose to employer health plans.",
+   "names_program_in": [
+    "text"
+   ],
+   "text_mentions": 1,
+   "quote": "… section 408(b)(2)(B), direct and indirect compensation. This includes direct or indirect compensation such as administrative fees, per-employee-per- month fees, or 340B-related income; provider and network compensation; affiliate, subcontractor, and vertically integrated compensation; data monetization compensation; and payment and …",
+   "published": "2026-11-02",
+   "comments_close": "",
+   "effective": "2027-01-04",
+   "dates": "This regulation is effective January 4, 2027. This regulation is applicable to plan years beginning on or after July 1, 2027.",
+   "docket": "",
+   "pages": 105,
+   "notice_url": "https://www.federalregister.gov/documents/2026/11/02/2026-22306/improving-transparency-into-pharmacy-benefit-manager-fee-disclosure",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-11-02/pdf/2026-22306.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2026-21420",
+   "document_number": "2026-21420",
+   "citation": "91 FR 66408",
+   "type": "Proposed Rule",
+   "action": "Proposed rule.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Centers for Medicare & Medicaid Services"
+   ],
+   "title": "Medicare Program; Implementation of Sections 6219, 6220, and 6224 of the Consolidated Appropriations Act, 2026",
+   "role": "part",
+   "summary": "Would require pharmacy benefit managers' reports to Medicare Part D plans to include a list of the covered drugs that are subject to a 340B agreement with a covered entity, where the manager or an affiliate has a contract or other arrangement with that entity.",
+   "names_program_in": [
+    "text"
+   ],
+   "text_mentions": 3,
+   "quote": "… supply chain--including pharmacy spread pricing, retention of a portion of the rebate negotiated with the pharmaceutical manufacturer, and increasing ownership of 340B contract pharmacies--is often not transparent to health plans and may contribute to high drug prices.\\13\\ Because PBM compensation is often linked to the price of the …",
+   "published": "2026-10-20",
+   "comments_close": "2026-12-15",
+   "effective": "",
+   "dates": "To be assured consideration, comments must be received at one of the addresses provided below, no later than 5 p.m. Eastern Standard Time on December 15, 2026.",
+   "docket": "CMS-4214-P",
+   "pages": 82,
+   "notice_url": "https://www.federalregister.gov/documents/2026/10/20/2026-21420/medicare-program-implementation-of-sections-6219-6220-and-6224-of-the-consolidated-appropriations",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-10-20/pdf/2026-21420.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2026-20281",
+   "document_number": "2026-20281",
+   "citation": "91 FR 62936",
+   "type": "Rule",
+   "action": "Final rule.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Centers for Medicare & Medicaid Services"
+   ],
+   "title": "Global Benchmark for Efficient Drug Pricing (GLOBE) Model",
+   "role": "part",
+   "summary": "Sets up the GLOBE Model, a Medicare Part B drug rebate test, and leaves 340B units out of its rebate count. It keeps the existing 340B claims modifier, TB, to find those units and says 340B itself, including how its price is calculated, is outside the model.",
+   "names_program_in": [
+    "text"
+   ],
+   "text_mentions": 64,
+   "quote": "… and may be more likely to experience shortages. Several commenters stated that the Negotiation Program, the Working Families Tax Cuts Act (Pub. L. 119-21), and the 340B Drug Pricing Program (section 340B of the Public Health Services Act) include provisions for orphan drug exclusions and that the 2020 Most Favored Nation (MFN) Model …",
+   "published": "2026-10-02",
+   "comments_close": "",
+   "effective": "2026-11-30",
+   "dates": "These regulations are effective on November 30, 2026.",
+   "docket": "CMS-5545-F",
+   "pages": 181,
+   "notice_url": "https://www.federalregister.gov/documents/2026/10/02/2026-20281/global-benchmark-for-efficient-drug-pricing-globe-model",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-10-02/pdf/2026-20281.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": [
+    {
+     "day": "2027-01-01",
+     "what": "The GLOBE Model begins, with drug makers' voluntary price data",
+     "words": "The GLOBE Model will begin on January 1, 2027"
+    },
+    {
+     "day": "2027-04-01",
+     "what": "The GLOBE Model's first performance year begins",
+     "words": "5 performance years, which will begin on April 1, 2027"
+    }
+   ]
+  },
+  {
+   "notice_id": "fr-2026-19535",
+   "document_number": "2026-19535",
+   "citation": "91 FR 60568",
+   "type": "Proposed Rule",
+   "action": "Request for information.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Centers for Medicare & Medicaid Services"
+   ],
+   "title": "Request for Information; Medicare Part D Reasonable and Relevant Pharmacy Contracting Standards",
+   "role": "part",
+   "summary": "One question in this request for information is about 340B: it asks what standard Medicare Part D pharmacy contract terms say about dispensing to 340B patients, and how plan sponsors decide that a claim is for a 340B patient.",
+   "names_program_in": [
+    "text"
+   ],
+   "text_mentions": 3,
+   "quote": "… (AI) with respect to Part D pharmacy reimbursement; Information on standard Part D pharmacy contract terms and conditions relating to dispensing covered Part D drugs to 340B patients enrolled in Part D, including whether such 340B specific terms and conditions are common, and whether and how Part D plan sponsors determine when a claim is …",
+   "published": "2026-09-24",
+   "comments_close": "2026-11-23",
+   "effective": "",
+   "dates": "To be assured consideration, comments must be received at one of the addresses provided below, by November 23, 2026.",
+   "docket": "CMS-4217-NC",
+   "pages": 5,
+   "notice_url": "https://www.federalregister.gov/documents/2026/09/24/2026-19535/request-for-information-medicare-part-d-reasonable-and-relevant-pharmacy-contracting-standards",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-09-24/pdf/2026-19535.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2026-16508",
+   "document_number": "2026-16508",
+   "citation": "91 FR 52406",
+   "type": "Rule",
+   "action": "Final rule.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Centers for Medicare & Medicaid Services"
+   ],
+   "title": "Medicaid Program; Prohibition on Federal Medicaid and Children's Health Insurance Program Funding for Sex-Rejecting Procedures Furnished to Children",
+   "role": "mention",
+   "summary": "Names 340B only to say that a drug maker must take part in the 340B Program, among other conditions, for its drugs to stay covered by Medicaid. It sets no 340B policy.",
+   "names_program_in": [
+    "text"
+   ],
+   "text_mentions": 2,
+   "quote": "… procedure, and the manufacturer has entered into a rebate agreement under section 1927 and complies with the program's requirements, including participation in the 340B Program, the drug remains eligible for Medicaid coverage and Federal financial participation.'' Comment: Many commenters opposed the proposed rule because they believed …",
+   "published": "2026-08-13",
+   "comments_close": "",
+   "effective": "2026-10-13",
+   "dates": "These regulations are effective on October 13, 2026.",
+   "docket": "CMS-2451-F",
+   "pages": 69,
+   "notice_url": "https://www.federalregister.gov/documents/2026/08/13/2026-16508/medicaid-program-prohibition-on-federal-medicaid-and-childrens-health-insurance-program-funding-for",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-08-13/pdf/2026-16508.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2026-15833",
+   "document_number": "2026-15833",
+   "citation": "91 FR 49570",
+   "type": "Rule",
+   "action": "Final rule.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Centers for Medicare & Medicaid Services",
+    "Office of the Secretary"
+   ],
+   "title": "Medicare Program; Hospital Inpatient Prospective Payment Systems for Acute Care Hospitals (IPPS) and the Long-Term Care Hospital Prospective Payment System and Policy Changes and Fiscal Year (FY) 2027 Rates; Requirements for Quality Programs; Other Policy Changes; and Adoption of Updated Versions of Certain Health Information Technology Standards",
+   "role": "mention",
+   "summary": "Names 340B only in background on hospitals that reclassify from urban to rural, a change that can affect eligibility for programs outside Medicare such as 340B.",
+   "names_program_in": [
+    "text"
+   ],
+   "text_mentions": 1,
+   "quote": "… which confers other rural benefits (Medicare provisions such as payments to disproportionate share hospitals (DSHs), and non-Medicare payment provisions, such as the 340B Drug Pricing Program administered by HRSA) besides the wage index under section 1886(d) of the Act or a reclassification under the MGCRB to solely increase its wage …",
+   "published": "2026-08-04",
+   "comments_close": "",
+   "effective": "2026-10-01",
+   "dates": "These regulations are effective on October 1, 2026. The incorporation by reference of certain material listed in this rule is approved by the Director of the Federal Register as of October 1, 2026. The incorporation of reference of certain other material listed in the rule was approved by the Director of the Federal Register as of October 1, 2025.",
+   "docket": "CMS-1849-F and CMS-0062-F",
+   "pages": 892,
+   "notice_url": "https://www.federalregister.gov/documents/2026/08/04/2026-15833/medicare-program-hospital-inpatient-prospective-payment-systems-for-acute-care-hospitals-ipps-and",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-08-04/pdf/2026-15833.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2026-15633",
+   "document_number": "2026-15633",
+   "citation": "91 FR 48883",
+   "type": "Notice",
+   "action": "Notice.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Health Resources and Services Administration"
+   ],
+   "title": "Notice Regarding 340B Rebate Model Pilot Program",
+   "role": "main",
+   "summary": "Opens a revised 340B Rebate Model Pilot Program. From January 1, 2027, drug makers with an approved plan may give the 340B price as a rebate after the sale, not as a discount up front, on the drugs selected for Medicare price negotiation for 2026 and 2027.",
+   "names_program_in": [
+    "title",
+    "summary",
+    "text"
+   ],
+   "text_mentions": 290,
+   "quote": "… DEPARTMENT OF HEALTH AND HUMAN SERVICES Health Resources and Services Administration Notice Regarding 340B Rebate Model Pilot Program AGENCY: Health Resources and Services Administration (HRSA), Department of Health and Human Services (HHS). ACTION: Notice. …",
+   "published": "2026-08-03",
+   "comments_close": "",
+   "effective": "2027-01-01",
+   "dates": "Eligible manufacturers seeking to participate in the 340B Rebate Model Pilot Program must submit plans to 340BPricing@hrsa.gov no later than August 24, 2026, for an effective date of January 1, 2027, for selected drugs for initial price applicability year 2026 and 2027 during their price applicability periods.",
+   "docket": "",
+   "pages": 21,
+   "notice_url": "https://www.federalregister.gov/documents/2026/08/03/2026-15633/notice-regarding-340b-rebate-model-pilot-program",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-08-03/pdf/2026-15633.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": [
+    {
+     "day": "2026-08-24",
+     "what": "Drug makers' plans for the rebate pilot were due",
+     "words": "no later than August 24, 2026"
+    },
+    {
+     "day": "2026-09-24",
+     "what": "The day by which the agency said it would approve drug makers' plans for the rebate pilot, if any",
+     "words": "Approvals, if any, will be made by September 24 2026"
+    },
+    {
+     "day": "2028-04-30",
+     "what": "The day by which the agency says it will publish its evaluation of the rebate pilot's first year",
+     "words": "HRSA will publish an evaluation by April 30, 2028"
+    }
+   ]
+  },
+  {
+   "notice_id": "fr-2026-14327",
+   "document_number": "2026-14327",
+   "citation": "91 FR 43842",
+   "type": "Proposed Rule",
+   "action": "Proposed rule.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Centers for Medicare & Medicaid Services"
+   ],
+   "title": "Medicare and Medicaid Programs; CY 2027 Payment Policies Under the Physician Fee Schedule and Other Changes to Part B Payment and Coverage Policies; Medicare Shared Savings Program Requirements; and Medicare Prescription Drug Inflation Rebate Program",
+   "role": "part",
+   "summary": "Would require 340B covered entities to report Medicare Part D 340B claim data every quarter to a 340B repository run by the Centers for Medicare & Medicaid Services, for claims from January 1, 2027. Reporting was voluntary when this was proposed. Made final at 91 FR 70992.",
+   "names_program_in": [
+    "text"
+   ],
+   "text_mentions": 290,
+   "quote": "… and the calculation of the Part D rebate amount in such instances; proposes a modification to the methodology finalized in the CY 2026 PFS final rule to account for 340B-eligible units for AIDS Drug Assistance Program (ADAP) enrollees for the applicable period beginning October 1, 2025; and proposes to require Medicare providers and …",
+   "published": "2026-07-16",
+   "comments_close": "2026-09-14",
+   "effective": "",
+   "dates": "To be assured consideration, comments must be received at one of the addresses provided below, by September 14, 2026.",
+   "docket": "CMS-1848-P",
+   "pages": 716,
+   "notice_url": "https://www.federalregister.gov/documents/2026/07/16/2026-14327/medicare-and-medicaid-programs-cy-2027-payment-policies-under-the-physician-fee-schedule-and-other",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-07-16/pdf/2026-14327.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2026-13656",
+   "document_number": "2026-13656",
+   "citation": "91 FR 41734",
+   "type": "Proposed Rule",
+   "action": "Proposed rule.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Centers for Medicare & Medicaid Services"
+   ],
+   "title": "Medicare Program: Hospital Outpatient Prospective Payment and Ambulatory Surgical Center Payment Systems; and Quality Reporting Programs; Including the Hospital Outpatient Quality Reporting Program and Ambulatory Surgical Center Quality Program; Request for Information on Strengthening the Standardization and Comparability of Hospital Price Transparency (HPT) Data; Prior Authorization; Accrediting Organization (AO) Deeming for Emergency Medical Treatment and Labor Act (EMTALA); and Notices of Closure of Teaching Hospitals and Opportunities To Apply for Available Slots",
+   "role": "part",
+   "summary": "Would pay hospitals for drugs bought under 340B at average sales price minus 33.4 percent for 2027, with minus 28 percent as an alternative, would exempt rural sole community hospitals, children's hospitals and the cancer hospitals paid outside the prospective payment system, would have hospitals mark 340B drugs with the claim modifier JG, and would raise the 340B remedy offset on other payments from 0.5 percent to 3 percent.",
+   "names_program_in": [
+    "text"
+   ],
+   "text_mentions": 413,
+   "quote": "… outpatient quality reporting requirements by applying a reporting factor of 0.9805 to the OPPS payments and copayments for all applicable services. Under the proposed 340B remedy offset, payments for services at hospitals subject to the 340B remedy offset will be reduced by 3 percentage points. ASC Payment Update: For CYs 2019 through …",
+   "published": "2026-07-07",
+   "comments_close": "2026-08-31",
+   "effective": "",
+   "dates": "To be assured consideration, comments must be received at one of the addresses provided below, by August 31, 2026.",
+   "docket": "CMS-1850-P",
+   "pages": 299,
+   "notice_url": "https://www.federalregister.gov/documents/2026/07/07/2026-13656/medicare-program-hospital-outpatient-prospective-payment-and-ambulatory-surgical-center-payment",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-07-07/pdf/2026-13656.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2026-12442",
+   "document_number": "2026-12442",
+   "citation": "91 FR 37121",
+   "type": "Notice",
+   "action": "Notice; correction.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Health Resources and Services Administration"
+   ],
+   "title": "340B Rebate Model Pilot Program Application, Implementation, and Evaluation, Correction",
+   "role": "main",
+   "summary": "Corrects the June 15, 2026 notice on the rebate pilot's data collection. The total number of responses changes from 793,080 to 793,091 to include the 11 drug maker plan submissions.",
+   "names_program_in": [
+    "title",
+    "summary",
+    "text"
+   ],
+   "text_mentions": 2,
+   "quote": "… 2026-12442] ----------------------------------------------------------------------- DEPARTMENT OF HEALTH AND HUMAN SERVICES Health Resources and Services Administration 340B Rebate Model Pilot Program Application, Implementation, and Evaluation, Correction AGENCY: Health Resources and Services Administration (HRSA), Department of Health and …",
+   "published": "2026-06-22",
+   "comments_close": "",
+   "effective": "",
+   "dates": "",
+   "docket": "",
+   "pages": 1,
+   "notice_url": "https://www.federalregister.gov/documents/2026/06/22/2026-12442/340b-rebate-model-pilot-program-application-implementation-and-evaluation-correction",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-06-22/pdf/2026-12442.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2026-11989",
+   "document_number": "2026-11989",
+   "citation": "91 FR 35989",
+   "type": "Notice",
+   "action": "Notice.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Health Resources and Services Administration"
+   ],
+   "title": "Agency Information Collection Activities: Proposed Collection: Public Comment Request; Information Collection Request Title: 340B Rebate Model Pilot Program Application, Implementation, and Evaluation, OMB Number 0906-NEW",
+   "role": "main",
+   "summary": "Says the rebate pilot's data collection was sent to the Office of Management and Budget for approval, and opens 30 days for comments. It answers the comments on burden made on the earlier 60-day notice.",
+   "names_program_in": [
+    "title",
+    "text"
+   ],
+   "text_mentions": 17,
+   "quote": "… Resources and Services Administration Agency Information Collection Activities: Proposed Collection: Public Comment Request; Information Collection Request Title: 340B Rebate Model Pilot Program Application, Implementation, and Evaluation, OMB Number 0906-NEW AGENCY: Health Resources and Services Administration (HRSA), Department of …",
+   "published": "2026-06-15",
+   "comments_close": "2026-07-15",
+   "effective": "",
+   "dates": "Comments on this ICR should be received no later than July 15, 2026.",
+   "docket": "",
+   "pages": 3,
+   "notice_url": "https://www.federalregister.gov/documents/2026/06/15/2026-11989/agency-information-collection-activities-proposed-collection-public-comment-request-information",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-06-15/pdf/2026-11989.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2026-10050",
+   "document_number": "2026-10050",
+   "citation": "91 FR 29526",
+   "type": "Rule",
+   "action": "Final rule.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Centers for Medicare & Medicaid Services",
+    "Office of the Secretary"
+   ],
+   "title": "Patient Protection and Affordable Care Act, HHS Notice of Benefit and Payment Parameters for 2027; and Basic Health Program",
+   "role": "mention",
+   "summary": "Names 340B only as a cross-reference. Section 340B(a)(4) of the Public Health Service Act is the list that decides which providers count as essential community providers that health plans on the Exchanges must include in their networks.",
+   "names_program_in": [
+    "text"
+   ],
+   "text_mentions": 8,
+   "quote": "… plan networks. ECPs include providers that serve predominantly low-income and medically underserved individuals, such as health care providers described in section 340B(a)(4) of the PHS Act and section 1927(c)(1)(D)(i)(IV) of the Act. We first implemented the above statutory provisions of the Affordable Care Act and codified ECP …",
+   "published": "2026-05-20",
+   "comments_close": "",
+   "effective": "2026-07-20",
+   "dates": "These regulations are effective on July 20, 2026.",
+   "docket": "CMS-9883-F",
+   "pages": 352,
+   "notice_url": "https://www.federalregister.gov/documents/2026/05/20/2026-10050/patient-protection-and-affordable-care-act-hhs-notice-of-benefit-and-payment-parameters-for-2027-and",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-05-20/pdf/2026-10050.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2026-07203",
+   "document_number": "2026-07203",
+   "citation": "91 FR 19312",
+   "type": "Proposed Rule",
+   "action": "Proposed rule.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Centers for Medicare & Medicaid Services"
+   ],
+   "title": "Medicare Program; Hospital Inpatient Prospective Payment Systems for Acute Care Hospitals (IPPS) and the Long-Term Care Hospital Prospective Payment System and Policy Changes and Fiscal Year (FY) 2027 Rates; Requirements for Quality Programs; and Other Policy Changes",
+   "role": "mention",
+   "summary": "Names 340B only in background on hospitals that reclassify from urban to rural, a change that can affect eligibility for programs outside Medicare such as 340B.",
+   "names_program_in": [
+    "text"
+   ],
+   "text_mentions": 1,
+   "quote": "… which confers other rural benefits (Medicare provisions such as payments to disproportionate share hospitals (DSHs), and non-Medicare payment provisions, such as the 340B Drug Pricing Program administered by HRSA) besides the wage index under section 1886(d) of the Act or a reclassification under the MGCRB to solely increase its wage …",
+   "published": "2026-04-14",
+   "comments_close": "2026-04-10",
+   "effective": "",
+   "dates": "To be assured consideration, comments must be received at one of the addresses provided in the ADDRESSES section, no later than 5 p.m. EDT on April 10, 2026.",
+   "docket": "CMS-1849-P",
+   "pages": 576,
+   "notice_url": "https://www.federalregister.gov/documents/2026/04/14/2026-07203/medicare-program-hospital-inpatient-prospective-payment-systems-for-acute-care-hospitals-ipps-and",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-04-14/pdf/2026-07203.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2026-03838",
+   "document_number": "2026-03838",
+   "citation": "91 FR 9632",
+   "type": "Notice",
+   "action": "Notice of extension for the comment period for the Request for Information: 340B Rebate Model Pilot Program (91 FR 7287).",
+   "agencies": [
+    "Health and Human Services Department",
+    "Health Resources and Services Administration"
+   ],
+   "title": "Request for Information: 340B Rebate Model Pilot Program Extension",
+   "role": "main",
+   "summary": "Extends the comment period on the February 17, 2026 request for information about a 340B rebate pilot from 30 days to 60 days, so that comments are due April 20, 2026.",
+   "names_program_in": [
+    "title",
+    "summary",
+    "text"
+   ],
+   "text_mentions": 3,
+   "quote": "… DEPARTMENT OF HEALTH AND HUMAN SERVICES Health Resources and Services Administration Request for Information: 340B Rebate Model Pilot Program Extension AGENCY: Health Resources and Services Administration (HRSA), Department of Health and Human Services. ACTION: Notice of extension …",
+   "published": "2026-02-26",
+   "comments_close": "2026-04-20",
+   "effective": "",
+   "dates": "Comments on this notice should be received no later than April 20, 2026.",
+   "docket": "",
+   "pages": 1,
+   "notice_url": "https://www.federalregister.gov/documents/2026/02/26/2026-03838/request-for-information-340b-rebate-model-pilot-program-extension",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-02-26/pdf/2026-03838.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2026-03833",
+   "document_number": "2026-03833",
+   "citation": "91 FR 9632",
+   "type": "Notice",
+   "action": "Notice.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Health Resources and Services Administration"
+   ],
+   "title": "Agency Information Collection Activities: Proposed Collection: Public Comment Request; Information Collection Request Title: 340B Rebate Model Pilot Program Application, Implementation, and Evaluation, OMB Number 0906-NEW",
+   "role": "main",
+   "summary": "Asks for comments on a new data collection for a possible 340B rebate pilot: drug makers' plans, their monthly reports, and claim data from covered entities. It replaces an emergency-cleared collection that the agency ended.",
+   "names_program_in": [
+    "title",
+    "text"
+   ],
+   "text_mentions": 24,
+   "quote": "… Resources and Services Administration Agency Information Collection Activities: Proposed Collection: Public Comment Request; Information Collection Request Title: 340B Rebate Model Pilot Program Application, Implementation, and Evaluation, OMB Number 0906-NEW AGENCY: Health Resources and Services Administration (HRSA), Department of …",
+   "published": "2026-02-26",
+   "comments_close": "2026-04-27",
+   "effective": "",
+   "dates": "Comments on this ICR should be received no later than April 27, 2026.",
+   "docket": "",
+   "pages": 2,
+   "notice_url": "https://www.federalregister.gov/documents/2026/02/26/2026-03833/agency-information-collection-activities-proposed-collection-public-comment-request-information",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-02-26/pdf/2026-03833.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2026-03042",
+   "document_number": "2026-03042",
+   "citation": "91 FR 7287",
+   "type": "Notice",
+   "action": "Notice, request for Information.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Health Resources and Services Administration"
+   ],
+   "title": "Request for Information: 340B Rebate Model Pilot Program",
+   "role": "main",
+   "summary": "Asks the public whether the agency should use a rebate model for 340B and how to run one, including costs, payment timing, denials, data and duplicate discounts. It says the 2025 pilot was paused after a court order of December 29, 2025.",
+   "names_program_in": [
+    "title",
+    "summary",
+    "text"
+   ],
+   "text_mentions": 91,
+   "quote": "… DEPARTMENT OF HEALTH AND HUMAN SERVICES Health Resources and Services Administration Request for Information: 340B Rebate Model Pilot Program AGENCY: Health Resources and Services Administration (HRSA), Department of Health and Human Services. ACTION: Notice, request for …",
+   "published": "2026-02-17",
+   "comments_close": "2026-03-19",
+   "effective": "",
+   "dates": "Comments on this notice should be received no later than March 19, 2026.",
+   "docket": "",
+   "pages": 5,
+   "notice_url": "https://www.federalregister.gov/documents/2026/02/17/2026-03042/request-for-information-340b-rebate-model-pilot-program",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-02-17/pdf/2026-03042.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2026-02769",
+   "document_number": "2026-02769",
+   "citation": "91 FR 6292",
+   "type": "Proposed Rule",
+   "action": "Proposed rule.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Centers for Medicare & Medicaid Services",
+    "Office of the Secretary"
+   ],
+   "title": "Patient Protection and Affordable Care Act, HHS Notice of Benefit and Payment Parameters for 2027; and Basic Health Program",
+   "role": "mention",
+   "summary": "Names 340B only as a cross-reference. Section 340B(a)(4) of the Public Health Service Act is the list that would decide which providers count as essential community providers that health plans on the Exchanges must include in their networks.",
+   "names_program_in": [
+    "text"
+   ],
+   "text_mentions": 7,
+   "quote": "… plan networks. ECPs include providers that serve predominantly low-income and medically underserved individuals, such as health care providers described in section 340B(a)(4) of the PHS Act and section 1927(c)(1)(D)(i)(IV) of the Act. We first implemented the above statutory provisions of the Affordable Care Act and codified ECP …",
+   "published": "2026-02-11",
+   "comments_close": "2026-03-13",
+   "effective": "",
+   "dates": "To be assured consideration, comments must be received at one of the addresses provided below, by March 13, 2026.",
+   "docket": "CMS-9883-P",
+   "pages": 195,
+   "notice_url": "https://www.federalregister.gov/documents/2026/02/11/2026-02769/patient-protection-and-affordable-care-act-hhs-notice-of-benefit-and-payment-parameters-for-2027-and",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-02-11/pdf/2026-02769.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2026-01688",
+   "document_number": "2026-01688",
+   "citation": "91 FR 3665",
+   "type": "Rule",
+   "action": "Final rule.",
+   "agencies": [
+    "Health and Human Services Department"
+   ],
+   "title": "Annual Civil Monetary Penalties Inflation Adjustment",
+   "role": "part",
+   "summary": "Raises the penalty for each instance of overcharging a 340B covered entity from $7,034 to $7,217, as one row in the yearly inflation adjustment of the Department of Health and Human Services' civil penalties.",
+   "names_program_in": [
+    "text"
+   ],
+   "text_mentions": 1,
+   "quote": "… or conceals any record or report required. 56b(d)(1)(B)(vi).......... ...................... HRSA.......... Penalty for each instance of overcharging 2024 7,034 7,217 a 340B covered entity. 299c-3(d)................. ...................... AHRQ.......... Penalty for using or disclosing 2024 18,291 18,766 identifiable information obtained in …",
+   "published": "2026-01-28",
+   "comments_close": "",
+   "effective": "",
+   "dates": "Effective date: This final rule is effective upon publication to the Federal Register.",
+   "docket": "",
+   "pages": 18,
+   "notice_url": "https://www.federalregister.gov/documents/2026/01/28/2026-01688/annual-civil-monetary-penalties-inflation-adjustment",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-01-28/pdf/2026-01688.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2026-00179",
+   "document_number": "2026-00179",
+   "citation": "91 FR 714",
+   "type": "Notice",
+   "action": "Notice.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Health Resources and Services Administration"
+   ],
+   "title": "Agency Information Collection Activities: Proposed Collection: Public Comment Request; Information Collection Request Title: Enrollment and Re-Certification of Entities in the 340B Drug Pricing Program, OMB No. 0915-0327-Revision",
+   "role": "main",
+   "summary": "Sends a revision of the 340B enrollment and recertification forms to the Office of Management and Budget. New items are collected: grant papers from sexually transmitted disease and tuberculosis grantees, the Title X assistance period, and the Tribal agreement number.",
+   "names_program_in": [
+    "title",
+    "text"
+   ],
+   "text_mentions": 50,
+   "quote": "… Information Collection Activities: Proposed Collection: Public Comment Request; Information Collection Request Title: Enrollment and Re-Certification of Entities in the 340B Drug Pricing Program, OMB No. 0915-0327--Revision AGENCY: Health Resources and Services Administration (HRSA), Department of Health and Human Services (HHS). ACTION: …",
+   "published": "2026-01-08",
+   "comments_close": "2026-02-09",
+   "effective": "",
+   "dates": "Comments on this ICR should be received no later than February 9, 2026.",
+   "docket": "",
+   "pages": 4,
+   "notice_url": "https://www.federalregister.gov/documents/2026/01/08/2026-00179/agency-information-collection-activities-proposed-collection-public-comment-request-information",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-01-08/pdf/2026-00179.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2025-23705",
+   "document_number": "2025-23705",
+   "citation": "90 FR 60338",
+   "type": "Proposed Rule",
+   "action": "Proposed rule.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Centers for Medicare & Medicaid Services"
+   ],
+   "title": "Guarding U.S. Medicare Against Rising Drug Costs (GUARD) Model",
+   "role": "part",
+   "summary": "Would set up the GUARD Model, a Medicare Part D drug rebate test, and would leave out drug units covered under 340B. It says the agency cannot yet tell 340B claims apart in Part D data, so it assumed that 10 percent of units were 340B.",
+   "names_program_in": [
+    "text"
+   ],
+   "text_mentions": 18,
+   "quote": "… We propose at Sec. 514.125(b) that the following drug units would be excluded from the GUARD Model: drug units for which payment is subject to an agreement under 340B. C. Proposed Model Test Design, Geographic Selection, and Beneficiary Population Section 1115A(b) of the Act gives the Secretary discretion in the design of models, …",
+   "published": "2025-12-23",
+   "comments_close": "2026-02-23",
+   "effective": "",
+   "dates": "To be assured consideration, comments must be received at one of the addresses provided below, by February 23, 2026.",
+   "docket": "CMS-5546-P",
+   "pages": 92,
+   "notice_url": "https://www.federalregister.gov/documents/2025/12/23/2025-23705/guarding-us-medicare-against-rising-drug-costs-guard-model",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-12-23/pdf/2025-23705.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2025-23702",
+   "document_number": "2025-23702",
+   "citation": "90 FR 60244",
+   "type": "Proposed Rule",
+   "action": "Proposed rule.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Centers for Medicare & Medicaid Services"
+   ],
+   "title": "Global Benchmark for Efficient Drug Pricing (GLOBE) Model",
+   "role": "part",
+   "summary": "Would set up the GLOBE Model, a Medicare Part B drug rebate test, and would leave out units on claims billed with a 340B modifier. Made final at 91 FR 62936.",
+   "names_program_in": [
+    "text"
+   ],
+   "text_mentions": 20,
+   "quote": "… applicable calendar quarter. This approach would ensure that units that are not included in the total number of billing units determined under 42 CFR 427.303, such as 340B units and units of discarded drugs, would also not be included in the total number of GLOBE Model billing units. We note that, because the total number of GLOBE Model …",
+   "published": "2025-12-23",
+   "comments_close": "2026-02-23",
+   "effective": "",
+   "dates": "To be assured consideration, comments must be received at one of the addresses provided below, by February 23, 2026.",
+   "docket": "CMS-5545-P",
+   "pages": 93,
+   "notice_url": "https://www.federalregister.gov/documents/2025/12/23/2025-23702/global-benchmark-for-efficient-drug-pricing-globe-model",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-12-23/pdf/2025-23702.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2025-20907",
+   "document_number": "2025-20907",
+   "citation": "90 FR 53448",
+   "type": "Rule",
+   "action": "Final rule with comment period.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Centers for Medicare & Medicaid Services",
+    "Office of the Secretary"
+   ],
+   "title": "Medicare Program: Hospital Outpatient Prospective Payment and Ambulatory Surgical Center Payment Systems; Quality Reporting Programs; Overall Hospital Quality Star Rating; Hospital Price Transparency; and Notice of Closure of a Teaching Hospital and Opportunity To Apply for Available Slots",
+   "role": "part",
+   "summary": "Keeps the 340B remedy offset on other hospital outpatient payments at 0.5 percent for 2026, where 2 percent had been proposed, and says a survey of what hospitals pay for drugs will open by early 2026.",
+   "names_program_in": [
+    "text"
+   ],
+   "text_mentions": 270,
+   "quote": "… quality reporting requirements by applying a reporting factor of 0.9805 to the OPPS payments and copayments for all applicable services. We note that under the final 340B remedy offset, payments for services at hospitals subject to the 340B remedy offset will be reduced by 0.5 percentage points. ASC Payment Update: For CYs 2019 through …",
+   "published": "2025-11-25",
+   "comments_close": "2026-01-20",
+   "effective": "2026-01-01",
+   "dates": "Effective Date: The provisions of this rule are effective January 1, 2026.",
+   "docket": "CMS-1834-FC",
+   "pages": 641,
+   "notice_url": "https://www.federalregister.gov/documents/2025/11/25/2025-20907/medicare-program-hospital-outpatient-prospective-payment-and-ambulatory-surgical-center-payment",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-11-25/pdf/2025-20907.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2025-20251",
+   "document_number": "2025-20251",
+   "citation": "90 FR 52063",
+   "type": "Notice",
+   "action": "Notice.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Centers for Medicare & Medicaid Services"
+   ],
+   "title": "Medicare Program; Medicare Part B Monthly Actuarial Rates, Premium Rates, and Annual Deductible Beginning January 1, 2026",
+   "role": "mention",
+   "summary": "Names 340B only in a footnote to a table of Medicare Part B trust fund amounts. The footnote says the figures include remedy payments of $10.5 billion to 340B drug providers.",
+   "names_program_in": [
+    "text"
+   ],
+   "text_mentions": 1,
+   "quote": "… ---------------------------------------------------------------------------------------------------------------- \\1\\ Includes remedy payments of $10.5 billion to 340B drug providers. \\2\\ These amounts include only items incurred but not paid. They do not include the amounts that are to be paid back to the general fund of the Treasury …",
+   "published": "2025-11-19",
+   "comments_close": "",
+   "effective": "",
+   "dates": "January 1, 2026.",
+   "docket": "CMS-8091-N",
+   "pages": 12,
+   "notice_url": "https://www.federalregister.gov/documents/2025/11/19/2025-20251/medicare-program-medicare-part-b-monthly-actuarial-rates-premium-rates-and-annual-deductible",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-11-19/pdf/2025-20251.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2025-19787",
+   "document_number": "2025-19787",
+   "citation": "90 FR 49266",
+   "type": "Rule",
+   "action": "Final rule.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Centers for Medicare & Medicaid Services"
+   ],
+   "title": "Medicare and Medicaid Programs; CY 2026 Payment Policies Under the Physician Fee Schedule and Other Changes to Part B Payment and Coverage Policies; Medicare Shared Savings Program Requirements; and Medicare Prescription Drug Inflation Rebate Program",
+   "role": "part",
+   "summary": "Sets how Medicare removes Part D 340B units from drug inflation rebates starting January 1, 2026, and opens a voluntary 340B repository where covered entities may submit claim data.",
+   "names_program_in": [
+    "text"
+   ],
+   "text_mentions": 639,
+   "quote": "… Drug Inflation Rebate Program, this rule finalizes a methodology for removal of units for a Part D rebatable drug for which a manufacturer provides a discount under the 340B Program for the applicable period beginning October 1, 2025, as well as the establishment of a voluntary 340B data repository for Part D claims for testing purposes. …",
+   "published": "2025-11-05",
+   "comments_close": "",
+   "effective": "2026-01-01",
+   "dates": "These regulations are effective on January 1, 2026.",
+   "docket": "CMS-1832-F",
+   "pages": 1216,
+   "notice_url": "https://www.federalregister.gov/documents/2025/11/05/2025-19787/medicare-and-medicaid-programs-cy-2026-payment-policies-under-the-physician-fee-schedule-and-other",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-11-05/pdf/2025-19787.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2025-17641",
+   "document_number": "2025-17641",
+   "citation": "90 FR 44197",
+   "type": "Notice",
+   "action": "Notice.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Health Resources and Services Administration"
+   ],
+   "title": "Agency Information Collection Activities: Proposed Collection: Public Comment Request; Information Collection Request Title: 340B Rebate Model Pilot Program Application, Implementation, and Evaluation, OMB Number 0906-0111-Extension",
+   "role": "main",
+   "summary": "Asks for comments, over 60 days, on continuing the 2025 rebate pilot's data collection: drug makers' plans, monthly reports, and the claim data covered entities send to ask for rebates. It says emergency clearance was given on August 26, 2025.",
+   "names_program_in": [
+    "title",
+    "text"
+   ],
+   "text_mentions": 18,
+   "quote": "… Resources and Services Administration Agency Information Collection Activities: Proposed Collection: Public Comment Request; Information Collection Request Title: 340B Rebate Model Pilot Program Application, Implementation, and Evaluation, OMB Number 0906-0111--Extension AGENCY: Health Resources and Services Administration (HRSA), …",
+   "published": "2025-09-12",
+   "comments_close": "2025-11-12",
+   "effective": "",
+   "dates": "Comments on this ICR should be received no later than November 12, 2025.",
+   "docket": "",
+   "pages": 3,
+   "notice_url": "https://www.federalregister.gov/documents/2025/09/12/2025-17641/agency-information-collection-activities-proposed-collection-public-comment-request-information",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-09-12/pdf/2025-17641.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2025-14998",
+   "document_number": "2025-14998",
+   "citation": "90 FR 38165",
+   "type": "Notice",
+   "action": "Announcement of application process for the 340B Rebate Model Pilot Program and request for public comment; Correction.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Health Resources and Services Administration"
+   ],
+   "title": "340B Program Notice: Application Process for the 340B Rebate Model Pilot Program; Correction",
+   "role": "main",
+   "summary": "Republishes, as a correction, the August 1, 2025 notice that opened the first 340B rebate pilot. It moves the comment deadline to September 8, 2025 and fills in the docket number. A court set that pilot aside on February 10, 2026.",
+   "names_program_in": [
+    "title",
+    "summary",
+    "text"
+   ],
+   "text_mentions": 47,
+   "quote": "… 2025-14998] ----------------------------------------------------------------------- DEPARTMENT OF HEALTH AND HUMAN SERVICES Health Resources and Services Administration 340B Program Notice: Application Process for the 340B Rebate Model Pilot Program; Correction AGENCY: Health Resources and Services Administration (HRSA), Department of …",
+   "published": "2025-08-07",
+   "comments_close": "2025-09-08",
+   "effective": "",
+   "dates": "Submit comments no later than September 8, 2025.",
+   "docket": "",
+   "pages": 3,
+   "notice_url": "https://www.federalregister.gov/documents/2025/08/07/2025-14998/340b-program-notice-application-process-for-the-340b-rebate-model-pilot-program-correction",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-08-07/pdf/2025-14998.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2025-14955",
+   "document_number": "2025-14955",
+   "citation": "90 FR 38167",
+   "type": "Notice",
+   "action": "Notice.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Health Resources and Services Administration"
+   ],
+   "title": "Agency Information Collection Activities: Proposed Collection: Public Comment Request; Information Collection Request Title: Enrollment and Re-Certification of Entities in the 340B Drug Pricing Program, OMB No. 0915-0327-Revision",
+   "role": "main",
+   "summary": "Proposes revising the 340B enrollment and recertification forms, and takes comments until October 6, 2025. New items would be collected: grant papers from sexually transmitted disease and tuberculosis grantees, the Title X assistance period, and the Tribal agreement number.",
+   "names_program_in": [
+    "title",
+    "text"
+   ],
+   "text_mentions": 48,
+   "quote": "… Information Collection Activities: Proposed Collection: Public Comment Request; Information Collection Request Title: Enrollment and Re-Certification of Entities in the 340B Drug Pricing Program, OMB No. 0915-0327--Revision AGENCY: Health Resources and Services Administration (HRSA), Department of Health and Human Services (HHS). ACTION: …",
+   "published": "2025-08-07",
+   "comments_close": "2025-10-06",
+   "effective": "",
+   "dates": "Comments on this ICR should be received no later than October 6, 2025.",
+   "docket": "",
+   "pages": 3,
+   "notice_url": "https://www.federalregister.gov/documents/2025/08/07/2025-14955/agency-information-collection-activities-proposed-collection-public-comment-request-information",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-08-07/pdf/2025-14955.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2025-14681",
+   "document_number": "2025-14681",
+   "citation": "90 FR 36536",
+   "type": "Rule",
+   "action": "Final rules.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Centers for Medicare & Medicaid Services",
+    "Office of the Secretary"
+   ],
+   "title": "Medicare Program; Hospital Inpatient Prospective Payment Systems for Acute Care Hospitals (IPPS) and the Long-Term Care Hospital Prospective Payment System and Policy Changes and Fiscal Year (FY) 2026 Rates; Changes to the FY 2025 IPPS Rates Due to Court Decision; Requirements for Quality Programs; and Other Policy Changes; Health Data, Technology, and Interoperability: Electronic Prescribing, Real-Time Prescription Benefit and Electronic Prior Authorization",
+   "role": "mention",
+   "summary": "Names 340B only in background on hospitals that reclassify from urban to rural, a change that can affect eligibility for programs outside Medicare such as 340B.",
+   "names_program_in": [
+    "text"
+   ],
+   "text_mentions": 1,
+   "quote": "… which confers other rural benefits (Medicare provisions such as payments to disproportionate share hospitals (DSHs), and non-Medicare payment provisions, such as the 340B Drug Pricing Program administered by HRSA) besides the wage index under section 1886(d) of the Act or a reclassification under the MGCRB to solely increase its wage …",
+   "published": "2025-08-04",
+   "comments_close": "",
+   "effective": "2025-10-01",
+   "dates": "These final rules are effective on October 1, 2025. The incorporation by reference of certain material listed in this document is approved by the Director of the Federal Register as of October 1, 2025.",
+   "docket": "CMS-1833-F and CMS-1808-F",
+   "pages": 773,
+   "notice_url": "https://www.federalregister.gov/documents/2025/08/04/2025-14681/medicare-program-hospital-inpatient-prospective-payment-systems-for-acute-care-hospitals-ipps-and",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-08-04/pdf/2025-14681.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2025-14619",
+   "document_number": "2025-14619",
+   "citation": "90 FR 36163",
+   "type": "Notice",
+   "action": "Announcement of Application Process for the 340B Rebate Model Pilot Program and Request for Public Comment.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Health Resources and Services Administration"
+   ],
+   "title": "340B Program Notice: Application Process for the 340B Rebate Model Pilot Program",
+   "role": "main",
+   "summary": "Opens the first 340B rebate pilot. Drug makers with Medicare negotiation agreements for 2026 could apply to pay rebates, not discounts up front, on selected drugs from January 1, 2026. A court set this notice aside on February 10, 2026.",
+   "names_program_in": [
+    "title",
+    "summary",
+    "text"
+   ],
+   "text_mentions": 47,
+   "quote": "… 2025-14619] ----------------------------------------------------------------------- DEPARTMENT OF HEALTH AND HUMAN SERVICES Health Resources and Services Administration 340B Program Notice: Application Process for the 340B Rebate Model Pilot Program AGENCY: Health Resources and Services Administration (HRSA), Department of Health and Human …",
+   "published": "2025-08-01",
+   "comments_close": "2025-09-02",
+   "effective": "",
+   "dates": "Submit comments no later than September 2, 2025.",
+   "docket": "",
+   "pages": 3,
+   "notice_url": "https://www.federalregister.gov/documents/2025/08/01/2025-14619/340b-program-notice-application-process-for-the-340b-rebate-model-pilot-program",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-08-01/pdf/2025-14619.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2025-13360",
+   "document_number": "2025-13360",
+   "citation": "90 FR 33476",
+   "type": "Proposed Rule",
+   "action": "Proposed rule.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Centers for Medicare & Medicaid Services",
+    "Office of the Secretary"
+   ],
+   "title": "Medicare and Medicaid Programs: Hospital Outpatient Prospective Payment and Ambulatory Surgical Center Payment Systems; Quality Reporting Programs; Overall Hospital Quality Star Ratings; and Hospital Price Transparency",
+   "role": "part",
+   "summary": "Would raise the 340B remedy offset on other hospital outpatient payments from 0.5 percent to 2 percent for 2026, and announces a survey of what hospitals pay for drugs.",
+   "names_program_in": [
+    "text"
+   ],
+   "text_mentions": 113,
+   "quote": "… quality reporting requirements by applying a reporting factor of 0.9805 to the OPPS payments and copayments for all applicable services. We note that under the proposed 340B remedy offset, payments for services at hospitals subject to the 340B remedy offset will be reduced by 2.0 percentage points. ASC Payment Update: For CYs 2019 through …",
+   "published": "2025-07-17",
+   "comments_close": "2025-09-15",
+   "effective": "",
+   "dates": "To be assured consideration, comments must be received at one of the addresses provided below, by September 15, 2025.",
+   "docket": "CMS-1834-P",
+   "pages": 390,
+   "notice_url": "https://www.federalregister.gov/documents/2025/07/17/2025-13360/medicare-and-medicaid-programs-hospital-outpatient-prospective-payment-and-ambulatory-surgical",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-07-17/pdf/2025-13360.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2025-13271",
+   "document_number": "2025-13271",
+   "citation": "90 FR 32352",
+   "type": "Proposed Rule",
+   "action": "Proposed rule.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Centers for Medicare & Medicaid Services"
+   ],
+   "title": "Medicare and Medicaid Programs; CY 2026 Payment Policies Under the Physician Fee Schedule and Other Changes to Part B Payment and Coverage Policies; Medicare Shared Savings Program Requirements; and Medicare Prescription Drug Inflation Rebate Program",
+   "role": "part",
+   "summary": "Would remove Part D 340B units from Medicare drug inflation rebates starting January 1, 2026, by matching claims, and would set up a voluntary 340B repository for covered entities' claim data.",
+   "names_program_in": [
+    "text"
+   ],
+   "text_mentions": 260,
+   "quote": "… of a Part D rebate amount, and proposes a methodology for removal of units for a Part D rebatable drug for which a manufacturer provides a discount under the 340B Program, as well as the establishment of a 340B data repository for Part D claims. This rulemaking proposes to modify policies for the Shared Savings Program, which is …",
+   "published": "2025-07-16",
+   "comments_close": "2025-09-12",
+   "effective": "",
+   "dates": "To be assured consideration, comments must be received at one of the addresses provided below, no later than 5 p.m. on September 12, 2025.",
+   "docket": "CMS-1832-P",
+   "pages": 910,
+   "notice_url": "https://www.federalregister.gov/documents/2025/07/16/2025-13271/medicare-and-medicaid-programs-cy-2026-payment-policies-under-the-physician-fee-schedule-and-other",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-07-16/pdf/2025-13271.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2025-06271",
+   "document_number": "2025-06271",
+   "citation": "90 FR 18002",
+   "type": "Proposed Rule",
+   "action": "Proposed rule.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Centers for Medicare & Medicaid Services"
+   ],
+   "title": "Medicare Program; Hospital Inpatient Prospective Payment Systems for Acute Care Hospitals and the Long-Term Care Hospital Prospective Payment System and Policy Changes and Fiscal Year 2026 Rates; Requirements for Quality Programs; and Other Policy Changes",
+   "role": "mention",
+   "summary": "Names 340B only in background on hospitals that reclassify from urban to rural, a change that can affect eligibility for programs outside Medicare such as 340B.",
+   "names_program_in": [
+    "text"
+   ],
+   "text_mentions": 1,
+   "quote": "… which confers other rural benefits (Medicare provisions such as payments to disproportionate share hospitals (DSHs), and non-Medicare payment provisions, such as the 340B Drug Pricing Program administered by HRSA) besides the wage index under section 1886(d) of the Act or a reclassification under the MGCRB to solely increase its wage …",
+   "published": "2025-04-30",
+   "comments_close": "2025-06-10",
+   "effective": "",
+   "dates": "To be assured consideration, comments must be received at one of the addresses provided in the ADDRESSES section, no later than 5 p.m. EDT on June 10, 2025.",
+   "docket": "CMS-1833-P",
+   "pages": 490,
+   "notice_url": "https://www.federalregister.gov/documents/2025/04/30/2025-06271/medicare-program-hospital-inpatient-prospective-payment-systems-for-acute-care-hospitals-and-the",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-04-30/pdf/2025-06271.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2025-06837",
+   "document_number": "2025-06837",
+   "citation": "90 FR 16441",
+   "type": "Presidential Document",
+   "action": "",
+   "agencies": [
+    "Executive Office of the President"
+   ],
+   "title": "Lowering Drug Prices by Once Again Putting Americans First",
+   "role": "part",
+   "summary": "Executive Order 14273. Section 7 tells the Secretary of Health and Human Services to make future health center grants depend on offering insulin and injectable epinephrine to certain low-income patients at or below the price the health center paid under 340B, plus a minimal administration fee.",
+   "names_program_in": [
+    "text"
+   ],
+   "text_mentions": 1,
+   "quote": "… establishing practices to make insulin and injectable epinephrine available at or below the discounted price paid by the health center grantee or sub-grantee under the 340B Prescription Drug Program (plus a minimal administration fee) to individuals with low incomes, as determined by the Secretary, who: (a) have a high cost-sharing …",
+   "published": "2025-04-18",
+   "comments_close": "",
+   "effective": "",
+   "dates": "",
+   "docket": "",
+   "pages": 4,
+   "notice_url": "https://www.federalregister.gov/documents/2025/04/18/2025-06837/lowering-drug-prices-by-once-again-putting-americans-first",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-04-18/pdf/2025-06837.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2025-06008",
+   "document_number": "2025-06008",
+   "citation": "90 FR 15792",
+   "type": "Rule",
+   "action": "Final rule.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Centers for Medicare & Medicaid Services"
+   ],
+   "title": "Medicare and Medicaid Programs; Contract Year 2026 Policy and Technical Changes to the Medicare Advantage Program, Medicare Prescription Drug Benefit Program, Medicare Cost Plan Program, and Programs of All-Inclusive Care for the Elderly",
+   "role": "mention",
+   "summary": "Names 340B only in the Medicare drug price negotiation payment process, where a drug maker may show that a 340B discount applies, and in comments on overlap with the 340B ceiling price, which the agency calls out of scope.",
+   "names_program_in": [
+    "text"
+   ],
+   "text_mentions": 4,
+   "quote": "… to or less than the MFP, or, as detailed in section 40.4.5 of the final guidance, the Primary Manufacturer establishes that section 1193(d)(1) of the Act (related to 340B discounts) applies, CMS requires that the Primary Manufacturer transmit payment of an amount that provides access to the MFP within 14 calendar days of when the MTF …",
+   "published": "2025-04-15",
+   "comments_close": "",
+   "effective": "2025-06-03",
+   "dates": "Effective date: These regulations are effective June 3, 2025.",
+   "docket": "CMS-4208-F",
+   "pages": 130,
+   "notice_url": "https://www.federalregister.gov/documents/2025/04/15/2025-06008/medicare-and-medicaid-programs-contract-year-2026-policy-and-technical-changes-to-the-medicare",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-04-15/pdf/2025-06008.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  },
+  {
+   "notice_id": "fr-2025-00831",
+   "document_number": "2025-00831",
+   "citation": "90 FR 3881",
+   "type": "Notice",
+   "action": "Notice.",
+   "agencies": [
+    "Health and Human Services Department",
+    "Health Resources and Services Administration"
+   ],
+   "title": "Agency Information Collection Activities: Submission to OMB for Review and Approval; Public Comment Request; 340B Drug Pricing Program; Initiation of the Administrative Dispute Resolution Process",
+   "role": "main",
+   "summary": "Sends a data collection to the Office of Management and Budget for the papers a covered entity or drug maker files to start a 340B Administrative Dispute Resolution claim, with 30 days for comments.",
+   "names_program_in": [
+    "title",
+    "text"
+   ],
+   "text_mentions": 49,
+   "quote": "… HUMAN SERVICES Health Resources and Services Administration Agency Information Collection Activities: Submission to OMB for Review and Approval; Public Comment Request; 340B Drug Pricing Program; Initiation of the Administrative Dispute Resolution Process AGENCY: Health Resources and Services Administration (HRSA), Department of Health and …",
+   "published": "2025-01-15",
+   "comments_close": "2025-02-14",
+   "effective": "",
+   "dates": "Comments on this ICR should be received no later than February 14, 2025.",
+   "docket": "",
+   "pages": 2,
+   "notice_url": "https://www.federalregister.gov/documents/2025/01/15/2025-00831/agency-information-collection-activities-submission-to-omb-for-review-and-approval-public-comment",
+   "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-01-15/pdf/2025-00831.pdf",
+   "retrieved": "2026-11-15",
+   "dates_read": []
+  }
+ ]
+}

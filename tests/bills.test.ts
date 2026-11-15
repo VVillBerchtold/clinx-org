@@ -33,7 +33,7 @@ describe('bills', () => {
     expect(problems.join('\n')).toMatch(/no official page/);
     expect(problems.join('\n')).toMatch(/session_end is not a date/);
     expect(billsProblems({ ...files, 'bills.csv': files['bills.csv']!.replace('bill_id,', 'id,') }).join('\n')).toMatch(/columns/);
-    expect(billsProblems({ 'bills.csv': files['bills.csv']! })).toEqual(['340b-bills.json: missing', 'events.csv: missing', '340b-events.json: missing']);
+    expect(billsProblems({ 'bills.csv': files['bills.csv']! })).toEqual(['340b-bills.json: missing', 'notices.csv: missing', '340b-notices.json: missing', 'events.csv: missing', '340b-events.json: missing']);
     expect(files['bills.csv']!.split('\n', 1)[0]).toBe(BILL_COLUMNS.join(','));
   });
 

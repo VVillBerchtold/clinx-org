@@ -19,7 +19,7 @@ const drugFiles = await Promise.all(buildStateDrugViews(data).map(async (view) =
 // The repositories. Their names become links once the site is public.
 const repositories = [
   { name: 'The filings dataset', href: REPOSITORIES.dataset, what: 'The data, its checks and its changelog. Corrections are reported here.' },
-  { name: 'The bills and calendar tables', href: REPOSITORIES.bills, what: 'Every bill that names 340B and its dated steps, with the tools that build the tables.' },
+  { name: 'The bills, notices and calendar tables', href: REPOSITORIES.bills, what: 'Every bill and every federal rule or notice that names 340B, and their dates, with the tools that build the tables.' },
   { name: 'The registry tracker', href: REPOSITORIES.tracker, what: 'Keeps dated copies of the federal 340B registry and reports what changed.' },
   { name: 'This site', href: REPOSITORIES.site, what: 'The pages you are reading, built from the dataset.' },
 ];
@@ -28,7 +28,9 @@ const billsRecord = getBillsRecord();
 const billFiles = [
   { name: 'bills.csv', id: 'bills', what: 'One row per bill in Congress or a state legislature that names the 340B program: what it is, how far it has got, its latest step, the passage that names 340B and its official links' },
   { name: '340b-bills.json', what: 'The bills table in one document, with the roles and kinds it uses' },
-  { name: 'events.csv', id: 'calendar', what: 'The 340B calendar, one row per date: every dated step of a listed bill in the legislature’s own words, hearings with a listed bill on the agenda, and the days each session starts and ends' },
+  { name: 'notices.csv', id: 'notices', what: 'One row per federal rule, proposed rule or notice in the Federal Register since January 2025 that names the 340B program: its title, agency and dates as the Federal Register gives them, one sentence on what it does about 340B, and its official links' },
+  { name: '340b-notices.json', what: 'The notices table in one document, with the other days each document sets, in its own words' },
+  { name: 'events.csv', id: 'calendar', what: 'The 340B calendar, one row per date: every dated step of a listed bill in the legislature’s own words, hearings with a listed bill on the agenda, the days each session starts and ends, and the dates of federal rules and notices' },
   { name: '340b-events.json', what: 'The calendar in one document, with what each kind of event means' },
 ];
 const dictionary = renderSections(data.dictionaryMarkdown);
@@ -126,8 +128,8 @@ const describe: Record<string, string> = {
         <dd><span class="mono">{data.commit}</span></dd>
         <dt>Filings and reports retrieved up to</dt>
         <dd>{formatDate(data.dataDate)}</dd>
-        <dt>Bills retrieved</dt>
-        <dd>{formatDate(billsRecord.retrieved)} ({billsRecord.bills} bills, {billsRecord.events.toLocaleString('en-US')} calendar dates)</dd>
+        <dt>Bills and federal notices retrieved</dt>
+        <dd>{formatDate(billsRecord.retrieved)} ({billsRecord.bills} bills, {billsRecord.notices} federal notices, {billsRecord.events.toLocaleString('en-US')} calendar dates)</dd>
         <dt>Licence</dt>
         <dd>Data: Creative Commons Attribution 4.0 (CC BY 4.0). Code: MIT.</dd>
       </dl>

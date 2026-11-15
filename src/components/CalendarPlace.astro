@@ -1,7 +1,7 @@
 ---
 /**
- * One place's 340B calendar: Congress, or one state's legislature. What is coming up comes first;
- * what has happened follows, the newest month first, with earlier years folded away.
+ * One place's 340B calendar: Congress, federal agencies, or one state's legislature. What is coming
+ * up comes first; what has happened follows, the newest month first, with earlier years folded away.
  * Everything shown comes from the calendar table (src/lib/calendar.ts).
  */
 import '../styles/scorecard.css';
@@ -11,31 +11,45 @@ import '../styles/calendar.css';
 import Base from '../layouts/Base.astro';
 import CalendarRows from './CalendarRows.astro';
 import PageHead from './PageHead.astro';
-import { CONGRESS, billsPath, getBills, placeName } from '../lib/bills';
-import { CALENDAR_HOME, byMonth, byYear, calendarFilePath, calendarMapSvg, calendarPath, comingUp, eventsOf, getCalendar, isSessionDay, legislatureName, past } from '../lib/calendar';
+import { CONGRESS, billsPath, getBills } from '../lib/bills';
+import { CALENDAR_HOME, byMonth, byYear, calendarFilePath, calendarMapSvg, calendarPath, calendarPlaceName, comingUp, eventsOf, getCalendar, isSessionDay, legislatureName, past } from '../lib/calendar';
 import { getLaws, lawsOf, lawsPath } from '../lib/laws';
+import { formatDate } from '../lib/data';
+import { AGENCIES, NOTICES_HOME, getNotices, pilotStart } from '../lib/notices';
+import { PILOT_HOME } from '../lib/pilot';
 import { numberWordCap } from '../lib/site';
 
 interface Props {
-  /** "US" for Congress, else a state's two letters. */
+  /** "US" for Congress, "FED" for federal agencies, else a state's two letters. */
   place: string;
 }
 const { place } = Astro.props;
 const data = getCalendar();
 const events = eventsOf(data, place);
-const name = placeName(place);
+const name = calendarPlaceName(place);
 const federal = place === CONGRESS;
+// Federal agencies write rules and notices; they have no bills, no sessions and no state laws.
+const agencies = place === AGENCIES;
+const national = federal || agencies;
 const steps = events.filter((e) => !isSessionDay(e));
 const billCount = getBills().bills.filter((b) => b.place === place).length;
-const stateLaws = federal ? [] : lawsOf(getLaws(), place);
+const stateLaws = national ? [] : lawsOf(getLaws(), place);
 const ahead = comingUp(events, data.retrieved);
 const years = byYear(past(events, data.retrieved));
-const title = federal ? '340B calendar for Congress' : `${name} 340B calendar`;
+const documents = new Set(events.map((e) => e.noticeId)).size;
+const pilotDay = agencies ? pilotStart(getNotices()) : '';
+const title = national ? `340B calendar for ${federal ? 'Congress' : 'federal agencies'}` : `${name} 340B calendar`;
 const sessionWords = federal ? 'the day this Congress ends' : 'the days its sessions start and end';
-const lede =
-  billCount > 0
+const lede = agencies
+  ? `${numberWordCap(events.length)} dates of the ${documents} federal rules and notices that are about the 340B program or have a part on it: the day each was published, the day comments close, the day it takes effect, and other days it sets.`
+  : billCount > 0
     ? `${numberWordCap(steps.length)} dated ${steps.length === 1 ? 'step' : 'steps'} of the ${billCount === 1 ? 'one bill' : `${billCount} bills`} in ${legislatureName(place)} that ${billCount === 1 ? 'names' : 'name'} the 340B program, with ${sessionWords}.`
     : `The days ${legislatureName(place)} starts and ends its sessions. None of its bills on the list names the 340B program.`;
+const description = agencies
+  ? 'Every date of the federal rules and notices on the 340B program: published, comments close, takes effect, and the deadlines each one sets, with links to the Federal Register.'
+  : billCount > 0
+    ? `Every dated step of the 340B bills in ${legislatureName(place)}, in its own words, with ${sessionWords}.`
+    : `The days ${legislatureName(place)} starts and ends its sessions.`;
 ---
 
 <Base
@@ -44,7 +58,7 @@ const lede =
     { name: 'Calendar', path: CALENDAR_HOME },
     { name, path: calendarPath(place) },
   ]}
-  description={billCount > 0 ? `Every dated step of the 340B bills in ${legislatureName(place)}, in its own words, with ${sessionWords}.` : `The days ${legislatureName(place)} starts and ends its sessions.`}
+  description={description}
 >
   <PageHead title={title} trail={[{ label: 'Calendar', href: CALENDAR_HOME }, { label: name }]}>
     <p class="lede">{lede}</p>
@@ -92,7 +106,13 @@ const lede =
       <div class="note law-advice">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="2" /><path d="M10 9v5M10 6v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
         <div>
-          <p><strong>Dates can move.</strong> Each step is in the legislature&rsquo;s own words, with a link to its own page. Check that page before you plan around a date.</p>
+          {
+            agencies ? (
+              <p><strong>Dates can move.</strong> An agency can extend a comment period, delay a rule or correct a notice. Every date links to its page in the Federal Register. Check that page before you plan around a date.</p>
+            ) : (
+              <p><strong>Dates can move.</strong> Each step is in the legislature&rsquo;s own words, with a link to its own page. Check that page before you plan around a date.</p>
+            )
+          }
           <p>See something missing or out of date? <a href="/contact/">Tell us</a>.</p>
         </div>
       </div>
@@ -101,9 +121,25 @@ const lede =
     <aside class="law-aside" aria-label="More about this calendar">
       <div class="cal-file">
         <h2 class="label">In your own calendar</h2>
-        <p>One file with {federal ? 'Congress’s' : `${name}’s`} dates from the last year and everything ahead. Open it in your calendar app, or subscribe to it.</p>
+        <p>One file with {federal ? 'Congress’s' : agencies ? 'the federal agencies’' : `${name}’s`} dates from the last year and everything ahead. Open it in your calendar app, or subscribe to it.</p>
         <a href={calendarFilePath(place)}>Calendar file (.ics)</a>
       </div>
+      {
+        agencies && (
+          <>
+            <a class="law-score" href={NOTICES_HOME}>
+              <span class="label">The documents</span>
+              <strong>Federal rules and notices on 340B</strong>
+              <span>What each one does, in a sentence</span>
+            </a>
+            <a class="law-score" href={PILOT_HOME}>
+              <span class="label">{pilotDay ? `From ${formatDate(pilotDay)}` : 'Explained'}</span>
+              <strong>The 340B rebate pilot</strong>
+              <span>What changes, for which drugs, and the deadlines</span>
+            </a>
+          </>
+        )
+      }
       {
         billCount > 0 && (
           <a class="law-score" href={billsPath(place)}>
@@ -125,14 +161,15 @@ const lede =
         )
       }
       <div class="law-map">
-        <h2 class="label">{federal ? 'Calendars of the states' : 'Other states'}</h2>
-        <Fragment set:html={calendarMapSvg(data, 'place-calendar-map', federal ? {} : { current: place })} />
+        <h2 class="label">{national ? 'Calendars of the states' : 'Other states'}</h2>
+        <Fragment set:html={calendarMapSvg(data, 'place-calendar-map', national ? {} : { current: place })} />
         <ul class="legend">
           <li><span class="key live" aria-hidden="true"></span>Has dates on the calendar</li>
           <li><span class="key" aria-hidden="true"></span>No dates listed</li>
         </ul>
         <p class="bill-ways">
           {!federal && <a class="law-all" href={calendarPath(CONGRESS)}>Congress</a>}
+          {!agencies && <a class="law-all" href={calendarPath(AGENCIES)}>Federal agencies</a>}
           <a class="law-all" href={CALENDAR_HOME}>Whole calendar</a>
         </p>
       </div>

@@ -1,0 +1,263 @@
+---
+/**
+ * The 340B Rebate Model Pilot Program, on one page: what changes on its start day, which drugs,
+ * what a covered entity does and by when, the limits on a drug maker, and the dates.
+ *
+ * In plain words: one federal notice (91 FR 48883) opened the pilot. Every statement on this page
+ * is taken from that notice; nothing here is advice or prediction. The dates, the other federal
+ * changes that start the same day and the bill in Congress come from the site's own tables, so they
+ * stay current. The drug list and the claim fields are copied by hand in src/lib/pilot.ts.
+ */
+import '../../styles/scorecard.css';
+import '../../styles/laws.css';
+import '../../styles/bills.css';
+import '../../styles/calendar.css';
+import '../../styles/notices.css';
+import Base from '../../layouts/Base.astro';
+import CalendarRows from '../../components/CalendarRows.astro';
+import PageHead from '../../components/PageHead.astro';
+import { formatDate } from '../../lib/data';
+import { CONGRESS, billHref, getBills, hostOf } from '../../lib/bills';
+import { calendarFilePath, calendarPath, eventsOf, getCalendar } from '../../lib/calendar';
+import { AGENCIES, NOTICES_HOME, PILOT_NOTICE, getNotices, noticeHref, typeLabel } from '../../lib/notices';
+import { CLAIM_FIELDS, DRUG_LIST, HRSA_340B, PILOT_HOME, SELECTED_DRUGS } from '../../lib/pilot';
+
+const notices = getNotices();
+const byId = new Map(notices.notices.map((n) => [n.noticeId, n]));
+const need = (id: string) => {
+  const found = byId.get(id);
+  if (!found) throw new Error(`The rebate pilot page needs ${id}, which is not in the notices table`);
+  return found;
+};
+const notice = need(PILOT_NOTICE);
+if (notice.effective === '') throw new Error('The rebate pilot page needs the day the notice takes effect');
+const start = formatDate(notice.effective);
+// The earlier documents the page's short history names.
+const first = need('fr-2025-14619');
+const asked = need('fr-2026-03042');
+
+const calendar = getCalendar();
+const federal = eventsOf(calendar, AGENCIES);
+const dates = federal.filter((e) => e.noticeId === PILOT_NOTICE);
+// Other rules and notices with a date on the pilot's start day.
+const sameDay = [...new Set(federal.filter((e) => e.day === notice.effective && e.noticeId !== PILOT_NOTICE).map((e) => e.noticeId))].map(need);
+// Bills in Congress whose title names the rebate model.
+const bills = getBills().bills.filter((b) => b.place === CONGRESS && /rebate model/i.test(b.title));
+const drugCount = SELECTED_DRUGS.reduce((n, group) => n + group.drugs.length, 0);
+const clock = [
+  { days: 90, what: 'Notice a drug maker’s plan must give covered entities before it starts, with instructions for registering on its data platform.' },
+  { days: 45, what: 'The least time a covered entity has, from the day a drug is dispensed, to send the claim data.' },
+  { days: 10, what: 'Time the maker has to pay the rebate, or to deny it with documents, once the data is complete.' },
+  { days: 15, what: 'Grace period before the start day: rebates may be asked for up to 2 packages already dispensed and not yet replenished.' },
+];
+---
+
+<Base
+  title={`The 340B rebate pilot: what changes on ${start}`}
+  crumbs={[{ name: 'Rebate pilot', path: PILOT_HOME }]}
+  description={`From ${start}, drug makers with an approved plan may give the 340B price on ${drugCount} selected drugs as a rebate after the sale. Which drugs, what a covered entity does and by when, and the limits on a drug maker, from the federal notice.`}
+>
+  <PageHead title="The 340B rebate pilot" trail={[{ label: '340B' }, { label: 'Federal notices', href: NOTICES_HOME }]}>
+    <p class="lede">
+      From {start}, a drug maker with an approved plan may give the 340B price on certain drugs as a rebate after the sale, where today it is a discount at the time of purchase. This page sets out what the federal notice says: which drugs, what a covered entity does and by when, and the limits on a drug maker.
+    </p>
+  </PageHead>
+
+  <div class="law-layout">
+    <div class="pilot">
+      <section class="pilot-section" aria-labelledby="change-title">
+        <h2 id="change-title">What changes</h2>
+        <div class="pilot-pair">
+          <div class="pilot-card">
+            <span class="label">Today</span>
+            <h3>A discount up front</h3>
+            <p>A covered entity buys a 340B drug at the 340B price.</p>
+          </div>
+          <div class="pilot-card now">
+            <span class="label">Under the pilot</span>
+            <h3>A rebate after the sale</h3>
+            <p>For a drug in the pilot, the covered entity orders at the maker&rsquo;s list price, the wholesale acquisition cost (WAC). After the drug is dispensed it sends claim data to the maker&rsquo;s platform, and the maker pays back the difference between WAC and the 340B ceiling price on the day of dispense.</p>
+          </div>
+        </div>
+        <p>The pilot was opened by the Health Resources and Services Administration (HRSA), the agency that runs 340B, in a notice published on {formatDate(notice.published)}. It runs for at least one year. A maker may use rebates only with the agency&rsquo;s approval of its plan, and only for the drugs below. The agency may take a maker&rsquo;s approval away at any time if the maker does not keep to the rules.</p>
+      </section>
+
+      <section class="pilot-section" aria-labelledby="clock-title">
+        <h2 id="clock-title">The four clocks</h2>
+        <ul class="pilot-clock">
+          {
+            clock.map((c) => (
+              <li>
+                <strong>
+                  {c.days}
+                  <small>days</small>
+                </strong>
+                <span>{c.what}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="small">All four are counted in calendar days. If a submission comes back as incomplete, the 10 days start again when the missing data is sent.</p>
+      </section>
+
+      <section class="pilot-section" aria-labelledby="drugs-title">
+        <h2 id="drugs-title">Which drugs</h2>
+        <p>
+          The pilot covers the drugs selected for Medicare price negotiation for 2026 and 2027, whoever pays for the prescription and whatever it is prescribed for. A drug is in the pilot only while its negotiated Medicare price is in effect, only for the package codes (NDC-11) on the list below, and only where its maker has an approved plan.
+        </p>
+        <div class="pilot-drugs">
+          {
+            SELECTED_DRUGS.map((group) => (
+              <div>
+                <h3>
+                  Selected for {group.year}
+                  <span>{group.drugs.length} drugs</span>
+                </h3>
+                <ul>
+                  {group.drugs.map((drug) => (
+                    <li>
+                      <strong>{drug.name}</strong>
+                      <span>{drug.ingredient}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          }
+        </div>
+        <p class="small">
+          From the <a href={DRUG_LIST.url}>{DRUG_LIST.name}</a> of the Centers for Medicare &amp; Medicaid Services (CMS), version of {formatDate(DRUG_LIST.version)}, which also gives every NDC-11. CMS updates the list, so check <a href={DRUG_LIST.program}>its page on the negotiation program</a> for the current one.
+        </p>
+      </section>
+
+      <section class="pilot-section" aria-labelledby="entity-title">
+        <h2 id="entity-title">What a covered entity does</h2>
+        <p>The notice sets these out as terms a maker&rsquo;s plan must contain before the agency approves it.</p>
+        <ol>
+          <li><strong>Hears from the maker first.</strong> A maker must give 90 calendar days&rsquo; notice before it starts, with instructions for registering on its data platform. The maker pays every cost of the platform.</li>
+          <li><strong>Orders the way it does now.</strong> Orders go through the channels already in place, such as a 340B wholesaler account, at WAC.</li>
+          <li><strong>Sends the claim data.</strong> It has at least 45 calendar days from the day of dispense, with allowances for extenuating circumstances and for a claim whose 340B status changes.</li>
+          <li><strong>Is paid, or is given a reason.</strong> The maker must pay the rebate, or deny it with documents, within 10 calendar days of a complete submission. A covered entity must be allowed to send data again when a request is found incomplete.</li>
+          <li><strong>Gets a price file every quarter.</strong> The maker must give covered entities a 340B price file for each NDC-11, for billing Medicaid at the price after the rebate and for sliding fee scales.</li>
+          <li><strong>Can take a denial to the agency.</strong> A covered entity may raise a denial it disputes with HRSA.</li>
+        </ol>
+        <p class="small">HRSA estimates that reporting claims will cost covered entities $523,345,680 a year in all, about $34,320 for each of 15,249 covered entities (its count on 1 April 2026) on average, and says the cost may vary by kind of entity.</p>
+      </section>
+
+      <section class="pilot-section" aria-labelledby="maker-title">
+        <h2 id="maker-title">The limits on a drug maker</h2>
+        <ul>
+          <li>A rebate may not be denied over concerns about diversion, Medicaid duplicate discounts or eligibility, or because the maker believes too little was bought at WAC. The maker must raise those concerns with HRSA, or through the audits and dispute process the 340B law already has.</li>
+          <li>The data a maker asks for should be limited to the claim fields listed below. The notice says purchasing data and encounter data should not be requested at this time.</li>
+          <li>The data should not be used for anything but the pilot. That covers collecting, combining, sharing or licensing it, by the maker or by the platform.</li>
+          <li>The maker bears every cost of the data platform.</li>
+          <li>A maker may not start a plan without the agency&rsquo;s approval, and a change to an approved plan goes to the agency for approval first.</li>
+        </ul>
+        <p>A maker may deny a rebate where it gives its reason and the documents for it. The notice&rsquo;s examples are a claim on which the drug&rsquo;s negotiated Medicare price already applies, and a claim on which another covered entity has already been given a 340B rebate.</p>
+      </section>
+
+      <section class="pilot-section" aria-labelledby="fields-title">
+        <h2 id="fields-title">The data a maker may ask for</h2>
+        <div class="pilot-fields">
+          <div>
+            <h3>For a pharmacy claim</h3>
+            <ul>
+              {CLAIM_FIELDS.pharmacy.map((field) => <li>{field}</li>)}
+            </ul>
+          </div>
+          <div>
+            <h3>For a medical claim</h3>
+            <ul>
+              {CLAIM_FIELDS.medical.map((field) => <li>{field}</li>)}
+            </ul>
+          </div>
+        </div>
+        <p class="small">The fields are named as the notice prints them. For a patient with no insurance, or who pays cash, the BIN, PCN and health plan fields may be marked &ldquo;CASH&rdquo;.</p>
+      </section>
+
+      <section class="pilot-section cal-section" aria-labelledby="dates-title">
+        <h2 id="dates-title">The dates</h2>
+        <CalendarRows events={dates} />
+        <p class="small">HRSA also says it will publish summaries of what it finds as the pilot runs, and that it expects each maker to give it a copy of its approved plan to post on its website.</p>
+      </section>
+
+      {
+        sameDay.length > 0 && (
+          <section class="pilot-section" aria-labelledby="same-title">
+            <h2 id="same-title">Also on {start}</h2>
+            <p>Other federal rules with a date on the same day that touch 340B.</p>
+            <ul class="law-rows notice-rows">
+              {sameDay.map((other) => (
+                <li>
+                  <a href={noticeHref(other.noticeId)}>
+                    <strong>{other.citation}</strong>
+                    <span class="law-row-name">{other.title}</span>
+                    <span class="law-row-year">{typeLabel(other.type)}</span>
+                    <span class="law-row-what">{other.summary}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
+      <section class="pilot-section" aria-labelledby="history-title">
+        <h2 id="history-title">How it got here</h2>
+        <ul>
+          <li><strong>{formatDate(first.published)}.</strong> HRSA opened <a href={noticeHref(first.noticeId)}>a first rebate pilot</a> ({first.citation}), to start on 1 January 2026 for the drugs selected for 2026.</li>
+          <li><strong>29 December 2025.</strong> A federal court in Maine paused that pilot across the country, three days before its start. The agency withdrew the pilot, and on 10 February 2026 the court set its notice aside.</li>
+          <li><strong>{formatDate(asked.published)}.</strong> HRSA <a href={noticeHref(asked.noticeId)}>asked the public</a> ({asked.citation}) whether to use rebates in 340B and how. It counts 2,475 comments.</li>
+          <li><strong>{formatDate(notice.published)}.</strong> HRSA published <a href={noticeHref(notice.noticeId)}>the revised pilot</a> ({notice.citation}), the one this page describes.</li>
+        </ul>
+        {
+          bills.map((bill) => (
+            <p>
+              In Congress, <a href={billHref(bill)}>{bill.bill}, the {bill.title}</a>, was introduced on {formatDate(bill.introducedDate)}. {bill.summary.replace(/^Would /, 'It would ')}
+            </p>
+          ))
+        }
+      </section>
+
+      <div class="note law-advice">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="2" /><path d="M10 9v5M10 6v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+        <div>
+          <p><strong>The notice is the authority, and it can be changed.</strong> This page says what the notice says. It does not say which makers have an approved plan, and it does not follow court cases: a court stopped the first pilot days before its start. Read the notice, and check with HRSA, before you plan around a date.</p>
+          <p>See something missing or out of date? <a href="/contact/">Tell us</a>.</p>
+        </div>
+      </div>
+    </div>
+
+    <aside class="law-aside" aria-label="Sources and more">
+      <a class="law-score" href={notice.noticeUrl}>
+        <span class="label">The notice</span>
+        <strong>{notice.citation}</strong>
+        <span>{notice.title}, on {hostOf(notice.noticeUrl)}</span>
+      </a>
+      {
+        notice.pdfUrl && (
+          <a class="law-score" href={notice.pdfUrl}>
+            <span class="label">As printed</span>
+            <strong>The notice as a PDF</strong>
+            <span>On {hostOf(notice.pdfUrl)}</span>
+          </a>
+        )
+      }
+      <a class="law-score" href={HRSA_340B}>
+        <span class="label">The agency</span>
+        <strong>HRSA&rsquo;s Office of Pharmacy Affairs</strong>
+        <span>The office that reviews makers&rsquo; plans</span>
+      </a>
+      <a class="law-score" href={NOTICES_HOME}>
+        <span class="label">All of them</span>
+        <strong>Federal rules and notices on 340B</strong>
+        <span>What each one does, in a sentence</span>
+      </a>
+      <div class="cal-file">
+        <h2 class="label">In your own calendar</h2>
+        <p>The pilot&rsquo;s dates are on <a href={calendarPath(AGENCIES)}>the federal agencies calendar</a>, with every other federal 340B date. One file puts them in your calendar app.</p>
+        <a href={calendarFilePath(AGENCIES)}>Calendar file (.ics)</a>
+      </div>
+    </aside>
+  </div>
+</Base>

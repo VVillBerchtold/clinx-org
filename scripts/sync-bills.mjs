@@ -2,8 +2,9 @@
 // Usage: node scripts/sync-bills.mjs [path-to-the-bills-folder]
 // Default source: the sibling folder ../clinx-340b-bills
 //
-// In plain words: the bills table (bills in Congress and the states that name 340B) and the
-// calendar made from it are made in their own folder. This copies their four files into
+// In plain words: the bills table (bills in Congress and the states that name 340B), the federal
+// notices table (rules and notices in the Federal Register that name it) and the calendar made
+// from both are made in their own folder. This copies their six files into
 // src/data/bills/ (what the pages are built from) and
 // into public/data/ (what people download), after checking they are what the site expects, and
 // writes down each file's fingerprint so a later change to a copy is caught.
@@ -55,10 +56,11 @@ const document = JSON.parse(texts['340b-bills.json']);
 const record = {
   retrieved: document.retrieved,
   bills: document.bills.length,
+  notices: JSON.parse(texts['340b-notices.json']).notices.length,
   events: JSON.parse(texts['340b-events.json']).events.length,
   source_commit: commit,
   source_commit_had_uncommitted_changes: dirty,
   files,
 };
 writeFileSync(join(target, 'SOURCE.json'), JSON.stringify(record, null, 2) + '\n');
-console.log(`sync-bills: ${record.bills} bills and ${record.events} events from ${source} (retrieved ${record.retrieved}${commit ? `, ${commit.slice(0, 10)}` : ', no commit yet'})`);
+console.log(`sync-bills: ${record.bills} bills, ${record.notices} federal notices and ${record.events} events from ${source} (retrieved ${record.retrieved}${commit ? `, ${commit.slice(0, 10)}` : ', no commit yet'})`);

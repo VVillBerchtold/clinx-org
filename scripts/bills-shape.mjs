@@ -1,17 +1,19 @@
-// What the site expects of its copy of the bills table (bills.csv and 340b-bills.json) and of the
-// calendar made from it (events.csv and 340b-events.json).
-// In plain words: both are made in the sibling folder clinx-340b-bills. Before the site takes a
-// copy, and again before every build, these checks make sure the copy is what the pages were
-// written for: the same columns, known roles and kinds, real dates and real web addresses, and
-// every event of a bill pointing at a bill that is in the table.
+// What the site expects of its copy of the bills table (bills.csv and 340b-bills.json), of the
+// federal notices table (notices.csv and 340b-notices.json) and of the calendar made from both
+// (events.csv and 340b-events.json).
+// In plain words: all three are made in the sibling folder clinx-340b-bills. Before the site takes
+// a copy, and again before every build, these checks make sure the copy is what the pages were
+// written for: the same columns, known roles and kinds, real dates and real web addresses, every
+// event of a bill pointing at a bill that is in the table, and every date of a notice pointing at
+// a notice that is.
 import { KNOWN_LAW_KINDS } from './dataset-shape.mjs';
 
-/** The files of the bills table and its calendar, as they are named in public/data/. */
-export const BILL_FILES = ['bills.csv', '340b-bills.json', 'events.csv', '340b-events.json'];
+/** The files of the bills table, the notices table and their calendar, as they are named in public/data/. */
+export const BILL_FILES = ['bills.csv', '340b-bills.json', 'notices.csv', '340b-notices.json', 'events.csv', '340b-events.json'];
 
 /** The columns of the calendar, in order. Must match the reader in src/lib/calendar.ts. */
-export const EVENT_COLUMNS = ['event_id', 'day', 'time', 'jurisdiction', 'kind', 'bill_id', 'bill', 'what', 'body', 'where', 'link', 'source', 'retrieved'];
-/** The kinds of event, in the order a bill meets them; the last three are not steps of a bill. */
+export const EVENT_COLUMNS = ['event_id', 'day', 'time', 'jurisdiction', 'kind', 'bill_id', 'bill', 'notice_id', 'what', 'body', 'where', 'link', 'source', 'retrieved'];
+/** The kinds of event: a bill's steps in the order it meets them, a hearing, a session's days, then a federal notice's days. */
 export const EVENT_KINDS = [
   'introduced',
   'sent to committee',
@@ -25,9 +27,44 @@ export const EVENT_KINDS = [
   'hearing',
   'session starts',
   'session ends',
+  'notice published',
+  'comments close',
+  'takes effect',
+  'date set by a notice',
 ];
 /** Kinds that belong to no one bill. */
 export const SESSION_KINDS = ['session starts', 'session ends'];
+/** Kinds that belong to a federal notice. */
+export const NOTICE_KINDS = ['notice published', 'comments close', 'takes effect', 'date set by a notice'];
+/** The place code of a federal notice's dates (Congress is US). */
+export const AGENCIES = 'FED';
+
+/** The columns of the notices table, in order. Must match the reader in src/lib/notices.ts. */
+export const NOTICE_COLUMNS = [
+  'notice_id',
+  'document_number',
+  'citation',
+  'type',
+  'action',
+  'agencies',
+  'title',
+  'role',
+  'summary',
+  'names_program_in',
+  'text_mentions',
+  'quote',
+  'published',
+  'comments_close',
+  'effective',
+  'dates',
+  'docket',
+  'pages',
+  'notice_url',
+  'pdf_url',
+  'retrieved',
+];
+/** The Federal Register's kinds of document. */
+export const NOTICE_TYPES = ['Rule', 'Proposed Rule', 'Notice', 'Presidential Document'];
 
 /** The columns of the table, in order. Must match the reader in src/lib/bills.ts. */
 export const BILL_COLUMNS = [
@@ -127,12 +164,60 @@ export function billsProblems(texts) {
   }
   const rows = texts['bills.csv'].trimEnd().split('\n').length - 1;
   if (rows < document.bills.length) problems.push('bills.csv: fewer rows than the JSON file has bills');
-  problems.push(...eventsProblems(texts, seen));
+  const notices = noticesProblems(texts);
+  problems.push(...notices.problems, ...eventsProblems(texts, seen, notices.ids));
   return problems;
 }
 
-/** The same for the calendar. `billIds` is every bill in the table: an event of a bill must point at one. */
-function eventsProblems(texts, billIds) {
+/** The same for the notices table. Returns the problems and the name of every notice in it. */
+function noticesProblems(texts) {
+  const problems = [];
+  const ids = new Set();
+  if (texts['notices.csv'].split('\n', 1)[0].replace(/\r$/, '') !== NOTICE_COLUMNS.join(',')) problems.push('notices.csv: the columns are not the ones this site reads');
+  let document;
+  try {
+    document = JSON.parse(texts['340b-notices.json']);
+  } catch {
+    return { problems: [...problems, '340b-notices.json: not valid JSON'], ids };
+  }
+  if (!DAY.test(document.retrieved ?? '')) problems.push('340b-notices.json: no retrieved date');
+  if (JSON.stringify((document.roles ?? []).map((r) => r.role)) !== JSON.stringify(BILL_ROLES)) problems.push('340b-notices.json: the roles are not main, part, mention');
+  if (JSON.stringify(document.types) !== JSON.stringify(NOTICE_TYPES)) problems.push('340b-notices.json: the types are not the ones this site knows');
+  if (!Array.isArray(document.notices) || document.notices.length === 0) return { problems: [...problems, '340b-notices.json: no notices'], ids };
+  for (const notice of document.notices) {
+    const id = String(notice.notice_id);
+    const say = (what) => problems.push(`${id}: ${what}`);
+    if (JSON.stringify(Object.keys(notice)) !== JSON.stringify([...NOTICE_COLUMNS, 'dates_read'])) {
+      say('its fields are not the columns of the table');
+      continue;
+    }
+    if (!/^fr-[0-9]{4}-[0-9]+$/.test(id) || id !== `fr-${notice.document_number}`) say('its name is not fr- and its document number');
+    if (ids.has(id)) say('listed twice');
+    ids.add(id);
+    for (const column of ['citation', 'title']) if (!notice[column]) say(`no ${column}`);
+    if (!NOTICE_TYPES.includes(notice.type)) say(`unknown type ${notice.type}`);
+    if (!Array.isArray(notice.agencies) || notice.agencies.length === 0 || notice.agencies.some((a) => typeof a !== 'string' || a === '')) say('no agency');
+    if (notice.role !== '' && !BILL_ROLES.includes(notice.role)) say(`unknown role ${notice.role}`);
+    if (notice.role !== '' && !notice.summary) say('read, but no sentence');
+    if (notice.role === '' && notice.summary) say('a sentence, but no role');
+    if (!Array.isArray(notice.names_program_in) || notice.names_program_in.length === 0 || notice.names_program_in.some((w) => !['title', 'summary', 'text'].includes(w))) say('does not say where it names the program');
+    if (!(Number.isInteger(notice.text_mentions) && notice.text_mentions >= 0)) say('text_mentions is not a whole number');
+    if (!DAY.test(notice.published)) say('no day of publication');
+    for (const column of ['comments_close', 'effective', 'retrieved']) if (notice[column] !== '' && !DAY.test(notice[column])) say(`${column} is not a date`);
+    if (!/^https:\/\/www\.federalregister\.gov\/[^\s]+$/.test(notice.notice_url)) say('no Federal Register page');
+    if (notice.pdf_url !== '' && !/^https:\/\/[^\s]+$/.test(notice.pdf_url)) say('the link to its PDF is not a web address');
+    if (!Array.isArray(notice.dates_read) || notice.dates_read.some((d) => !DAY.test(d.day ?? '') || !d.what || !d.words)) say('a date read from it has no day, no words of ours or no words of its own');
+  }
+  const rows = texts['notices.csv'].trimEnd().split('\n').length - 1;
+  if (rows < document.notices.length) problems.push('notices.csv: fewer rows than the JSON file has notices');
+  return { problems, ids };
+}
+
+/**
+ * The same for the calendar. `billIds` is every bill in the table and `noticeIds` every notice: an
+ * event of a bill must point at one, and a date of a notice at the other.
+ */
+function eventsProblems(texts, billIds, noticeIds) {
   const problems = [];
   if (texts['events.csv'].split('\n', 1)[0].replace(/\r$/, '') !== EVENT_COLUMNS.join(',')) problems.push('events.csv: the columns are not the ones this site reads');
   let document;
@@ -157,9 +242,11 @@ function eventsProblems(texts, billIds) {
     seen.add(id);
     if (!DAY.test(event.day)) say('no day');
     if (event.time !== '' && !/^\d{2}:\d{2} UTC$/.test(event.time)) say('its time is not in the form 14:30 UTC');
-    if (!PLACE.test(event.jurisdiction) || id.slice(0, 2).toUpperCase() !== event.jurisdiction) say('its place does not match its name');
+    const ofNotice = NOTICE_KINDS.includes(event.kind);
+    if (ofNotice ? event.jurisdiction !== AGENCIES || !id.startsWith(`${event.notice_id}-`) : !PLACE.test(event.jurisdiction) || id.slice(0, 2).toUpperCase() !== event.jurisdiction) say('its place does not match its name');
     if (!EVENT_KINDS.includes(event.kind)) say(`unknown kind ${event.kind}`);
-    else if (SESSION_KINDS.includes(event.kind) ? event.bill_id !== '' : !billIds.has(event.bill_id)) say('does not point at a bill in the table');
+    else if (ofNotice ? event.bill_id !== '' || !noticeIds.has(event.notice_id) : event.notice_id !== '') say(ofNotice ? 'does not point at a notice in the table' : 'names a notice, but is not a date of one');
+    else if (!ofNotice && (SESSION_KINDS.includes(event.kind) ? event.bill_id !== '' : !billIds.has(event.bill_id))) say('does not point at a bill in the table');
     if (!event.what) say('no words');
     if (!/^https?:\/\/[^\s]+$/.test(event.link)) say('no official page');
     if (!event.source) say('does not say where it comes from');
