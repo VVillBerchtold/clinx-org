@@ -9,6 +9,7 @@
   },
   "scripts": {
     "sync": "node scripts/sync-data.mjs",
+    "sync:bills": "node scripts/sync-bills.mjs",
     "check:data": "node scripts/check-data.mjs",
     "check": "ASTRO_TELEMETRY_DISABLED=1 astro check",
     "test": "vitest run",

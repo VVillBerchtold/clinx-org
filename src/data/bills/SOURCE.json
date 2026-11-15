@@ -1,0 +1,13 @@
+{
+  "retrieved": "2026-11-15",
+  "bills": 262,
+  "events": 1270,
+  "source_commit": "a7d5c77ed1dbf7b8d1d1b4495a3c02281ab2edb3",
+  "source_commit_had_uncommitted_changes": false,
+  "files": {
+    "bills.csv": "9d5e4199d336bd92252d6b7aa8253995bfc159195dd93dd1a83be77c85d0ad2b",
+    "340b-bills.json": "e236e82ad047933a73636007f08fb1f6fe012dd7b9fe3ed5b7dca674617c636d",
+    "events.csv": "66d6388fac2eb4aa445a77140e00a5bc0f736bf5d66993589fa223d6c5378bfa",
+    "340b-events.json": "7f32117418d8c5631274728b5b4d075e2e08e7ca40b5a72b8c86c0098d967075"
+  }
+}

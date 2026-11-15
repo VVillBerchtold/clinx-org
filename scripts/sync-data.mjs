@@ -7,6 +7,7 @@ import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync,
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { maskSmallClaimCounts, shapeProblems, valueProblems } from './dataset-shape.mjs';
+import { BILL_FILES } from './bills-shape.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const source = resolve(process.argv[2] ?? join(root, '..', 'clinx-340b'));
@@ -71,6 +72,12 @@ for (const name of names) {
 for (const name of DOCS) {
   copyFileSync(join(source, name), join(target, name));
   files[name] = sha256(join(target, name));
+}
+
+// public/data/ was emptied above. The bills table has its own copy (scripts/sync-bills.mjs): put its downloads back.
+for (const name of BILL_FILES) {
+  const kept = join(root, 'src', 'data', 'bills', name);
+  if (existsSync(kept)) copyFileSync(kept, join(publicTarget, name));
 }
 
 const record = {

@@ -1,0 +1,155 @@
+---
+/**
+ * One place's bills that name 340B: Congress, or one state's legislature. The bills are grouped by
+ * session, the newest session first. Within a session, bills about 340B come first; bills that
+ * only mention it are a short list at the end.
+ * Everything shown comes from the bills table (src/lib/bills.ts).
+ */
+import '../styles/scorecard.css';
+import '../styles/laws.css';
+import '../styles/bills.css';
+import Base from '../layouts/Base.astro';
+import BillCard from './BillCard.astro';
+import PageHead from './PageHead.astro';
+import { formatDate } from '../lib/data';
+import { BILLS_HOME, CONGRESS, STEPS, billsMapSvg, billsPath, getBills, placeName, sessionsOf, stepOf } from '../lib/bills';
+import { getLaws, lawsOf, lawsPath } from '../lib/laws';
+import { numberWordCap } from '../lib/site';
+import { STATE_REGISTRY } from '../lib/states';
+
+interface Props {
+  /** "US" for Congress, else a state's two letters. */
+  place: string;
+}
+const { place } = Astro.props;
+const data = getBills();
+const laws = getLaws();
+const kindLabels = new Map(laws.kinds.map((k) => [k.kind, k.label]));
+const sessions = sessionsOf(data, place);
+const all = sessions.flatMap((s) => [...s.bills, ...s.mentions]);
+const name = placeName(place);
+const federal = place === CONGRESS;
+const one = all.length === 1;
+const becameLaw = all.filter((b) => stepOf(b) === 5).length;
+const title = federal ? '340B bills in Congress' : `${name} 340B bills`;
+const where = federal ? 'Congress' : `the ${name} legislature`;
+const stateLaws = federal ? [] : lawsOf(laws, place);
+const entry = federal ? undefined : STATE_REGISTRY[place];
+const lede = `${numberWordCap(all.length)} ${one ? 'bill' : 'bills'} in ${where} ${one ? 'names' : 'name'} the 340B program.${
+  becameLaw > 0 ? ` ${numberWordCap(becameLaw)} became law.` : ''
+} Here is what each one is, how far it has got and where to read it.`;
+const stepNotes = ['Filed or introduced', 'Approved by a committee', 'Passed by one chamber', 'Passed by both chambers', 'Signed, or law without a signature'];
+---
+
+<Base
+  title={title}
+  crumbs={[
+    { name: 'Bills', path: BILLS_HOME },
+    { name, path: billsPath(place) },
+  ]}
+  description={`${all.length} ${one ? 'bill' : 'bills'} in ${where} ${one ? 'names' : 'name'} the 340B program. See what each one is, how far it has got and where to read it on the legislature's own site.`}
+>
+  <PageHead title={title} trail={[{ label: 'Bills', href: BILLS_HOME }, { label: name }]}>
+    <p class="lede">{lede}</p>
+  </PageHead>
+
+  <div class="law-layout">
+    <div class="law-list">
+      {
+        sessions.map((s, i) => (
+          <section class="bill-session" aria-labelledby={`session-${i + 1}-title`}>
+            <header class="bill-session-head">
+              <h2 id={`session-${i + 1}-title`}>{s.session}</h2>
+              <p>
+                {s.sessionEnd < data.retrieved ? 'Ended' : 'Runs to'} {formatDate(s.sessionEnd)}
+              </p>
+            </header>
+            {s.bills.map((bill) => (
+              <BillCard bill={bill} data={data} kindLabels={kindLabels} />
+            ))}
+            {s.mentions.length > 0 && (
+              <div class="bill-mentions">
+                <h3>Bills that mention 340B in passing</h3>
+                <ul class="law-rows">
+                  {s.mentions.map((bill) => (
+                    <li id={bill.billId}>
+                      <a href={bill.billUrl}>
+                        <strong>{bill.bill}</strong>
+                        <span class="law-row-name">{bill.title}</span>
+                        <span class="law-row-year">{bill.stage}</span>
+                        <span class="law-row-what">{bill.summary}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </section>
+        ))
+      }
+
+      <div class="note law-advice">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="2" /><path d="M10 9v5M10 6v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+        <div>
+          <p><strong>A bill is a proposal, not law.</strong> Most bills never pass, and a bill can change at every step. Read the legislature&rsquo;s own page before you rely on one.</p>
+          <p>See something missing or out of date? <a href="/contact/">Tell us</a>.</p>
+        </div>
+      </div>
+    </div>
+
+    <aside class="law-aside" aria-label="More about 340B bills">
+      <div class="bill-key">
+        <h2 class="label">How far a bill has got</h2>
+        <ol>
+          {
+            STEPS.map((step, i) => (
+              <li>
+                <span class:list={['steps', `at${i + 1}`]} aria-hidden="true">
+                  {STEPS.map(() => (
+                    <i />
+                  ))}
+                </span>
+                <span>
+                  <strong>{step}</strong>
+                  {stepNotes[i]}
+                </span>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+      {
+        stateLaws.length > 0 && (
+          <a class="law-score" href={lawsPath(place)}>
+            <span class="label">Already law</span>
+            <strong>{name}&rsquo;s 340B laws</strong>
+            <span>
+              {numberWordCap(stateLaws.length)} {stateLaws.length === 1 ? 'law' : 'laws'} on the books
+            </span>
+          </a>
+        )
+      }
+      {
+        entry?.status === 'live' && entry.href && (
+          <a class="law-score" href={entry.href}>
+            <span class="label">In the Scorecard</span>
+            <strong>{name}&rsquo;s 340B figures</strong>
+            <span>{entry.summary}</span>
+          </a>
+        )
+      }
+      <div class="law-map">
+        <h2 class="label">{federal ? 'Bills in the states' : 'Other states'}</h2>
+        <Fragment set:html={billsMapSvg(data, 'place-bills-map', federal ? {} : { current: place })} />
+        <ul class="legend">
+          <li><span class="key live" aria-hidden="true"></span>Has a 340B bill</li>
+          <li><span class="key" aria-hidden="true"></span>No bill listed</li>
+        </ul>
+        <p class="bill-ways">
+          {!federal && <a class="law-all" href={billsPath(CONGRESS)}>Bills in Congress</a>}
+          <a class="law-all" href={BILLS_HOME}>All bills</a>
+        </p>
+      </div>
+    </aside>
+  </div>
+</Base>

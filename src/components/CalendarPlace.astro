@@ -1,0 +1,141 @@
+---
+/**
+ * One place's 340B calendar: Congress, or one state's legislature. What is coming up comes first;
+ * what has happened follows, the newest month first, with earlier years folded away.
+ * Everything shown comes from the calendar table (src/lib/calendar.ts).
+ */
+import '../styles/scorecard.css';
+import '../styles/laws.css';
+import '../styles/bills.css';
+import '../styles/calendar.css';
+import Base from '../layouts/Base.astro';
+import CalendarRows from './CalendarRows.astro';
+import PageHead from './PageHead.astro';
+import { CONGRESS, billsPath, getBills, placeName } from '../lib/bills';
+import { CALENDAR_HOME, byMonth, byYear, calendarFilePath, calendarMapSvg, calendarPath, comingUp, eventsOf, getCalendar, isSessionDay, legislatureName, past } from '../lib/calendar';
+import { getLaws, lawsOf, lawsPath } from '../lib/laws';
+import { numberWordCap } from '../lib/site';
+
+interface Props {
+  /** "US" for Congress, else a state's two letters. */
+  place: string;
+}
+const { place } = Astro.props;
+const data = getCalendar();
+const events = eventsOf(data, place);
+const name = placeName(place);
+const federal = place === CONGRESS;
+const steps = events.filter((e) => !isSessionDay(e));
+const billCount = getBills().bills.filter((b) => b.place === place).length;
+const stateLaws = federal ? [] : lawsOf(getLaws(), place);
+const ahead = comingUp(events, data.retrieved);
+const years = byYear(past(events, data.retrieved));
+const title = federal ? '340B calendar for Congress' : `${name} 340B calendar`;
+const sessionWords = federal ? 'the day this Congress ends' : 'the days its sessions start and end';
+const lede =
+  billCount > 0
+    ? `${numberWordCap(steps.length)} dated ${steps.length === 1 ? 'step' : 'steps'} of the ${billCount === 1 ? 'one bill' : `${billCount} bills`} in ${legislatureName(place)} that ${billCount === 1 ? 'names' : 'name'} the 340B program, with ${sessionWords}.`
+    : `The days ${legislatureName(place)} starts and ends its sessions. None of its bills on the list names the 340B program.`;
+---
+
+<Base
+  title={title}
+  crumbs={[
+    { name: 'Calendar', path: CALENDAR_HOME },
+    { name, path: calendarPath(place) },
+  ]}
+  description={billCount > 0 ? `Every dated step of the 340B bills in ${legislatureName(place)}, in its own words, with ${sessionWords}.` : `The days ${legislatureName(place)} starts and ends its sessions.`}
+>
+  <PageHead title={title} trail={[{ label: 'Calendar', href: CALENDAR_HOME }, { label: name }]}>
+    <p class="lede">{lede}</p>
+  </PageHead>
+
+  <div class="law-layout">
+    <div class="law-list">
+      {
+        ahead.length > 0 && (
+          <section class="cal-section" aria-labelledby="coming-title">
+            <h2 id="coming-title">Coming up</h2>
+            {byMonth(ahead).map((group) => (
+              <div class="cal-month">
+                <h3 class="label">{group.label}</h3>
+                <CalendarRows events={group.events} />
+              </div>
+            ))}
+          </section>
+        )
+      }
+      {
+        years.length > 0 && (
+          <section class="cal-section" aria-labelledby="past-title">
+            <h2 id="past-title">What has happened</h2>
+            {years.map((year, i) => (
+              <details class="cal-year" open={i === 0}>
+                <summary>
+                  {year.year}
+                  <span>
+                    {year.count} {year.count === 1 ? 'date' : 'dates'}
+                  </span>
+                </summary>
+                {year.months.map((group) => (
+                  <div class="cal-month">
+                    <h3 class="label">{group.label}</h3>
+                    <CalendarRows events={group.events} />
+                  </div>
+                ))}
+              </details>
+            ))}
+          </section>
+        )
+      }
+
+      <div class="note law-advice">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="2" /><path d="M10 9v5M10 6v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+        <div>
+          <p><strong>Dates can move.</strong> Each step is in the legislature&rsquo;s own words, with a link to its own page. Check that page before you plan around a date.</p>
+          <p>See something missing or out of date? <a href="/contact/">Tell us</a>.</p>
+        </div>
+      </div>
+    </div>
+
+    <aside class="law-aside" aria-label="More about this calendar">
+      <div class="cal-file">
+        <h2 class="label">In your own calendar</h2>
+        <p>One file with {federal ? 'Congress’s' : `${name}’s`} dates from the last year and everything ahead. Open it in your calendar app, or subscribe to it.</p>
+        <a href={calendarFilePath(place)}>Calendar file (.ics)</a>
+      </div>
+      {
+        billCount > 0 && (
+          <a class="law-score" href={billsPath(place)}>
+            <span class="label">The bills</span>
+            <strong>{federal ? '340B bills in Congress' : `${name}’s 340B bills`}</strong>
+            <span>What each one is and how far it has got</span>
+          </a>
+        )
+      }
+      {
+        stateLaws.length > 0 && (
+          <a class="law-score" href={lawsPath(place)}>
+            <span class="label">Already law</span>
+            <strong>{name}&rsquo;s 340B laws</strong>
+            <span>
+              {numberWordCap(stateLaws.length)} {stateLaws.length === 1 ? 'law' : 'laws'} on the books
+            </span>
+          </a>
+        )
+      }
+      <div class="law-map">
+        <h2 class="label">{federal ? 'Calendars of the states' : 'Other states'}</h2>
+        <Fragment set:html={calendarMapSvg(data, 'place-calendar-map', federal ? {} : { current: place })} />
+        <ul class="legend">
+          <li><span class="key live" aria-hidden="true"></span>Has dates on the calendar</li>
+          <li><span class="key" aria-hidden="true"></span>No dates listed</li>
+        </ul>
+        <p class="bill-ways">
+          {!federal && <a class="law-all" href={calendarPath(CONGRESS)}>Congress</a>}
+          <a class="law-all" href={CALENDAR_HOME}>Whole calendar</a>
+        </p>
+      </div>
+    </aside>
+  </div>
+</Base>

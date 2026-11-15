@@ -4,6 +4,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { shapeProblems, valueProblems } from './dataset-shape.mjs';
+import { BILL_FILES, billsProblems } from './bills-shape.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const dir = join(root, 'src', 'data', 'dataset');
@@ -26,8 +27,32 @@ for (const [name, hash] of Object.entries(record.files)) {
 for (const name of readdirSync(dir)) {
   if (name !== 'SOURCE.json' && !(name in record.files)) problems.push(`${name}: present but not listed in SOURCE.json`);
 }
+// The bills table is a second copy with its own record (scripts/sync-bills.mjs).
+const billsDir = join(root, 'src', 'data', 'bills');
+const billsRecordPath = join(billsDir, 'SOURCE.json');
+if (!existsSync(billsRecordPath)) {
+  console.error('check-data: src/data/bills/SOURCE.json is missing. Run: node scripts/sync-bills.mjs');
+  process.exit(1);
+}
+const billsRecord = JSON.parse(readFileSync(billsRecordPath, 'utf8'));
+for (const name of BILL_FILES) {
+  const hash = billsRecord.files[name];
+  if (name in record.files) problems.push(`${name}: the dataset and the bills table both have a file of this name`);
+  for (const [where, path] of [['src/data/bills', join(billsDir, name)], ['public/data', join(publicDir, name)]]) {
+    if (!existsSync(path)) problems.push(`${where}/${name}: missing`);
+    else if (sha256(path) !== hash) problems.push(`${where}/${name}: hash differs from src/data/bills/SOURCE.json`);
+  }
+}
+for (const name of readdirSync(billsDir)) {
+  if (name !== 'SOURCE.json' && !BILL_FILES.includes(name)) problems.push(`src/data/bills/${name}: not a file of the bills table`);
+}
+if (BILL_FILES.every((name) => existsSync(join(billsDir, name)))) {
+  problems.push(...billsProblems(Object.fromEntries(BILL_FILES.map((name) => [name, readFileSync(join(billsDir, name), 'utf8')]))));
+}
+
 // Downloads must be byte for byte the same files.
 for (const name of existsSync(publicDir) ? readdirSync(publicDir) : []) {
+  if (BILL_FILES.includes(name)) continue;
   if (!(name in record.files)) problems.push(`public/data/${name}: not listed in SOURCE.json`);
   else if (sha256(join(publicDir, name)) !== record.files[name]) problems.push(`public/data/${name}: hash differs from SOURCE.json`);
 }
@@ -49,3 +74,4 @@ if (problems.length > 0) {
   process.exit(1);
 }
 console.log(`check-data: ${Object.keys(record.files).length} files match SOURCE.json (dataset version ${record.dataset_version}).`);
+console.log(`check-data: the bills table matches its record (${billsRecord.bills} bills, retrieved ${billsRecord.retrieved}).`);

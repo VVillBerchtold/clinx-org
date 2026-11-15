@@ -1,0 +1,197 @@
+/* The 340B calendar: what is coming up, and each place's dates. Built on the laws and bills styles. */
+
+.cal-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s5);
+  min-width: 0;
+}
+.cal-section > h2,
+.cal-year > summary {
+  font: 750 clamp(1.25rem, 2vw, 1.5rem) / 1.15 var(--display);
+  letter-spacing: -0.02em;
+}
+.cal-section > h2 {
+  padding-bottom: 0.625rem;
+  border-bottom: 1px solid var(--line);
+}
+.cal-section > p {
+  color: var(--muted);
+  max-width: var(--measure);
+}
+.cal-month {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+/* One month's dates: a day on the left, what happened on the right. */
+.cal-rows {
+  list-style: none;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  overflow: hidden;
+}
+.cal-row {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr);
+  gap: 0 1.125rem;
+  align-items: start;
+  padding: 0.8rem 1.25rem;
+}
+.cal-row + .cal-row {
+  border-top: 1px solid var(--line);
+}
+/* A second event on the same day sits under the first; the day is not said twice. */
+.cal-row.same {
+  border-top-color: transparent;
+  padding-top: 0.25rem;
+}
+.cal-row.same .cal-day {
+  visibility: hidden;
+}
+.cal-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.125rem;
+  padding-top: 0.125rem;
+}
+.cal-day span {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.cal-day strong {
+  font: 750 1.5rem/1 var(--display);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.cal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+.cal-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.125rem 0.625rem;
+}
+.cal-kind {
+  font-weight: 650;
+}
+.cal-row.session .cal-kind {
+  color: var(--accent);
+}
+.cal-head a {
+  font-weight: 650;
+}
+.cal-title,
+.cal-more {
+  color: var(--muted);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+.cal-title {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+}
+.cal-what {
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.cal-more {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.75rem;
+}
+.cal-more a {
+  font-weight: 600;
+}
+
+/* Earlier years fold away, so a long record does not make a long page. */
+.cal-year {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s5);
+  padding-top: var(--s4);
+  border-top: 1px solid var(--line);
+}
+.cal-year > summary {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  cursor: pointer;
+  list-style: none;
+}
+.cal-year > summary::-webkit-details-marker {
+  display: none;
+}
+.cal-year > summary span {
+  color: var(--muted);
+  font: 600 var(--text-sm) / 1.4 var(--body);
+  letter-spacing: 0;
+}
+.cal-year > summary span::after {
+  content: ' +';
+  color: var(--accent);
+  font-weight: 700;
+}
+.cal-year[open] > summary span::after {
+  content: ' −';
+}
+.cal-year[open] > summary {
+  margin-bottom: var(--s5);
+}
+.cal-year > summary:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 4px;
+  border-radius: var(--r-sm);
+}
+.cal-year .cal-month + .cal-month {
+  margin-top: var(--s5);
+}
+
+/* The way in: the next dates beside the map. */
+.cal-next .kind-what {
+  color: var(--ink);
+}
+.cal-file {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.125rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+}
+.cal-file p {
+  color: var(--muted);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+.cal-file a {
+  font-weight: 650;
+}
+
+@media (max-width: 700px) {
+  .cal-row {
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    gap: 0 0.875rem;
+    padding: 0.75rem 1rem;
+  }
+  .cal-day strong {
+    font-size: 1.25rem;
+  }
+}

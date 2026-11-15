@@ -26,6 +26,28 @@ The menu's first entry, 340B, opens two things: the Scorecard (what filers repor
 
 The pages show only what a law says. Notes about the source pages, and the laws that were left out of the table, stay in the data files and in Methods.
 
+## Bills sit beside the laws
+
+A law is on the books. A bill is a proposal that may never pass. The third entry under 340B in the menu, Bills, lists the bills in Congress and in the state legislatures that name the 340B program.
+
+The bills come from a table of their own, kept in a separate folder (`clinx-340b-bills`), because it changes far more often than the dataset does. `npm run sync:bills` copies that table in, checks its shape (`scripts/bills-shape.mjs`) and records a fingerprint of each file in `src/data/bills/SOURCE.json`. `npm run check:data` confirms the copy has not changed since. The pages read it through `src/lib/bills.ts`.
+
+- `/bills/` is the way in: a map of the states with a bill, a door to Congress, the newest steps, and how the list is put together.
+- Congress has a page (`/bills/congress/`) and so does each state with a bill (`/bills/ri/`). Bills are grouped by session, the newest session first.
+- Each bill is a card (`src/components/BillCard.astro`): its number and title, how far it has got on five steps, its latest step in the legislature's own words, the passage that names 340B, and links to the legislature's own pages.
+- Where a person has read the bill, the card also says in one sentence what it would do, and whether the bill is about 340B, has a part on it, or only mentions it. Bills that only mention it are a short list at the end of their session.
+
+A bill is listed only if its title, its official summary or its official text names the program. The words quoted on a card are the legislature's, so the site's word check does not apply to them (`PRINTED_BILL_WORDS` in `scripts/check-dist.mjs`); it still applies to every word the site writes itself.
+
+## The calendar is the bills' dates
+
+The fourth entry under 340B in the menu, Calendar, shows when things happen: the dated steps of every listed bill (introduced, sent to committee, voted on, signed), hearings whose agenda names a listed bill, and the days each legislature's session starts and ends. There is one page for the whole country, one for Congress and one for each state.
+
+- The dates come from `src/data/bills/events.csv`, copied in with the bills table by `npm run sync:bills` and checked by the same record. `src/lib/calendar.ts` reads it; the pages are in `src/pages/calendar/`.
+- "Coming up" is counted from the day the table was retrieved, not from the day the page is opened, so the same table always builds the same page. A date that has passed moves to "What has happened" when the table is next brought in.
+- The words on each row are the legislature's own, and each row links to the legislature's page. The page says plainly that a date can move.
+- Each page offers a calendar file (`340b.ics`) that a calendar app can open or subscribe to. It is a plain text file built with the site: no script, no account.
+
 ## Every figure has a source
 
 A figure is drawn by one component, `src/components/Cited.astro`. It links to the filing's PDF at the page the figure was read from. A sum of several filings links to the table that lists them.

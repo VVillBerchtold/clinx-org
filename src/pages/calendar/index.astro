@@ -1,0 +1,118 @@
+---
+/**
+ * The 340B calendar, the way in: a map (pick a state), Congress, what is coming up, and the newest
+ * steps anywhere. Each place's whole record is on its own page (src/pages/calendar/[slug]).
+ * Everything shown comes from the calendar table (src/lib/calendar.ts).
+ */
+import '../../styles/scorecard.css';
+import '../../styles/laws.css';
+import '../../styles/bills.css';
+import '../../styles/calendar.css';
+import Base from '../../layouts/Base.astro';
+import CalendarRows from '../../components/CalendarRows.astro';
+import PageHead from '../../components/PageHead.astro';
+import { formatDate } from '../../lib/data';
+import { BILLS_HOME, CONGRESS, placeName } from '../../lib/bills';
+import { CALENDAR_HOME, byMonth, calendarFilePath, calendarMapSvg, calendarPath, comingUp, eventsOf, getCalendar, isSessionDay, kindLabel, latestSteps } from '../../lib/calendar';
+
+const data = getCalendar();
+const steps = data.events.filter((e) => !isSessionDay(e) && e.kind !== 'hearing');
+const bills = new Set(steps.map((e) => e.billId)).size;
+const ahead = comingUp(data.events, data.retrieved);
+const next = ahead.slice(0, 5);
+const newest = latestSteps(data, 12);
+const federal = eventsOf(data, CONGRESS);
+const federalSteps = federal.filter((e) => !isSessionDay(e)).length;
+const federalEnd = federal.find((e) => e.kind === 'session ends');
+const arrow = 'M3 9h12M10 4l5 5-5 5';
+---
+
+<Base
+  title="340B calendar: bill steps, hearings and session days"
+  crumbs={[{ name: 'Calendar', path: CALENDAR_HOME }]}
+  description={`The dated steps of ${bills} bills that name the 340B program, in Congress and the state legislatures, with the days each session starts and ends. Pick a state to see its dates.`}
+>
+  <PageHead title="340B calendar" trail={[{ label: '340B' }]}>
+    <p class="lede">
+      {steps.length.toLocaleString('en-US')} dated steps of the {bills} bills that name the 340B program, in Congress and the state legislatures, with the days each session starts and ends. Pick Congress or a state to see its dates.
+    </p>
+  </PageHead>
+
+  <div class="law-top">
+    <div class="law-map">
+      <Fragment set:html={calendarMapSvg(data, 'calendar-map')} />
+      <ul class="legend">
+        <li><span class="key live" aria-hidden="true"></span>Has dates on the calendar</li>
+        <li><span class="key" aria-hidden="true"></span>No dates listed</li>
+      </ul>
+    </div>
+    <div class="law-index">
+      <a class="law-score bill-door" href={calendarPath(CONGRESS)}>
+        <span class="label">Congress</span>
+        <strong>{federalSteps} dated steps of its 340B bills</strong>
+        {federalEnd && <span>The {federalEnd.what} ends on {formatDate(federalEnd.day)}.</span>}
+      </a>
+      <h2 class="label">Next on the calendar</h2>
+      <ul class="kind-index cal-next">
+        {
+          next.map((event) => (
+            <li>
+              <a href={calendarPath(event.place)}>
+                <strong>{placeName(event.place)}</strong>
+                <span class="kind-count">{formatDate(event.day)}</span>
+                <span class="kind-what">
+                  {kindLabel(event.kind)}
+                  {isSessionDay(event) ? `: ${event.what}` : `: ${event.bill}`}
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="law-index-note"><a href="#coming">Everything coming up</a></p>
+    </div>
+    <div class="note law-advice">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="2" /><path d="M10 9v5M10 6v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+      <div>
+        <p><strong>Dates can move.</strong> A legislature can change the day a session starts or ends, and a hearing can be moved or called off. Check the legislature&rsquo;s own page, linked from every date, before you plan around one.</p>
+        <p>A hearing is listed when a committee posts an agenda that names one of <a href={BILLS_HOME}>the bills</a>.</p>
+      </div>
+    </div>
+  </div>
+
+  <section class="section cal-section" id="coming" aria-labelledby="coming-title">
+    <h2 id="coming-title">Coming up</h2>
+    {
+      byMonth(ahead).map((group) => (
+        <div class="cal-month">
+          <h3 class="label">{group.label}</h3>
+          <CalendarRows events={group.events} showPlace />
+        </div>
+      ))
+    }
+  </section>
+
+  <section class="section cal-section" id="latest" aria-labelledby="latest-title">
+    <h2 id="latest-title">Latest steps</h2>
+    <p>The newest steps of 340B bills anywhere, in each legislature&rsquo;s own words. Every earlier step is on the calendar of its state, or of Congress.</p>
+    {
+      byMonth(newest).map((group) => (
+        <div class="cal-month">
+          <h3 class="label">{group.label}</h3>
+          <CalendarRows events={group.events} showPlace />
+        </div>
+      ))
+    }
+  </section>
+
+  <section class="section law-use" aria-labelledby="use-title">
+    <div>
+      <h2 id="use-title">Put it in your own calendar</h2>
+      <p>The dates are one open file your calendar app can open or subscribe to, and one open table you can download, check or build on. Each state&rsquo;s page has a file of its own.</p>
+    </div>
+    <div class="btn-row">
+      <a class="btn" href={calendarFilePath()}>Calendar file (.ics) <svg viewBox="0 0 18 18" width="18" height="18" fill="none" aria-hidden="true" focusable="false"><path d={arrow} stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg></a>
+      <a class="btn ghost" href="/data/#calendar">Get the data</a>
+    </div>
+  </section>
+</Base>

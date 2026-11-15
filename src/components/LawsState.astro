@@ -11,6 +11,7 @@ import PageHead from './PageHead.astro';
 import { formatDate } from '../lib/data';
 import { LAWS_HOME, getLaws, kindPath, lawName, lawsMapSvg, lawsOf, lawsPath, ownerOf, savedTextUrl, type Law } from '../lib/laws';
 import { numberWordCap } from '../lib/site';
+import { billsPath, getBills } from '../lib/bills';
 import { STATE_REGISTRY, type StateTile } from '../lib/states';
 
 interface Props {
@@ -22,6 +23,7 @@ const own = lawsOf(laws, state.code);
 const labelOf = new Map(laws.kinds.map((k) => [k.kind, k.label]));
 const entry = STATE_REGISTRY[state.code];
 const one = own.length === 1;
+const stateBills = getBills().bills.filter((b) => b.place === state.code).length;
 
 /** The identifiers and dates of a law, as label and value pairs. A blank one is left out. */
 const facts = (law: Law): { label: string; value: string }[] => {
@@ -150,6 +152,17 @@ const pdf = (form: string): string => (form.includes('pdf') ? ' (PDF)' : '');
             <span class="label">In the Scorecard</span>
             <strong>{state.name}&rsquo;s 340B figures</strong>
             <span>{entry.summary}</span>
+          </a>
+        )
+      }
+      {
+        stateBills > 0 && (
+          <a class="law-score" href={billsPath(state.code)}>
+            <span class="label">In the legislature</span>
+            <strong>{state.name}&rsquo;s 340B bills</strong>
+            <span>
+              {numberWordCap(stateBills)} {stateBills === 1 ? 'bill' : 'bills'} since January 2025
+            </span>
           </a>
         )
       }

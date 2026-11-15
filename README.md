@@ -21,6 +21,8 @@ You do not need to be a programmer to find your way around here. This page expla
 
 It also lists the state laws that name 340B, state by state and by kind, each with a plain summary and a link to the state's own page.
 
+And it lists the bills in Congress and the state legislatures that name 340B: what each one is, how far it has got, and where to read it on the legislature's own site. A calendar shows the dated steps of those bills and the days each session starts and ends, with a file to add them to your own calendar.
+
 Four states are in the scorecard today: Rhode Island, Vermont, Minnesota and Idaho. Each state has its own form, so the site never adds two states together or sets them side by side as if they were alike.
 
 ## Where the numbers come from

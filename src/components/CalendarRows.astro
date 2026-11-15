@@ -1,0 +1,49 @@
+---
+/**
+ * A list of calendar events in the order given: the day on the left, what happened on the right.
+ * A step of a bill shows its kind, the bill (a link to its card), the legislature's own words and
+ * a link to the legislature's page. A session's first or last day shows the session's name.
+ */
+import { getBills, placeName } from '../lib/bills';
+import { calendarPath, eventBillHref, isSessionDay, kindLabel, weekdayOf, type CalendarEvent } from '../lib/calendar';
+
+interface Props {
+  events: readonly CalendarEvent[];
+  /** True on a page that mixes places: each row then says which place it is. */
+  showPlace?: boolean;
+}
+const { events, showPlace = false } = Astro.props;
+const titles = new Map(getBills().bills.map((b) => [b.billId, b.title]));
+---
+
+<ul class="cal-rows">
+  {
+    events.map((event, i) => {
+      const session = isSessionDay(event);
+      const more = [event.time, event.body, event.where].filter((part) => part !== '');
+      return (
+        <li class:list={['cal-row', session && 'session', i > 0 && events[i - 1]!.day === event.day && 'same']}>
+          <time class="cal-day" datetime={event.day}>
+            <span>{weekdayOf(event.day)}</span>
+            <strong>{Number(event.day.slice(8))}</strong>
+          </time>
+          <div class="cal-body">
+            <p class="cal-head">
+              <span class="cal-kind">{kindLabel(event.kind)}</span>
+              {showPlace && <a href={calendarPath(event.place)}>{placeName(event.place)}</a>}
+              {!session && <a href={eventBillHref(event)}>{event.bill}</a>}
+            </p>
+            {!session && titles.get(event.billId) && <p class="cal-title">{titles.get(event.billId)}</p>}
+            <p class="cal-what">{event.what}</p>
+            <p class="cal-more">
+              {more.map((part) => (
+                <span>{part}</span>
+              ))}
+              <a href={event.link}>{session ? 'The legislature’s site' : 'Official page'}</a>
+            </p>
+          </div>
+        </li>
+      );
+    })
+  }
+</ul>

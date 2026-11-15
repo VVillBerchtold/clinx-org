@@ -40,13 +40,15 @@ export interface NavGroup {
   items: readonly NavLink[];
 }
 
-/** The main menu. 340B is a group: the Scorecard and the state laws sit side by side under it. */
+/** The main menu. 340B is a group: the Scorecard, the state laws, the bills and the calendar sit side by side under it. */
 export const NAV: readonly (NavLink | NavGroup)[] = [
   {
     label: '340B',
     items: [
       { href: '/scorecard/', label: 'Scorecard', note: 'The 340B figures each state publishes' },
       { href: '/laws/', label: 'State laws', note: 'The 340B laws each state has passed' },
+      { href: '/bills/', label: 'Bills', note: 'The 340B bills in Congress and the states' },
+      { href: '/calendar/', label: 'Calendar', note: 'Bill steps, hearings and session days' },
     ],
   },
   { href: '/data/', label: 'Data' },
@@ -86,9 +88,10 @@ export const ARTICLE_TITLE = 'Reading a sensitive file without receiving it';
  */
 export const PREVIEW = false;
 
-/** The three public repositories. The pages link to them only once the site is public (PREVIEW false). */
+/** The four public repositories. The pages link to them only once the site is public (PREVIEW false). */
 export const REPOSITORIES = {
   dataset: 'https://github.com/VVillBerchtold/clinx-340b',
+  bills: 'https://github.com/VVillBerchtold/clinx-340b-bills',
   tracker: 'https://github.com/VVillBerchtold/clinx-radar',
   site: 'https://github.com/VVillBerchtold/clinx-org',
 } as const;

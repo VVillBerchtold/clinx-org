@@ -78,6 +78,25 @@ const PRINTED_LABELS = [
   { page: '/methods/index.html', phrase: 'Top 25' },
   { page: '/data/index.html', phrase: 'Top 25' },
 ];
+// A bill's own words (its title, the passage quoted from its text, its latest step, its sponsor) are shown as the
+// legislature printed them on the bills pages. Where one of them holds a word this check bans, exactly that text is
+// let through on the bills pages; our own words about a bill (its plain sentence) are still checked.
+const billsFile = join(root, 'src', 'data', 'bills', '340b-bills.json');
+const escapeHtml = (t) => t.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
+const PRINTED_BILL_WORDS = existsSync(billsFile)
+  ? [...new Set(JSON.parse(readFileSync(billsFile, 'utf8')).bills.flatMap((b) => [b.title, b.quote, b.latest_action, b.sponsor, b.failed_vote, b.session]))]
+      .filter((words) => BANNED_WORDS.test(words))
+      .flatMap((words) => [words, escapeHtml(words)])
+      .sort((a, b) => b.length - a.length)
+  : [];
+// The same for the calendar: a step, a hearing's name and a session's name are official words.
+const eventsFile = join(root, 'src', 'data', 'bills', '340b-events.json');
+const PRINTED_EVENT_WORDS = existsSync(eventsFile)
+  ? [...new Set(JSON.parse(readFileSync(eventsFile, 'utf8')).events.flatMap((e) => [e.what, e.body, e.where]))]
+      .filter((words) => BANNED_WORDS.test(words))
+      .flatMap((words) => [words, escapeHtml(words)])
+      .sort((a, b) => b.length - a.length)
+  : [];
 // The site's own way back to the start of a page. It is a navigation label on every page, never a word about a filer.
 const NAV_LABELS = ['Back to top'];
 const EMAIL = /[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}/g;
@@ -243,6 +262,12 @@ for (const file of htmlFiles) {
   let checked = text;
   for (const { page: onPage, phrase } of PRINTED_LABELS) {
     if (page === onPage) checked = checked.replaceAll(phrase, ' ');
+  }
+  if (page.startsWith('/bills/') || page.startsWith('/calendar/')) {
+    for (const words of PRINTED_BILL_WORDS) checked = checked.replaceAll(words, ' ');
+  }
+  if (page.startsWith('/calendar/')) {
+    for (const words of PRINTED_EVENT_WORDS) checked = checked.replaceAll(words, ' ');
   }
   for (const label of NAV_LABELS) checked = checked.replaceAll(label, ' ');
   const word = BANNED_WORDS.exec(checked);

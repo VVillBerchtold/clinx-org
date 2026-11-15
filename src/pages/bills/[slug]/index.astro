@@ -1,0 +1,23 @@
+---
+/**
+ * One page for Congress (/bills/congress/) and one per state with a bill that names 340B
+ * (/bills/ri/). A state with no listed bill has no page. The layout lives in src/components.
+ */
+import BillsPlace from '../../../components/BillsPlace.astro';
+import { CONGRESS, getBills, statesWithBills } from '../../../lib/bills';
+
+export function getStaticPaths() {
+  const data = getBills();
+  return [
+    { params: { slug: 'congress' }, props: { place: CONGRESS } },
+    ...statesWithBills(data).map((state) => ({ params: { slug: state.code.toLowerCase() }, props: { place: state.code } })),
+  ];
+}
+
+interface Props {
+  place: string;
+}
+const { place } = Astro.props;
+---
+
+<BillsPlace place={place} />

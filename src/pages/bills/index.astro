@@ -1,0 +1,114 @@
+---
+/**
+ * Bills that name 340B, the way in: a map (pick a state), Congress, and the newest steps anywhere.
+ * The bills themselves are on each place's page (src/pages/bills/[slug]).
+ * Everything shown comes from the bills table (src/lib/bills.ts).
+ */
+import '../../styles/scorecard.css';
+import '../../styles/laws.css';
+import '../../styles/bills.css';
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import { formatDate } from '../../lib/data';
+import { BILLS_HOME, CONGRESS, billHref, billsMapSvg, billsPath, getBills, latestSteps, placeName, statesWithBills, stepOf } from '../../lib/bills';
+import { LAWS_HOME } from '../../lib/laws';
+
+const data = getBills();
+const states = statesWithBills(data);
+const federal = data.bills.filter((b) => b.place === CONGRESS);
+const inStates = data.bills.length - federal.length;
+const about = federal.filter((b) => b.role === 'main').length;
+const federalLaws = federal.filter((b) => stepOf(b) === 5).length;
+const stateLaws = data.bills.filter((b) => b.place !== CONGRESS && stepOf(b) === 5).length;
+const newest = latestSteps(data, 6);
+const arrow = 'M3 9h12M10 4l5 5-5 5';
+/** A long official title, cut at a word so a row stays short. The whole title is on the bill's card. */
+const short = (title: string): string => (title.length <= 96 ? title : `${title.slice(0, 96).replace(/\s+\S*$/, '')}…`);
+---
+
+<Base
+  title="340B bills in Congress and the states"
+  crumbs={[{ name: 'Bills', path: BILLS_HOME }]}
+  description={`${data.bills.length} bills name the 340B program: ${federal.length} in Congress and ${inStates} in ${states.length} state legislatures. See what each one is, how far it has got and where to read it.`}
+>
+  <PageHead title="340B bills" trail={[{ label: '340B' }]}>
+    <p class="lede">
+      {federal.length} bills in Congress and {inStates} in {states.length} state legislatures name the 340B program, in sessions since January 2025. Pick Congress or a state to see what each bill is, how far it has got and where to read it.
+    </p>
+  </PageHead>
+
+  <div class="law-top">
+    <div class="law-map">
+      <Fragment set:html={billsMapSvg(data, 'bills-map')} />
+      <ul class="legend">
+        <li><span class="key live" aria-hidden="true"></span>Has a 340B bill</li>
+        <li><span class="key" aria-hidden="true"></span>No bill listed</li>
+      </ul>
+    </div>
+    <div class="law-index">
+      <a class="law-score bill-door" href={billsPath(CONGRESS)}>
+        <span class="label">Congress</span>
+        <strong>{federal.length} bills in the {federal[0]?.session}</strong>
+        <span>{about} are about 340B itself. {federalLaws} became law.</span>
+      </a>
+      <h2 class="label">Latest steps</h2>
+      <ul class="kind-index bill-latest">
+        {
+          newest.map((bill) => (
+            <li>
+              <a href={billHref(bill)}>
+                <strong>
+                  {placeName(bill.place)} {bill.bill}
+                </strong>
+                <span class="kind-count">{formatDate(bill.latestActionDate)}</span>
+                <span class="kind-what">{short(bill.title)}</span>
+                <span class="kind-what bill-step">{bill.latestAction}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="law-index-note">Each step is in the legislature&rsquo;s own words.</p>
+    </div>
+    <div class="note law-advice">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="2" /><path d="M10 9v5M10 6v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+      <div>
+        <p><strong>A bill is a proposal, not law.</strong> Most bills never pass, and a bill can change at every step. {stateLaws} of the state bills here became law; the laws each state already has are under <a href={LAWS_HOME}>State laws</a>.</p>
+        <p>Know of a bill that should be here? <a href="/contact/">Tell us</a>.</p>
+      </div>
+    </div>
+  </div>
+
+  <section class="section bill-how" id="how" aria-labelledby="how-title">
+    <h2 id="how-title">How the list is put together</h2>
+    <ol>
+      <li>
+        <strong>Official sources only.</strong>
+        <span>Bills in Congress come from the files the Government Publishing Office publishes for every bill. State bills are found with Open States, a free index of state legislatures, then checked on each legislature&rsquo;s own site.</span>
+      </li>
+      <li>
+        <strong>The bill has to name the program.</strong>
+        <span>A bill is listed only where its title, its official summary or its text says 340B, or cites the program&rsquo;s section of federal law. The passage is quoted on the bill&rsquo;s card.</span>
+      </li>
+      <li>
+        <strong>Steps are the legislature&rsquo;s.</strong>
+        <span>How far a bill has got is worked out from the steps the legislature recorded. The latest step is shown in its own words, with a link to its own page.</span>
+      </li>
+      <li>
+        <strong>A person reads the bill.</strong>
+        <span>Where a card has a plain sentence and a kind, someone has read the bill. Where it does not yet, the card shows the facts and the passage, and nothing is guessed.</span>
+      </li>
+    </ol>
+  </section>
+
+  <section class="section law-use" aria-labelledby="use-title">
+    <div>
+      <h2 id="use-title">Free to use and build on</h2>
+      <p>Every bill here is in one open file, with its stage, its latest step and its links. Download it, check it, or build something with it.</p>
+    </div>
+    <div class="btn-row">
+      <a class="btn" href="/data/#bills">Get the data <svg viewBox="0 0 18 18" width="18" height="18" fill="none" aria-hidden="true" focusable="false"><path d={arrow} stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg></a>
+      <a class="btn ghost" href={LAWS_HOME}>See the laws already passed</a>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,152 @@
+---
+/**
+ * One bill, as a card: what it is, how far it has got, its latest step in the legislature's own
+ * words, the passage that names 340B, and links to the legislature's own pages.
+ * Everything shown comes from the bills table (src/lib/bills.ts).
+ */
+import { formatDate } from '../lib/data';
+import { STEPS, hostOf, namedInWords, sessionOver, stepOf, type Bill, type BillsData } from '../lib/bills';
+import type { LawKind } from '../lib/laws';
+
+interface Props {
+  bill: Bill;
+  data: BillsData;
+  kindLabels: ReadonlyMap<LawKind, string>;
+}
+const { bill, data, kindLabels } = Astro.props;
+const step = stepOf(bill);
+const over = sessionOver(data, bill);
+const vetoed = bill.stage === 'Vetoed';
+
+/** "2026-03-24 Motion failed" -> "24 March 2026: Motion failed". */
+const dated = (value: string): string => {
+  const match = /^(\d{4}-\d{2}-\d{2})\s+(.*)$/.exec(value);
+  return match ? `${formatDate(match[1]!)}: ${match[2]}` : value;
+};
+const facts: { label: string; value: string }[] = [];
+if (bill.latestAction) facts.push({ label: 'Latest step', value: `${bill.latestActionDate ? `${formatDate(bill.latestActionDate)}: ` : ''}${bill.latestAction}` });
+if (bill.failedVote) facts.push({ label: 'Failed vote', value: dated(bill.failedVote) });
+if (bill.law) facts.push({ label: 'Became', value: bill.law });
+if (bill.sponsor) {
+  const others = bill.cosponsors ?? 0;
+  facts.push({ label: 'Sponsor', value: `${bill.sponsor}${others > 0 ? `, with ${others} ${others === 1 ? 'cosponsor' : 'cosponsors'}` : ''}` });
+}
+// The day a bill was introduced is already on its stage line while that is as far as it has got.
+if (bill.introducedDate && !(bill.stage === 'Introduced' && bill.stageDate === bill.introducedDate)) facts.push({ label: 'Introduced', value: formatDate(bill.introducedDate) });
+
+// The passage is shown where it comes from the bill's text or its official summary; a title is already on the card.
+const inText = bill.namedIn.includes('text');
+const inEarlier = bill.namedIn.includes('earlier text');
+const showQuote = bill.quote !== '' && (inText || inEarlier || bill.namedIn.includes('summary'));
+const times = bill.textMentions === null ? '' : bill.textMentions === 1 ? ' It names 340B once.' : ` It names 340B ${bill.textMentions} times.`;
+// An amendment is a proposal filed to the bill, not a version of it, so it is named for what it is.
+const earlierWords = /amendment/i.test(bill.textVersion)
+  ? 'From an amendment filed to the bill. The bill’s own newest text does not name 340B.'
+  : 'From an earlier version of the bill. The newest version does not name 340B.';
+const quoteFrom = inText ? `From the bill’s text.${times}` : inEarlier ? earlierWords : 'From the official summary.';
+const pdf = (url: string): string => (/\.pdf(?:$|\?)/i.test(url) ? ' (PDF)' : '');
+---
+
+<article class="law bill" id={bill.billId} aria-labelledby={`${bill.billId}-title`}>
+  <header class="law-head">
+    <ul class="law-kinds" aria-label="What this bill is">
+      {
+        bill.role ? (
+          <li>
+            <span class="kind role">{data.roleLabels.get(bill.role)}</span>
+          </li>
+        ) : (
+          <li>
+            <span class="kind plain">{namedInWords(bill)}</span>
+          </li>
+        )
+      }
+      {
+        bill.kinds.map((k) => (
+          <li>
+            <span class="kind">{kindLabels.get(k)}</span>
+          </li>
+        ))
+      }
+    </ul>
+    <h3 id={`${bill.billId}-title`}>
+      <span class="bill-no">{bill.bill}</span>
+      <span class="bill-title">{bill.title}</span>
+    </h3>
+  </header>
+
+  {bill.summary && <p class="law-summary">{bill.summary}</p>}
+
+  {
+    step > 0 && (
+      <p class="bill-stage">
+        <span class:list={['steps', `at${step}`, { over, vetoed }]} aria-hidden="true">
+          {STEPS.map(() => (
+            <i />
+          ))}
+        </span>
+        <span class="bill-stage-words">
+          <strong>{bill.stage}</strong>
+          {bill.stageDate && <span>{formatDate(bill.stageDate)}</span>}
+          {over && <span class="bill-over">Session ended {formatDate(bill.sessionEnd)}</span>}
+        </span>
+      </p>
+    )
+  }
+
+  {
+    facts.length > 0 && (
+      <dl class="law-parts bill-facts">
+        {facts.map((f) => (
+          <div>
+            <dt>{f.label}</dt>
+            <dd>{f.value}</dd>
+          </div>
+        ))}
+      </dl>
+    )
+  }
+
+  {
+    showQuote && (
+      <details class="bill-quote" open={bill.summary === ''}>
+        <summary>
+          Where it names 340B<span class="visually-hidden">: {bill.bill}</span>
+        </summary>
+        <figure class="law-quote">
+          <blockquote>
+            <p>{bill.quote}</p>
+          </blockquote>
+          <figcaption>{quoteFrom}</figcaption>
+        </figure>
+      </details>
+    )
+  }
+
+  <ul class="law-links">
+    <li>
+      <a class="law-source" href={bill.billUrl}>
+        <span>
+          Bill page<span class="visually-hidden"> for {bill.bill}</span>
+        </span>
+        <strong>{hostOf(bill.billUrl)}</strong>
+      </a>
+    </li>
+    {
+      bill.textUrl && bill.textUrl !== bill.billUrl && (
+        <li>
+          <a class="law-source" href={bill.textUrl}>
+            <span>
+              Read the text<span class="visually-hidden"> of {bill.bill}</span>
+            </span>
+            <strong>
+              {hostOf(bill.textUrl)}
+              {pdf(bill.textUrl)}
+            </strong>
+          </a>
+        </li>
+      )
+    }
+    <li class="law-saved">Last checked {formatDate(bill.retrieved)}.</li>
+  </ul>
+</article>

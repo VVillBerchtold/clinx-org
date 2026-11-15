@@ -5,6 +5,7 @@ import Draft from '../../components/Draft.astro';
 import OnPage from '../../components/OnPage.astro';
 import PageHead from '../../components/PageHead.astro';
 import { buildStateDrugViews, formatDate, getDataset, stateDrugCsv } from '../../lib/data';
+import { getBillsRecord } from '../../lib/bills';
 import { stateName } from '../../lib/states';
 import { PREVIEW, REPOSITORIES } from '../../lib/site';
 import { renderSections } from '../../lib/markdown';
@@ -15,11 +16,20 @@ const data = getDataset();
 const sha256Hex = async (text: string): Promise<string> =>
   Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text))), (b) => b.toString(16).padStart(2, '0')).join('');
 const drugFiles = await Promise.all(buildStateDrugViews(data).map(async (view) => ({ view, sha256: await sha256Hex(stateDrugCsv(view)) })));
-// The three repositories. Their names become links once the site is public.
+// The repositories. Their names become links once the site is public.
 const repositories = [
   { name: 'The filings dataset', href: REPOSITORIES.dataset, what: 'The data, its checks and its changelog. Corrections are reported here.' },
+  { name: 'The bills and calendar tables', href: REPOSITORIES.bills, what: 'Every bill that names 340B and its dated steps, with the tools that build the tables.' },
   { name: 'The registry tracker', href: REPOSITORIES.tracker, what: 'Keeps dated copies of the federal 340B registry and reports what changed.' },
   { name: 'This site', href: REPOSITORIES.site, what: 'The pages you are reading, built from the dataset.' },
+];
+// The bills table is a second set of files, kept beside the dataset's.
+const billsRecord = getBillsRecord();
+const billFiles = [
+  { name: 'bills.csv', id: 'bills', what: 'One row per bill in Congress or a state legislature that names the 340B program: what it is, how far it has got, its latest step, the passage that names 340B and its official links' },
+  { name: '340b-bills.json', what: 'The bills table in one document, with the roles and kinds it uses' },
+  { name: 'events.csv', id: 'calendar', what: 'The 340B calendar, one row per date: every dated step of a listed bill in the legislature’s own words, hearings with a listed bill on the agenda, and the days each session starts and ends' },
+  { name: '340b-events.json', what: 'The calendar in one document, with what each kind of event means' },
 ];
 const dictionary = renderSections(data.dictionaryMarkdown);
 const intro = dictionary.find((s) => s.title === '');
@@ -76,6 +86,18 @@ const describe: Record<string, string> = {
           ))
         }
         {
+          billFiles.map((file) => (
+            <li id={'id' in file ? file.id : undefined}>
+              <div>
+                <strong>{file.name}</strong>
+                <p>{file.what}</p>
+              </div>
+              <a class="btn ghost" href={`/data/${file.name}`} download aria-label={`Download ${file.name}`}>Download</a>
+              <span class="hash"><span class="visually-hidden">SHA-256: </span>{billsRecord.files[file.name]}</span>
+            </li>
+          ))
+        }
+        {
           drugFiles.map(({ view, sha256 }) => (
             <li>
               <div>
@@ -104,6 +126,8 @@ const describe: Record<string, string> = {
         <dd><span class="mono">{data.commit}</span></dd>
         <dt>Filings and reports retrieved up to</dt>
         <dd>{formatDate(data.dataDate)}</dd>
+        <dt>Bills retrieved</dt>
+        <dd>{formatDate(billsRecord.retrieved)} ({billsRecord.bills} bills, {billsRecord.events.toLocaleString('en-US')} calendar dates)</dd>
         <dt>Licence</dt>
         <dd>Data: Creative Commons Attribution 4.0 (CC BY 4.0). Code: MIT.</dd>
       </dl>
@@ -113,7 +137,7 @@ const describe: Record<string, string> = {
   <section class="split" aria-labelledby="repositories">
     <h2 id="repositories">Code</h2>
     <div class="split-body">
-      <p class="head-tag"><span>Everything behind this site is open.{PREVIEW && ' The three repositories open to the public when the site goes live.'}</span> <Draft /></p>
+      <p class="head-tag"><span>Everything behind this site is open.{PREVIEW && ' The repositories open to the public when the site goes live.'}</span> <Draft /></p>
       <ul class="repos">
         {
           repositories.map((r) => (
