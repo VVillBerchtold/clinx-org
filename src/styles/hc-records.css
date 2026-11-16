@@ -53,12 +53,21 @@
 .hcr-section [id] { scroll-margin-top: 6rem; }
 
 /* At a glance */
+.hcr-tiles { margin: 0; }
+.hcr-tiles.n1 { grid-template-columns: minmax(0, 1fr); }
+.hcr-tiles.n2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.hcr-tiles.n3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.hcr-tiles strong { color: var(--accent); }
+.hcr-tiles strong.hcr-tile-words { min-height: clamp(2.25rem, 4.4vw, 3.75rem); display: flex; align-items: end; font: 650 var(--text-base)/1.25 var(--body, inherit); letter-spacing: 0; color: var(--muted); }
+.hcr-tiles li > span { color: var(--ink); font-weight: 600; }
+.hcr-tiles li > small { display: block; margin-top: 0.25rem; font-size: var(--text-xs); color: var(--muted); }
 .hcr-glance {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 27rem), 1fr));
   gap: var(--s4);
-  align-items: start;
+  margin-top: var(--s4);
 }
+.hcr-glance + p { margin-top: var(--s3); }
 .hcr-card {
   min-width: 0;
   border: 1px solid var(--line);
@@ -70,17 +79,13 @@
 .hcr-card > .hcr-where { margin: 0.25rem 0 0; padding: 0 1.25rem; font-size: var(--text-xs); color: var(--muted); }
 .hcr-card .table-wrap { border: 0; border-radius: 0; margin-top: var(--s3); }
 .hcr-card > p.hcr-sentence { padding: var(--s3) 1.25rem 1.25rem; margin: 0; }
-.hcr-stat { margin: 0; padding: var(--s3) 1.25rem 1.25rem; }
-.hcr-stat-fig {
-  margin: 0;
-  font: 700 clamp(2rem, 5vw, 2.75rem)/1.1 var(--display);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
-  color: var(--accent);
-}
-.hcr-stat-fig.hcr-stat-words { font-size: var(--text-lg); color: var(--ink); }
-.hcr-stat-what { margin: var(--s2) 0 0; font-size: var(--text-sm); }
-.hcr-stat-ref { margin: var(--s1) 0 0; font-size: var(--text-xs); color: var(--muted); }
+.hcr-grid.hcr-bars thead th:first-child { min-width: 8rem; }
+.hcr-card .table-wrap.wide.hcr-bars tbody th[scope='row'] { min-width: 8rem; }
+.hcr-bars thead th.num { min-width: 0; }
+.hcr-bars td.share { --fig: 4.5rem; min-width: 8.75rem; width: auto; }
+.hcr-bars td.share .hcr-ref { display: block; text-align: right; }
+.hcr-bars td.share .bar-figure { font-weight: 600; white-space: nowrap; }
+.hcr-bars td.share .hcr-mark { display: inline-block; }
 
 /* Legend of the marks */
 .hcr-legend { display: grid; gap: var(--s2); margin: 0 0 var(--s4); padding: var(--s4); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); }
@@ -176,5 +181,6 @@
   .hcr-table > summary { padding: 0.875rem 1rem; }
   .hcr-legend dl { grid-template-columns: minmax(0, 1fr); }
   .hcr-card > h3 { padding-inline: 1rem; }
-  .hcr-card > .hcr-where, .hcr-stat, .hcr-card > p.hcr-sentence { padding-inline: 1rem; }
+  .hcr-card > .hcr-where, .hcr-card > p.hcr-sentence { padding-inline: 1rem; }
+  .hcr-tiles.n2, .hcr-tiles.n3 { grid-template-columns: minmax(0, 1fr); }
 }

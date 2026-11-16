@@ -9,6 +9,8 @@ import {
   centerKeys,
   centerPath,
   fundingTypes,
+  glanceBar,
+  glanceScale,
   headerRows,
   linesOf,
   listRows,
@@ -266,6 +268,19 @@ describe('a page: published values', () => {
       }
     }
     expect(buildYearView('010030', 2025).glance.map((g) => g.id)).toEqual(['glance-patients', 'glance-income', 'glance-insurance', 'glance-visits']);
+    // The bars of a block share one scale, the largest published figure in it; a mark or a zero has no bar.
+    for (const g of buildYearView('011820', 2025).glance) {
+      const scale = glanceScale(g);
+      const cells = g.rows.flatMap((r) => r.cells).filter((c) => c !== null);
+      const figures = cells.filter((c) => c!.kind === 'value').map((c) => Number(c!.raw));
+      expect(scale).toBe(figures.length > 0 ? Math.max(...figures) : 0);
+      for (const c of cells) {
+        const w = glanceBar(c!, scale);
+        if (c!.kind !== 'value' || Number(c!.raw) === 0) expect(w).toBe(0);
+        else expect(w).toBeGreaterThanOrEqual(1);
+        expect(w).toBeLessThanOrEqual(100);
+      }
+    }
   });
 
   it('draws separators and the dollar sign, and leaves everything else as published', () => {

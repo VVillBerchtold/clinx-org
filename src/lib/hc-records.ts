@@ -424,6 +424,25 @@ const GLANCE_SPECS: { id: string; heading: string; table: string; lines: string[
   { id: 'glance-visits', heading: 'Total visits', table: 'Table 5', lines: ['L34'], columns: ['Cb', 'Cb2'], where: 'Table 5, line 34' },
 ];
 
+/** The largest published figure in a glance block: the one scale for its bars. Zero when no cell holds a number. */
+export function glanceScale(b: GlanceBlock): number {
+  let max = 0;
+  for (const r of b.rows) {
+    for (const c of r.cells) {
+      const n = c !== null && c.kind === 'value' ? Number(c.raw) : Number.NaN;
+      if (Number.isFinite(n) && n > max) max = n;
+    }
+  }
+  return max;
+}
+
+/** A bar's width as a percentage of the scale, to one decimal. A figure above zero keeps a sliver; a mark or a zero has no bar. */
+export function glanceBar(c: RCell, scale: number): number {
+  const n = Number(c.raw);
+  if (c.kind !== 'value' || c.raw === '' || !Number.isFinite(n) || n <= 0 || scale <= 0) return 0;
+  return Math.min(100, Math.max(1, Math.round((n / scale) * 1000) / 10));
+}
+
 export function yearsOf(key: string): number[] {
   return headerRows().filter((h) => h.key === key).map((h) => h.year).sort((a, b) => a - b);
 }

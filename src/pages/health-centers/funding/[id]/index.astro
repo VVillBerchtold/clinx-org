@@ -166,7 +166,7 @@ const items = [
     <dl class="fund-kv">
       {money.map(([label, value]) => <><dt>{label}</dt><dd class="num">{value}</dd></>)}
     </dl>
-    <p class="fund-small">Amounts are in US dollars as HRSA published them. A comma and a dollar sign are drawn, and nothing is added together or divided.</p>
+    <p class="fund-small">Amounts are in US dollars, as HRSA published them.</p>
 
     <h2 id="who-heading">Who can apply</h2>
     {o.applicantTypes.length > 0 ? <ul class="fund-list">{o.applicantTypes.map((t) => <li>{t}</li>)}</ul> : <p>HRSA gives no applicant type.</p>}

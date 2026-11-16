@@ -47,7 +47,6 @@ export function partCards(): PartCard[] {
   const source = recordsSource();
   const rows = listRows();
   const byState = [...new Set(rows.map((r) => r.state))].sort((a, b) => stateName(a).localeCompare(stateName(b), 'en'));
-  const inState = byState.map((code) => `${num(rows.filter((r) => r.state === code).length)} in ${stateName(code)}`);
   const funding = getFunding();
   const forecasts = funding.opportunities.filter((o) => o.status === 'forecasted').length;
   const posted = funding.opportunities.length - forecasts;
@@ -60,7 +59,7 @@ export function partCards(): PartCard[] {
       title: 'What each health center reported',
       say: 'Each health center’s yearly report to HRSA, line by line in HRSA’s own words: patients, services, staff, costs and revenue.',
       facts: [
-        { label: 'Health centers', value: `${num(rows.length)} (${inState.join(', ')})` },
+        { label: `Health centers, ${byState.join(' and ')}`, value: num(rows.length) },
         { label: 'Report years', value: `${source.years[0]} to ${source.latest_year}` },
         { label: 'HRSA refreshed the latest file', value: refreshDay(source.workbooks[String(source.latest_year)]!.report_last_refreshed) },
       ],
@@ -74,7 +73,7 @@ export function partCards(): PartCard[] {
       say: 'The dates of HRSA’s funding opportunities and of the Federal Register documents that name health centers, in date order, with a calendar file.',
       facts: [
         { label: 'Opportunities', value: `${num(funding.opportunities.length)} (${num(forecasts)} forecast, ${num(posted)} posted)` },
-        { label: 'Dated events from the day of the files on', value: num(ahead(funding).length) },
+        { label: 'Dates ahead', value: num(ahead(funding).length) },
         { label: 'Federal Register documents', value: num(funding.register.length) },
       ],
       href: FUNDING_HOME,
@@ -83,12 +82,12 @@ export function partCards(): PartCard[] {
     {
       id: 'areas',
       label: 'Shortage areas',
-      title: 'What HRSA designates, state by state',
+      title: 'HRSA designations, state by state',
       say: 'Shortage areas and underserved areas that HRSA has designated, the designations it proposes to withdraw, what changed in the last year, and the health center sites it lists.',
       facts: [
         { label: 'States and territories', value: num(stateCodes().filter((c) => c !== 'XX').length) },
-        { label: `${SERIES_INFO[SERIES[0]].short} designations with the status Designated`, value: num(primary.Designated.designations) },
-        { label: `${SERIES_INFO[SERIES[0]].short} designations with the status Proposed For Withdrawal`, value: num(primary['Proposed For Withdrawal'].designations) },
+        { label: `${SERIES_INFO[SERIES[0]].short}, designated`, value: num(primary.Designated.designations) },
+        { label: `${SERIES_INFO[SERIES[0]].short}, proposed for withdrawal`, value: num(primary['Proposed For Withdrawal'].designations) },
       ],
       href: AREAS_PATH,
       go: 'Open the shortage areas',

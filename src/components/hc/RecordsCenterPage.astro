@@ -19,6 +19,8 @@ import {
   centerPath,
   formatDay,
   fundingTypes,
+  glanceBar,
+  glanceScale,
   listOfYears,
   listRows,
   megabytes,
@@ -52,6 +54,23 @@ const next = stepOf(list[at + 1]);
 const plain = (t: string): string => (t === '-' ? 'No entry' : t);
 const shortLine = (line: string): string => (/^L[0-9]/.test(line) ? `Line ${line.slice(1)}` : line);
 const cellWordsOf = (c: RCell): string => cellWords(c);
+// At a glance: a block of one line becomes one tile for each of its cells; a block of several lines is a table with bars.
+const single = (g: (typeof view.glance)[number]): boolean => g.rows.length === 1 && g.table.status === 'present';
+const tiles = view.glance.filter(single).flatMap((g) =>
+  g.rows[0]!.cells.flatMap((c, i) =>
+    c === null
+      ? []
+      : [{
+          figure: c.kind === 'value' ? c.text : cellWordsOf(c) || 'No entry',
+          words: c.kind !== 'value',
+          label: g.columns.length === 1 ? g.heading : g.columns[i]!.title,
+          where: g.where,
+          ref: c.ref,
+        }],
+  ),
+);
+const cards = view.glance.filter((g) => !single(g));
+if (view.sites.length > 0) tiles.push({ figure: view.sites.length.toLocaleString('en-US'), words: false, label: view.sites.length === 1 ? 'Site listed' : 'Sites listed', where: 'HRSA’s list of sites', ref: '' });
 const place = `${header.city}, ${header.state}`;
 const sitesWord = view.sites.length === 1 ? 'site' : 'sites';
 const address = [header.street, header.addressLine2 !== '' && header.addressLine2 !== '-' ? header.addressLine2 : '', `${header.city}, ${header.state} ${header.zip}`].filter((p) => p !== '').join(', ');
@@ -112,55 +131,75 @@ const items = [
     view.glance.length > 0 && (
       <section class="hcr-section" aria-labelledby="glance">
         <h2 id="glance">At a glance</h2>
-        <p>Cells that HRSA publishes as one cell, each with its table and line. ClinX adds none of them together.</p>
-        <div class="hcr-glance">
-          {view.glance.map((b) => {
-            const only = b.rows.length === 1 && b.columns.length === 1 ? b.rows[0]!.cells[0] : null;
-            return (
-              <section class="hcr-card" aria-labelledby={b.id}>
-                <h3 id={b.id}>{b.heading}</h3>
-                <p class="hcr-where">{b.where}</p>
-                {b.table.status !== 'present' ? (
-                  <p class="hcr-sentence">HRSA's {year} file has no named row for this health center in {b.table.name}. The table below says more.</p>
-                ) : only ? (
-                  <div class="hcr-stat">
-                    <p class:list={['hcr-stat-fig', { 'hcr-stat-words': only.kind !== 'value' }]}>{only.kind === 'value' ? only.text : cellWordsOf(only) || 'No entry'}</p>
-                    <p class="hcr-stat-what">{b.rows[0]!.title}, {only.columnTitle}</p>
-                    {only.ref !== '' && <p class="hcr-stat-ref">Cell {only.ref}</p>}
-                  </div>
-                ) : (
-                  <div class="table-wrap wide stack hcr-grid">
-                    <table role="table">
-                      <caption><span>{b.heading}, {header.name}, {year}</span></caption>
-                      <thead role="rowgroup">
-                        <tr role="row">
-                          <th role="columnheader" scope="col">Line</th>
-                          {b.columns.map((c) => <th role="columnheader" scope="col" class="num">{c.title}</th>)}
-                        </tr>
-                      </thead>
-                      <tbody role="rowgroup">
-                        {b.rows.map((r) => (
-                          <tr role="row">
-                            <th role="rowheader" scope="row"><span class="hcr-line">{shortLine(r.line)}</span>{r.title}</th>
-                            {r.cells.map((c, i) => (
-                              <td role="cell" class={c === null ? 'num blank' : 'num'} data-label={b.columns[i]!.title}>
-                                {c !== null && (c.kind === 'value' ? (
-                                  <>{c.text}<span class="hcr-ref">{c.ref}</span></>
-                                ) : c.kind === 'empty' ? null : (
-                                  <><span class:list={['hcr-mark', { 'hcr-clinx': c.kind === 'clinx', 'hcr-typed': c.kind === 'typed' }]}>{cellWordsOf(c)}</span>{c.ref !== '' && <span class="hcr-ref">{c.ref}</span>}</>
+        <p>Figures from the report below, as HRSA published them, each with its table, line and cell.</p>
+        {
+          tiles.length > 0 && (
+            <ul class:list={['stats', 'hcr-tiles', `n${Math.min(tiles.length, 4)}`]}>
+              {tiles.map((t) => (
+                <li>
+                  <strong class:list={[{ 'hcr-tile-words': t.words }]}>{t.figure}</strong>
+                  <span>{t.label}</span>
+                  <small>{t.where}{t.ref !== '' && `, cell ${t.ref}`}</small>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+        {
+          cards.length > 0 && (
+            <div class="hcr-glance">
+              {cards.map((b) => {
+                const scale = glanceScale(b);
+                return (
+                  <section class="hcr-card" aria-labelledby={b.id}>
+                    <h3 id={b.id}>{b.heading}</h3>
+                    <p class="hcr-where">{b.where}</p>
+                    {b.table.status !== 'present' ? (
+                      <p class="hcr-sentence">HRSA's {year} file has no named row for this health center in {b.table.name}. The table below says more.</p>
+                    ) : (
+                      <div class="table-wrap wide stack hcr-grid hcr-bars">
+                        <table role="table">
+                          <caption class="visually-hidden">{b.heading}, {header.name}, {year}</caption>
+                          <thead role="rowgroup">
+                            <tr role="row">
+                              <th role="columnheader" scope="col">Line</th>
+                              {b.columns.map((c) => <th role="columnheader" scope="col" class="num">{c.title}</th>)}
+                            </tr>
+                          </thead>
+                          <tbody role="rowgroup">
+                            {b.rows.map((r) => (
+                              <tr role="row" class="tone-plain">
+                                <th role="rowheader" scope="row"><span class="hcr-line">{shortLine(r.line)}</span>{r.title}</th>
+                                {r.cells.map((c, i) => (
+                                  <td role="cell" class={c === null ? 'num blank' : 'num share'} data-label={b.columns[i]!.title}>
+                                    {c !== null && (c.kind === 'value' ? (
+                                      <>
+                                        <span class="rail">
+                                          <span class="rail-track">
+                                            {glanceBar(c, scale) > 0 && <svg class="bar" width={`${glanceBar(c, scale)}%`} height="8" aria-hidden="true" focusable="false" />}
+                                          </span>
+                                          <span class="bar-figure">{c.text}</span>
+                                        </span>
+                                        <span class="hcr-ref">{c.ref}</span>
+                                      </>
+                                    ) : c.kind === 'empty' ? null : (
+                                      <><span class:list={['hcr-mark', { 'hcr-clinx': c.kind === 'clinx', 'hcr-typed': c.kind === 'typed' }]}>{cellWordsOf(c)}</span>{c.ref !== '' && <span class="hcr-ref">{c.ref}</span>}</>
+                                    ))}
+                                  </td>
                                 ))}
-                              </td>
+                              </tr>
                             ))}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </section>
-            );
-          })}
-        </div>
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </section>
+                );
+              })}
+            </div>
+          )
+        }
+        {cards.some((b) => b.table.status === 'present') && <p class="small muted">In each table the bars share one scale. The full width is the largest figure in that table.</p>}
       </section>
     )
   }

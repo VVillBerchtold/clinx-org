@@ -58,7 +58,7 @@
 /* Lists and their cells */
 .hc-list table { font-size: var(--text-sm); }
 .hc-list tr[hidden] { display: none; }
-.hc-list th[scope='row'] { min-width: 12rem; }
+.hc-list th[scope='row'] { min-width: 12rem; overflow-wrap: anywhere; }
 .hc-list .hc-id {
   display: block;
   margin-top: 0.125rem;
@@ -168,6 +168,20 @@
 
 .hc-downloads { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .hc-downloads + p { margin-top: var(--s3); }
+
+/* On a wide screen the long tables fit their card: tighter cells and a narrower first column. */
+@media (min-width: 761px) {
+  .table-wrap.wide.hc-states th,
+  .table-wrap.wide.hc-states td { padding-inline: 0.5rem; }
+  .table-wrap.wide.hc-states th:first-child { padding-left: 1.25rem; }
+  .table-wrap.wide.hc-states th:last-child,
+  .table-wrap.wide.hc-states td:last-child { padding-right: 1.25rem; }
+  .table-wrap.wide.hc-states tbody th[scope='row'] { min-width: 10.5rem; }
+  .table-wrap.wide.hc-list:not(.hc-states):not(.hc-counts) th,
+  .table-wrap.wide.hc-list:not(.hc-states):not(.hc-counts) td { padding-inline: 0.75rem; }
+  .table-wrap.wide.hc-list:not(.hc-states):not(.hc-counts) th:first-child { padding-left: 1.25rem; }
+  .table-wrap.wide.hc-list:not(.hc-states):not(.hc-counts) tbody th[scope='row'] { min-width: 11rem; }
+}
 
 @media (max-width: 600px) {
   .hc-filter label, .hc-filter input, .hc-filter select { width: 100%; }
