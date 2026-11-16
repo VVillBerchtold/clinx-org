@@ -5,16 +5,18 @@ import '../styles/workbook.css';
 import Base from '../layouts/Base.astro';
 import OnPage from './OnPage.astro';
 import PageHead from './PageHead.astro';
+import WorkbookTotals from './WorkbookTotals.astro';
 import { buildWorkbookViews, formatDate, getDataset, sharedValue } from '../lib/data';
 import { workbookFormSpec } from '../lib/forms';
-import { numberWord } from '../lib/site';
+import { numberWord, numberWordCap } from '../lib/site';
 import { STATE_REGISTRY, stateName } from '../lib/states';
 import { showCell } from '../lib/workbook';
+import { repeatedFilers } from '../lib/workbook-totals';
 
 /**
  * A state whose covered entities each send an Excel workbook (Ohio): the list of the workbooks, with
- * HRSA's name for each filer, its 340B ID, what kind of entity it is and a few cells of its workbook.
- * Nothing is added across filers and nothing is ranked.
+ * HRSA's name for each filer, its 340B ID, what kind of entity it is and a few cells of its workbook,
+ * under totals that ClinX adds from the filers' own cells. Nothing is ranked.
  */
 interface Props {
   code: string;
@@ -30,6 +32,10 @@ const entry = STATE_REGISTRY[code];
 const listDate = sharedValue(views.map((v) => v.entities[0]!.entity.hrsaListDate), `${name}: HRSA list date`);
 
 const NOT_LISTED = "Not in HRSA's list";
+
+// A filer with more than one workbook on the state's site: the rows show the file name so they can be told apart.
+const repeated = repeatedFilers(views);
+const repeatedIds = new Set(repeated.flatMap((g) => g.views.map((v) => v.filing.filingId)));
 
 // The three cells the list shows: whole cells of each workbook, never added.
 const cellOf = (v: (typeof views)[number], schedule: string, line: string, unit: 'usd' | 'count') => showCell(v.cell(schedule, line), unit);
@@ -50,15 +56,17 @@ const retrieved = sharedValue(views.map((v) => v.filing.retrievedAt.slice(0, 10)
 <Base
   title={`${name} 340B workbooks, ${year}`}
   crumbs={[{ name: 'Scorecard', path: '/scorecard/' }, { name, path: `/scorecard/${code.toLowerCase()}/` }]}
-  description={`The ${views.length} 340B workbooks the ${spec.agency} posts for ${spec.periodWord} ${year}, one for each covered entity, with HRSA's name for each filer. Each page shows the cells of its workbook as stored.`}
+  description={`The ${views.length} 340B workbooks the ${spec.agency} posts for ${spec.periodWord} ${year}, one for each covered entity, with HRSA's name for each filer. Each page shows the cells of its workbook, and the state page adds up the filers' own figures.`}
 >
   <PageHead title={name} trail={[{ label: 'Scorecard', href: '/scorecard/' }, { label: `${year} workbooks` }]}>
     <p class="lede">
-      The {numberWord(views.length)} workbooks the {spec.agency} posts for {spec.periodWord} {year}, one for each covered entity, on the department's template. A workbook prints a 340B ID and no name, so each filer is named as HRSA names it in its list of covered entities read on {formatDate(listDate)}. Each filer's page shows the cells of its workbook as stored.
+      The {numberWord(views.length)} workbooks the {spec.agency} posts for {spec.periodWord} {year}, one for each covered entity, on the department's template. A workbook prints a 340B ID and no name, so each filer is named as HRSA names it in its list of covered entities read on {formatDate(listDate)}. Each filer's page shows the cells of its workbook, with the figures shown to the cent.
     </p>
     <OnPage
       title={name}
       items={[
+        { id: 'totals-heading', label: 'Totals' },
+        { id: 'by-payer', label: 'By payer' },
         { id: 'filers-heading', label: 'The filers' },
         { id: 'read-with-care', label: 'Read it with care' },
         ...(entry?.sources ? [{ id: 'sources-heading', label: `Where the ${spec.nounPlural} come from` }] : []),
@@ -66,11 +74,20 @@ const retrieved = sharedValue(views.map((v) => v.filing.retrievedAt.slice(0, 10)
     />
   </PageHead>
 
+  <WorkbookTotals views={views} stateName={name} agency={spec.agency} />
+
   <section class="section" aria-labelledby="filers-heading">
     <div class="section-head">
       <h2 id="filers-heading">The filers</h2>
       <p>{numberWord(views.length)} {spec.nounPlural}, A to Z by HRSA's name. Select a column heading to sort.</p>
     </div>
+    {
+      repeated.length > 0 && (
+        <p>
+          {numberWordCap(repeated.length)} {repeated.length === 1 ? 'filer has' : 'filers have'} {repeated.every((g) => g.views.length === 2) ? 'two' : 'more than one'} workbooks on the department's site. The list shows each workbook as posted, with its file name under the name, and ClinX cannot say which one a filer means.
+        </p>
+      )
+    }
 
     <div class="filer-filter" data-filter hidden>
       <label>
@@ -89,7 +106,7 @@ const retrieved = sharedValue(views.map((v) => v.filing.retrievedAt.slice(0, 10)
 
     <div class="table-wrap wide stack filer-list">
       <table data-sortable data-filter-table role="table">
-        <caption><span>The {numberWord(views.length)} {name} {spec.nounPlural} for {year}: three cells of each, as stored</span></caption>
+        <caption><span>The {numberWord(views.length)} {name} {spec.nounPlural} for {year}: three cells of each</span></caption>
         <thead role="rowgroup">
           <tr role="row">
             <th role="columnheader" scope="col" data-sort="text">Name (HRSA)</th>
@@ -106,6 +123,7 @@ const retrieved = sharedValue(views.map((v) => v.filing.retrievedAt.slice(0, 10)
               <tr role="row" data-search={r.search} data-kind={r.kind}>
                 <th role="rowheader" scope="row" data-value={r.v.title}>
                   <a href={r.v.path}>{r.v.name !== '' ? r.v.name : r.v.entities[0]!.id}</a>
+                  {repeatedIds.has(r.v.filing.filingId) && <small class="file-name">File {r.v.filing.sourceFile}</small>}
                 </th>
                 <td role="cell" class="id" data-label="340B ID" data-value={r.v.entities[0]!.id}>{r.v.entities.map((e) => e.id).join(', ')}</td>
                 <td role="cell" class:list={['kind', { unlisted: !r.listed }]} data-label="Kind of entity" data-value={r.kind}>{r.kind}</td>
@@ -119,14 +137,14 @@ const retrieved = sharedValue(views.map((v) => v.filing.retrievedAt.slice(0, 10)
       </table>
     </div>
     <p class="small muted" data-filter-none hidden>No workbook matches. Clear the filter to see all of them.</p>
-    <p class="small muted">The two acquisition costs are the Total column of the template's first and second sections. Amounts are in US dollars and are shown as the workbook stores them. Excel keeps 15 digits of a number and its file can write 17, so a cost Excel shows as 515,852.61 can be in the file as 515852.60999999993. The page prints the 15 digits Excel keeps. A cell left empty is left empty here. The workbooks were retrieved on {formatDate(retrieved)}.</p>
+    <p class="small muted">The two acquisition costs are the Total column of the template's first and second sections, in US dollars. Figures are shown to the cent, and the downloads keep each figure exactly as it is written in the file. A cell left empty is left empty here. The workbooks were retrieved on {formatDate(retrieved)}.</p>
   </section>
 
   <section class="section" aria-labelledby="read-with-care">
     <div class="note">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="2"></circle><path d="M10 9v5M10 6v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
       <div>
-        <p><strong id="read-with-care">Read it with care.</strong> Each filer made its workbook in its own way. Some left cells empty, some typed words where a figure goes, and some wrote in cells the template does not ask for. The filers are listed A to Z by name. They are not ranked, and no figure here is added to another.</p>
+        <p><strong id="read-with-care">Read it with care.</strong> The totals are ClinX's additions of the filers' own figures. The filers reported those figures and ClinX has not audited them. Each filer made its workbook in its own way. Some left cells empty, some typed words where a figure goes, and some wrote in cells the template does not ask for. A zero and an empty cell are different things: a zero is a figure and is added, and an empty cell is left out and counted. Where a filer has more than one workbook, the totals add one of them, and the others are named beside the totals. The filers are listed A to Z by name, and none is ranked or set against another.</p>
         <p>The kind of entity is read from the letters at the start of the 340B ID as HRSA spells it: CAH is a critical access hospital, FP a Title X family planning clinic. The words are ClinX's plain descriptions of those letters. A count of prescriptions from 1 to 5 is never published, here or in the data files, and a cell marked Withheld stands where one would be. <a href="/methods/">Methods</a> sets out how the cells were read.</p>
       </div>
     </div>

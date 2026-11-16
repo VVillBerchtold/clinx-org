@@ -301,6 +301,14 @@ for (const file of htmlFiles) {
     .replace(/<script\b[\s\S]*?<\/script>/gi, ' ')
     .replace(/<style\b[\s\S]*?<\/style>/gi, ' ')
     .replace(/<[^>]*>/g, ' ');
+  // Ohio's pages show a dollar figure to the cent and a percentage to two decimals in their figure cells; the long tails stay in the downloads.
+  // A cell that holds the words a filer typed is shown as typed and is not a figure.
+  if (page.startsWith('/scorecard/oh/')) {
+    for (const cellMatch of noComments.matchAll(/<td\b[^>]*class="[^"]*\b(?:num|share)\b[^"]*"[^>]*>([\s\S]*?)<\/td>/g)) {
+      const longTail = /^-?\$[\d,]+\.\d{3,}$|^-?[\d,]+\.\d{3,}%$/.exec(cellMatch[1].replace(/<[^>]*>/g, ' ').trim());
+      if (longTail) fail(page, `a figure is shown with more decimals than the display rule allows: ${longTail[0]}`);
+    }
+  }
   let checked = text;
   for (const { page: onPage, phrase } of PRINTED_LABELS) {
     if (page === onPage) checked = checked.replaceAll(phrase, ' ');
