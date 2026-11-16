@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import list from '../scripts/brand/share-cards.json';
 import { SHARE_CARDS, shareCard, shareCardFor } from '../src/lib/share-cards';
+import { STATE_REGISTRY } from '../src/lib/states';
 
 // The pictures are read as they are kept in the repository, as base64 text, and turned back into bytes.
 const pictures = import.meta.glob('../public/brand/**/*.png', { query: '?inline', import: 'default', eager: true }) as Record<string, string>;
@@ -48,6 +49,11 @@ describe('share cards', () => {
     expect(shareCardFor('/privacy/').id).toBe('home');
     expect(shareCardFor('/404.html').id).toBe('home');
     expect(() => shareCard('nowhere')).toThrow();
+  });
+
+  it('lights the states with a reporting law, the same ones the Scorecard lists', () => {
+    // If this fails a state was added to or taken off the registry: change "bright" in share-cards.json and draw the cards again.
+    expect([...list.bright].sort()).toEqual(Object.keys(STATE_REGISTRY).sort());
   });
 
   it('puts no count in a card, since a count goes out of date', () => {

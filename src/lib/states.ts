@@ -143,9 +143,12 @@ export const STATE_REGISTRY: Readonly<Record<string, StateEntry>> = {
     status: 'law',
     group: 'not-posted-yet',
     visibility: 'unconfirmed',
-    publicNow: 'Nothing is known to be public. Whether the figures are published for each hospital has not been confirmed.',
-    stands: 'Hospitals add 340B figures to the yearly report they send the state, under a law passed in 2025. Whether the figures are published for each hospital is not yet confirmed.',
-    sources: [{ label: 'Senate Bill 25-071', href: 'https://content.leg.colorado.gov/sites/default/files/2025a_071_signed.pdf' }],
+    publicNow: 'No 340B figure is known to be public. The first figures were due to the state on July 1, 2026, for fiscal year 2024. Whether the state will print them for each hospital has not been confirmed.',
+    stands: "Hospitals add 340B figures to the community benefit report they send the Department of Health Care Policy and Financing each year, under a law passed in 2025. The figures are the hospital's 340B costs at market rates, its 340B purchase costs, its savings, and a description of how the savings are used. The department publishes a report on community benefit each year. Whether that report will show the 340B figures for each hospital is not yet confirmed.",
+    sources: [
+      { label: 'Senate Bill 25-071', href: 'https://content.leg.colorado.gov/sites/default/files/2025a_071_signed.pdf' },
+      { label: "The department's page", href: 'https://hcpf.colorado.gov/hospital-community-benefit-accountability' },
+    ],
   },
   HI: {
     status: 'law',
@@ -173,7 +176,7 @@ export const STATE_REGISTRY: Readonly<Record<string, StateEntry>> = {
     status: 'law',
     group: 'not-posted-yet',
     visibility: 'none',
-    publicNow: 'Nothing is public yet.',
+    publicNow: 'Nothing is public yet. The first reports to the General Assembly can be expected by August 1, 2027.',
     stands:
       'Covered entities report to the General Assembly "On or before August 1, 2026 and each August 1 thereafter", under Section 20 of the act. The act was signed on August 7, 2026, after that first date, so the first reports can be expected by August 1, 2027. That is a reading of the dates; the act does not say it. Hospitals with fewer than 100 beds, critical access hospitals, safety-net hospitals and grantees start in 2029. Section 25 adds a report on 340B in Medicaid, which the Medicaid department makes by January 1, 2028.',
     sources: [{ label: 'Public Act 104-0758', href: 'https://www.ilga.gov/Legislation/PublicActs/View/104-0758' }],
@@ -182,8 +185,8 @@ export const STATE_REGISTRY: Readonly<Record<string, StateEntry>> = {
     status: 'law',
     group: 'state-totals',
     visibility: 'planned',
-    publicNow: 'Nothing is shown here yet. The law calls for one report of the figures added together, and this page does not say that one has been posted.',
-    stands: 'Reports are due to the Department of Health by April 1 each year. The law has the department publish a yearly report of the figures added together.',
+    publicNow: 'Nothing yet. On the Department of Health\'s page, the part for these reports says "Coming soon!" and holds no file. It was read on November 16, 2026.',
+    stands: 'Reports are due to the Department of Health by April 1 each year. The law has the department publish a yearly report of the figures added together. None has been posted so far.',
     sources: [
       { label: 'IC 16-40-6 (Senate Bill 118, 2025)', href: 'https://iga.in.gov/pdf-documents/124/2025/senate/bills/SB0118/SB0118.05.ENRH.pdf' },
       { label: "The department's page", href: 'https://www.in.gov/health/cshcr/reports-on-healthcare-facilities/' },

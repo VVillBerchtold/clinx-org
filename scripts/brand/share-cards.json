@@ -1,12 +1,14 @@
 {
   "about": "The picture a link to a page of clinx.org shows when it is shared. One entry per card. scripts/brand/make-share-cards.mjs draws the PNGs from this list, the site picks a card by the page's section, and check-dist checks every page names one of them. Keep the lines free of anything that goes out of date, such as a count.",
+  "bright": ["CO", "HI", "ID", "IL", "IN", "ME", "MN", "OH", "RI", "VT", "WA"],
+  "bright_about": "The bright tiles on every card are the states with a 340B reporting law, the same states the Scorecard lists. A test compares this list with the site's registry, so a new state fails the test until the cards are drawn again.",
   "width": 1200,
   "height": 630,
   "cards": [
     { "id": "home", "kicker": "What ClinX is", "title": "Healthcare tools and data, within reach of every clinic.", "accent": "within reach of every clinic.", "line": "Open data and free tools for any clinic.", "alt": "ClinX. Healthcare tools and data, within reach of every clinic.", "paths": ["/"] },
     { "id": "scorecard", "kicker": "340B", "title": "Scorecard", "line": "What each state publishes about 340B, with every figure linked to the page it came from.", "alt": "ClinX 340B Scorecard. What each state publishes about 340B.", "paths": ["/scorecard/"] },
     { "id": "laws", "kicker": "340B", "title": "State laws", "line": "The 340B laws each state has passed, what they do and where to read them.", "alt": "ClinX state laws. The 340B laws each state has passed.", "paths": ["/laws/"] },
-    { "id": "bills", "kicker": "340B", "title": "Bills", "line": "The 340B bills in Congress and the states, and how far each one has got.", "alt": "ClinX bills. The 340B bills in Congress and the states.", "paths": ["/bills/"] },
+    { "id": "bills", "kicker": "340B", "title": "Bills", "line": "The 340B bills in Congress and the states, and how far each one has gone.", "alt": "ClinX bills. The 340B bills in Congress and the states.", "paths": ["/bills/"] },
     { "id": "notices", "kicker": "340B", "title": "Federal notices", "line": "Federal rules and notices that name 340B, and what each one does about it.", "alt": "ClinX federal notices. Federal rules and notices that name 340B.", "paths": ["/notices/", "/rebate-pilot/"] },
     { "id": "calendar", "kicker": "340B", "title": "Calendar", "line": "Bill steps, hearings, report dates and federal deadlines, each linked to its official page.", "alt": "ClinX calendar. Dates that matter to 340B.", "paths": ["/calendar/"] },
     { "id": "tools", "kicker": "ClinX", "title": "Tools", "line": "Small tools that run in your browser and keep your file on your computer.", "alt": "ClinX tools. Small tools that keep your file on your computer.", "paths": ["/tools/"] },

@@ -50,7 +50,7 @@ try {
     if (only.length > 0 && !only.includes(card.id)) continue;
     // A fresh page for each card, so the card handed in is the one the page draws.
     const page = await browser.newPage({ viewport: { width: list.width, height: list.height }, deviceScaleFactor: 1 });
-    await page.addInitScript((c) => { window.CARD = c; }, { ...card, where: card.id === 'home' ? 'clinx.org' : `clinx.org${card.paths[0]}` });
+    await page.addInitScript((c) => { window.CARD = c; }, { ...card, bright: list.bright, where: card.id === 'home' ? 'clinx.org' : `clinx.org${card.paths[0]}` });
     await page.goto(pathToFileURL(join(here, 'share-cards.html')).href, { waitUntil: 'load' });
     await page.evaluate(() => document.fonts.ready);
     const file = join(out, `${card.id}.png`);
