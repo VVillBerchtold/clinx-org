@@ -6,7 +6,6 @@
 import { AREAS_PATH, AREAS_DOWNLOADS, day as areasDay, getIndex, num, rawFile as areasFile, stateCodes, SERIES, SERIES_INFO } from './hc-areas';
 import { FUNDING_FEED, FUNDING_HOME, DOWNLOADS as FUNDING_DOWNLOADS, ahead, dayText, downloadPath, fundingFile, getFunding } from './hc-funding';
 import { DATA_PATH, DOWNLOADS as RECORDS_DOWNLOADS, RECORDS_PATH, headerRows, listRows, placesWords, rawFile as recordsFile, recordsSource, refreshDay } from './hc-records';
-import { stateName } from './states';
 
 export { HC_HOME, HC_NAME } from './site';
 
@@ -46,7 +45,7 @@ export interface HcFileGroup {
 export function partCards(): PartCard[] {
   const source = recordsSource();
   const rows = listRows();
-  const byState = [...new Set(rows.map((r) => r.state))].sort((a, b) => stateName(a).localeCompare(stateName(b), 'en'));
+  const byState = [...new Set(rows.map((r) => r.state))];
   const funding = getFunding();
   const forecasts = funding.opportunities.filter((o) => o.status === 'forecasted').length;
   const posted = funding.opportunities.length - forecasts;

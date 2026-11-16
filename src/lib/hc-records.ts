@@ -5,12 +5,18 @@
  * published; the only changes are the thousands separators and the dollar sign drawn around it.
  * Nothing here adds one value to another, ranks a health center or compares two of them.
  */
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { cwd } from 'node:process';
 import { parseCsv } from './csv';
 import { numberWord } from './site';
-import { stateName } from './states';
+import { MAP_PLACES, STATES } from './state-map';
 
 const csvTexts = import.meta.glob('../data/health-centers/records/*.csv', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
-const centerTexts = import.meta.glob('../data/health-centers/records/centers/*.json', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
+// One file for each health center. There are too many, and they are too large together, to load them
+// all when the site is built, so each is read from the folder when a page asks for it. The build and
+// the tests both run from the site's own folder.
+const CENTERS_DIR = join(cwd(), 'src', 'data', 'health-centers', 'records', 'centers');
 const sourceDocs = import.meta.glob('../data/health-centers/records/SOURCE.json', { import: 'default', eager: true }) as Record<string, RecordsSource>;
 
 export const RECORDS_PATH = '/health-centers/records/';
@@ -82,9 +88,11 @@ const text = (name: string): string => {
 /** The text of a copied file by the name it has in the copy (centers/<key>.json, lines.csv, ...). Downloads are served from this. */
 export function rawFile(name: string): string {
   if (name.startsWith('centers/')) {
-    const hit = Object.entries(centerTexts).find(([path]) => path.endsWith(`/${name}`));
-    if (!hit) throw new Error(`health-centers/records/${name} is missing from src/data`);
-    return hit[1];
+    const file = name.slice('centers/'.length);
+    if (!/^[A-Za-z0-9]+\.json$/.test(file)) throw new Error(`health-centers/records/${name} is not the name of a health center's file`);
+    const path = join(CENTERS_DIR, file);
+    if (!existsSync(path)) throw new Error(`health-centers/records/${name} is missing from src/data`);
+    return readFileSync(path, 'utf8');
   }
   return text(name);
 }
@@ -186,13 +194,20 @@ interface CenterDoc {
   years: Record<string, CenterYearDoc>;
 }
 
+// The health centers read most recently. Only a few are kept, because the pages of one health center
+// are built one after another and the files of all of them together would not fit in memory.
+const DOCS_KEPT = 8;
 const docCache = new Map<string, CenterDoc>();
 function centerDoc(key: string): CenterDoc {
   let doc = docCache.get(key);
-  if (!doc) {
+  if (doc) {
+    // Move it to the end, so the one unused for longest is the first to go.
+    docCache.delete(key);
+  } else {
     doc = JSON.parse(rawFile(`centers/${key}.json`)) as CenterDoc;
-    docCache.set(key, doc);
+    if (docCache.size >= DOCS_KEPT) docCache.delete(docCache.keys().next().value!);
   }
+  docCache.set(key, doc);
   return doc;
 }
 
@@ -206,8 +221,18 @@ export const slugOf = (key: string): string => key.toLowerCase();
 export function centerPath(key: string, year: number): string {
   return year === lastYearOf(key) ? `${RECORDS_PATH}${slugOf(key)}/` : `${RECORDS_PATH}${slugOf(key)}/${year}/`;
 }
-/** The places the records cover, in words: "eleven states and the District of Columbia". */
+/** The name of a state or territory from its two letters. */
+export function placeName(code: string): string {
+  const place = MAP_PLACES.find((p) => p.code === code.toUpperCase());
+  if (!place) throw new Error(`Unknown state or territory: ${code}`);
+  return place.name;
+}
+/**
+ * The places the records cover, in words: "eleven states and the District of Columbia", or
+ * "59 states and territories" once a place outside the states and the District is among them.
+ */
 export function placesWords(codes: readonly string[]): string {
+  if (codes.some((code) => !STATES.some((s) => s.code === code))) return `${numberWord(codes.length)} states and territories`;
   const withDc = codes.includes('DC');
   const n = codes.length - (withDc ? 1 : 0);
   const states = `${numberWord(n)} ${n === 1 ? 'state' : 'states'}`;
@@ -285,7 +310,7 @@ export function listRows(): ListRow[] {
       name: h.name,
       city: h.city,
       state: h.state,
-      stateName: stateName(h.state),
+      stateName: placeName(h.state),
       years: yearsOf(h.key),
       lastYear: h.year,
       path: centerPath(h.key, h.year),

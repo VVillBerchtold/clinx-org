@@ -1,4 +1,5 @@
-// The few Node functions the health center records test uses; the project carries no Node type package.
+// The few Node functions the health center records library (src/lib/hc-records.ts) and its test use; the
+// project carries no Node type package.
 declare module 'node:fs' {
   export function existsSync(path: string): boolean;
   export function readFileSync(path: string, encoding: 'utf8'): string;
@@ -11,4 +12,7 @@ declare module 'node:path' {
 }
 declare module 'node:url' {
   export function fileURLToPath(url: string): string;
+}
+declare module 'node:process' {
+  export function cwd(): string;
 }
