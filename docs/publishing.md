@@ -100,7 +100,7 @@ What the program will not do:
 - **It changes nothing.** There is nothing to sign in to and nothing to write to.
 - **It keeps no question.** No words searched for, no dates typed, and no internet address are stored or logged.
 - **It sets a limit and says so.** About 200 questions a minute from one address (an assistant service sends many people's questions from a few shared addresses); past that it answers "too many requests" and a time to try again. The host does this count, approximately ([how approximately](#checking-the-published-door)), and the site keeps none of it.
-- **It sends a person who opens the address in a browser** to the part of the Data page that explains it.
+- **It sends a person who opens the address in a browser** to the page that explains it, `/data/assistants/`.
 
 The program that answers lives in its own repository, [clinx-mcp](https://github.com/VVillBerchtold/clinx-mcp), with its own tests. `npm run sync:mcp` copies it into `worker/mcp/` and records a fingerprint of each file and the commit it came from. `npm run check:data` fails if a copy was changed here, or was made from work that was not committed.
 

@@ -356,6 +356,27 @@
   color: var(--muted);
   font-size: var(--text-sm);
 }
+/* The assistants page: one heading for each assistant, with room above it */
+.add-ways > h3 {
+  margin-top: var(--s4);
+}
+/* A few lines to copy, such as a settings file. Long lines wrap, so the page never scrolls sideways. */
+.snippet {
+  max-width: var(--measure);
+  margin: 0;
+  padding: var(--s4);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  font: 400 var(--text-sm) / 1.55 var(--mono);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.snippet code {
+  padding: 0;
+  background: none;
+  font-size: inherit;
+}
 .doc h3 {
   font-family: var(--mono);
   font-size: 1.0625rem;

@@ -32,7 +32,7 @@ export interface AssistantsEnv {
 }
 
 /** The page that explains this door to a person. */
-export const ASSISTANTS_PAGE = '/data/#assistants';
+export const ASSISTANTS_PAGE = '/data/assistants/';
 /** How long an address that asked too often is asked to wait, in seconds. */
 export const WAIT_SECONDS = 60;
 

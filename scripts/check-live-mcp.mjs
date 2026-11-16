@@ -121,7 +121,7 @@ ok('a request over 64 KB is refused', big.status === 413, String(big.status));
 const pre = await fetch(`${SITE}/mcp`, { method: 'OPTIONS', headers: { Origin: 'https://example.org', 'Access-Control-Request-Method': 'POST', 'User-Agent': 'clinx-check' } });
 ok('a web app on another site may ask (CORS)', pre.headers.get('access-control-allow-origin') === '*', String(pre.status));
 const page = await fetch(`${SITE}/mcp`, { headers: { Accept: 'text/html', 'User-Agent': 'clinx-check' }, redirect: 'manual' });
-ok('a browser is sent to the Data page', page.status === 303 && page.headers.get('location') === '/data/#assistants');
+ok('a browser is sent to the page for assistants', page.status === 303 && page.headers.get('location') === '/data/assistants/');
 const times = [];
 for (let i = 0; i < 5; i++) { const t = performance.now(); await call('state_overview', { state: 'RI' }); times.push(Math.round(performance.now() - t)); }
 ok('answers come back quickly', Math.max(...times) < 2000, `${times.join(', ')} ms`);

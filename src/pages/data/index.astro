@@ -1,6 +1,7 @@
 ---
 import '../../styles/pages.css';
 import Base from '../../layouts/Base.astro';
+import Arrow from '../../components/Arrow.astro';
 import Draft from '../../components/Draft.astro';
 import OnPage from '../../components/OnPage.astro';
 import PageHead from '../../components/PageHead.astro';
@@ -189,10 +190,8 @@ const describe: Record<string, string> = {
         <dt>Cost</dt>
         <dd>Free. No key and no account</dd>
       </dl>
-      <p>To use it, open an assistant that accepts connectors, also called MCP servers, add a new one and give it the address. It reads one filer's report at a time, with the same small-number rule as the pages. A health center's report is given one table at a time, each value as HRSA published it and each of HRSA's marks with its meaning in words. It puts health centers in the order of their names, never of a figure.</p>
-      <p>Questions to try: What did Adena Regional Medical Center report to Ohio for 2025? Which states have a contract pharmacy law, and when did each take effect? What is on the 340B calendar for Minnesota in January? Is a federal 340B notice open for comment right now? Which health centers in Rhode Island have records, and what did one of them report in Table 3A for 2025? Which HRSA funding opportunities are open today, and when are they due? Which shortage designations in Rhode Island are proposed for withdrawal?</p>
-      <p>An assistant can misread a row or leave one out. Ask it for the official link and read the source before you rely on an answer.</p>
-      <p>The site counts what assistants ask for by kind. It never keeps the words of a question, and never who asked. <a href="/privacy/#assistants">What is counted</a></p>
+      <p>One page has the steps for Claude, ChatGPT and VS Code, everything an assistant can look up, questions to try and what to keep in mind.</p>
+      <div class="btn-row"><a class="btn" href="/data/assistants/">Use ClinX with an AI assistant <Arrow /></a></div>
     </div>
   </section>
 
