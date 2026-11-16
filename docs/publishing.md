@@ -139,12 +139,12 @@ Reading them needs two things from the host, Cloudflare: a read-only token and t
 
 1. Sign in to Cloudflare and open [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens). By the menus: the person icon, **My Profile**, then **API Tokens**.
 2. Select **Create Token**.
-3. Select **Create Custom Token**.
-4. Give it a name that says what it is for, such as `ClinX usage counts, read only`.
-5. Under **Permissions**, set the three boxes of the one row to **Account**, then **Account Analytics**, then **Read**. Add no other row.
-6. Where the form asks which account the token applies to, choose the account that holds clinx.org. An expiry date is optional.
+3. Give it a name that says what it is for, such as `ClinX usage counts, read only`.
+4. Under **Policies**, choose **Start from scratch**. The ready-made sets beside it, such as "Read analytics and logs", grant more than is needed.
+5. For the kind of policy choose **Account**, and for the account choose the one that holds clinx.org.
+6. For the permission choose **Account Analytics**, **Read**. Add nothing else. An expiry date is optional.
 7. Select **Continue to summary**, check that the summary lists Account Analytics: Read and nothing more, then select **Create Token**.
-8. The token is shown once. Copy it, and save it before closing the page (next step).
+8. The token is shown once, as one long word beginning `cfut_`. Copy that word only. The page also offers a ready-made test command with its own copy button; that is not the token, though the token is inside it.
 
 **Save the token.** With the token copied, run this in Terminal. It writes whatever was last copied into the file, so run it straight after copying:
 

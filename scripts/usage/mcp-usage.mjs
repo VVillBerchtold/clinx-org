@@ -118,7 +118,7 @@ function kept(variable, file) {
   if (fromEnv) return fromEnv;
   const path = join(homedir(), '.config', 'clinx', file);
   if (existsSync(path)) return readFileSync(path, 'utf8').trim();
-  return fail(`needs ${variable}, or the file ${path}. See docs/publishing.md, "The counts for the door for assistants".`);
+  return fail(`needs ${variable}, or the file ${path}. See docs/publishing.md, "Reading the counts".`);
 }
 
 async function main() {
@@ -134,6 +134,8 @@ async function main() {
   const account = kept('CLOUDFLARE_ACCOUNT_ID', 'cloudflare-account-id');
   const token = kept('CLINX_USAGE_TOKEN', 'cloudflare-usage.token');
   if (!/^[0-9a-f]{32}$/.test(account)) fail('the account id should be 32 letters and digits');
+  // A token is one unbroken word. Anything else (a whole command copied by mistake, say) is caught here, before it is sent anywhere.
+  if (!/^[A-Za-z0-9_-]{20,}$/.test(token)) fail('the token file should hold the token and nothing else: one long word, no spaces or line breaks. See docs/publishing.md, "Reading the counts".');
 
   const answers = [];
   for (const question of asked) {
