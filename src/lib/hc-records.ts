@@ -49,7 +49,7 @@ export const CLINX_WORDS = 'Withheld by ClinX';
 export const TYPED_WORDS = 'Typed text, not kept';
 
 /** HRSA's table codes with a plain label of ClinX's own beside each. */
-const TABLE_LABELS: Record<string, string> = {
+export const TABLE_LABELS: Readonly<Record<string, string>> = {
   'Table 3A': 'Patients by age and sex assigned at birth',
   'Table 3B': 'Demographic characteristics of patients',
   'Table 4': 'Selected patient characteristics',
