@@ -39,9 +39,9 @@ const groups = REPORTING_GROUPS.map((g) => ({ ...g, states: statesInGroup(g.id) 
 const readOn = new Date(`${REGISTRY_READ_ON}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 ---
 
-<Base title="340B Scorecard: filings by state" crumbs={[{ name: 'Scorecard', path: '/scorecard/' }]} description="The 340B Scorecard and the states with a reporting law, grouped by what each state makes public. Pick a state to see what its filers reported, or what the state published about them. Every figure links to the page it came from.">
+<Base title="340B Scorecard: filings by state" crumbs={[{ name: 'Scorecard', path: '/scorecard/' }]} description="The 340B Scorecard and the states with a reporting law, grouped by what each state makes public. Pick a state to see what its filers reported, or what the state published about them. Every figure links to the public file it came from.">
   <PageHead title="Scorecard" trail={[{ label: '340B Scorecard' }]}>
-    <p class="lede">States report 340B figures in different ways. Some post each filer's report, some publish one report of their own, some publish totals only, and some have a law and nothing public yet. Pick a state to see what it makes public. Every figure links to the page it came from.</p>
+    <p class="lede">States report 340B figures in different ways. Some post each filer's report, some publish one report of their own, some publish totals only, and some have a law and nothing public yet. Pick a state to see what it makes public. Every figure links to the public file it came from.</p>
   </PageHead>
 
   <div class="states">

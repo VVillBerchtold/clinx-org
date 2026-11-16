@@ -29,15 +29,19 @@ const year = sharedValue(views.map((v) => v.filing.reportingYear), `${name}: yea
 const entry = STATE_REGISTRY[code];
 const listDate = sharedValue(views.map((v) => v.entities[0]!.entity.hrsaListDate), `${name}: HRSA list date`);
 
+const NOT_LISTED = "Not in HRSA's list";
+
 // The three cells the list shows: whole cells of each workbook, never added.
 const cellOf = (v: (typeof views)[number], schedule: string, line: string, unit: 'usd' | 'count') => showCell(v.cell(schedule, line), unit);
 const rows = views.map((v) => {
   const inHouse = cellOf(v, 'in_house_acquisition_cost', 'total', 'usd');
   const contract = cellOf(v, 'contract_acquisition_cost', 'total', 'usd');
   const pharmacies = cellOf(v, spec.pharmacies.schedule, spec.pharmacies.line, 'count');
-  const kind = v.entities[0]!.kindName;
+  // A workbook whose ID is not in HRSA's list has no kind; the list and the filter say so in words.
+  const listed = v.entities[0]!.kindName !== '';
+  const kind = listed ? v.entities[0]!.kindName : NOT_LISTED;
   const search = [v.name, ...v.entities.flatMap((e) => [e.id, e.entity.opaisIdsAsFiled]), v.filing.sourceFile].join(' ').toLowerCase();
-  return { v, inHouse, contract, pharmacies, kind, search };
+  return { v, inHouse, contract, pharmacies, kind, listed, search };
 });
 const kinds = [...new Set(rows.map((r) => r.kind))].sort((a, b) => a.localeCompare(b, 'en'));
 const retrieved = sharedValue(views.map((v) => v.filing.retrievedAt.slice(0, 10)), `${name}: retrieved`);
@@ -77,7 +81,7 @@ const retrieved = sharedValue(views.map((v) => v.filing.retrievedAt.slice(0, 10)
         Kind of entity
         <select data-filter-kind>
           <option value="">All kinds</option>
-          {kinds.map((k) => <option value={k}>{k === '' ? 'Not in HRSA\'s list' : k}</option>)}
+          {kinds.map((k) => <option value={k}>{k}</option>)}
         </select>
       </label>
     </div>
@@ -104,7 +108,7 @@ const retrieved = sharedValue(views.map((v) => v.filing.retrievedAt.slice(0, 10)
                   <a href={r.v.path}>{r.v.name !== '' ? r.v.name : r.v.entities[0]!.id}</a>
                 </th>
                 <td role="cell" class="id" data-label="340B ID" data-value={r.v.entities[0]!.id}>{r.v.entities.map((e) => e.id).join(', ')}</td>
-                <td role="cell" class:list={['kind', { blank: r.kind === '' }]} data-label="Kind of entity" data-value={r.kind}>{r.kind}</td>
+                <td role="cell" class:list={['kind', { unlisted: !r.listed }]} data-label="Kind of entity" data-value={r.kind}>{r.kind}</td>
                 <td role="cell" class:list={['num', { blank: r.inHouse.kind === 'none' }]} data-label="In-house acquisition cost" data-value={r.inHouse.kind === 'figure' ? r.inHouse.sort : ''}>{r.inHouse.text}</td>
                 <td role="cell" class:list={['num', { blank: r.contract.kind === 'none' }]} data-label="Contract pharmacy acquisition cost" data-value={r.contract.kind === 'figure' ? r.contract.sort : ''}>{r.contract.text}</td>
                 <td role="cell" class:list={['num', { blank: r.pharmacies.kind === 'none' }]} data-label="Contract pharmacies" data-value={r.pharmacies.kind === 'figure' ? r.pharmacies.sort : ''}>{r.pharmacies.text}</td>
@@ -115,7 +119,7 @@ const retrieved = sharedValue(views.map((v) => v.filing.retrievedAt.slice(0, 10)
       </table>
     </div>
     <p class="small muted" data-filter-none hidden>No workbook matches. Clear the filter to see all of them.</p>
-    <p class="small muted">The two acquisition costs are the Total column of the template's first and second sections. Amounts are in US dollars and are shown as the workbook stores them. A cell left empty is left empty here. The workbooks were retrieved on {formatDate(retrieved)}.</p>
+    <p class="small muted">The two acquisition costs are the Total column of the template's first and second sections. Amounts are in US dollars and are shown as the workbook stores them. Excel keeps 15 digits of a number and its file can write 17, so a cost Excel shows as 515,852.61 can be in the file as 515852.60999999993. The page prints the 15 digits Excel keeps. A cell left empty is left empty here. The workbooks were retrieved on {formatDate(retrieved)}.</p>
   </section>
 
   <section class="section" aria-labelledby="read-with-care">
@@ -123,7 +127,7 @@ const retrieved = sharedValue(views.map((v) => v.filing.retrievedAt.slice(0, 10)
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="2"></circle><path d="M10 9v5M10 6v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
       <div>
         <p><strong id="read-with-care">Read it with care.</strong> Each filer made its workbook in its own way. Some left cells empty, some typed words where a figure goes, and some wrote in cells the template does not ask for. The filers are listed A to Z by name. They are not ranked, and no figure here is added to another.</p>
-        <p>The kind of entity comes from the letters at the start of the 340B ID, read with HRSA's list. A count of prescriptions from 1 to 5 is never published, here or in the data files, and a cell marked Withheld stands where one would be. <a href="/methods/">Methods</a> sets out how the cells were read.</p>
+        <p>The kind of entity is read from the letters at the start of the 340B ID as HRSA spells it: CAH is a critical access hospital, FP a Title X family planning clinic. The words are ClinX's plain descriptions of those letters. A count of prescriptions from 1 to 5 is never published, here or in the data files, and a cell marked Withheld stands where one would be. <a href="/methods/">Methods</a> sets out how the cells were read.</p>
       </div>
     </div>
   </section>

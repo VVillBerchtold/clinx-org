@@ -11,7 +11,7 @@ import Pager from './Pager.astro';
 import { findDifferences, formatDate, getDataset, type LineItem, type WorkbookView } from '../lib/data';
 import { REPOSITORIES } from '../lib/site';
 import { stateName } from '../lib/states';
-import { WITHHELD_SENTENCE, showCell } from '../lib/workbook';
+import { WITHHELD_SENTENCE, isShortened, showCell } from '../lib/workbook';
 
 /**
  * One filer's workbook (Ohio): the figures as the workbook stores them, in the order and words of the
@@ -53,6 +53,8 @@ const withheldWhy = [...new Set(view.rows.filter((r) => r.claimsWithheld !== '')
 // Notes the dataset keeps on single cells, other than the one that says a percentage is stored as a fraction.
 const cellNotes = view.rows.filter((r) => r.note !== '' && !/fraction of one/.test(r.note));
 const fractionCells = view.rows.some((r) => /fraction of one/.test(r.note));
+// A figure the file writes with more digits than Excel keeps is printed to the 15 digits Excel keeps.
+const shortened = view.rows.find((r) => r.unit !== 'none' && isShortened(r));
 
 const costRows = spec.costs.rows.map((c) => ({ ...c, row: at(spec.costs.schedule, c.line), shown: showCell(at(spec.costs.schedule, c.line), 'usd') }));
 const costsAny = costRows.some((c) => c.shown.kind !== 'none');
@@ -67,7 +69,8 @@ const otherUse = useRows([spec.uses.other])[0]!;
 const typedUse = (r: { description: LineItem | undefined; amount: LineItem | undefined }) => !isDash(textOf(r.description)) || !isDash(textOf(r.amount));
 const narrative = textOf(at(spec.uses.schedule, spec.uses.narrative));
 const alternative = textOf(at(spec.uses.schedule, spec.uses.alternativeNarrative));
-const usesAny = [...programs, ...equipment, otherUse].some(typedUse) || !isDash(narrative) || !isDash(alternative);
+const usesTyped = [...programs, ...equipment, otherUse].some(typedUse);
+const usesAny = usesTyped || !isDash(narrative) || !isDash(alternative);
 
 const npis = view.rows.filter((r) => r.schedule === spec.identity.schedule && r.line.startsWith('npi_')).map((r) => r.answerAsFiled).filter((t) => !isDash(t));
 const period = textOf(at(spec.identity.schedule, spec.identity.period));
@@ -182,6 +185,7 @@ const items = [
       ))
     }
     {fractionCells && <p class="small muted">Where the workbook formats a cell as a percentage it stores a fraction of one, and the page shows it as the workbook's cell shows it: 0.25 is 25%. The dataset keeps the stored number.</p>}
+    {shortened && <p class="small muted">Excel keeps 15 digits of a number, and its file can write 17. Cell {shortened.sourceCell} of this workbook is written as {shortened.amountAsFiled.trim()}. The page prints the 15 digits Excel keeps, and the cell file has the text as written.</p>}
     {
       withheldWhy.length > 0 && (
         <>
@@ -253,7 +257,7 @@ const items = [
         <>
           <h2 id="uses">Uses of 340B funds</h2>
           <p>What the filer typed under the template's questions about how it uses the money 340B brings in. A dash or an empty cell is left out.</p>
-          <div class="table-wrap wb-cells stack">
+          {usesTyped && <div class="table-wrap wb-cells stack">
             <table role="table">
               <caption><span>Uses of 340B funds, as typed, for {view.title}</span></caption>
               <thead>
@@ -284,7 +288,7 @@ const items = [
                 }
               </tbody>
             </table>
-          </div>
+          </div>}
           {!isDash(narrative) && (
             <>
               <p class="wb-narrative-label">Narrative, as typed</p>

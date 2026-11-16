@@ -4,6 +4,8 @@
  * In plain words: a workbook stores each figure as a number the way a spreadsheet does, often with
  * many decimal places. A page shows the figure as stored, with commas between thousands and a dollar
  * sign or a percent sign where the cell is a dollar amount or a percentage, and never rounds it. A
+ * figure Excel shows as 515852.61 can be in its file as 515852.60999999993: Excel keeps 15 digits of
+ * a number, and the page prints those 15 (see `fifteenDigits`). A
  * cell that holds words where a figure belongs shows the words. A cell the small-number rule
  * withholds shows a mark and, in words, why. Nothing here adds two figures together.
  */
@@ -40,6 +42,25 @@ export const WITHHELD_SENTENCE: Readonly<Record<string, string>> = {
 
 const PLAIN_NUMBER = /^-?\d+(?:\.\d+)?$/;
 
+/**
+ * A stored number, to the 15 digits Excel keeps.
+ *
+ * Excel holds 15 significant digits of a number, and shows no more than 15 anywhere. Its file can
+ * write 17, so a figure Excel shows as 515852.61 is in the file as 515852.60999999993. The pages
+ * print the 15 digits. Only text with a decimal point and 16 or more digits is touched; words, whole
+ * numbers and shorter figures come back as they went in. The dataset keeps the file's own text.
+ */
+export function fifteenDigits(stored: string): string {
+  if (!/^-?\d+\.\d+$/.test(stored)) return stored;
+  if (stored.replace(/^-?0*\.?0*/, '').replace('.', '').length < 16) return stored;
+  const kept = Number(stored).toPrecision(15);
+  if (!/^-?\d+\.\d+$/.test(kept)) return stored;
+  return kept.replace(/0+$/, '').replace(/\.$/, '');
+}
+
+/** True when the file writes a row's figure with more digits than Excel keeps. */
+export const isShortened = (row: LineItem): boolean => row.claimsWithheld === '' && fifteenDigits(row.amountAsFiled.trim()) !== row.amountAsFiled.trim();
+
 /** The cell at a row, as the page shows it. */
 export function showCell(row: LineItem | undefined, unit: 'usd' | 'count' | 'percent'): ShownCell {
   if (!row) return { kind: 'none', text: '', why: '', sort: '', at: '' };
@@ -48,7 +69,7 @@ export function showCell(row: LineItem | undefined, unit: 'usd' | 'count' | 'per
   // A count is in the claims column; the one count that is not a prescription count (the number of contract pharmacies) is in the amount.
   const stored = unit === 'count' && row.claimsAsFiled !== '' ? row.claimsAsFiled : row.amountAsFiled;
   if (stored.trim() === '') return { kind: 'none', text: '', why: '', sort: '', at };
-  const trimmed = stored.trim();
+  const trimmed = fifteenDigits(stored.trim());
   if (!PLAIN_NUMBER.test(trimmed) && !/^-?\d+(?:\.\d+)?[eE][+-]?\d+$/.test(trimmed)) return { kind: 'words', text: stored.trim(), why: '', sort: '', at };
   if (unit === 'usd') return { kind: 'figure', text: `${trimmed.startsWith('-') ? '-' : ''}$${drawFigure(trimmed.replace(/^-/, ''), 'money')}`, why: '', sort: trimmed, at };
   if (unit === 'count') return { kind: 'figure', text: drawFigure(trimmed, 'count'), why: '', sort: trimmed, at };

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { buildWorkbookViews, getDataset, kindOfId, shiftTwoPlaces, type LineItem } from '../src/lib/data';
 import { FORMS, workbookFormSpec } from '../src/lib/forms';
 import { STATE_REGISTRY } from '../src/lib/states';
-import { showCell } from '../src/lib/workbook';
+import { isShortened, fifteenDigits, showCell } from '../src/lib/workbook';
 import filingPage from '../src/components/WorkbookFilingPage.astro?raw';
 import statePage from '../src/components/WorkbookStatePage.astro?raw';
 import cellLib from '../src/lib/workbook.ts?raw';
@@ -80,8 +80,14 @@ describe('the Ohio workbook form', () => {
 
 describe('a cell, as the page draws it', () => {
   it('shows a dollar amount as stored, with commas and a dollar sign, and never rounds it', () => {
-    expect(showCell(row({ amountAsFiled: '57713925.520000003' }), 'usd').text).toBe('$57,713,925.520000003');
-    expect(showCell(row({ amountAsFiled: '1103.3800000000001' }), 'usd').text).toBe('$1,103.3800000000001');
+    // Excel keeps 15 digits of a number; its file can write 17. The page prints the 15.
+    expect(showCell(row({ amountAsFiled: '57713925.520000003' }), 'usd').text).toBe('$57,713,925.52');
+    expect(showCell(row({ amountAsFiled: '1103.3800000000001' }), 'usd').text).toBe('$1,103.38');
+    expect(showCell(row({ amountAsFiled: '515852.60999999993' }), 'usd').text).toBe('$515,852.61');
+    // A figure with 15 digits of its own keeps them, and a figure typed with its zeros keeps them.
+    expect(showCell(row({ amountAsFiled: '9764.9850928232718' }), 'usd').text).toBe('$9,764.98509282327');
+    expect(showCell(row({ amountAsFiled: '866338.30' }), 'usd').text).toBe('$866,338.30');
+    expect(showCell(row({ amountAsFiled: '12345678901234567' }), 'usd').text).toBe('$12,345,678,901,234,567');
     expect(showCell(row({ amountAsFiled: '0' }), 'usd').text).toBe('$0');
     expect(showCell(row({ amountAsFiled: '-12.5' }), 'usd').text).toBe('-$12.50');
   });
@@ -92,7 +98,8 @@ describe('a cell, as the page draws it', () => {
   });
 
   it('shows a percentage as the dataset note says: stored as typed, or a fraction of one moved two places', () => {
-    expect(showCell(row({ unit: 'percent', amountAsFiled: '86.204608364826768' }), 'percent').text).toBe('86.204608364826768%');
+    expect(showCell(row({ unit: 'percent', amountAsFiled: '86.204608364826768' }), 'percent').text).toBe('86.2046083648268%');
+    expect(showCell(row({ unit: 'percent', amountAsFiled: '0.14999999999999999', note: 'The cell is formatted as a percentage, so the stored number is a fraction of one (0.25 shows as 25%).' }), 'percent').text).toBe('15%');
     const note = 'The cell is formatted as a percentage, so the stored number is a fraction of one (0.25 shows as 25%).';
     expect(showCell(row({ unit: 'percent', amountAsFiled: '0.25', note }), 'percent').text).toBe('25%');
     expect(showCell(row({ unit: 'percent', amountAsFiled: '7.2222E-2', note }), 'percent').text).toBe('7.2222%');
@@ -109,6 +116,29 @@ describe('a cell, as the page draws it', () => {
     expect(showCell(row({ unit: 'percent', claimsWithheld: 'reveals_small' }), 'percent').why).toBe('would show a small count');
     expect(showCell(undefined, 'usd').kind).toBe('none');
     expect(showCell(row({}), 'usd').kind).toBe('none');
+  });
+});
+
+describe('a stored number, to the 15 digits Excel keeps', () => {
+  it('agrees with the file to 15 digits, for every figure of every Ohio workbook', () => {
+    const own = data.lineItems.filter((r) => r.filingId.startsWith('oh-') && r.amountAsFiled.trim() !== '');
+    let shortened = 0;
+    for (const r of own) {
+      const stored = r.amountAsFiled.trim();
+      const short = fifteenDigits(stored);
+      if (short === stored) continue;
+      shortened += 1;
+      expect(Math.abs(Number(short) - Number(stored)), `${r.filingId} ${r.sourceCell}`).toBeLessThanOrEqual(Math.abs(Number(stored)) * 1e-14);
+      expect(short.replace(/^-?0*\.?0*/, '').replace('.', '').length).toBeLessThanOrEqual(15);
+      expect(short.length).toBeLessThan(stored.length);
+      expect(short).toMatch(/^-?\d+(\.\d+)?$/);
+      expect(isShortened(r) || r.claimsWithheld !== '').toBe(true);
+    }
+    expect(shortened).toBeGreaterThan(100);
+  });
+
+  it('leaves alone words, whole numbers, short figures and figures written with an exponent', () => {
+    for (const text of ['N/A', '-', '0', '364', '12.50', '866338.30', '7.2222E-2', '12345678901234567', '#DIV/0!', '']) expect(fifteenDigits(text)).toBe(text);
   });
 });
 

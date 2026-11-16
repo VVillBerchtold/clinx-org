@@ -31,7 +31,7 @@ export function siteNode(): Node {
     name: SITE_NAME,
     alternateName: ['ClinX.org', 'ClinX 340B Scorecard'],
     url: `${SITE_URL}/`,
-    description: 'What hospitals and health centers reported to their states about the 340B drug program, as open data. Every figure links to the page of the filing it came from.',
+    description: 'What hospitals and health centers reported to their states about the 340B drug program, as open data. Every figure links to the public file it came from.',
     inLanguage: 'en-US',
     publisher: { '@id': FOUNDER_ID },
   };
@@ -116,7 +116,7 @@ export function datasetNode(data: Dataset, extraFiles: readonly ExtraFile[] = []
     alternateName: ['ClinX 340B state filings dataset', 'clinx-340b'],
     description:
       `What hospitals and health centers reported to their states about the federal 340B drug program, as structured open data. ` +
-      `This version covers ${stateList}. Every figure is kept as filed or as the state printed it, and cites the page of the public PDF it was read from. ` +
+      `This version covers ${stateList}. Every figure is kept as filed or as the state printed it, and cites the page of the public PDF or the cell of the public workbook it was read from. ` +
       `The files hold the filings, the entities, every printed row, the calculated measures with their formulas, each place where two figures of one filing differ, vendor names as filed, and attachments. ` +
       `Nothing is corrected or estimated.`,
     url: `${SITE_URL}/data/`,

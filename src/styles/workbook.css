@@ -38,6 +38,7 @@
 }
 .filer-count { margin: 0 0 0.75rem; font-size: 0.9375rem; }
 .filer-list td.kind { font-size: 0.875rem; }
+.filer-list td.kind.unlisted { color: var(--muted); }
 .filer-list .id { font-family: var(--mono, ui-monospace, monospace); font-size: 0.8125rem; overflow-wrap: anywhere; }
 .filer-list th[scope='row'] { font-size: 0.9375rem; }
 .filer-list th[scope='row'] a { font-weight: 600; }
