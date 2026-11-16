@@ -118,6 +118,8 @@ export const CLEANER_COPY = 'Cleaner Copy';
 /** The article about the file tool, and the day it goes public. */
 export const CLEANER_COPY_ARTICLE_TITLE = 'Getting a clinic report ready for AI help';
 export const CLEANER_COPY_ARTICLE_PUBLISHED = '2026-11-16';
+/** The tool that looks through a report for what would trip up a script or a pivot table. */
+export const FILE_CHECK = 'File Check';
 /** The article about what a workbook holds outside its cells, and the day it goes public. */
 export const WORKBOOK_ARTICLE_TITLE = 'What an Excel workbook carries besides its cells';
 export const WORKBOOK_ARTICLE_PUBLISHED = '2026-11-16';

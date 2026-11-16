@@ -1,0 +1,295 @@
+/* The File Check page. It sits in the same frame of numbered steps as Cleaner Copy and loads that
+   page's stylesheet first (every class that starts with "cc-"). What is here is what only this
+   page has: three steps where that page has four, and the list of what was found. */
+
+/* ---------- Three steps along the top ---------- */
+
+.cc-steps.has-three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  max-width: 44rem;
+}
+
+/* ---------- Step 1: the counts, each in the colour of its kind ---------- */
+
+.fc #cc-loaded {
+  width: 100%;
+  max-width: 56rem;
+  margin-inline: auto;
+}
+.fc-stat dd {
+  color: var(--muted);
+}
+.fc-stat.is-fix dd {
+  color: var(--warn);
+}
+.fc-stat.is-look dd {
+  color: var(--accent);
+}
+.fc-stat.is-note dd {
+  color: var(--ink);
+}
+
+/* ---------- Step 2: one sheet, and what was found on it ---------- */
+
+.cc-chooser.is-single {
+  grid-template-columns: minmax(0, 1fr);
+  width: 100%;
+  max-width: 56rem;
+  margin-inline: auto;
+}
+.fc-sheet .cc-sheet-head {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.fc-sheet .cc-sheet-head h3 {
+  font: 700 1.375rem/1.2 var(--display);
+  letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
+}
+.fc-sheet .cc-sheet-head p {
+  margin-top: var(--s1);
+}
+.fc-unsure {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s3);
+  margin: var(--s4) var(--s5) 0;
+  padding: var(--s3) var(--s4);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+}
+.fc-unsure svg {
+  flex: none;
+  margin-top: 0.125rem;
+  color: var(--accent);
+}
+
+/* A group: to fix, worth a look, good to know */
+.fc-group {
+  padding: var(--s5);
+}
+.fc-group + .fc-group {
+  border-top: 1px solid var(--line);
+}
+.fc-group > header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  margin-bottom: var(--s4);
+}
+.fc-group h3 {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  font: 700 1.1875rem/1.25 var(--display);
+}
+.fc-group.is-fix h3 .cc-count {
+  background: var(--warn);
+  color: var(--surface);
+}
+.fc-group.is-look h3 .cc-count {
+  background: var(--accent);
+  color: var(--surface);
+}
+.fc-finds {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* One thing that was found */
+.fc-find {
+  display: grid;
+  grid-template-columns: 2.75rem minmax(0, 1fr);
+  gap: var(--s4);
+  padding: var(--s4) var(--s5) var(--s4) var(--s4);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--tick);
+  border-radius: var(--r-md);
+  background: var(--bg);
+}
+.fc-find.is-fix {
+  border-left-color: var(--warn);
+}
+.fc-find.is-look {
+  border-left-color: var(--accent);
+}
+.fc-mark {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  color: var(--muted);
+  font: 700 1.0625rem/1 var(--display);
+}
+.fc-find.is-fix .fc-mark {
+  background: var(--warn-wash);
+  color: var(--warn);
+}
+.fc-find.is-look .fc-mark {
+  background: var(--accent-wash);
+  color: var(--accent);
+}
+.fc-find-say {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  min-width: 0;
+}
+.fc-about {
+  overflow: hidden;
+  font: 700 0.6875rem/1.5 var(--body);
+  letter-spacing: 0.06em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--muted);
+}
+.fc-find h4 {
+  margin: 0 0 var(--s1);
+  font: 700 1.0625rem/1.3 var(--display);
+}
+.fc-find p {
+  font-size: var(--text-sm);
+  overflow-wrap: anywhere;
+}
+.fc-do {
+  margin-top: var(--s2);
+  padding-top: var(--s2);
+  border-top: 1px dashed var(--line);
+  color: var(--muted);
+}
+.fc-do strong {
+  margin-right: var(--s2);
+  color: var(--ink);
+}
+
+/* The cells themselves, shown only on the person's own screen */
+.fc-cells {
+  margin-top: var(--s2);
+}
+.fc-cells summary {
+  width: fit-content;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+.fc-cells .cc-table {
+  width: 100%;
+  margin: var(--s2) 0;
+  font-size: var(--text-sm);
+}
+.fc-at {
+  width: 5.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.fc-value {
+  font-family: var(--mono);
+  font-size: var(--text-xs);
+  white-space: pre-wrap;
+}
+
+/* A sheet with nothing on it */
+.fc-none {
+  display: flex;
+  align-items: center;
+  gap: var(--s4);
+  padding: var(--s6) var(--s5);
+}
+.fc-none .cc-badge {
+  background: var(--ok);
+  color: var(--surface);
+}
+.fc-none p {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  font-size: var(--text-sm);
+}
+.fc-none strong {
+  font: 700 1.125rem/1.25 var(--display);
+}
+
+/* ---------- Step 3: the list of what the check looks for ---------- */
+
+.fc-rules,
+.fc-plain {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.fc-rules li {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  align-items: start;
+  gap: var(--s4);
+  padding: 0.625rem 0;
+  border-top: 1px solid var(--line);
+}
+.fc-rules li:first-child,
+.fc-plain li:first-child {
+  border-top: 0;
+}
+.fc-rules li > span:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+.fc-tag {
+  justify-self: start;
+  padding: 0.125rem 0.625rem;
+  border-radius: var(--pill);
+  background: var(--surface-2);
+  color: var(--muted);
+  font: 700 0.6875rem/1.6 var(--body);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.fc-tag.is-fix {
+  background: var(--warn-wash);
+  color: var(--warn);
+}
+.fc-tag.is-look {
+  background: var(--accent-wash);
+  color: var(--accent);
+}
+.fc-plain li {
+  padding: 0.625rem 0;
+  border-top: 1px solid var(--line);
+}
+
+/* ---------- Narrow screens ---------- */
+
+@media (max-width: 44rem) {
+  .fc-group {
+    padding: var(--s4);
+  }
+  .fc-find {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s3);
+    padding: var(--s4);
+  }
+  .fc-mark {
+    width: 2.25rem;
+    height: 2.25rem;
+    font-size: 0.9375rem;
+  }
+  .fc-unsure {
+    margin-inline: var(--s4);
+  }
+  .fc-rules li {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s1);
+  }
+}

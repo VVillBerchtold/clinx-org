@@ -15,7 +15,7 @@ const written = files.filter((f) => f !== 'sample.js');
 
 describe('Cleaner Copy engine: source scan', () => {
   it('finds every file of the engine', () => {
-    expect(files).toEqual(['check.js', 'code.js', 'connections.js', 'csv.js', 'describe.js', 'fake.js', 'index.d.ts', 'index.js', 'kind.js', 'rename.js', 'sample.js', 'workbook.js', 'xml.js', 'zip.d.ts', 'zip.js']);
+    expect(files).toEqual(['check.js', 'code.js', 'connections.js', 'csv.js', 'describe.js', 'fake.js', 'index.d.ts', 'index.js', 'kind.d.ts', 'kind.js', 'rename.js', 'sample.js', 'workbook.js', 'xml.js', 'zip.d.ts', 'zip.js']);
   });
 
   // Each of these could send something out of the page, or keep something after it closes.

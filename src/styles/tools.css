@@ -26,6 +26,29 @@
   align-items: center;
   min-height: clamp(4.5rem, 9vw, 7rem);
 }
+/* Three tools: three equal cards in a row on a wide screen, one under the other below that */
+@media (min-width: 68rem) {
+  .tool-cards.has-three {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .tool-cards.has-three .card strong {
+    font-size: clamp(1.5rem, 2.2vw, 1.875rem);
+  }
+  /* Smaller numbers, so four of them leave room for the line between each pair */
+  .tool-cards.has-three .piece-steps b {
+    width: 2.75rem;
+    height: 2.75rem;
+    font-size: 1.25rem;
+  }
+}
+@media (max-width: 67.99rem) {
+  .tool-cards.has-three {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tool-cards.has-three .card {
+    min-height: 0;
+  }
+}
 .tool-go {
   display: inline-flex;
   align-items: center;

@@ -1,0 +1,166 @@
+---
+// This page uses the same frame of numbered steps as Cleaner Copy, so it loads that page's
+// stylesheet first. The stylesheet after it holds what only this page has.
+import '../../../styles/pages.css';
+import '../../../styles/cleaner-copy.css';
+import '../../../styles/file-check.css';
+import Base from '../../../layouts/Base.astro';
+import Arrow from '../../../components/Arrow.astro';
+import PageHead from '../../../components/PageHead.astro';
+import { CLEANER_COPY, FILE_CHECK } from '../../../lib/site';
+
+const STEPS = ['Choose a file', 'Go through the list', 'Take the list'];
+---
+
+<Base
+  title={`${FILE_CHECK}: what in a report will trip up a script or a pivot table`}
+  crumbs={[
+    { name: 'Tools', path: '/tools/' },
+    { name: FILE_CHECK, path: '/tools/file-check/' },
+  ]}
+  description="Give it a workbook or a CSV file and get a list of what will trip up a script or a pivot table: numbers stored as text, dates typed in two ways, stray spaces, rows of totals. It runs in your browser and changes nothing."
+>
+  <svg class="cc-sprite" width="0" height="0" aria-hidden="true" focusable="false">
+    <symbol id="cc-i-check" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m4 10.5 4 4 8-9"></path></symbol>
+    <symbol id="cc-i-right" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12M11 5l5 5-5 5"></path></symbol>
+    <symbol id="cc-i-left" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 10H4M9 5l-5 5 5 5"></path></symbol>
+    <symbol id="cc-i-save" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3v10M5.5 9l4.5 4.5L14.5 9M4 16.5h12"></path></symbol>
+    <symbol id="cc-i-file" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2.5h5.5l4 4V16a1.5 1.5 0 0 1-1.5 1.5H6A1.5 1.5 0 0 1 4.5 16V4A1.5 1.5 0 0 1 6 2.5ZM11.5 2.5v4h4M7.5 10.5h5M7.5 13.5h5"></path></symbol>
+    <symbol id="cc-i-columns" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 4h13v12h-13zM8 4v12M12.5 4v12"></path></symbol>
+    <symbol id="cc-i-search" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3.5a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11ZM13.2 13.2 17 17"></path></symbol>
+    <symbol id="cc-i-info" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15ZM10 9.2V14M10 6.3v.2"></path></symbol>
+    <symbol id="cc-i-copy" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h9.5v9.5H7zM4 13V3.5h9.5"></path></symbol>
+  </svg>
+
+  <PageHead wide title={FILE_CHECK} trail={[{ label: 'Tools', href: '/tools/' }, { label: FILE_CHECK }]}>
+    <p class="lede">Give it a report. Get a list of what will trip up a script or a pivot table, with the cells each thing is in and what to do about it.</p>
+    <ul class="cc-promises">
+      <li><svg width="16" height="16" aria-hidden="true" focusable="false"><use href="#cc-i-check"></use></svg>Runs in your browser</li>
+      <li><svg width="16" height="16" aria-hidden="true" focusable="false"><use href="#cc-i-check"></use></svg>Opens no connection</li>
+      <li><svg width="16" height="16" aria-hidden="true" focusable="false"><use href="#cc-i-check"></use></svg>Changes nothing in the file</li>
+    </ul>
+  </PageHead>
+
+  <p id="cc-off" class="panel cc-off">This tool works in your browser, so it needs scripts turned on.</p>
+
+  <div id="cc" class="cc fc" hidden>
+    <div class="cc-rail">
+      <ol id="cc-steps" class="cc-steps has-three">
+        {
+          STEPS.map((label, i) => (
+            <li>
+              <button type="button" class="cc-stepper" data-go={i + 1} disabled>
+                <span class="cc-num" aria-hidden="true">
+                  <span>{i + 1}</span>
+                  <svg width="16" height="16" focusable="false">
+                    <use href="#cc-i-check" />
+                  </svg>
+                </span>
+                <span class="cc-step-say">
+                  <span class="cc-step-count">Step {i + 1}</span>
+                  <span class="cc-step-name">{label}</span>
+                </span>
+              </button>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="cc-wire" id="cc-wire"><span class="cc-wire-dot" aria-hidden="true"></span><span id="cc-wire-say">No connection can be opened from this page</span></p>
+    </div>
+    <p id="cc-where" class="cc-where" aria-hidden="true"></p>
+
+    <div class="cc-body">
+      <!-- Step 1 -->
+      <section id="cc-step-1" class="cc-step" aria-labelledby="cc-h-1">
+        <header class="cc-step-head">
+          <h2 id="cc-h-1" tabindex="-1">Choose a file</h2>
+          <p>An Excel workbook (.xlsx or .xlsm) or a CSV file. The page reads it inside your browser and changes nothing in it.</p>
+        </header>
+        <div id="cc-drop" class="cc-drop">
+          <span class="cc-badge big"><svg width="30" height="30" aria-hidden="true" focusable="false"><use href="#cc-i-file"></use></svg></span>
+          <p class="cc-drop-say">Drop a workbook or a CSV file here</p>
+          <div class="btn-row">
+            <input id="cc-file" class="visually-hidden" type="file" accept=".xlsx,.xlsm,.csv,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" aria-describedby="cc-drop-help" />
+            <label for="cc-file" class="btn accent">Choose a file</label>
+            <button id="cc-sample" class="btn ghost" type="button">Try the sample report</button>
+          </div>
+          <p id="cc-drop-help" class="small muted">The sample report is a small workbook of invented visits with the usual kinds of mess in it. It is a good first run.</p>
+        </div>
+        <p id="cc-problem" class="cc-problem" role="alert" hidden></p>
+        <div id="cc-loaded" class="cc-loaded" hidden>
+          <div class="cc-filecard">
+            <span class="cc-badge"><svg width="22" height="22" aria-hidden="true" focusable="false"><use href="#cc-i-file"></use></svg></span>
+            <div class="cc-filecard-say">
+              <strong id="cc-file-name"></strong>
+              <span id="cc-file-meta" class="small muted"></span>
+            </div>
+            <button id="cc-other" class="cc-link" type="button">Choose another file</button>
+          </div>
+          <div id="fc-verdict"></div>
+          <dl id="cc-file-stats" class="cc-stats"></dl>
+        </div>
+      </section>
+
+      <!-- Step 2 -->
+      <section id="cc-step-2" class="cc-step" aria-labelledby="cc-h-2" hidden>
+        <header class="cc-step-head">
+          <h2 id="cc-h-2" tabindex="-1">Go through the list</h2>
+          <p>What needs fixing comes first. Each thing names its cells and says what to do about it.</p>
+        </header>
+        <div id="fc-chooser" class="cc-chooser">
+          <nav id="fc-sheets" class="cc-sheets" aria-label="Sheets in this file">
+            <h3>Sheets</h3>
+            <ul id="cc-sheet-list"></ul>
+          </nav>
+          <div class="cc-sheet fc-sheet" id="cc-sheet"></div>
+        </div>
+      </section>
+
+      <!-- Step 3 -->
+      <section id="cc-step-3" class="cc-step" aria-labelledby="cc-h-3" hidden>
+        <header class="cc-step-head">
+          <h2 id="cc-h-3" tabindex="-1">Take the list</h2>
+          <p id="fc-take-say">The same list as plain text, to keep or to hand to whoever will fix the file.</p>
+        </header>
+        <div id="fc-take" class="cc-result"></div>
+      </section>
+    </div>
+
+    <div class="cc-foot">
+      <button id="cc-back" class="btn ghost" type="button"><svg width="18" height="18" aria-hidden="true" focusable="false"><use href="#cc-i-left"></use></svg>Back</button>
+      <p id="cc-tally" class="cc-tally" aria-live="polite"></p>
+      <button id="cc-next" class="btn accent" type="button" disabled><span id="cc-next-say">Go through the list</span><svg width="18" height="18" aria-hidden="true" focusable="false"><use href="#cc-i-right"></use></svg></button>
+    </div>
+    <p id="cc-live" class="visually-hidden" role="status" aria-live="polite"></p>
+  </div>
+
+  <section class="cc-about" aria-labelledby="cc-about-h">
+    <h2 id="cc-about-h">When to run the check</h2>
+    <ul class="cc-uses">
+      <li>
+        <h3>Before a pivot table</h3>
+        <p>A pivot table needs one row of headings, a heading on each column, and no empty rows. The list says where a sheet falls short of that.</p>
+      </li>
+      <li>
+        <h3>Before a script or a bot</h3>
+        <p>A script stops on the one cell that is text in a column of numbers. The list names that cell before the script meets it.</p>
+      </li>
+      <li>
+        <h3>Before asking for help</h3>
+        <p>The list holds no value from a cell, so it can go into a chat or a ticket to say what is wrong with a file.</p>
+      </li>
+    </ul>
+    <a class="cc-read" href="/tools/cleaner-copy/">
+      <span>
+        <span class="label">Tool</span>
+        <strong>{CLEANER_COPY}</strong>
+        <span class="muted">When someone needs the shape of the whole report, make a copy with randomized values.</span>
+      </span>
+      <Arrow />
+    </a>
+  </section>
+
+  <script>
+    import '../../../scripts/file-check/main';
+  </script>
+</Base>
