@@ -77,7 +77,7 @@ export function questions(days) {
     },
     {
       title: 'Every kind of request',
-      note: 'limited: an address that asked more than 60 times in a minute was told to wait. refused: not a question the door understands.',
+      note: 'limited: an address that asked more than 200 times in a minute was told to wait. refused: not a question the door understands.',
       columns: ['method', 'outcome', 'requests'],
       sql: `SELECT ${blob('method')} AS method, ${blob('outcome')} AS outcome, ${count} ${from} GROUP BY method, outcome ORDER BY requests DESC`,
     },

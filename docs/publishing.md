@@ -99,7 +99,7 @@ What the program will not do:
 
 - **It changes nothing.** There is nothing to sign in to and nothing to write to.
 - **It keeps no question.** No words searched for, no dates typed, and no internet address are stored or logged.
-- **It sets a limit and says so.** About 60 questions a minute from one address; past that it answers "too many requests" and a time to try again. The host does this count, approximately ([how approximately](#checking-the-published-door)), and the site keeps none of it.
+- **It sets a limit and says so.** About 200 questions a minute from one address (an assistant service sends many people's questions from a few shared addresses); past that it answers "too many requests" and a time to try again. The host does this count, approximately ([how approximately](#checking-the-published-door)), and the site keeps none of it.
 - **It sends a person who opens the address in a browser** to the part of the Data page that explains it.
 
 The program that answers lives in its own repository, [clinx-mcp](https://github.com/VVillBerchtold/clinx-mcp), with its own tests. `npm run sync:mcp` copies it into `worker/mcp/` and records a fingerprint of each file and the commit it came from. `npm run check:data` fails if a copy was changed here, or was made from work that was not committed.
@@ -180,6 +180,6 @@ After a publish, one command asks the live address real questions through each o
 npm run check:live
 ```
 
-About the limit: the host counts requests per address approximately, and separately on each of its machines. A steady stream from one connection is told to wait after roughly 60 to 80 requests in a minute. A burst spread over many connections can get several hundred through before the limit takes hold. It is a brake on a runaway program, not a wall.
+About the limit: the host counts requests per address approximately, and separately on each of its machines. A steady stream from one connection is told to wait after roughly 200 requests in a minute. A burst spread over many connections can get several hundred through before the limit takes hold. It is a brake on a runaway program, not a wall.
 
 If a publish is refused with a message about Analytics Engine, the counting service needs switching on once for the account, in the host's dashboard.

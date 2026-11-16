@@ -326,7 +326,7 @@ describe('the host configuration', () => {
   it('sends only /api/ and /mcp to the program, and names the files, the limiter and the counts as the program expects', () => {
     expect(config).toContain('"run_worker_first": ["/api/*", "/mcp"]');
     expect(config).toContain('"binding": "ASSETS"');
-    expect(config).toMatch(/"name": "MCP_LIMIT", "namespace_id": "1002", "simple": \{ "limit": 60, "period": 60 \}/);
+    expect(config).toMatch(/"name": "MCP_LIMIT", "namespace_id": "1002", "simple": \{ "limit": 200, "period": 60 \}/);
     expect(config).toContain('"analytics_engine_datasets": [{ "binding": "MCP_USAGE", "dataset": "clinx_mcp_usage" }]');
     expect(config).toContain('"workers_dev": false');
   });
