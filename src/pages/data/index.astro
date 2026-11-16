@@ -62,17 +62,21 @@ const describe: Record<string, string> = {
 ---
 
 <Base
-  title="340B open data: downloads and data dictionary"
+  title="ClinX open data: 340B and health centers downloads"
   description="Download the 340B state filings dataset as CSV and JSON files, read the data dictionary, and see the dataset version. Free to use under CC BY 4.0."
   crumbs={[{ name: 'Data', path: '/data/' }]}
   about={[datasetNode(data, drugFiles.map(({ view, sha256 }) => ({ name: view.csvName, path: view.csvPath, sha256 })))]}
 >
-  <PageHead title="Data" trail={[{ label: '340B Scorecard' }]}>
+  <PageHead title="Data" trail={[{ label: 'ClinX' }]}>
     <p class="lede">Every figure on this site, as files you can download. A 340B figure is kept as filed or printed and cites the page of the PDF it was read from. The health centers files are kept as the agencies published them.</p>
+    <p class="btn-row">
+      <a class="btn ghost" href="#downloads">340B data</a>
+      <a class="btn ghost" href="#health-centers">Health centers data</a>
+    </p>
     <OnPage
       title="Data"
       items={[
-        { id: 'downloads', label: 'Downloads' },
+        { id: 'downloads', label: '340B downloads' },
         { id: 'health-centers', label: 'Health centers' },
         { id: 'assistants', label: 'AI assistants' },
         { id: 'version', label: 'Version' },
@@ -83,7 +87,7 @@ const describe: Record<string, string> = {
   </PageHead>
 
   <section class="split" aria-labelledby="downloads">
-    <h2 id="downloads">Downloads</h2>
+    <h2 id="downloads">340B downloads</h2>
     <div class="split-body">
       <ul class="files">
         {

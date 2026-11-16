@@ -348,6 +348,8 @@ export interface RBlock {
   columns: { id: string; title: string }[];
   /** Each row's cells are aligned with the block's columns; a column the line does not have is null. */
   rows: RRow[];
+  /** Set when a wide block was split by HRSA's column sections: which columns this part holds, as in "columns 1a to 1d". */
+  part?: string;
 }
 
 export interface RTable {
@@ -447,23 +449,113 @@ export function yearsOf(key: string): number[] {
   return headerRows().filter((h) => h.key === key).map((h) => h.year).sort((a, b) => a - b);
 }
 
-/** Groups lines in blocks: a block ends where a column code that the block already has comes with another title. */
+/** A table with this many value columns or more is laid out as a dense table: short headings, and a key with HRSA's titles. */
+export const DENSE_FROM = 6;
+
+/** A dense table with more columns than this, holding a figure longer than WIDE_FIGURE_LENGTH characters, is shown as two tables. */
+const WIDE_FIGURES_MAX_COLUMNS = 7;
+const WIDE_FIGURE_LENGTH = 9;
+
+/** Short headings for the columns of HRSA's widest tables. HRSA's own title of each column is printed in the key above the table. */
+const SHORT_COLUMNS: Record<string, [RegExp, string][]> = {
+  'Table 3B': [
+    [/^Yes, Mexican/, 'Mexican'],
+    [/^Yes, Puerto Rican/, 'Puerto Rican'],
+    [/^Yes, Cuban/, 'Cuban'],
+    [/^Yes, Another Hispanic/, 'Another Hispanic origin'],
+    [/^Yes, Hispanic, Latino\/a, Spanish Origin, Combined/, 'Hispanic, combined'],
+    [/^Total Hispanic/, 'Total Hispanic'],
+    [/^Not Hispanic/, 'Not Hispanic'],
+    [/^Unreported/, 'Unreported'],
+    [/^Total \(d\)/, 'Total'],
+  ],
+  'Table 7': [
+    [/^Prenatal Care Patients Who Delivered/, 'Delivered'],
+    [/^Live Births: <1500 grams/, 'Births, <1500 g'],
+    [/^Live Births: 1500–2499 grams/, 'Births, 1500–2499 g'],
+    [/^Live Births: >= 2500 grams/, 'Births, >= 2500 g'],
+    [/^Total Patients 18 through \d+ Years of Age with Hypertension/, 'Hypertension, patients'],
+    [/^Patients with Hypertension Controlled/, 'Hypertension controlled'],
+    [/^Total Patients 18 through \d+ Years of Age with Diabetes/, 'Diabetes, patients'],
+    [/^Number of Records Reviewed/, 'Records reviewed'],
+    [/^Number Charts Sampled or EHR Total/, 'Charts sampled or EHR total'],
+    [/^Patients with HbA1c >9% or No Test/, 'HbA1c >9% or no test'],
+    [/^Patients with Glycemic Status Assessment >9%, Missing, or No Test/, 'Glycemic status >9%, missing or no test'],
+  ],
+  'Table 9D': [
+    [/^Full Charges This Period/, 'Full charges'],
+    [/^Amount Collected This Period/, 'Collected'],
+    [/^Collection of Reconciliation\/Wraparound Current Year/, 'Wraparound, current year'],
+    [/^Collection of Reconciliation\/Wraparound Previous Years/, 'Wraparound, previous years'],
+    [/^Collection of Other Payments/, 'Other payments'],
+    [/^Penalty\/Payback/, 'Penalty or payback'],
+    [/^Sliding Fee Discounts/, 'Sliding fee discounts'],
+    [/^Bad Debt Write-Off/, 'Bad debt write-off'],
+  ],
+};
+
+/** A column title in two parts: its words, and HRSA's column code when the title ends with one, as in "Yes, Cuban (a3)". */
+export function columnParts(title: string): { words: string; code: string } {
+  const m = /^(.*?)\s*\(([0-9]?[a-z][0-9]?)\)(\s*\(Sum Columns[^)]*\))?$/.exec(title);
+  return m ? { words: m[1]!, code: m[2]! } : { words: title, code: '' };
+}
+
+/** The heading of a column in a dense table: a short one where ClinX has written it, else HRSA's words without the code. */
+export function shortColumn(table: string, title: string): string {
+  const hit = (SHORT_COLUMNS[table] ?? []).find(([re]) => re.test(title));
+  return hit ? hit[1] : columnParts(title).words;
+}
+
+/**
+ * Groups lines in blocks. A block ends where a column code that the block already has comes with another title,
+ * and where a line shares no column with the block before it (Table 7 opens with two lines of their own).
+ */
 function makeBlocks(rows: { line: string; title: string; cells: RCell[] }[]): RBlock[] {
   const blocks: { titles: Map<string, string>; rows: typeof rows }[] = [];
   let cur: (typeof blocks)[number] | undefined;
   for (const row of rows) {
     const conflict = cur !== undefined && row.cells.some((c) => cur!.titles.has(c.column) && cur!.titles.get(c.column) !== c.columnTitle);
-    if (!cur || conflict) {
+    const apart = cur !== undefined && cur.titles.size > 0 && row.cells.length > 0 && row.cells.every((c) => !cur!.titles.has(c.column));
+    if (!cur || conflict || apart) {
       cur = { titles: new Map(), rows: [] };
       blocks.push(cur);
     }
     for (const c of row.cells) if (!cur.titles.has(c.column)) cur.titles.set(c.column, c.columnTitle);
     cur.rows.push(row);
   }
-  return blocks.map((b) => {
+  return blocks.flatMap((b) => {
     const columns = [...b.titles.entries()].map(([id, title]) => ({ id, title }));
-    return { columns, rows: b.rows.map((r) => ({ line: r.line, title: r.title, cells: columns.map((c) => r.cells.find((x) => x.column === c.id) ?? null) })) };
+    const whole: RBlock = { columns, rows: b.rows.map((r) => ({ line: r.line, title: r.title, cells: columns.map((c) => r.cells.find((x) => x.column === c.id) ?? null) })) };
+    return splitBySection(whole);
   });
+}
+
+/**
+ * A dense block whose column codes all open with a section digit (1a, 1b, 2a, ...) becomes one block for each
+ * section, in HRSA's order, each with the lines that have a cell in it. A dense block of long figures becomes two.
+ * Any other block is returned as it is.
+ */
+export function splitBySection(block: RBlock): RBlock[] {
+  if (block.columns.length < DENSE_FROM) return [block];
+  const section = block.columns.map((c) => /^[0-9]/.exec(columnParts(c.title).code)?.[0] ?? '');
+  const names = [...new Set(section)];
+  const part = (keep: number[]): RBlock => {
+    const columns = keep.map((i) => block.columns[i]!);
+    const names = columns.map((c) => columnParts(c.title).code || columnParts(c.title).words);
+    const rows = block.rows.map((r) => ({ line: r.line, title: r.title, cells: keep.map((i) => r.cells[i] ?? null) })).filter((r) => r.cells.some((c) => c !== null));
+    return { columns, rows, part: names.length > 1 ? `columns ${names[0]} to ${names[names.length - 1]}` : `column ${names[0]}` };
+  };
+  const all = block.columns.map((_, i) => i);
+  if (!names.includes('') && names.length >= 2) return names.map((name) => part(all.filter((i) => section[i] === name)));
+  // Long figures (dollar amounts) in more than seven columns do not fit a page: two tables, cut where the letter of the column code changes, as near the middle as that allows.
+  const longest = Math.max(0, ...block.rows.flatMap((r) => r.cells.map((c) => (c !== null && c.kind === 'value' ? c.text.length : 0))));
+  if (block.columns.length <= WIDE_FIGURES_MAX_COLUMNS || longest <= WIDE_FIGURE_LENGTH) return [block];
+  const letter = block.columns.map((c) => columnParts(c.title).code.replace(/[0-9]/g, ''));
+  const cuts = all.slice(1).filter((i) => letter[i] !== letter[i - 1]);
+  if (cuts.length === 0) return [block];
+  const middle = block.columns.length / 2;
+  const cut = cuts.reduce((near, i) => (Math.abs(i - middle) < Math.abs(near - middle) ? i : near));
+  return [part(all.slice(0, cut)), part(all.slice(cut))];
 }
 
 export function buildYearView(key: string, year: number): YearView {

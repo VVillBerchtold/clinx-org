@@ -58,18 +58,23 @@ const comparisonCount = differences.length - formCount;
 ---
 
 <Base
-  title="Methods: how the 340B figures are sourced and checked"
+  title="Methods: how ClinX sources and checks its data"
   crumbs={[{ name: 'Methods', path: '/methods/' }]}
   description="Where the figures come from, how they were checked, how each measure is calculated, every difference found between the figures of one filing or report, and how the health centers pages are made."
 >
-  <PageHead title="Methods" trail={[{ label: '340B Scorecard' }]}>
-    <p class="lede">Where the figures come from, how they were checked, and how each measure is calculated.</p>
+  <PageHead title="Methods" trail={[{ label: 'ClinX' }]}>
+    <p class="lede">Where the figures come from, how they were checked, and how each measure is calculated. The first part covers the 340B Scorecard, and the second covers the health centers pages.</p>
+    <p class="btn-row">
+      {numbered[0] && <a class="btn ghost" href={`#${numbered[0].id}`}>340B methods</a>}
+      <a class="btn ghost" href="#health-centers">Health centers methods</a>
+    </p>
     <OnPage title="Methods" items={[...numbered.map((s) => ({ id: s.id, label: s.title.replace(/^\d+\.\s*/, '') })), { id: 'health-centers', label: 'Health centers' }, { id: 'fetching', label: 'How ClinX fetches public files' }]} />
   </PageHead>
 
   <div class="prose doc-page">
   {intro && <Fragment set:html={intro.html} />}
 
+  <p class="doc-part" id="part-340b">340B Scorecard</p>
   {
     numbered.map((s) => (
       <>
@@ -128,7 +133,8 @@ const comparisonCount = differences.length - formCount;
     ))
   }
 
-  <h2 id="health-centers">Health centers</h2>
+  <p class="doc-part" id="part-health-centers">Health centers</p>
+  <h2 id="health-centers">How the health centers pages are made</h2>
   <p>
     The <a href={HC_HOME}>health centers pages</a> are built from files that federal agencies offer for download. A separate program saves each file unchanged, keeps only the fields on a written list for each part, and writes plain tables from what it kept. A field that is not on the list is dropped when the file is read, so nothing that names a person is kept. Each part has a check that rebuilds its tables from the kept files and compares them with the tables on file.
   </p>
@@ -157,6 +163,7 @@ const comparisonCount = differences.length - formCount;
     The telephone number, web address and billing numbers of a site, and the members of Congress named in the file, are dropped when the file is read. Each new copy is compared with the one before, and the differences are added to a table of changes. A date in HRSA's file may be earlier than the day a copy first shows the change. The files do not say why a designation changed.
   </p>
 
+  <p class="doc-part" id="part-all">All ClinX data</p>
   <h2 id="fetching">How ClinX fetches public files</h2>
   <p>
     Small programs fetch many of the public files ClinX uses. Each of them introduces itself by name, <code>ClinX Open Data Reader (+https://clinx.org/methods/)</code>, with a link back to this page, so the people who run a site can see who is asking and why.

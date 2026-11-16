@@ -9,7 +9,10 @@ import {
   centerKeys,
   centerPath,
   fundingTypes,
+  columnParts,
   glanceBar,
+  shortColumn,
+  splitBySection,
   glanceScale,
   headerRows,
   linesOf,
@@ -431,4 +434,33 @@ describe('the built pages', () => {
   });
 
   const dash = /—/;
+});
+
+describe('wide record tables', () => {
+  const cell = (text: string) => ({ kind: 'value', text, raw: text, ref: 'A1', mark: null, exponent: false, column: 'x', columnTitle: 'x' }) as never;
+  const block = (titles: string[], text = '1') => ({ columns: titles.map((title, i) => ({ id: `c${i}`, title })), rows: [{ line: 'L1', title: 'A line', cells: titles.map(() => cell(text)) }] });
+
+  it('reads the code at the end of a column title', () => {
+    expect(columnParts('Yes, Cuban (a3)')).toEqual({ words: 'Yes, Cuban', code: 'a3' });
+    expect(columnParts('Total (d) (Sum Columns a+b+c)')).toEqual({ words: 'Total', code: 'd' });
+    expect(columnParts('Others')).toEqual({ words: 'Others', code: '' });
+  });
+
+  it('shortens only the headings it has a short form for', () => {
+    expect(shortColumn('Table 3B', 'Yes, Puerto Rican (a2)')).toBe('Puerto Rican');
+    expect(shortColumn('Table 5', 'Clinic Visits (b)')).toBe('Clinic Visits');
+  });
+
+  it('splits a wide block by the section digit of its column codes', () => {
+    const parts = splitBySection(block(['A (1a)', 'B (1b)', 'C (2a)', 'D (2b)', 'E (3a)', 'F (3b)']));
+    expect(parts.map((p) => p.part)).toEqual(['columns 1a to 1b', 'columns 2a to 2b', 'columns 3a to 3b']);
+    expect(parts.every((p) => p.rows.length === 1 && p.rows[0]!.cells.length === 2)).toBe(true);
+  });
+
+  it('splits a wide block of long figures in two where the code letter changes, and leaves short figures alone', () => {
+    const titles = ['A (a)', 'B (b)', 'C (c1)', 'D (c2)', 'E (c3)', 'F (c4)', 'G (d)', 'H (e)', 'I (f)'];
+    expect(splitBySection(block(titles, '$24,733,376')).map((p) => p.columns.length)).toEqual([6, 3]);
+    expect(splitBySection(block(titles, '70'))).toHaveLength(1);
+    expect(splitBySection(block(titles.slice(0, 4), '$24,733,376'))).toHaveLength(1);
+  });
 });

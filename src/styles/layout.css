@@ -2050,3 +2050,17 @@ th[aria-sort='descending'] button::after {
     display: none;
   }
 }
+
+/* A part label on a long document page (Methods): 340B, health centers, all ClinX data */
+.doc-part {
+  margin: var(--s7, 4rem) 0 0;
+  padding-top: var(--s4, 1.5rem);
+  border-top: 1px solid var(--line);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.doc-part:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+.doc-part + h2 { margin-top: var(--s2, 0.75rem); }

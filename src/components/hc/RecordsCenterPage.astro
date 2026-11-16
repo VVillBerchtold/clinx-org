@@ -71,6 +71,8 @@ const tiles = view.glance.filter(single).flatMap((g) =>
 );
 const cards = view.glance.filter((g) => !single(g));
 if (view.sites.length > 0) tiles.push({ figure: view.sites.length.toLocaleString('en-US'), words: false, label: view.sites.length === 1 ? 'Site listed' : 'Sites listed', where: 'HRSA’s list of sites', ref: '' });
+// A slash-joined label may wrap after its slash, never inside a word.
+const slashParts = (text: string): string[] => text.split('/');
 const place = `${header.city}, ${header.state}`;
 const sitesWord = view.sites.length === 1 ? 'site' : 'sites';
 const address = [header.street, header.addressLine2 !== '' && header.addressLine2 !== '-' ? header.addressLine2 : '', `${header.city}, ${header.state} ${header.zip}`].filter((p) => p !== '').join(', ');
@@ -235,7 +237,7 @@ const items = [
           <p>
             The {view.sites.length} {sitesWord} that HRSA lists for this health center in {year}, in the file's order{view.sitesAsOf !== '' ? `, as of ${view.sitesAsOf}` : ''}. Active, permanent, seasonal and mobile service delivery sites are included.
           </p>
-          <div class="table-wrap wide stack hcr-plain">
+          <div class="table-wrap wide stack hcr-plain hcr-sites">
             <table role="table">
               <caption><span>Sites of {header.name} in {year}</span></caption>
               <thead role="rowgroup">
@@ -256,13 +258,13 @@ const items = [
                   <tr role="row">
                     <th role="rowheader" scope="row">{s.name}</th>
                     <td role="cell" class="hcr-text" data-label="Address">{s.address}</td>
-                    <td role="cell" class="hcr-text" data-label="Site type">{s.type}</td>
+                    <td role="cell" class="hcr-text" data-label="Site type">{slashParts(s.type).map((part, i) => (i === 0 ? part : <>/<wbr />{part}</>))}</td>
                     <td role="cell" class="hcr-text" data-label="Location type">{s.locationType}</td>
                     <td role="cell" class="hcr-text" data-label="Setting">{s.setting}</td>
                     <td role="cell" class="hcr-text" data-label="Schedule">{[plain(s.schedule), plain(s.calendar)].filter((p) => p !== '').join(', ')}</td>
                     <td role="cell" class="num" data-label="Weekly hours">{plain(s.hours)}</td>
                     <td role="cell" class="hcr-text" data-label="Service area">{s.area}</td>
-                    <td role="cell" class="hcr-text" data-label="Operated by">{s.operatedBy}</td>
+                    <td role="cell" class="hcr-text" data-label="Operated by">{slashParts(s.operatedBy).map((part, i) => (i === 0 ? part : <>/<wbr />{part}</>))}</td>
                   </tr>
                 ))}
               </tbody>
@@ -286,7 +288,7 @@ const items = [
               <h3 id="zip-table">ZIP code rows</h3>
               <span class="hcr-sub">{view.zips.length} rows</span>
             </summary>
-            <div class="table-wrap wide stack hcr-plain">
+            <div class="table-wrap wide stack hcr-plain hcr-zips">
               <table role="table">
                 <caption><span>Patients by ZIP code and insurance, {header.name}, {year}</span></caption>
                 <thead role="rowgroup">
