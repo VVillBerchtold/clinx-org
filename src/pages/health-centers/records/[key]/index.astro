@@ -1,0 +1,13 @@
+---
+import RecordsCenterPage from '../../../../components/hc/RecordsCenterPage.astro';
+import { centerKeys, recordsSource, slugOf } from '../../../../lib/hc-records';
+
+/** A health center's latest report (2025): /health-centers/records/<key>/. */
+export function getStaticPaths() {
+  const year = recordsSource().latest_year;
+  return centerKeys().map((key) => ({ params: { key: slugOf(key) }, props: { centerKey: key, year } }));
+}
+const { centerKey, year } = Astro.props;
+---
+
+<RecordsCenterPage centerKey={centerKey} year={year} />

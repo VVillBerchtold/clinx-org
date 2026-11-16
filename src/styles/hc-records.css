@@ -1,0 +1,180 @@
+/* Health center records: the list, a health center's page for one year. Colours only through the tokens. */
+
+/* The list */
+.hcr-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  align-items: end;
+  margin: 0 0 1rem;
+}
+.hcr-filter[hidden] { display: none; }
+.hcr-filter label {
+  display: grid;
+  gap: 0.25rem;
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+.hcr-filter input,
+.hcr-filter select {
+  font: inherit;
+  font-weight: 400;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 0.55rem 0.7rem;
+  min-height: 44px;
+  max-width: 100%;
+}
+.hcr-filter input { min-width: min(100%, 20rem); }
+.hcr-filter select { min-width: min(100%, 14rem); }
+.hcr-count { margin: 0 0 0.75rem; font-size: var(--text-sm); color: var(--muted); }
+.hcr-list tr[hidden] { display: none; }
+.hcr-list th[scope='row'] { font-size: var(--text-sm); }
+.hcr-list th[scope='row'] a { font-weight: 650; }
+.hcr-list thead th { white-space: normal; }
+.hcr-years { display: flex; flex-wrap: wrap; gap: 0.25rem 0.625rem; margin: 0; padding: 0; list-style: none; }
+.hcr-years li { margin: 0; padding: 0; max-width: none; }
+.hcr-years a { font-size: var(--text-sm); font-variant-numeric: tabular-nums; }
+
+/* Facts at the head of a page */
+.hcr-facts { margin-top: var(--s2); max-width: 52rem; }
+.hcr-facts dd { font-weight: 500; }
+.hcr-facts .hcr-flag { font-variant-numeric: tabular-nums; color: var(--muted); }
+.hcr-facts ul { margin: 0; padding: 0; list-style: none; }
+.hcr-facts li { margin: 0; padding: 0; }
+
+/* Sections */
+.hcr-section { padding-block: var(--s5); }
+.hcr-section > h2 { margin-bottom: var(--s3); }
+.hcr-section > p { max-width: 70ch; }
+.hcr-section > p + * { margin-top: var(--s4); }
+.hcr-section [id] { scroll-margin-top: 6rem; }
+
+/* At a glance */
+.hcr-glance {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  gap: var(--s4);
+  align-items: start;
+}
+.hcr-card {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  overflow: hidden;
+}
+.hcr-card > h3 { margin: 0; padding: 1.25rem 1.25rem 0; font: 700 1.125rem/1.25 var(--display); letter-spacing: -0.01em; }
+.hcr-card > .hcr-where { margin: 0.25rem 0 0; padding: 0 1.25rem; font-size: var(--text-xs); color: var(--muted); }
+.hcr-card .table-wrap { border: 0; border-radius: 0; margin-top: var(--s3); }
+.hcr-card > p.hcr-sentence { padding: var(--s3) 1.25rem 1.25rem; margin: 0; }
+.hcr-stat { margin: 0; padding: var(--s3) 1.25rem 1.25rem; }
+.hcr-stat-fig {
+  margin: 0;
+  font: 700 clamp(2rem, 5vw, 2.75rem)/1.1 var(--display);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  color: var(--accent);
+}
+.hcr-stat-fig.hcr-stat-words { font-size: var(--text-lg); color: var(--ink); }
+.hcr-stat-what { margin: var(--s2) 0 0; font-size: var(--text-sm); }
+.hcr-stat-ref { margin: var(--s1) 0 0; font-size: var(--text-xs); color: var(--muted); }
+
+/* Legend of the marks */
+.hcr-legend { display: grid; gap: var(--s2); margin: 0 0 var(--s4); padding: var(--s4); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); }
+.hcr-legend dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 0.375rem 1rem; margin: 0; }
+.hcr-legend dt { font-weight: 600; font-size: var(--text-sm); }
+.hcr-legend dd { margin: 0; font-size: var(--text-sm); }
+.hcr-legend p { margin: 0; font-size: var(--text-sm); color: var(--muted); max-width: 75ch; }
+.hcr-legend .hcr-sym { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+/* Tables */
+.hcr-table { border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--surface); margin-top: var(--s3); }
+.hcr-table > summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.125rem 1rem;
+  align-items: baseline;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  list-style: none;
+}
+.hcr-table > summary::-webkit-details-marker { display: none; }
+.hcr-table > summary::after {
+  content: '';
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-right: 2px solid var(--muted);
+  border-bottom: 2px solid var(--muted);
+  transform: rotate(45deg);
+  transition: transform 0.2s var(--ease);
+}
+.hcr-table[open] > summary::after { transform: rotate(225deg); }
+.hcr-table > summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-md); }
+.hcr-table > summary h3 { margin: 0; font: 700 1.125rem/1.25 var(--display); letter-spacing: -0.01em; }
+.hcr-table > summary .hcr-sub { grid-column: 1; font-size: var(--text-sm); color: var(--muted); }
+.hcr-table[open] > summary { border-bottom: 1px solid var(--line); }
+.hcr-table .table-wrap { border: 0; border-radius: 0 0 var(--r-lg) var(--r-lg); }
+.hcr-table .table-wrap + .table-wrap { border-top: 1px solid var(--line); border-radius: 0 0 var(--r-lg) var(--r-lg); }
+.hcr-table > p { margin: 0; padding: 1rem 1.25rem; max-width: 80ch; }
+.hcr-table > .hcr-where { padding-block: 0.625rem 0; font-size: var(--text-xs); color: var(--muted); }
+.hcr-grid table, .hcr-plain table { min-width: 100%; }
+.hcr-grid thead th { white-space: normal; vertical-align: bottom; line-height: 1.25; min-width: 7rem; }
+.hcr-grid thead th:first-child { min-width: 14rem; }
+.hcr-grid th[scope='row'], .hcr-plain th[scope='row'] { font-weight: 600; font-size: var(--text-sm); }
+.hcr-grid th[scope='row'] .hcr-line, .hcr-plain th[scope='row'] .hcr-line {
+  display: block;
+  font-family: var(--mono);
+  font-size: var(--text-xs);
+  font-weight: 450;
+  color: var(--muted);
+}
+.hcr-grid td, .hcr-plain td { font-variant-numeric: tabular-nums; }
+.hcr-grid td.num, .hcr-plain td.num { vertical-align: top; }
+.hcr-ref {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  font-weight: 400;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+.hcr-exp { display: block; font-size: 0.6875rem; font-weight: 400; color: var(--muted); white-space: normal; }
+.hcr-mark {
+  display: inline-block;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  line-height: 1.25;
+  padding: 0.1rem 0.45rem;
+  border: 1px dashed var(--muted);
+  border-radius: var(--r-sm);
+  color: var(--ink);
+  white-space: normal;
+}
+.hcr-mark.hcr-clinx { border-style: solid; background: var(--accent-wash); }
+.hcr-mark.hcr-typed, .hcr-mark.hcr-none { border-color: var(--line); color: var(--muted); }
+
+/* Sites and ZIP codes */
+.hcr-plain thead th { white-space: normal; vertical-align: bottom; }
+.hcr-plain td { font-size: var(--text-sm); }
+.hcr-plain td.hcr-text { white-space: normal; min-width: 9rem; }
+
+/* Notes and source */
+.hcr-care ul { margin: 0; padding-left: 1.25rem; max-width: 72ch; }
+.hcr-care li + li { margin-top: var(--s2); }
+.hcr-source .facts dd { font-weight: 500; overflow-wrap: anywhere; }
+.hcr-source .mono { font-size: var(--text-xs); overflow-wrap: anywhere; }
+.hcr-links { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; margin: var(--s3) 0 0; padding: 0; list-style: none; }
+.hcr-links li { margin: 0; padding: 0; max-width: none; }
+
+@media (max-width: 600px) {
+  .hcr-table > summary { padding: 0.875rem 1rem; }
+  .hcr-legend dl { grid-template-columns: minmax(0, 1fr); }
+  .hcr-card > h3 { padding-inline: 1rem; }
+  .hcr-card > .hcr-where, .hcr-stat, .hcr-card > p.hcr-sentence { padding-inline: 1rem; }
+}

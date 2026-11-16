@@ -1,0 +1,107 @@
+---
+import { MARKS, cellWords, type RCell, type RTable } from '../../lib/hc-records';
+
+/**
+ * One table of a health center's report: HRSA's table name, its lines in HRSA's order with HRSA's line
+ * titles, its columns with HRSA's column titles. A value is printed as published, a mark in words with its
+ * cell address in HRSA's workbook beside it. A table whose every cell is one mark is one sentence.
+ */
+interface Props {
+  table: RTable;
+  year: number;
+  center: string;
+}
+const { table, year, center } = Astro.props;
+const lineName = (line: string): string => (/^L[0-9]/.test(line) ? `Line ${line.slice(1)}` : line);
+const markSentence = (mark: string): string => {
+  const m = MARKS.find((x) => x.name === mark)!;
+  return `HRSA marks every cell of this table ${m.mark} for this health center in ${year}: ${m.cover}. The table has ${table.cellCount} cells, and they are not listed one by one.`;
+};
+const cellClass = (c: RCell | null): string | undefined => (c === null ? 'num blank' : 'num');
+const flat = table.layout === 'list' ? table.blocks.flatMap((b) => b.rows).flatMap((r) => r.cells.filter((c): c is RCell => c !== null).map((c) => ({ row: r, cell: c }))) : [];
+const range = (rows: { line: string }[]): string => (rows.length > 1 ? `${lineName(rows[0]!.line)} to ${lineName(rows[rows.length - 1]!.line)}` : lineName(rows[0]?.line ?? ''));
+const sheetNote = table.sheets
+  .map((s) => (s.row !== null && s.status === 'row_present' ? `sheet ${s.sheet}, row ${s.row}` : `sheet ${s.sheet}`))
+  .join(' and ');
+---
+
+<details class="hcr-table" open={table.open && table.status === 'present' && table.onlyMark === null}>
+  <summary>
+    <h3 id={table.id}>{table.name}</h3>
+    <span class="hcr-sub">{table.label !== '' ? `${table.label}. ` : ''}{table.lineCount} {table.lineCount === 1 ? 'line' : 'lines'}</span>
+  </summary>
+  {
+    table.status === 'unnamed' ? (
+      <p>
+        HRSA's {year} file has no row with this health center's ID in {table.name}. It holds rows whose ID is --- and whose every cell is ---, suppressed health center confidential data, as many as there are health centers in the file without a named row. ClinX counts this health center among them and does not say which of those rows is its own.
+      </p>
+    ) : table.status === 'absent' ? (
+      <p>HRSA's {year} file has no row for this health center in {table.name}.</p>
+    ) : table.onlyMark !== null ? (
+      <p>{markSentence(table.onlyMark)}</p>
+    ) : (
+      <>
+        <p class="hcr-where">Cells are in HRSA's workbook, {sheetNote}. The small code under a cell is its address there.</p>
+        {table.layout === 'grid' ? (
+          table.blocks.map((block) => (
+            <div class="table-wrap wide stack hcr-grid">
+              <table role="table">
+                <caption><span>{table.name}: {table.label !== '' ? `${table.label}, ` : ''}{table.blocks.length > 1 ? `${range(block.rows)}, ` : ''}{center}, {year}</span></caption>
+                <thead role="rowgroup">
+                  <tr role="row">
+                    <th role="columnheader" scope="col">Line</th>
+                    {block.columns.map((c) => <th role="columnheader" scope="col" class="num">{c.title}</th>)}
+                  </tr>
+                </thead>
+                <tbody role="rowgroup">
+                  {block.rows.map((r) => (
+                    <tr role="row">
+                      <th role="rowheader" scope="row"><span class="hcr-line">{lineName(r.line)}</span>{r.title}</th>
+                      {r.cells.map((c, i) => (
+                        <td role="cell" class={cellClass(c)} data-label={block.columns[i]!.title}>
+                          {c !== null && (c.kind === 'value' ? (
+                            <>{c.text}{c.exponent && <span class="hcr-exp">published with an exponent</span>}<span class="hcr-ref">{c.ref}</span></>
+                          ) : c.kind === 'empty' ? null : (
+                            <><span class:list={['hcr-mark', { 'hcr-clinx': c.kind === 'clinx', 'hcr-typed': c.kind === 'typed' }]}>{cellWords(c)}</span>{c.ref !== '' && <span class="hcr-ref">{c.ref}</span>}</>
+                          ))}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ))
+        ) : (
+          <div class="table-wrap wide stack hcr-plain">
+            <table role="table">
+              <caption><span>{table.name}: {table.label !== '' ? `${table.label}, ` : ''}{center}, {year}</span></caption>
+              <thead role="rowgroup">
+                <tr role="row">
+                  <th role="columnheader" scope="col">Line</th>
+                  <th role="columnheader" scope="col">Column</th>
+                  <th role="columnheader" scope="col" class="num">Value</th>
+                </tr>
+              </thead>
+              <tbody role="rowgroup">
+                {flat.map(({ row, cell: c }) => (
+                  <tr role="row">
+                    <th role="rowheader" scope="row"><span class="hcr-line">{lineName(row.line)}</span>{row.title}</th>
+                    <td role="cell" class="hcr-text" data-label="Column">{c.columnTitle}</td>
+                    <td role="cell" class="num" data-label="Value">
+                      {c.kind === 'value' ? (
+                        <>{c.text}{c.exponent && <span class="hcr-exp">published with an exponent</span>}<span class="hcr-ref">{c.ref}</span></>
+                      ) : c.kind === 'empty' ? null : (
+                        <><span class:list={['hcr-mark', { 'hcr-clinx': c.kind === 'clinx', 'hcr-typed': c.kind === 'typed' }]}>{cellWords(c)}</span>{c.ref !== '' && <span class="hcr-ref">{c.ref}</span>}</>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </>
+    )
+  }
+</details>
