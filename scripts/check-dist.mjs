@@ -306,7 +306,11 @@ for (const file of files.filter((f) => f.endsWith('.js'))) {
   if (calls > (isDemo ? 1 : 0)) fail(name, `script has ${calls} network call(s)`);
   if (isDemo && calls === 1 && !/fetch\(\s*[`'"]https:\/\/example\.invalid\//.test(js)) fail(name, 'the demo\'s one network call does not go to the reserved address');
   for (const m of js.matchAll(/https?:\/\/[^\s`'"\\)]+/g)) {
-    if (!/^https:\/\/example\.invalid\//.test(m[0]) && !/^http:\/\/www\.w3\.org\//.test(m[0])) fail(name, `script names an outside address: ${m[0]}`);
+    // Two kinds of address are names and are never fetched: the web's own format names (w3.org) and
+    // the names the Excel file format requires inside every workbook (schemas.openxmlformats.org).
+    // Cleaner Copy writes the second kind into the legend workbook it builds.
+    const formatName = /^http:\/\/www\.w3\.org\//.test(m[0]) || /^http:\/\/schemas\.openxmlformats\.org\//.test(m[0]);
+    if (!/^https:\/\/example\.invalid\//.test(m[0]) && !formatName) fail(name, `script names an outside address: ${m[0]}`);
   }
 }
 

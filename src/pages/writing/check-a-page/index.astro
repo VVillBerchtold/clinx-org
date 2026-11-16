@@ -1,0 +1,47 @@
+---
+import '../../../styles/article.css';
+import Base from '../../../layouts/Base.astro';
+import Arrow from '../../../components/Arrow.astro';
+import Draft from '../../../components/Draft.astro';
+import PageHead from '../../../components/PageHead.astro';
+import article from '../../../content/sends-nothing.md?raw';
+import { renderSections } from '../../../lib/markdown';
+import { ARTICLE_TITLE, CHECKING_ARTICLE_PUBLISHED, CHECKING_ARTICLE_TITLE, CLEANER_COPY } from '../../../lib/site';
+import { articleNode, founderNode } from '../../../lib/structured-data';
+
+const sections = renderSections(article);
+const path = '/writing/check-a-page/';
+const articleDescription = 'Three checks anyone can run to see whether a web tool sends a file away or works on it in the browser: turn the network off, watch the requests, read the page rule.';
+---
+
+<Base
+  title={CHECKING_ARTICLE_TITLE}
+  description={articleDescription}
+  crumbs={[
+    { name: 'Writing', path: '/writing/' },
+    { name: CHECKING_ARTICLE_TITLE, path },
+  ]}
+  about={[articleNode(articleDescription, { path, title: CHECKING_ARTICLE_TITLE, published: CHECKING_ARTICLE_PUBLISHED }), founderNode()]}
+>
+  <PageHead wide title={CHECKING_ARTICLE_TITLE} trail={[{ label: 'Writing', href: '/writing/' }, { label: 'Article' }]}>
+    <p class="byline">By Will Berchtold <span aria-hidden="true">·</span> 3 minute read <Draft /></p>
+  </PageHead>
+  <article class="article">
+    {
+      sections.map((section) => (
+        <section aria-labelledby={section.title === '' ? undefined : section.id}>
+          {section.title !== '' && <h2 id={section.id}>{section.title}</h2>}
+          <Fragment set:html={section.html} />
+        </section>
+      ))
+    }
+    <p class="small muted article-related">Related: <a href="/writing/no-phi/">{ARTICLE_TITLE}</a></p>
+  </article>
+  <div class="prod article-end">
+    <div>
+      <strong>Try the checks on a ClinX tool</strong>
+      <p>{CLEANER_COPY} has a sample report built in, so you can run all three checks without a file of your own.</p>
+    </div>
+    <a class="btn" href="/tools/cleaner-copy/">Open the tool <Arrow /></a>
+  </div>
+</Base>

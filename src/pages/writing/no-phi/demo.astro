@@ -6,7 +6,7 @@ import PageHead from '../../../components/PageHead.astro';
 import { ARTICLE_TITLE } from '../../../lib/site';
 ---
 
-<Base title="Demo: totals from a file that stays on your computer" crumbs={[{ name: 'Writing', path: '/writing/' }, { name: ARTICLE_TITLE, path: '/writing/no-phi/' }, { name: 'Demo', path: '/writing/no-phi/demo/' }]} description="A working demo. It reads a made-up claims file in the browser, shows totals, and makes no network request while it does.">
+<Base title="Demo: totals from a file that stays on your computer" crumbs={[{ name: 'Writing', path: '/writing/' }, { name: ARTICLE_TITLE, path: '/writing/no-phi/' }, { name: 'Demo', path: '/writing/no-phi/demo/' }]} description="A working demo. It reads a sample claims file in the browser, shows totals, and makes no network request while it does.">
   <div id="demo-area">
     <PageHead wide title="Totals from a file that never leaves your computer" trail={[{ label: 'Writing', href: '/writing/' }, { label: 'Article', href: '/writing/no-phi/' }, { label: 'Demo' }]}>
       <p class="lede">
@@ -28,11 +28,11 @@ import { ARTICLE_TITLE } from '../../../lib/site';
             <input id="file" class="visually-hidden" type="file" accept=".csv,text/csv" aria-describedby="drop-help" />
             <label for="file" class="btn ghost">Choose a file</label>
           </div>
-          <p id="drop-help" class="small muted">The sample is 50,000 made-up rows, built in your browser's memory. Nothing is downloaded.</p>
+          <p id="drop-help" class="small muted">The sample is 50,000 randomly generated rows, built in your browser's memory. Nothing is downloaded.</p>
         </div>
         <p id="progress" class="demo-status">Nothing read yet.</p>
         <p id="live" class="visually-hidden" role="status" aria-live="polite"></p>
-        <p class="small muted"><strong>Every id, drug, pharmacy and amount in the sample is made up.</strong> Please do not load real patient data into a demo.</p>
+        <p class="small muted"><strong>Every id, drug, pharmacy and amount in the sample is invented.</strong> Please do not load real patient data into a demo.</p>
       </section>
 
       <section id="proof" class="demo-proof" aria-labelledby="h-proof">

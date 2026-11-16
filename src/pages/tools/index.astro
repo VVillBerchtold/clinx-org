@@ -1,0 +1,36 @@
+---
+import '../../styles/article.css';
+import '../../styles/tools.css';
+import Base from '../../layouts/Base.astro';
+import Arrow from '../../components/Arrow.astro';
+import PageHead from '../../components/PageHead.astro';
+import { CLEANER_COPY } from '../../lib/site';
+---
+
+<Base title="Tools" crumbs={[{ name: 'Tools', path: '/tools/' }]} description="Small tools from ClinX for the work around clinic data. Each one runs in your browser and keeps your file on your computer.">
+  <PageHead title="Tools" trail={[{ label: 'ClinX' }]}>
+    <p class="lede">Small tools for the work around clinic data. Each one runs in your browser and keeps your file on your computer.</p>
+  </PageHead>
+
+  <div class="tool-cards">
+    <a class="card" href="/tools/cleaner-copy/">
+      <span class="label">Workbooks and CSV files</span>
+      <span class="piece-steps" aria-hidden="true"><b>1</b><i></i><b>2</b><i></i><b>3</b><i></i><b>4</b></span>
+      <span>
+        <strong>{CLEANER_COPY}</strong>
+        <p>A copy of your report with the same sheets, headings and formulas, and randomized values in the columns you choose.</p>
+      </span>
+      <span class="tool-go">Open the tool <Arrow /></span>
+    </a>
+    <a class="card" href="/writing/no-phi/demo/">
+      <span class="label">Working demo</span>
+      <span class="piece-zero" aria-hidden="true">0</span>
+      <span>
+        <strong>Totals from your file</strong>
+        <p>Reads a sample claims file in your browser, shows the totals, and counts every request it makes while it works.</p>
+      </span>
+      <span class="tool-go">Open the demo <Arrow /></span>
+    </a>
+  </div>
+  <p class="tools-note">These pages cannot open a connection, so a file you choose has no way to leave your computer. The articles under <a href="/writing/">Writing</a> explain how that is done and how to check it.</p>
+</Base>

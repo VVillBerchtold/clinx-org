@@ -1,0 +1,47 @@
+---
+import '../../../styles/article.css';
+import Base from '../../../layouts/Base.astro';
+import Arrow from '../../../components/Arrow.astro';
+import Draft from '../../../components/Draft.astro';
+import PageHead from '../../../components/PageHead.astro';
+import article from '../../../content/inside-a-workbook.md?raw';
+import { renderSections } from '../../../lib/markdown';
+import { CLEANER_COPY, CLEANER_COPY_ARTICLE_TITLE, WORKBOOK_ARTICLE_PUBLISHED, WORKBOOK_ARTICLE_TITLE } from '../../../lib/site';
+import { articleNode, founderNode } from '../../../lib/structured-data';
+
+const sections = renderSections(article);
+const path = '/writing/inside-a-workbook/';
+const articleDescription = 'A workbook is more than its grid. Pivot tables, saved formula answers, links, filters, charts and hidden sheets can all hold data that is no longer on the screen.';
+---
+
+<Base
+  title={WORKBOOK_ARTICLE_TITLE}
+  description={articleDescription}
+  crumbs={[
+    { name: 'Writing', path: '/writing/' },
+    { name: WORKBOOK_ARTICLE_TITLE, path },
+  ]}
+  about={[articleNode(articleDescription, { path, title: WORKBOOK_ARTICLE_TITLE, published: WORKBOOK_ARTICLE_PUBLISHED }), founderNode()]}
+>
+  <PageHead wide title={WORKBOOK_ARTICLE_TITLE} trail={[{ label: 'Writing', href: '/writing/' }, { label: 'Article' }]}>
+    <p class="byline">By Will Berchtold <span aria-hidden="true">·</span> 4 minute read <Draft /></p>
+  </PageHead>
+  <article class="article">
+    {
+      sections.map((section) => (
+        <section aria-labelledby={section.title === '' ? undefined : section.id}>
+          {section.title !== '' && <h2 id={section.id}>{section.title}</h2>}
+          <Fragment set:html={section.html} />
+        </section>
+      ))
+    }
+    <p class="small muted article-related">Related: <a href="/writing/cleaner-copy/">{CLEANER_COPY_ARTICLE_TITLE}</a></p>
+  </article>
+  <div class="prod article-end">
+    <div>
+      <strong>See what your own file holds</strong>
+      <p>The second step of {CLEANER_COPY} reads a workbook and lists what it found. Nothing is changed and nothing is sent.</p>
+    </div>
+    <a class="btn" href="/tools/cleaner-copy/">Open the tool <Arrow /></a>
+  </div>
+</Base>

@@ -3,7 +3,7 @@ import '../../styles/article.css';
 import Base from '../../layouts/Base.astro';
 import Draft from '../../components/Draft.astro';
 import PageHead from '../../components/PageHead.astro';
-import { ARTICLE_TITLE } from '../../lib/site';
+import { ARTICLE_TITLE, CHECKING_ARTICLE_TITLE, CLEANER_COPY, CLEANER_COPY_ARTICLE_TITLE, WORKBOOK_ARTICLE_TITLE } from '../../lib/site';
 ---
 
 <Base title="Writing" crumbs={[{ name: 'Writing', path: '/writing/' }]} description="Articles and working demos from ClinX: how its tools are built, with examples you can check for yourself.">
@@ -12,6 +12,38 @@ import { ARTICLE_TITLE } from '../../lib/site';
   </PageHead>
 
   <div class="pieces">
+    <a class="card" href="/writing/cleaner-copy/">
+      <span class="piece-top"><span class="label">Article · 5 minute read</span><Draft /></span>
+      <span class="piece-flow" aria-hidden="true"><span>Pick a report</span><i></i><span>Choose the columns</span><i></i><span>Get a randomized copy</span></span>
+      <span>
+        <strong>{CLEANER_COPY_ARTICLE_TITLE}</strong>
+        <p>A copy of your workbook with the same shape and randomized values, so an assistant can help with the script and never see a patient.</p>
+      </span>
+    </a>
+    <a class="card" href="/tools/cleaner-copy/">
+      <span class="label">Working tool</span>
+      <span class="piece-steps" aria-hidden="true"><b>1</b><i></i><b>2</b><i></i><b>3</b><i></i><b>4</b></span>
+      <span>
+        <strong>{CLEANER_COPY}</strong>
+        <p>Four steps from a report to a randomized copy, in your browser.</p>
+      </span>
+    </a>
+    <div class="pieces-pair">
+      <a class="card" href="/writing/inside-a-workbook/">
+        <span class="piece-top"><span class="label">Article · 4 minute read</span><Draft /></span>
+        <span>
+          <strong>{WORKBOOK_ARTICLE_TITLE}</strong>
+          <p>Pivot tables, saved formula answers, links, filters and hidden sheets can hold data that is no longer on the screen.</p>
+        </span>
+      </a>
+      <a class="card" href="/writing/check-a-page/">
+        <span class="piece-top"><span class="label">Guide · 3 minute read</span><Draft /></span>
+        <span>
+          <strong>{CHECKING_ARTICLE_TITLE}</strong>
+          <p>Three checks anyone can run on a web tool: turn the network off, watch the requests, and read the page's own rule.</p>
+        </span>
+      </a>
+    </div>
     <a class="card" href="/writing/no-phi/">
       <span class="piece-top"><span class="label">Article · 4 minute read</span><Draft /></span>
       <span class="piece-flow" aria-hidden="true"><span>You pick a file</span><i></i><span>Your browser reads it</span><i></i><span>Only totals appear</span></span>
@@ -25,7 +57,7 @@ import { ARTICLE_TITLE } from '../../lib/site';
       <span class="piece-zero" aria-hidden="true">0</span>
       <span>
         <strong>Requests sent while it reads your file</strong>
-        <p>Totals from a made-up claims file, worked out in your browser.</p>
+        <p>Totals from a sample claims file, worked out in your browser.</p>
       </span>
     </a>
   </div>

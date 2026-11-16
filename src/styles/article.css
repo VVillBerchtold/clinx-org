@@ -53,6 +53,21 @@
   min-height: 17rem;
   padding: clamp(1.5rem, 3vw, 2.25rem);
 }
+/* Two shorter pieces share a row in equal halves */
+.pieces-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-column: 1 / -1;
+  gap: 1.125rem;
+}
+.pieces .pieces-pair .card {
+  min-height: 13rem;
+}
+.pieces .pieces-pair .card strong {
+  font-size: clamp(1.375rem, 2.4vw, 1.75rem);
+  line-height: 1.15;
+  text-wrap: balance;
+}
 .pieces .card strong {
   font-size: clamp(1.625rem, 3vw, 2.375rem);
   line-height: 1.08;
@@ -95,12 +110,46 @@
   height: 2px;
   background: var(--tick);
 }
+.article-related {
+  margin-top: var(--s5);
+}
+/* The four steps of a tool, drawn as numbers on a line */
+.piece-steps {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.piece-steps b {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: clamp(2.75rem, 5vw, 3.5rem);
+  height: clamp(2.75rem, 5vw, 3.5rem);
+  border-radius: var(--pill);
+  background: var(--accent-wash);
+  color: var(--accent);
+  font: 800 clamp(1.25rem, 2.4vw, 1.625rem) / 1 var(--display);
+}
+.piece-steps b:last-child {
+  background: var(--accent);
+  color: var(--bg);
+}
+.piece-steps i {
+  flex: 1;
+  max-width: 2.5rem;
+  height: 2px;
+  background: var(--tick);
+}
 
 @media (max-width: 900px) {
   .pieces {
     grid-template-columns: minmax(0, 1fr);
   }
-  .pieces .card {
+  .pieces .card,
+  .pieces .pieces-pair .card {
     min-height: 0;
+  }
+  .pieces-pair {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

@@ -55,6 +55,7 @@ export const NAV: readonly (NavLink | NavGroup)[] = [
   },
   { href: '/data/', label: 'Data' },
   { href: '/methods/', label: 'Methods' },
+  { href: '/tools/', label: 'Tools' },
   { href: '/writing/', label: 'Writing' },
   { href: '/about/', label: 'About' },
   { href: '/products/', label: 'Products' },
@@ -111,3 +112,15 @@ export const REFERRALFINDERX_FOUNDER_URL = 'https://referralfinderx.com/founder.
 
 /** The day the article went public with the site. */
 export const ARTICLE_PUBLISHED = '2026-11-12';
+
+/** The file tool: its name is written here once, so every page says it the same way. */
+export const CLEANER_COPY = 'Cleaner Copy';
+/** The article about the file tool, and the day it goes public. */
+export const CLEANER_COPY_ARTICLE_TITLE = 'Getting a clinic report ready for AI help';
+export const CLEANER_COPY_ARTICLE_PUBLISHED = '2026-11-16';
+/** The article about what a workbook holds outside its cells, and the day it goes public. */
+export const WORKBOOK_ARTICLE_TITLE = 'What an Excel workbook carries besides its cells';
+export const WORKBOOK_ARTICLE_PUBLISHED = '2026-11-16';
+/** The guide to checking that a page sends nothing, and the day it goes public. */
+export const CHECKING_ARTICLE_TITLE = 'How to check that a page sends nothing';
+export const CHECKING_ARTICLE_PUBLISHED = '2026-11-16';

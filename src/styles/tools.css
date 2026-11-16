@@ -1,0 +1,54 @@
+/* The Tools page: one card for each tool, side by side. */
+.tool-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.125rem;
+}
+.tool-cards .card {
+  justify-content: space-between;
+  gap: var(--s5);
+  min-height: 19rem;
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+}
+.tool-cards .card strong {
+  font-size: clamp(1.625rem, 3vw, 2.25rem);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+}
+.tool-cards .card p {
+  max-width: 44ch;
+  margin-top: var(--s2);
+  font-size: var(--text-base);
+}
+.tool-cards .piece-steps,
+.tool-cards .piece-zero {
+  display: flex;
+  align-items: center;
+  min-height: clamp(4.5rem, 9vw, 7rem);
+}
+.tool-go {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  font-weight: 700;
+  color: var(--accent);
+}
+.tool-go svg {
+  transition: transform 0.2s;
+}
+.card:hover .tool-go svg {
+  transform: translateX(4px);
+}
+.tools-note {
+  max-width: 60ch;
+  margin-top: var(--s6);
+  color: var(--muted);
+}
+@media (max-width: 900px) {
+  .tool-cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tool-cards .card {
+    min-height: 0;
+  }
+}

@@ -1,0 +1,47 @@
+---
+import '../../../styles/article.css';
+import Base from '../../../layouts/Base.astro';
+import Arrow from '../../../components/Arrow.astro';
+import Draft from '../../../components/Draft.astro';
+import PageHead from '../../../components/PageHead.astro';
+import article from '../../../content/cleaner-copy.md?raw';
+import { renderSections } from '../../../lib/markdown';
+import { ARTICLE_TITLE, CLEANER_COPY, CLEANER_COPY_ARTICLE_PUBLISHED, CLEANER_COPY_ARTICLE_TITLE } from '../../../lib/site';
+import { articleNode, founderNode } from '../../../lib/structured-data';
+
+const sections = renderSections(article);
+const path = '/writing/cleaner-copy/';
+const articleDescription = 'Clinic reports mix operations with patients. A copy with the same shape and randomized values lets an AI assistant help with scripts and report layouts.';
+---
+
+<Base
+  title={CLEANER_COPY_ARTICLE_TITLE}
+  description={articleDescription}
+  crumbs={[
+    { name: 'Writing', path: '/writing/' },
+    { name: CLEANER_COPY_ARTICLE_TITLE, path },
+  ]}
+  about={[articleNode(articleDescription, { path, title: CLEANER_COPY_ARTICLE_TITLE, published: CLEANER_COPY_ARTICLE_PUBLISHED }), founderNode()]}
+>
+  <PageHead wide title={CLEANER_COPY_ARTICLE_TITLE} trail={[{ label: 'Writing', href: '/writing/' }, { label: 'Article' }]}>
+    <p class="byline">By Will Berchtold <span aria-hidden="true">·</span> 5 minute read <Draft /></p>
+  </PageHead>
+  <article class="article">
+    {
+      sections.map((section) => (
+        <section aria-labelledby={section.title === '' ? undefined : section.id}>
+          {section.title !== '' && <h2 id={section.id}>{section.title}</h2>}
+          <Fragment set:html={section.html} />
+        </section>
+      ))
+    }
+    <p class="small muted article-related">Related: <a href="/writing/no-phi/">{ARTICLE_TITLE}</a></p>
+  </article>
+  <div class="prod article-end">
+    <div>
+      <strong>Try it</strong>
+      <p>Run {CLEANER_COPY} on the sample clinic report first, then on one of your own.</p>
+    </div>
+    <a class="btn" href="/tools/cleaner-copy/">Open the tool <Arrow /></a>
+  </div>
+</Base>

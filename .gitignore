@@ -6,3 +6,6 @@ dist/
 
 # Local runs of the host tool (holds test mail written to files)
 .wrangler/
+
+# Test run cache
+.vitest/

@@ -150,16 +150,16 @@ export function datasetNode(data: Dataset, extraFiles: readonly ExtraFile[] = []
   };
 }
 
-/** The article on reading a sensitive file in the browser. */
-export function articleNode(description: string): Node {
+/** One article. Without a second argument it is the article on reading a sensitive file in the browser. */
+export function articleNode(description: string, piece: { path: string; title: string; published: string } = { path: '/writing/no-phi/', title: ARTICLE_TITLE, published: ARTICLE_PUBLISHED }): Node {
   return {
     '@type': 'Article',
-    '@id': `${SITE_URL}/writing/no-phi/#article`,
-    headline: ARTICLE_TITLE,
+    '@id': `${SITE_URL}${piece.path}#article`,
+    headline: piece.title,
     description,
-    url: `${SITE_URL}/writing/no-phi/`,
-    mainEntityOfPage: `${SITE_URL}/writing/no-phi/`,
-    datePublished: ARTICLE_PUBLISHED,
+    url: `${SITE_URL}${piece.path}`,
+    mainEntityOfPage: `${SITE_URL}${piece.path}`,
+    datePublished: piece.published,
     inLanguage: 'en-US',
     image: SITE_URL + SHARE_CARD.path,
     author: { '@id': FOUNDER_ID },
