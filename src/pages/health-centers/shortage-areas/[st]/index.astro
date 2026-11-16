@@ -1,0 +1,12 @@
+---
+import AreasStatePage from '../../../../components/hc/AreasStatePage.astro';
+import { getIndex } from '../../../../lib/hc-areas';
+
+/** One page for each state or territory in HRSA's files, and one for the rows that name no state (XX). */
+export function getStaticPaths() {
+  return getIndex().states.map((code) => ({ params: { st: code.toLowerCase() }, props: { code } }));
+}
+const { code } = Astro.props as { code: string };
+---
+
+<AreasStatePage code={code} />

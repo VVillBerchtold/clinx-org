@@ -1,0 +1,92 @@
+---
+/**
+ * A list of designations of one state, every row as HRSA's file has it: name and ID, kind of area,
+ * designation type, counties, score, dates and status. Two shapes:
+ *   proposed: the designations HRSA marks Proposed For Withdrawal (designation date and last update date);
+ *   event:    the designations with one kind of event in the last 365 days (the event's date, the status on the day of the copy).
+ * Column headings sort; the rows are never cut. A filter above the list is drawn by script.
+ */
+import { countiesText, dateText, EMPTY_COUNTIES, num, scoreText, SERIES, SERIES_INFO, seriesOf, type ProposedRow, type RecentRow } from '../../lib/hc-areas';
+import AreasFilter from './AreasFilter.astro';
+
+interface Props {
+  id: string;
+  caption: string;
+  variant: 'proposed' | 'event';
+  rows: readonly (ProposedRow | RecentRow)[];
+  /** The heading of the date column of an event list, for example "Date designated". */
+  dateLabel?: string;
+}
+const { id, caption, variant, rows, dateLabel = 'Date' } = Astro.props;
+const present = SERIES.filter((s) => rows.some((r) => seriesOf(r) === s));
+const kinds = present.map((s) => ({ value: s, label: SERIES_INFO[s].short }));
+const numeric = (score: string): string => (/^-?\d+(\.\d+)?$/.test(score) ? score : '');
+const isMark = (score: string): boolean => score === '' || !/^-?\d+(\.\d+)?$/.test(score);
+---
+
+{rows.length > 1 && <AreasFilter target={id} textLabel="Name, county, type or ID" kinds={kinds.length > 1 ? kinds : undefined} />}
+<div class="table-wrap wide stack hc-list">
+  <table id={id} data-sortable>
+    <caption><span>{caption}</span></caption>
+    <thead role="rowgroup">
+      <tr role="row">
+        <th role="columnheader" scope="col" data-sort="text">Name</th>
+        {variant === 'proposed' ? null : <th role="columnheader" scope="col" data-sort="text">{dateLabel}</th>}
+        <th role="columnheader" scope="col" data-sort="text">Kind of area</th>
+        <th role="columnheader" scope="col" data-sort="text">Designation type</th>
+        <th role="columnheader" scope="col">Counties</th>
+        <th role="columnheader" scope="col" class="num" data-sort="number">Score</th>
+        {
+          variant === 'proposed' ? (
+            <>
+              <th role="columnheader" scope="col" data-sort="text">Designation date</th>
+              <th role="columnheader" scope="col" data-sort="text">Last update date</th>
+            </>
+          ) : (
+            <th role="columnheader" scope="col" data-sort="text">Status in HRSA’s file</th>
+          )
+        }
+      </tr>
+    </thead>
+    <tbody role="rowgroup">
+      {
+        rows.map((r) => {
+          const series = seriesOf(r);
+          const counties = countiesText(r.counties);
+          return (
+            <tr role="row" data-kind={series}>
+              <th role="rowheader" scope="row" data-value={r.name}>
+                {r.name}
+                <span class="hc-id">ID {r.id}</span>
+              </th>
+              {'event_date_iso' in r ? <td role="cell" class="hc-date" data-label={dateLabel} data-value={r.event_date_iso}>{dateText(r.event_date_as_published)}</td> : null}
+              <td role="cell" data-label="Kind of area" data-value={SERIES_INFO[series].short}>{SERIES_INFO[series].short}</td>
+              <td role="cell" class="hc-type" data-label="Designation type">{r.designation_type}</td>
+              <td role="cell" class="hc-counties" data-label="Counties">{counties === '' ? EMPTY_COUNTIES : counties}</td>
+              <td role="cell" class="num" data-label="Score" data-value={numeric(r.score)}>
+                {isMark(r.score) ? <span class="hc-mark">{scoreText(r.score)}</span> : r.score}
+              </td>
+              {
+                'designation_date_iso' in r ? (
+                  <>
+                    <td role="cell" class="hc-date" data-label="Designation date" data-value={r.designation_date_iso}>{dateText(r.designation_date_as_published)}</td>
+                    <td role="cell" class="hc-date" data-label="Last update date" data-value={r.last_update_date_iso}>{dateText(r.last_update_date_as_published)}</td>
+                  </>
+                ) : (
+                  <td role="cell" data-label="Status in HRSA’s file">
+                    <span class:list={['hc-status', { proposed: r.status === 'Proposed For Withdrawal' }]}>{r.status}</span>
+                  </td>
+                )
+              }
+            </tr>
+          );
+        })
+      }
+    </tbody>
+  </table>
+</div>
+<p class="small muted">{num(rows.length)} {rows.length === 1 ? 'row' : 'rows'}, one for each designation in HRSA’s file that fits this list. Select a column heading to sort.</p>
+
+<script>
+  import '../../scripts/hc-areas-filter';
+</script>

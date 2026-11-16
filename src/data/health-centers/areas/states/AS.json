@@ -1,0 +1,215 @@
+{
+  "changes": [],
+  "changes_columns": [
+    "from_day",
+    "to_day",
+    "file",
+    "key",
+    "state",
+    "name",
+    "kind",
+    "field",
+    "before",
+    "after"
+  ],
+  "counts": {
+    "change_rows": 0,
+    "designations": {
+      "hpsa-dh": {
+        "Designated": {
+          "designations": 2,
+          "file_rows": 6
+        },
+        "Proposed For Withdrawal": {
+          "designations": 0,
+          "file_rows": 0
+        },
+        "Withdrawn": {
+          "designations": 0,
+          "file_rows": 0
+        }
+      },
+      "hpsa-mh": {
+        "Designated": {
+          "designations": 2,
+          "file_rows": 6
+        },
+        "Proposed For Withdrawal": {
+          "designations": 0,
+          "file_rows": 0
+        },
+        "Withdrawn": {
+          "designations": 0,
+          "file_rows": 0
+        }
+      },
+      "hpsa-pc": {
+        "Designated": {
+          "designations": 2,
+          "file_rows": 6
+        },
+        "Proposed For Withdrawal": {
+          "designations": 0,
+          "file_rows": 0
+        },
+        "Withdrawn": {
+          "designations": 0,
+          "file_rows": 0
+        }
+      },
+      "mua": {
+        "Designated": {
+          "designations": 4,
+          "file_rows": 5
+        },
+        "Proposed For Withdrawal": {
+          "designations": 0,
+          "file_rows": 0
+        },
+        "Withdrawn": {
+          "designations": 0,
+          "file_rows": 0
+        }
+      }
+    },
+    "designations_from_other_primary_states_with_components_here": 0,
+    "designations_with_components_in_other_states": 0,
+    "recent_events": {
+      "hpsa-dh": {
+        "designated": 0,
+        "updated": 1,
+        "withdrawn": 0
+      },
+      "hpsa-mh": {
+        "designated": 0,
+        "updated": 1,
+        "withdrawn": 0
+      },
+      "hpsa-pc": {
+        "designated": 0,
+        "updated": 1,
+        "withdrawn": 0
+      },
+      "mua": {
+        "designated": 0,
+        "updated": 0,
+        "withdrawn": 0
+      }
+    },
+    "sites": {
+      "Active": 8
+    },
+    "sites_added_to_scope_in_window": 0,
+    "sites_not_active": 0
+  },
+  "notes": {
+    "counts": "Counts of rows in HRSA's files on the snapshot's day. 'designations' counts each designation once; 'file_rows' counts the component rows HRSA publishes for those designations (a county, county subdivision or census tract each).",
+    "state": "A designation is placed in the state HRSA gives as its primary state. Components in other states are shown in the 'states' column of a row.",
+    "updated": "'updated' means only that HRSA's 'last update date' for the designation falls in the window. The file does not say what was updated.",
+    "window": "The window is the 365 days up to and including the snapshot's day, counted from the snapshot's day and never from the clock."
+  },
+  "proposed": [],
+  "proposed_columns": [
+    "file",
+    "discipline",
+    "key",
+    "id",
+    "name",
+    "designation_type",
+    "state",
+    "states",
+    "counties",
+    "score",
+    "status",
+    "designation_date_as_published",
+    "designation_date_iso",
+    "last_update_date_as_published",
+    "last_update_date_iso"
+  ],
+  "recent": [
+    {
+      "counties": "Western District, AS",
+      "designation_type": "Federally Qualified Health Center",
+      "discipline": "DH",
+      "event": "updated",
+      "event_date_as_published": "03/30/2026",
+      "event_date_iso": "2026-03-30",
+      "file": "hpsa",
+      "id": "6609996002",
+      "key": "DH/6609996002",
+      "name": "DEPARTMENT OF HEALTH",
+      "score": "26",
+      "state": "AS",
+      "states": "AS",
+      "status": "Designated"
+    },
+    {
+      "counties": "Western District, AS",
+      "designation_type": "Federally Qualified Health Center",
+      "discipline": "MH",
+      "event": "updated",
+      "event_date_as_published": "03/30/2026",
+      "event_date_iso": "2026-03-30",
+      "file": "hpsa",
+      "id": "7609996002",
+      "key": "MH/7609996002",
+      "name": "DEPARTMENT OF HEALTH",
+      "score": "18",
+      "state": "AS",
+      "states": "AS",
+      "status": "Designated"
+    },
+    {
+      "counties": "Western District, AS",
+      "designation_type": "Federally Qualified Health Center",
+      "discipline": "PC",
+      "event": "updated",
+      "event_date_as_published": "03/30/2026",
+      "event_date_iso": "2026-03-30",
+      "file": "hpsa",
+      "id": "1609996002",
+      "key": "PC/1609996002",
+      "name": "DEPARTMENT OF HEALTH",
+      "score": "20",
+      "state": "AS",
+      "states": "AS",
+      "status": "Designated"
+    }
+  ],
+  "recent_columns": [
+    "event_date_iso",
+    "event",
+    "file",
+    "discipline",
+    "key",
+    "id",
+    "name",
+    "designation_type",
+    "state",
+    "states",
+    "counties",
+    "score",
+    "status",
+    "event_date_as_published"
+  ],
+  "sites_recent": [],
+  "sites_recent_columns": [
+    "reason",
+    "state",
+    "key",
+    "site_name",
+    "health_center_number",
+    "health_center_name",
+    "site_status",
+    "added_to_scope_as_published",
+    "added_to_scope_iso",
+    "address",
+    "city",
+    "postal_code",
+    "county"
+  ],
+  "snapshot_day": "2026-11-16",
+  "state": "AS",
+  "window_end": "2026-11-16",
+  "window_start": "2025-11-16"
+}

@@ -1,0 +1,412 @@
+{
+  "changes": [],
+  "changes_columns": [
+    "from_day",
+    "to_day",
+    "file",
+    "key",
+    "state",
+    "name",
+    "kind",
+    "field",
+    "before",
+    "after"
+  ],
+  "counts": {
+    "change_rows": 0,
+    "designations": {
+      "hpsa-dh": {
+        "Designated": {
+          "designations": 2,
+          "file_rows": 2
+        },
+        "Proposed For Withdrawal": {
+          "designations": 0,
+          "file_rows": 0
+        },
+        "Withdrawn": {
+          "designations": 0,
+          "file_rows": 0
+        }
+      },
+      "hpsa-mh": {
+        "Designated": {
+          "designations": 0,
+          "file_rows": 0
+        },
+        "Proposed For Withdrawal": {
+          "designations": 0,
+          "file_rows": 0
+        },
+        "Withdrawn": {
+          "designations": 0,
+          "file_rows": 0
+        }
+      },
+      "hpsa-pc": {
+        "Designated": {
+          "designations": 5,
+          "file_rows": 5
+        },
+        "Proposed For Withdrawal": {
+          "designations": 0,
+          "file_rows": 0
+        },
+        "Withdrawn": {
+          "designations": 0,
+          "file_rows": 0
+        }
+      },
+      "mua": {
+        "Designated": {
+          "designations": 0,
+          "file_rows": 0
+        },
+        "Proposed For Withdrawal": {
+          "designations": 0,
+          "file_rows": 0
+        },
+        "Withdrawn": {
+          "designations": 0,
+          "file_rows": 0
+        }
+      }
+    },
+    "designations_from_other_primary_states_with_components_here": 0,
+    "designations_with_components_in_other_states": 0,
+    "recent_events": {
+      "hpsa-dh": {
+        "designated": 1,
+        "updated": 2,
+        "withdrawn": 0
+      },
+      "hpsa-mh": {
+        "designated": 0,
+        "updated": 0,
+        "withdrawn": 0
+      },
+      "hpsa-pc": {
+        "designated": 0,
+        "updated": 1,
+        "withdrawn": 0
+      },
+      "mua": {
+        "designated": 0,
+        "updated": 0,
+        "withdrawn": 0
+      }
+    },
+    "sites": {
+      "Active": 377
+    },
+    "sites_added_to_scope_in_window": 12,
+    "sites_not_active": 0
+  },
+  "notes": {
+    "counts": "Counts of rows in HRSA's files on the snapshot's day. 'designations' counts each designation once; 'file_rows' counts the component rows HRSA publishes for those designations (a county, county subdivision or census tract each).",
+    "state": "A designation is placed in the state HRSA gives as its primary state. Components in other states are shown in the 'states' column of a row.",
+    "updated": "'updated' means only that HRSA's 'last update date' for the designation falls in the window. The file does not say what was updated.",
+    "window": "The window is the 365 days up to and including the snapshot's day, counted from the snapshot's day and never from the clock."
+  },
+  "proposed": [],
+  "proposed_columns": [
+    "file",
+    "discipline",
+    "key",
+    "id",
+    "name",
+    "designation_type",
+    "state",
+    "states",
+    "counties",
+    "score",
+    "status",
+    "designation_date_as_published",
+    "designation_date_iso",
+    "last_update_date_as_published",
+    "last_update_date_iso"
+  ],
+  "recent": [
+    {
+      "counties": "Not Determined",
+      "designation_type": "Correctional Facility",
+      "discipline": "DH",
+      "event": "updated",
+      "event_date_as_published": "04/14/2026",
+      "event_date_iso": "2026-04-14",
+      "file": "hpsa",
+      "id": "6084309465",
+      "key": "DH/6084309465",
+      "name": "CF-Centennial Correctional Facility",
+      "score": "12",
+      "state": "XX",
+      "states": "XX",
+      "status": "Designated"
+    },
+    {
+      "counties": "Not Determined",
+      "designation_type": "Correctional Facility",
+      "discipline": "DH",
+      "event": "designated",
+      "event_date_as_published": "04/14/2026",
+      "event_date_iso": "2026-04-14",
+      "file": "hpsa",
+      "id": "6555158006",
+      "key": "DH/6555158006",
+      "name": "CF-Redgranite Correctional Institution",
+      "score": "3",
+      "state": "XX",
+      "states": "XX",
+      "status": "Designated"
+    },
+    {
+      "counties": "Not Determined",
+      "designation_type": "Correctional Facility",
+      "discipline": "DH",
+      "event": "updated",
+      "event_date_as_published": "04/14/2026",
+      "event_date_iso": "2026-04-14",
+      "file": "hpsa",
+      "id": "6555158006",
+      "key": "DH/6555158006",
+      "name": "CF-Redgranite Correctional Institution",
+      "score": "3",
+      "state": "XX",
+      "states": "XX",
+      "status": "Designated"
+    },
+    {
+      "counties": "Not Determined",
+      "designation_type": "Correctional Facility",
+      "discipline": "PC",
+      "event": "updated",
+      "event_date_as_published": "04/14/2026",
+      "event_date_iso": "2026-04-14",
+      "file": "hpsa",
+      "id": "1087935628",
+      "key": "PC/1087935628",
+      "name": "CF-Buena Vista Correctional Facility",
+      "score": "12",
+      "state": "XX",
+      "states": "XX",
+      "status": "Designated"
+    }
+  ],
+  "recent_columns": [
+    "event_date_iso",
+    "event",
+    "file",
+    "discipline",
+    "key",
+    "id",
+    "name",
+    "designation_type",
+    "state",
+    "states",
+    "counties",
+    "score",
+    "status",
+    "event_date_as_published"
+  ],
+  "sites_recent": [
+    {
+      "added_to_scope_as_published": "10/02/2026",
+      "added_to_scope_iso": "2026-10-02",
+      "address": "",
+      "city": "",
+      "county": "Not Determined",
+      "health_center_name": "HIGH PLAINS COMMUNITY HEALTH CENTER",
+      "health_center_number": "H80CS00214",
+      "key": "BPS-H80-042900",
+      "postal_code": "",
+      "reason": "added to scope in the last 365 days",
+      "site_name": "High Plains Wiley Clinic",
+      "site_status": "Active",
+      "state": "XX"
+    },
+    {
+      "added_to_scope_as_published": "08/13/2026",
+      "added_to_scope_iso": "2026-08-13",
+      "address": "",
+      "city": "",
+      "county": "Not Determined",
+      "health_center_name": "NORTHEAST COMMUNITY CLINIC",
+      "health_center_number": "H80CS12869",
+      "key": "BPS-H80-042656",
+      "postal_code": "",
+      "reason": "added to scope in the last 365 days",
+      "site_name": "NECC - Harbor City Health Center",
+      "site_status": "Active",
+      "state": "XX"
+    },
+    {
+      "added_to_scope_as_published": "08/01/2026",
+      "added_to_scope_iso": "2026-08-01",
+      "address": "",
+      "city": "",
+      "county": "Not Determined",
+      "health_center_name": "CELEBRATING LIFE COMMUNITY HEALTH CENTER",
+      "health_center_number": "H80CS55695",
+      "key": "BPS-H80-042213",
+      "postal_code": "",
+      "reason": "added to scope in the last 365 days",
+      "site_name": "CLCHC -  SANO - Costa Mesa",
+      "site_status": "Active",
+      "state": "XX"
+    },
+    {
+      "added_to_scope_as_published": "08/01/2026",
+      "added_to_scope_iso": "2026-08-01",
+      "address": "",
+      "city": "",
+      "county": "Not Determined",
+      "health_center_name": "GOOD SAMARITAN FAMILY HEALTH CENTER INC",
+      "health_center_number": "H80CS55678",
+      "key": "BPS-H80-042246",
+      "postal_code": "",
+      "reason": "added to scope in the last 365 days",
+      "site_name": "Vigo Elementary",
+      "site_status": "Active",
+      "state": "XX"
+    },
+    {
+      "added_to_scope_as_published": "08/01/2026",
+      "added_to_scope_iso": "2026-08-01",
+      "address": "",
+      "city": "",
+      "county": "Not Determined",
+      "health_center_name": "GOOD SAMARITAN FAMILY HEALTH CENTER INC",
+      "health_center_number": "H80CS55678",
+      "key": "BPS-H80-042367",
+      "postal_code": "",
+      "reason": "added to scope in the last 365 days",
+      "site_name": "North Knox Jr/Sr High School",
+      "site_status": "Active",
+      "state": "XX"
+    },
+    {
+      "added_to_scope_as_published": "08/01/2026",
+      "added_to_scope_iso": "2026-08-01",
+      "address": "",
+      "city": "",
+      "county": "Not Determined",
+      "health_center_name": "GOOD SAMARITAN FAMILY HEALTH CENTER INC",
+      "health_center_number": "H80CS55678",
+      "key": "BPS-H80-042398",
+      "postal_code": "",
+      "reason": "added to scope in the last 365 days",
+      "site_name": "Tecumseh Harrison Elementary",
+      "site_status": "Active",
+      "state": "XX"
+    },
+    {
+      "added_to_scope_as_published": "04/23/2026",
+      "added_to_scope_iso": "2026-04-23",
+      "address": "",
+      "city": "",
+      "county": "Not Determined",
+      "health_center_name": "CABARRUS COMMUNITY HEALTH CENTERS, INC.",
+      "health_center_number": "H80CS06652",
+      "key": "BPS-H80-041590",
+      "postal_code": "",
+      "reason": "added to scope in the last 365 days",
+      "site_name": "CRCHC at Moore Magnet Elementary School",
+      "site_status": "Active",
+      "state": "XX"
+    },
+    {
+      "added_to_scope_as_published": "03/20/2026",
+      "added_to_scope_iso": "2026-03-20",
+      "address": "",
+      "city": "",
+      "county": "Not Determined",
+      "health_center_name": "PUEBLO COMMUNITY HEALTH CENTER",
+      "health_center_number": "H80CS00692",
+      "key": "BPS-H80-041449",
+      "postal_code": "",
+      "reason": "added to scope in the last 365 days",
+      "site_name": "The Pueblo Shelter",
+      "site_status": "Active",
+      "state": "XX"
+    },
+    {
+      "added_to_scope_as_published": "03/03/2026",
+      "added_to_scope_iso": "2026-03-03",
+      "address": "",
+      "city": "",
+      "county": "",
+      "health_center_name": "COMMUNITY HEALTH CENTERS OF AMERICA",
+      "health_center_number": "LALCS40180",
+      "key": "BPS-LAL-041405",
+      "postal_code": "",
+      "reason": "added to scope in the last 365 days",
+      "site_name": "CHCA Fresno-Additional Service Site",
+      "site_status": "Active",
+      "state": "XX"
+    },
+    {
+      "added_to_scope_as_published": "02/26/2026",
+      "added_to_scope_iso": "2026-02-26",
+      "address": "",
+      "city": "",
+      "county": "Not Determined",
+      "health_center_name": "THUNDER BAY COMMUNITY HEALTH SERVICE INC",
+      "health_center_number": "H80CS00402",
+      "key": "BPS-H80-041366",
+      "postal_code": "",
+      "reason": "added to scope in the last 365 days",
+      "site_name": "HILLMAN HIGH SCHOOL",
+      "site_status": "Active",
+      "state": "XX"
+    },
+    {
+      "added_to_scope_as_published": "01/20/2026",
+      "added_to_scope_iso": "2026-01-20",
+      "address": "",
+      "city": "",
+      "county": "Not Determined",
+      "health_center_name": "LAWNDALE CHRISTIAN HEALTH CENTER",
+      "health_center_number": "H80CS00725",
+      "key": "BPS-H80-041239",
+      "postal_code": "",
+      "reason": "added to scope in the last 365 days",
+      "site_name": "LCHC at Rosenthal Family Lodge - Family Rescue",
+      "site_status": "Active",
+      "state": "XX"
+    },
+    {
+      "added_to_scope_as_published": "12/16/2025",
+      "added_to_scope_iso": "2025-12-16",
+      "address": "",
+      "city": "",
+      "county": "Not Determined",
+      "health_center_name": "BLUE RIDGE COMMUNITY HEALTH SERVICES, INC.",
+      "health_center_number": "H80CS00650",
+      "key": "BPS-H80-041032",
+      "postal_code": "",
+      "reason": "added to scope in the last 365 days",
+      "site_name": "Blue Ridge Health at Safelight, Inc.",
+      "site_status": "Active",
+      "state": "XX"
+    }
+  ],
+  "sites_recent_columns": [
+    "reason",
+    "state",
+    "key",
+    "site_name",
+    "health_center_number",
+    "health_center_name",
+    "site_status",
+    "added_to_scope_as_published",
+    "added_to_scope_iso",
+    "address",
+    "city",
+    "postal_code",
+    "county"
+  ],
+  "snapshot_day": "2026-11-16",
+  "state": "XX",
+  "window_end": "2026-11-16",
+  "window_start": "2025-11-16"
+}

@@ -1,0 +1,60 @@
+---
+/**
+ * The source block at the foot of every shortage area page: each HRSA file by name with the day
+ * ClinX retrieved it, its fingerprint (SHA-256) and the address it is downloaded from, then the
+ * downloads ClinX offers. Read from the copied index.json.
+ */
+import { day, getIndex, nameOf, size, sourceAddress, stateDownload, tableDownload, SERIES, SERIES_INFO } from '../../lib/hc-areas';
+
+interface Props {
+  /** The two-letter code of the state whose page this is; left out on the front page. */
+  state?: string;
+}
+const { state } = Astro.props;
+const index = getIndex();
+const uses: Record<string, string> = {
+  'Health_Center_Service_Delivery_and_LookAlike_Sites.csv': 'Health center sites: service delivery sites and look-alike sites.',
+};
+for (const s of SERIES) uses[SERIES_INFO[s].file] = `${SERIES_INFO[s].label}.`;
+const utc = (t: string): string => `${day(t.slice(0, 10))}, ${t.slice(11, 16)} UTC`;
+const tables = [
+  { file: 'states.json', what: 'Counts for every state and territory' },
+  { file: 'recent.csv', what: 'Every designated, withdrawn and updated event of the last 365 days, all states' },
+  { file: 'proposed.csv', what: 'Every designation HRSA marks Proposed For Withdrawal, all states' },
+  { file: 'sites-recent.csv', what: 'Health center sites added to scope in the last 365 days, all states' },
+  { file: 'changes.csv', what: 'Changes between ClinX’s copies, all states' },
+];
+---
+
+<section class="section hc-source" aria-labelledby="source-heading">
+  <div class="section-head">
+    <h2 id="source-heading">Source</h2>
+    <p>HRSA’s files as ClinX copied them on {day(index.snapshot_day)}.</p>
+  </div>
+  <p>
+    Every figure comes from five public files of the Health Resources and Services Administration (HRSA). ClinX saved each file on the day shown and keeps the copy. The fingerprint is the SHA-256 of the file as saved.
+  </p>
+  <dl>
+    {
+      index.sources.map((s) => (
+        <div class="hc-source-item">
+          <dt>{s.file}</dt>
+          <dd>{uses[s.file]}</dd>
+          <dd>Retrieved {utc(s.retrieved_utc)}.</dd>
+          <dd>Fingerprint (SHA-256): <code>{s.sha256}</code></dd>
+          <dd>Downloaded from <a href={sourceAddress(s.file)}>{sourceAddress(s.file)}</a></dd>
+        </div>
+      ))
+    }
+  </dl>
+  <h3>Downloads</h3>
+  <p>The tables ClinX built from those files are open files{state ? ', one for this state and five for all states' : ''}.</p>
+  <div class="btn-row hc-downloads">
+    {state && <a class="btn" href={stateDownload(state)}>{nameOf(state)} as JSON ({size(index.file_bytes[`states/${state}.json`] ?? 0)})</a>}
+    {tables.map((t) => <a class="btn ghost" href={tableDownload(t.file)} title={t.what}>{t.file} ({size(index.file_bytes[t.file] ?? 0)})</a>)}
+  </div>
+  <p class="small muted">
+    {tables.map((t, i) => <>{i > 0 ? ' ' : ''}{t.file}: {t.what}.</>)}
+    {state ? ` The file of this state holds everything on this page, with its columns named.` : ' A file for each state is at /data/health-centers/areas/states/ followed by the state code and .json.'}
+  </p>
+</section>
