@@ -1,10 +1,10 @@
 // The Cleaner Copy worker: it holds the file the person chose and does the reading and writing.
 // It runs beside the page, from this site's own file, and like the page it can open no connection.
 import { inspect, kindOf, legendWorkbook, makeCopy, sampleBytes, SAMPLE_NAME, type Kind } from './engine/index.js';
-import type { FromWorker, ToWorker } from './protocol';
+import type { FromWorker, ToWorker, WorkerReady } from './protocol';
 
 const scope = self as unknown as {
-  postMessage(message: FromWorker, transfer?: Transferable[]): void;
+  postMessage(message: FromWorker | WorkerReady, transfer?: Transferable[]): void;
   onmessage: ((event: MessageEvent<ToWorker>) => void) | null;
 };
 
@@ -54,3 +54,6 @@ scope.onmessage = (event) => {
       .catch(fail);
   }
 };
+
+// Tell the page this file has arrived. The page starts its count of requests after that.
+scope.postMessage({ ready: true });

@@ -1,7 +1,7 @@
 // The File Check page: three steps in one frame. This script shows one step at a time and asks
 // the worker beside it to read the file. It stores nothing in the browser and makes no request.
 import type { CheckReport, Finding, RuleId, SheetSummary } from './engine/index.js';
-import type { CheckedFile, FromWorker, ToWorker } from './protocol';
+import type { CheckedFile, FromWorker, ToWorker, WorkerReady } from './protocol';
 
 type Child = Node | string | null | undefined | false;
 type Attrs = Record<string, string | boolean | undefined>;
@@ -100,18 +100,33 @@ let worker: Worker | null = null;
 let lastId = 0;
 const waiting = new Map<number, (answer: FromWorker) => void>();
 
+// The worker's own file is fetched as the page starts. The page waits for it before it starts the
+// count of requests, so the count holds only what was asked for after a file was chosen.
+let tellReady: () => void = () => {};
+const workerReady = new Promise<void>((resolve) => {
+  tellReady = resolve;
+});
+
 function startWorker(): boolean {
   try {
     worker = new Worker(new URL('./worker.ts', import.meta.url), { type: 'module' });
   } catch {
+    tellReady();
     return false;
   }
-  worker.onmessage = (event: MessageEvent<FromWorker>) => {
+  // If the worker never answers, the tool goes on and says what went wrong.
+  setTimeout(tellReady, 5000);
+  worker.onmessage = (event: MessageEvent<FromWorker | WorkerReady>) => {
+    if ('ready' in event.data) {
+      tellReady();
+      return;
+    }
     const answer = event.data;
     waiting.get(answer.id)?.(answer);
     waiting.delete(answer.id);
   };
   worker.onerror = () => {
+    tellReady();
     for (const [id, tell] of waiting) tell({ id, ok: false, problem: 'The tool stopped while it was working. The file may be too large for this browser. Reload the page and try again.' });
     waiting.clear();
   };
@@ -300,6 +315,7 @@ async function take(name: string, read: () => Promise<Uint8Array | null>): Promi
   drop.classList.add('is-busy');
   drop.setAttribute('aria-busy', 'true');
   renderFrame();
+  await workerReady;
   chosenAt = performance.now();
   requestsSince = 0;
   showWire();

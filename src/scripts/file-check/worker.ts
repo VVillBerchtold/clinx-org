@@ -3,11 +3,11 @@
 // It keeps nothing: once the findings are handed to the page, the file's bytes are let go.
 import { kindOf } from '../cleaner-copy/engine/kind.js';
 import { asText, checkFile } from './engine/index.js';
-import type { FromWorker, ToWorker } from './protocol';
+import type { FromWorker, ToWorker, WorkerReady } from './protocol';
 import { SAMPLE_NAME, sampleBytes } from './sample';
 
 const scope = self as unknown as {
-  postMessage(message: FromWorker): void;
+  postMessage(message: FromWorker | WorkerReady): void;
   onmessage: ((event: MessageEvent<ToWorker>) => void) | null;
 };
 
@@ -33,3 +33,6 @@ scope.onmessage = (event) => {
   if (message.type === 'sample') check(message.id, SAMPLE_NAME, sampleBytes()).catch(fail);
   else check(message.id, message.name, message.bytes).catch(fail);
 };
+
+// Tell the page this file has arrived. The page starts its count of requests after that.
+scope.postMessage({ ready: true });

@@ -34,3 +34,6 @@ export type FromWorker =
   | { id: number; ok: true; type: 'copied'; copy: MadeCopy }
   | { id: number; ok: true; type: 'forgotten' }
   | { id: number; ok: false; problem: string };
+
+/** The worker's first message: its own file has arrived and it is ready for a question. */
+export type WorkerReady = { ready: true };
