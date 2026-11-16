@@ -1655,6 +1655,12 @@ th[aria-sort='descending'] button::after {
   grid-template-columns: minmax(0, 4fr) repeat(4, minmax(0, 2fr));
   gap: var(--s6);
 }
+/* The site's own pages, with what its maker sells under them. */
+.foot-pair {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s5);
+}
 .foot-grid .mark {
   color: var(--ink);
 }
@@ -1730,6 +1736,10 @@ th[aria-sort='descending'] button::after {
   .foot-grid > :first-child,
   .foot-grid .foot-wide {
     grid-column: 1 / -1;
+  }
+  /* The two lists of the last column sit side by side here. */
+  .foot-pair {
+    display: contents;
   }
   /* The 340B links run down two columns that line up with the two lists under them. */
   .foot-grid .foot-wide ul {

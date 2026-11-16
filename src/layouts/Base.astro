@@ -4,7 +4,7 @@ import '../styles/tokens.css';
 import '../styles/layout.css';
 import displayFont from '../../node_modules/@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-opsz-normal.woff2?url';
 import bodyFont from '../../node_modules/@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2?url';
-import { CSP_FORM_META, CSP_META, NAV, PREVIEW, SITE_NAME, SITE_URL } from '../lib/site';
+import { CSP_FORM_META, CSP_META, NAV, OTHER_PRODUCTS, PREVIEW, SITE_NAME, SITE_URL } from '../lib/site';
 import { shareCard, shareCardFor } from '../lib/share-cards';
 import { formatDate, getDataset } from '../lib/data';
 import { toBlock, trailNode, type Crumb, type Node } from '../lib/structured-data';
@@ -202,16 +202,28 @@ const labels: Node[] = unlisted ? [] : [...about, ...(crumbs.length > 0 ? [trail
               ))}
             </ul>
           </nav>
-          <nav aria-label="ClinX">
-            <h2>ClinX</h2>
-            <ul>
-              {footSite.map((link) => (
-                <li>
-                  <a href={link.href}>{link.label}</a>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          <div class="foot-pair">
+            <nav aria-label="ClinX">
+              <h2>ClinX</h2>
+              <ul>
+                {footSite.map((link) => (
+                  <li>
+                    <a href={link.href}>{link.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+            <nav aria-label="Other products">
+              <h2>Other products</h2>
+              <ul>
+                {OTHER_PRODUCTS.map((link) => (
+                  <li>
+                    <a href={link.href}>{link.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
         </div>
         <div class="foot-base">
           <span>

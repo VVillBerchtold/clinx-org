@@ -67,9 +67,11 @@ export const NAV: readonly (NavLink | NavGroup)[] = [
   { href: '/tools/', label: 'Tools' },
   { href: '/writing/', label: 'Writing' },
   { href: '/about/', label: 'About' },
-  { href: '/products/', label: 'Products' },
   { href: '/contact/', label: 'Contact' },
 ];
+
+/** What ClinX's maker sells, kept out of the main menu: the foot of every page lists these under their own heading. */
+export const OTHER_PRODUCTS: readonly NavLink[] = [{ href: '/products/', label: 'ReferralFinderX' }];
 
 /** The health centers section: its name and its front page, which the trail of every page in it links to. */
 export const HC_NAME = 'Health centers';
