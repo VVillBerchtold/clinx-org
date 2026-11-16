@@ -11,6 +11,7 @@
   "vetoed": "The governor, or the President, vetoed the bill or part of it.",
   "became law": "The bill became law.",
   "hearing": "A committee meeting or hearing with the bill on its agenda.",
+  "report due": "The day a law or a budget sets for a state agency's or a covered entity's report. The day is quoted from the official source; its words are in the row.",
   "session starts": "The first day of a legislature's session.",
   "session ends": "The last day of a legislature's session.",
   "notice published": "A federal agency published a rule, a proposed rule or a notice in the Federal Register.",
@@ -20452,6 +20453,22 @@
    "retrieved": "2026-11-15"
   },
   {
+   "event_id": "va-report-due-2026-11-01-work-group",
+   "day": "2026-11-01",
+   "time": "",
+   "jurisdiction": "VA",
+   "kind": "report due",
+   "bill_id": "",
+   "bill": "",
+   "notice_id": "",
+   "what": "The work group report under Chapter 887 of 2026 (Senate Bill 278). The Virginia reports library lists it as overdue on 16 November 2026",
+   "body": "Secretary of Health and Human Resources",
+   "where": "",
+   "link": "https://rga.lis.virginia.gov/Overdue/11.1.2026/30102",
+   "source": "the official source, read on 2026-11-16: \"The Secretary shall submit a report on the work group's findings and recommendations to the Chairs of the Senate Committees on Finance and Appropriations and Education and Health and the House Committees on Appropriations and Health and Human Services no later than November 1, 2026.\"",
+   "retrieved": "2026-11-15"
+  },
+  {
    "event_id": "fr-2026-22739-published",
    "day": "2026-11-06",
    "time": "",
@@ -20516,6 +20533,22 @@
    "retrieved": "2026-11-15"
   },
   {
+   "event_id": "mn-report-due-2026-11-15-commissioner",
+   "day": "2026-11-15",
+   "time": "",
+   "jurisdiction": "MN",
+   "kind": "report due",
+   "bill_id": "",
+   "bill": "",
+   "notice_id": "",
+   "what": "The Commissioner of Health's yearly report to the legislature, under Minnesota Statutes 62J.461. The department's publications page (health.mn.gov/data/340b/reports) did not list a new report on 16 November 2026",
+   "body": "Commissioner of Health",
+   "where": "",
+   "link": "https://www.revisor.mn.gov/statutes/cite/62J.461",
+   "source": "the official source, read on 2026-11-16: \"By November 15, 2024, and by November 15 of each year thereafter, the commissioner shall submit to the chairs and ranking minority members of the legislative committees with jurisdiction over health care finance and policy, a report\"",
+   "retrieved": "2026-11-15"
+  },
+  {
    "event_id": "fr-2026-19535-close",
    "day": "2026-11-23",
    "time": "",
@@ -20577,6 +20610,22 @@
    "where": "",
    "link": "http://www.legis.state.pa.us/",
    "source": "Open States' list of sessions",
+   "retrieved": "2026-11-15"
+  },
+  {
+   "event_id": "va-report-due-2026-12-01-dmas-medicaid-340b",
+   "day": "2026-12-01",
+   "time": "",
+   "jurisdiction": "VA",
+   "kind": "report due",
+   "bill_id": "",
+   "bill": "",
+   "notice_id": "",
+   "what": "The Department of Medical Assistance Services' yearly report on 340B in Medicaid, under Appropriation Act Item 291 UUUUU.2",
+   "body": "Department of Medical Assistance Services",
+   "where": "",
+   "link": "https://rga.lis.virginia.gov/Pending/12.1.2026/30731",
+   "source": "the official source, read on 2026-11-16: \"quantify the aggregate value of 340B discounts received by covered entities\"",
    "retrieved": "2026-11-15"
   },
   {
@@ -20964,6 +21013,22 @@
    "retrieved": "2026-11-15"
   },
   {
+   "event_id": "vt-report-due-2027-01-31-hospitals",
+   "day": "2027-01-31",
+   "time": "",
+   "jurisdiction": "VT",
+   "kind": "report due",
+   "bill_id": "",
+   "bill": "",
+   "notice_id": "",
+   "what": "Each participating hospital's yearly report to the Green Mountain Care Board, under 18 V.S.A. 9406",
+   "body": "Hospitals taking part in 340B",
+   "where": "",
+   "link": "https://legislature.vermont.gov/Documents/2026/Docs/ACTS/ACT055/ACT055%20As%20Enacted.pdf",
+   "source": "the official source, read on 2026-11-16: \"Annually on or before January 31, each hospital participating in the federal 340B drug pricing program established by 42 U.S.C. § 256b shall submit to the Green Mountain Care Board\"",
+   "retrieved": "2026-11-15"
+  },
+  {
    "event_id": "nv-starts-84",
    "day": "2027-02-01",
    "time": "",
@@ -21092,6 +21157,38 @@
    "retrieved": "2026-11-15"
   },
   {
+   "event_id": "mn-report-due-2027-04-01-covered-entities",
+   "day": "2027-04-01",
+   "time": "",
+   "jurisdiction": "MN",
+   "kind": "report due",
+   "bill_id": "",
+   "bill": "",
+   "notice_id": "",
+   "what": "Each 340B covered entity's yearly report to the Commissioner of Health, under Minnesota Statutes 62J.461",
+   "body": "340B covered entities",
+   "where": "",
+   "link": "https://www.revisor.mn.gov/statutes/cite/62J.461",
+   "source": "the official source, read on 2026-11-16: \"Each 340B covered entity shall report to the commissioner by April 1 of each year\"",
+   "retrieved": "2026-11-15"
+  },
+  {
+   "event_id": "ri-report-due-2027-04-01-covered-entities",
+   "day": "2027-04-01",
+   "time": "",
+   "jurisdiction": "RI",
+   "kind": "report due",
+   "bill_id": "",
+   "bill": "",
+   "notice_id": "",
+   "what": "Each 340B covered entity's yearly report to the Governor, the Speaker, the Senate President and the Auditor General, under Rhode Island General Laws 5-19.3-6",
+   "body": "340B covered entities",
+   "where": "",
+   "link": "https://webserver.rilegislature.gov/PublicLaws/law25/law25288.htm",
+   "source": "the official source, read on 2026-11-16: \"Annually on or before April 1, each 340B covered entity participating in the federal 340B drug pricing program established by 42 U.S.C. § 256b shall submit to the office of the governor, the speaker of the house of representatives, the president of the senate, and auditor general a report\"",
+   "retrieved": "2026-11-15"
+  },
+  {
    "event_id": "tn-ends-115",
    "day": "2027-04-25",
    "time": "",
@@ -21188,6 +21285,54 @@
    "retrieved": "2026-11-15"
   },
   {
+   "event_id": "hi-report-due-2027-07-01-covered-entities",
+   "day": "2027-07-01",
+   "time": "",
+   "jurisdiction": "HI",
+   "kind": "report due",
+   "bill_id": "",
+   "bill": "",
+   "notice_id": "",
+   "what": "Each 340B covered entity's yearly report to the hospital trade association, under Hawaii's 340B law of 2025 (HB 712)",
+   "body": "340B covered entities",
+   "where": "",
+   "link": "https://data.capitol.hawaii.gov/hrscurrent/Vol11_Ch0476-0490/HRS0481N/HRS_0481N-0006.htm",
+   "source": "the official source, read on 2026-11-16: \"Beginning on July 1, 2026, and no later than July 1 each year thereafter, each 340B covered entity shall report to the hospital trade association operating in the State\"",
+   "retrieved": "2026-11-15"
+  },
+  {
+   "event_id": "oh-report-due-2027-07-01-covered-entities",
+   "day": "2027-07-01",
+   "time": "",
+   "jurisdiction": "OH",
+   "kind": "report due",
+   "bill_id": "",
+   "bill": "",
+   "notice_id": "",
+   "what": "Each 340B covered entity's yearly report to the Department of Health, under Ohio Revised Code 3701.88",
+   "body": "340B covered entities",
+   "where": "",
+   "link": "https://codes.ohio.gov/ohio-revised-code/section-3701.88",
+   "source": "the official source, read on 2026-11-16: \"Not later than July 1, 2026, and not later than the first day of July in each year thereafter, each 340B covered entity shall submit a report to the department of health.\"",
+   "retrieved": "2026-11-15"
+  },
+  {
+   "event_id": "il-report-due-2027-08-01-covered-entities",
+   "day": "2027-08-01",
+   "time": "",
+   "jurisdiction": "IL",
+   "kind": "report due",
+   "bill_id": "",
+   "bill": "",
+   "notice_id": "",
+   "what": "Each 340B covered entity's yearly report to the General Assembly, under the Patient Access to Pharmacy Protection Act (HB 2371). Some kinds of entity report from 2029",
+   "body": "340B covered entities",
+   "where": "",
+   "link": "https://www.ilga.gov/Legislation/PublicActs/View/104-0758",
+   "source": "the official source, read on 2026-11-16: \"On or before August 1, 2026 and each August 1 thereafter, a 340B covered entity shall submit a report to the General Assembly pursuant to this Section. For the purposes of this Section, the following covered entities are exempt until January 1, 2029 and will report on or before August 1, 2029 and each August 1 thereafter: hospitals with fewer than 100 licensed beds, Critical Access Hospitals, Safety-Net Hospitals, and 340B grantees.\"",
+   "retrieved": "2026-11-15"
+  },
+  {
    "event_id": "fr-2026-22743-date-2027-09-30",
    "day": "2027-09-30",
    "time": "",
@@ -21204,6 +21349,38 @@
    "retrieved": "2026-11-15"
   },
   {
+   "event_id": "hi-report-due-2027-10-01-hospital-association",
+   "day": "2027-10-01",
+   "time": "",
+   "jurisdiction": "HI",
+   "kind": "report due",
+   "bill_id": "",
+   "bill": "",
+   "notice_id": "",
+   "what": "The hospital trade association's public yearly report of what covered entities reported, under Hawaii's 340B law of 2025 (HB 712)",
+   "body": "Hospital trade association operating in the State",
+   "where": "",
+   "link": "https://data.capitol.hawaii.gov/hrscurrent/Vol11_Ch0476-0490/HRS0481N/HRS_0481N-0006.htm",
+   "source": "the official source, read on 2026-11-16: \"No later than October 1, 2027, and each year thereafter, the hospital trade association located in the State shall make the report publicly available\"",
+   "retrieved": "2026-11-15"
+  },
+  {
+   "event_id": "mn-report-due-2027-11-15-commissioner",
+   "day": "2027-11-15",
+   "time": "",
+   "jurisdiction": "MN",
+   "kind": "report due",
+   "bill_id": "",
+   "bill": "",
+   "notice_id": "",
+   "what": "The Commissioner of Health's yearly report to the legislature, under Minnesota Statutes 62J.461",
+   "body": "Commissioner of Health",
+   "where": "",
+   "link": "https://www.revisor.mn.gov/statutes/cite/62J.461",
+   "source": "the official source, read on 2026-11-16: \"By November 15, 2024, and by November 15 of each year thereafter, the commissioner shall submit to the chairs and ranking minority members of the legislative committees with jurisdiction over health care finance and policy, a report\"",
+   "retrieved": "2026-11-15"
+  },
+  {
    "event_id": "nj-ends-222",
    "day": "2027-12-31",
    "time": "",
@@ -21217,6 +21394,22 @@
    "where": "",
    "link": "http://www.njleg.state.nj.us/",
    "source": "Open States' list of sessions",
+   "retrieved": "2026-11-15"
+  },
+  {
+   "event_id": "il-report-due-2028-01-01-hfs-medicaid-study",
+   "day": "2028-01-01",
+   "time": "",
+   "jurisdiction": "IL",
+   "kind": "report due",
+   "bill_id": "",
+   "bill": "",
+   "notice_id": "",
+   "what": "The Department of Healthcare and Family Services' Medicaid study report to the General Assembly, under the Patient Access to Pharmacy Protection Act (HB 2371)",
+   "body": "Department of Healthcare and Family Services",
+   "where": "",
+   "link": "https://www.ilga.gov/Legislation/PublicActs/View/104-0758",
+   "source": "the official source, read on 2026-11-16: \"By January 1, 2028, the Department of Healthcare and Family Services shall report to the General Assembly\"",
    "retrieved": "2026-11-15"
   },
   {
@@ -21281,6 +21474,22 @@
    "where": "",
    "link": "http://legis.delaware.gov/",
    "source": "Open States' list of sessions",
+   "retrieved": "2026-11-15"
+  },
+  {
+   "event_id": "il-report-due-2028-07-01-insurance-study",
+   "day": "2028-07-01",
+   "time": "",
+   "jurisdiction": "IL",
+   "kind": "report due",
+   "bill_id": "",
+   "bill": "",
+   "notice_id": "",
+   "what": "The Department of Insurance's report of the findings of its study, under the 340B Transparency, Reporting, and Accountability Act (HB 4327)",
+   "body": "Department of Insurance",
+   "where": "",
+   "link": "https://ilga.gov/Legislation/PublicActs/View/104-0769",
+   "source": "the official source, read on 2026-11-16: \"The Department of Insurance shall submit a report of the findings of its study to the General Assembly and to the Governor by July 1, 2028.\"",
    "retrieved": "2026-11-15"
   }
  ]

@@ -29,6 +29,8 @@ describe('the calendar table', () => {
     for (const event of data.events) {
       if (isSessionDay(event)) expect(event.billId + event.noticeId).toBe('');
       else if (isNoticeDay(event)) expect(event.billId === '' && event.place === AGENCIES && documents.has(event.noticeId)).toBe(true);
+      // A report due day is set by a law, so it may name no bill; when it names one the table holds it.
+      else if (event.kind === 'report due') expect((event.billId === '' || known.has(event.billId)) && event.noticeId === '').toBe(true);
       else expect(known.has(event.billId) && event.noticeId === '').toBe(true);
       expect(event.link).toMatch(/^https?:\/\//);
       expect(event.what).not.toBe('');
