@@ -187,6 +187,23 @@ export function payerCellsAgree(views: readonly WorkbookView[]): { compared: num
   return { compared, differ };
 }
 
+/** A sum short enough for a tile: "$5.40B", "$812.90M". Rounded half up from the exact sum; the tables give it to the cent. */
+export function shortDollars(value: bigint): string {
+  const unit = 10n ** BigInt(SUM_SCALE);
+  const steps = [
+    [1_000_000_000n, 'B'],
+    [1_000_000n, 'M'],
+    [1_000n, 'K'],
+  ] as const;
+  for (const [size, letter] of steps) {
+    if (value >= size * unit) {
+      const hundredths = (value * 100n + (size * unit) / 2n) / (size * unit);
+      return `$${hundredths / 100n}.${String(hundredths % 100n).padStart(2, '0')}${letter}`;
+    }
+  }
+  return `$${value / unit}`;
+}
+
 /** A bar's width as a percentage of a scale, to one decimal place, from exact integers. Never below 0 or above 100. */
 export function barWidth(value: bigint, scale: bigint): string {
   if (scale <= 0n || value <= 0n) return '0.0';

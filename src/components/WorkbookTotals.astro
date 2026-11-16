@@ -1,7 +1,7 @@
 ---
 import { numberWord, numberWordCap } from '../lib/site';
 import type { WorkbookView } from '../lib/data';
-import { CHANNELS, PAYERS, barWidth, countedWorkbooks, leftOutWords, payerCellsAgree, sumCells, type SumResult } from '../lib/workbook-totals';
+import { CHANNELS, PAYERS, barWidth, countedWorkbooks, leftOutWords, payerCellsAgree, shortDollars, sumCells, type SumResult } from '../lib/workbook-totals';
 
 /**
  * The totals of a state whose filers each send a workbook (Ohio), added by ClinX from the filers'
@@ -44,6 +44,11 @@ const byPayer = [
 ];
 const agree = payerCellsAgree(counted);
 
+// All three kinds of dispensing together, for the tiles, and one scale for the six bars.
+const allCost = sumCells(counted, CHANNELS.map((ch) => [ch.cost, 'total'] as const));
+const allPaid = sumCells(counted, CHANNELS.map((ch) => [ch.paid, 'total'] as const));
+const channelScale = channelRows.reduce((m, r) => [r.cost.value, r.paid.value].reduce((x, v) => (v > x ? v : x), m), 0n);
+
 // Workbooks by kind of entity, A to Z.
 const kindOf = (v: WorkbookView): string => (v.entities[0]!.kindName !== '' ? v.entities[0]!.kindName : NOT_LISTED);
 const kindCounts = new Map<string, number>();
@@ -52,7 +57,6 @@ const kinds = [...kindCounts.entries()].sort((a, b) => a[0].localeCompare(b[0], 
 
 const fileOf = (v: WorkbookView): string => v.filing.sourceFile;
 const noun = (n: number): string => (n === 1 ? 'workbook' : 'workbooks');
-const addsLine = (s: SumResult): string => `Adds ${s.workbooks} ${noun(s.workbooks)}.`;
 const leftLine = (s: SumResult): string => {
   const n = s.left.empty + s.left.words + s.left.withheld;
   const cells = n === 1 ? 'cell' : 'cells';
@@ -61,6 +65,11 @@ const leftLine = (s: SumResult): string => {
   if (s.left.words === n) return `Leaves out ${n} ${cells} with words where a figure belongs.`;
   if (s.left.withheld === n) return `Leaves out ${n} withheld ${cells}.`;
   return `Leaves out ${n} cells: ${leftOutWords(s.left)}.`;
+};
+const shortNote = (s: SumResult): string => {
+  const n = s.left.empty + s.left.words + s.left.withheld;
+  const books = `${s.workbooks} ${noun(s.workbooks)}`;
+  return n === 0 ? `${books}, no cells left out` : `${books}. ${leftLine(s)}`;
 };
 const cellsLine = (s: SumResult): string => `Adds ${s.cells} ${s.cells === 1 ? 'cell' : 'cells'} from ${s.workbooks} ${noun(s.workbooks)}.`;
 ---
@@ -71,24 +80,30 @@ const cellsLine = (s: SumResult): string => `Adds ${s.cells} ${s.cells === 1 ? '
     <p>Calculated by ClinX from the filers' own figures.</p>
   </div>
   <p>
-    The {agency} posts {numberWord(views.length)} workbooks for {stateName}, and ClinX adds {numberWord(counted.length)} of them, one for each filer. The figures are what the filers reported, and ClinX has not audited them. Each total below says how many workbooks it adds and how many cells it leaves out. A cell is left out when it is empty, when it holds words where a figure belongs, or when it is withheld. An empty cell is not read as a zero.
+    The {agency} posts {numberWord(views.length)} workbooks for {stateName}. ClinX adds {numberWord(counted.length)} of them, one for each filer. The figures are what the filers reported, and ClinX has not audited them.
   </p>
-  {
-    leftOut.length > 0 && (
-      <p>
-        {numberWordCap(rule.length)} {rule.length === 1 ? 'filer has' : 'filers have'} {rule.every((r) => r.group.views.length === 2) ? 'two' : 'more than one'} workbooks on the department's site. For each, the totals use the workbook whose file name is the 340B ID typed inside it, and leave out the other:{' '}
-        {leftOut.map((v, i) => (
-          <>
-            {i > 0 && (i === leftOut.length - 1 ? ' and ' : ', ')}
-            <a href={v.path}>{v.name !== '' ? v.name : v.title}</a> (file {fileOf(v)})
-          </>
-        ))}.
-      </p>
-    )
-  }
+  <ul class="stats wb-tiles">
+    <li>
+      <strong>{counted.length.toLocaleString('en-US')}</strong>
+      <span>Filers counted</span>
+    </li>
+    <li>
+      <strong>{shortDollars(allCost.value)}</strong>
+      <span>Acquisition cost of 340B drugs</span>
+    </li>
+    <li>
+      <strong>{shortDollars(allPaid.value)}</strong>
+      <span>Payments received for 340B drugs</span>
+    </li>
+    <li>
+      <strong>{views.length.toLocaleString('en-US')}</strong>
+      <span>Workbooks on the department's site</span>
+    </li>
+  </ul>
+  <p class="small muted">The two amounts add drugs dispensed in house, dispensed through contract pharmacies, and administered. The table below gives each one to the cent.</p>
 
   <h3 id="totals-by-kind">By how the drug reached the patient</h3>
-  <div class="table-wrap wide stack wb-totals">
+  <div class="table-wrap wide stack wb-bars wb-channels">
     <table role="table">
       <caption><span>Acquisition cost and payments received for 340B drugs, added by ClinX from each workbook's own total cells</span></caption>
       <thead role="rowgroup">
@@ -101,27 +116,35 @@ const cellsLine = (s: SumResult): string => `Adds ${s.cells} ${s.cells === 1 ? '
       <tbody role="rowgroup">
         {
           channelRows.map((r) => (
-            <tr role="row">
+            <tr role="row" class="tone-plain">
               <th role="rowheader" scope="row">{r.ch.label}</th>
-              <td role="cell" class="num" data-label="Acquisition cost">
-                <strong>{r.cost.shown}</strong>
-                <small>Calculated by ClinX. {addsLine(r.cost)} {leftLine(r.cost)}</small>
-              </td>
-              <td role="cell" class="num" data-label="Payments received">
-                <strong>{r.paid.shown}</strong>
-                <small>Calculated by ClinX. {addsLine(r.paid)} {leftLine(r.paid)}</small>
-              </td>
+              {
+                [
+                  { label: 'Acquisition cost', sum: r.cost },
+                  { label: 'Payments received', sum: r.paid },
+                ].map((c) => (
+                  <td role="cell" class="num share" data-label={c.label}>
+                    <span class="rail">
+                      <span class="rail-track">
+                        <svg class="bar" width={`${barWidth(c.sum.value, channelScale)}%`} height="10" aria-hidden="true" focusable="false" />
+                      </span>
+                      <span class="bar-figure">{c.sum.shown}</span>
+                    </span>
+                    <small>{shortNote(c.sum)}</small>
+                  </td>
+                ))
+              }
             </tr>
           ))
         }
       </tbody>
     </table>
   </div>
-  <p class="small muted">Each figure adds one cell from each workbook: the Total cell of the template's table. For administered drugs, the payments are the table of total payments, which is the template's actual payments and estimated payments together. Amounts are in US dollars and are shown to the cent.</p>
+  <p class="small muted">Each figure adds one cell from each workbook: the Total cell of the template's table. The six bars are drawn to one scale. For administered drugs, the payments are the table of total payments, which is the template's actual payments and estimated payments together.</p>
 
   <h3 id="by-payer">By payer</h3>
   <p>
-    These bars add the payer cells of the three kinds of dispensing: commercial insurance, Medicare, Medicaid, other third-party payers, and uninsured or self-pay. A sixth row holds the contract pharmacy table's Indeterminate column. The bars come from the payer cells, and the figures in the table above come from the Total cells. A filer's payer cells do not always add to its own Total cell. Among the {agree.compared.toLocaleString('en-US')} tables in which a workbook's Total cell and all five payer cells hold figures, {agree.differ} do not add up to within a tenth of a cent. ClinX has not corrected any of them, so the bars below can add to a different amount than the figures above.
+    These bars add each payer's cells across the three kinds of dispensing. A sixth row holds the Indeterminate column of the contract pharmacy table.
   </p>
   {
     byPayer.map((g) => (
@@ -161,7 +184,7 @@ const cellsLine = (s: SumResult): string => `Adds ${s.cells} ${s.cells === 1 ? '
             </tbody>
           </table>
         </div>
-        <p class="small muted">The full width of a track is the sum of the rows in the table. The figure beside each bar is the exact amount.</p>
+        <p class="small muted">The full width of a track is the sum of the rows in the table.</p>
       </>
     ))
   }
@@ -189,4 +212,24 @@ const cellsLine = (s: SumResult): string => `Adds ${s.cells} ${s.cells === 1 ? '
       </tbody>
     </table>
   </div>
+  <h3 id="how-totals">How the totals are made</h3>
+  <p>
+    Each total says how many workbooks it adds and how many cells it leaves out. A cell is left out when it is empty, when it holds words where a figure belongs, or when it is withheld. An empty cell is not read as a zero. Amounts are in US dollars and are shown to the cent.
+  </p>
+  {
+    leftOut.length > 0 && (
+      <p>
+        {numberWordCap(rule.length)} {rule.length === 1 ? 'filer has' : 'filers have'} {rule.every((r) => r.group.views.length === 2) ? 'two' : 'more than one'} workbooks on the department's site. For each, the totals use the workbook whose file name is the 340B ID typed inside it, and leave out the other:{' '}
+        {leftOut.map((v, i) => (
+          <>
+            {i > 0 && (i === leftOut.length - 1 ? ' and ' : ', ')}
+            <a href={v.path}>{v.name !== '' ? v.name : v.title}</a> (file {fileOf(v)})
+          </>
+        ))}.
+      </p>
+    )
+  }
+  <p>
+    The payer bars come from the payer cells, and the amounts by how the drug reached the patient come from the Total cells. A filer's payer cells do not always add to its own Total cell. Among the {agree.compared.toLocaleString('en-US')} tables in which a workbook's Total cell and all five payer cells hold figures, {agree.differ} do not add up to within a tenth of a cent. ClinX has not corrected any of them, so the payer bars can add to a different amount than the totals.
+  </p>
 </section>
