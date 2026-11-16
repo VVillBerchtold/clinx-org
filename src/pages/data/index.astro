@@ -10,8 +10,9 @@ import { getBillsRecord } from '../../lib/bills';
 import { stateName, statesFileText } from '../../lib/states';
 import { HC_HOME, PREVIEW, REPOSITORIES, SITE_URL } from '../../lib/site';
 import { renderSections } from '../../lib/markdown';
-import { datasetNode } from '../../lib/structured-data';
+import { datasetNode, healthCenterDatasetNodes } from '../../lib/structured-data';
 import { fileGroups, partDays } from '../../lib/hc-hub';
+import { recordsSource } from '../../lib/hc-records';
 
 const data = getDataset();
 // A file's size, the way a person reads it: the larger files are in the megabytes, and nothing is rounded to zero.
@@ -66,7 +67,7 @@ const describe: Record<string, string> = {
   title="ClinX open data: 340B and health centers downloads"
   description="Download the 340B state filings dataset as CSV and JSON files, read the data dictionary, and see the dataset version. Free to use under CC BY 4.0."
   crumbs={[{ name: 'Data', path: '/data/' }]}
-  about={[datasetNode(data, drugFiles.map(({ view, sha256 }) => ({ name: view.csvName, path: view.csvPath, sha256 })))]}
+  about={[datasetNode(data, drugFiles.map(({ view, sha256 }) => ({ name: view.csvName, path: view.csvPath, sha256 }))), ...healthCenterDatasetNodes(hcGroups, recordsSource().years)]}
 >
   <PageHead title="Data" trail={[{ label: 'ClinX' }]}>
     <p class="lede">Every figure on this site, as files you can download. A 340B figure is kept as filed or printed and cites the page of the PDF it was read from. The health centers files are kept as the agencies published them.</p>

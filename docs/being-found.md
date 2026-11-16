@@ -8,7 +8,7 @@
 |---|---|---|
 | Home | This is the site ClinX, built by Will Berchtold | So a search for the site's name shows the right name and the right person |
 | About | This is the page about ClinX, and here is the person who builds it, with his other public pages | So a search engine knows the Will Berchtold here is the same person as on those pages |
-| Data | This is a dataset: its name, version, licence, the states and years it covers, and every file | So the dataset can be listed by dataset search engines, such as Google's Dataset Search |
+| Data | These are datasets: the 340B state filings with its name, version, licence, the states and years it covers, and every file; and one for each part of the health centers files (the records, the funding calendar, the shortage areas) with its name, licence and files | So each dataset can be listed by dataset search engines, such as Google's Dataset Search |
 | The article | This is an article, with its title, author and date | So it can be shown as an article |
 | Every page but the home page | The trail from the home page to this page (ClinX, Scorecard, Rhode Island, …) | So a search result can show the trail in place of a bare address |
 
@@ -16,7 +16,7 @@ Pages a search engine may not list ("Page not found" and the contact form's two 
 
 ## Where it lives
 
-- `src/lib/structured-data.ts` builds each block. The dataset's block is made from the dataset itself: its version, its states, its years and the files on the Data page. It cannot drift from what the page shows.
+- `src/lib/structured-data.ts` builds each block. The dataset's block is made from the dataset itself: its version, its states, its years and the files on the Data page. It cannot drift from what the page shows. The three health centers blocks are made from the same list of files the Data page shows. They give years for the records only, and no size, version or date that the files do not state.
 - `src/layouts/Base.astro` writes the block into the page. A page passes `crumbs` (its trail) and `about` (what else it is).
 - The vocabulary is [schema.org](https://schema.org), the one search engines share.
 
@@ -36,7 +36,7 @@ It is still checked on every build. `npm run check:dist` fails if a block:
 - gives a trail that does not run from the home page to the page it is on;
 - describes the dataset without a name, a licence or its files.
 
-`tests/structured-data.test.ts` checks the same things at the source, including that the dataset's block lists exactly the downloads on the Data page.
+`tests/structured-data.test.ts` checks the same things at the source, including that each dataset's block lists exactly its downloads on the Data page.
 
 ## What is not done here
 
