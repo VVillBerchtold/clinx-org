@@ -15,7 +15,7 @@ const n = (x: number): string => x.toLocaleString('en-US');
 /** The tools, counted from their pages, so the figure moves when one is added. */
 const tools = Object.keys(import.meta.glob('./tools/*/index.astro')).length;
 
-/** How the work is done: four rules, each with the page that shows it. */
+/** How the work is done: the rules, each with the page that explains it. */
 const ways = [
   {
     href: '/methods/',
@@ -39,7 +39,7 @@ const ways = [
     href: '/data/',
     label: 'Data',
     title: 'Open to reuse',
-    say: 'The data is free under CC BY 4.0 and the code under MIT. Check a figure, download the tables, or build your own version.',
+    say: 'The data is free under CC BY 4.0 and the code under MIT, so anyone can check a figure or build their own version.',
   },
 ];
 ---
@@ -75,7 +75,7 @@ const ways = [
     <div class="wrap">
       <div class="band-head split-head">
         <h2 id="work-title">What ClinX does.</h2>
-        <p class="lede">Two kinds of work, both free to use. One turns public records into data anyone can check. The other is small tools for the files a clinic already has.</p>
+        <p class="lede">So far the data covers the federal 340B drug program, and the tools work on the reports a clinic already has. Everything is free to use.</p>
       </div>
       <div class="work band-body">
         <article class="work-row" aria-labelledby="work-data">
@@ -83,9 +83,9 @@ const ways = [
             <p class="label">Open data</p>
             <h3 id="work-data">Public filings, in a form anyone can check.</h3>
             <p>
-              States have begun requiring hospitals and health centers to report what they earn and spend under the federal 340B drug program. The filings are PDFs, one for each filer. ClinX copies them into open tables, line by line, and links every figure to the page it came from.
+              States have begun requiring hospitals and health centers to report what they earn and spend under 340B. Some states post each filer's report and others publish a summary of their own, mostly as PDFs. ClinX copies the figures into open tables, line by line, and links each one to the page it came from.
             </p>
-            <p>Around the filings are the 340B laws each state has passed, the bills in Congress and the states, the federal notices, and a calendar of what comes next.</p>
+            <p>The site also follows the 340B laws each state has passed, the bills in Congress and the states, the federal notices, and the dates coming up.</p>
             <div class="btn-row">
               <a class="btn" href="/scorecard/">Open the scorecard <Arrow /></a>
               <a class="btn ghost" href="/data/">Get the data</a>
@@ -141,7 +141,7 @@ const ways = [
     <div class="wrap">
       <div class="band-head split-head">
         <h2 id="ways-title">How the work is done.</h2>
-        <p class="lede">Four rules hold for everything on this site. Each one can be checked, and each card leads to the page that shows how.</p>
+        <p class="lede">ClinX holds itself to the same rules on every page. Each card links to the page that explains one of them.</p>
       </div>
       <div class="ways band-body">
         {

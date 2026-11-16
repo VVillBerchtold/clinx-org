@@ -35,6 +35,16 @@ describe('Writing: the list of pieces', () => {
   });
 });
 
+describe('The footer', () => {
+  it('is built from the main menu, so the two cannot disagree about where a page belongs', () => {
+    expect(layout).toContain("const footGroups = NAV.flatMap((item) => ('items' in item ? [item] : []));");
+    expect(layout).toContain("const footLinks = NAV.flatMap((item) => ('href' in item ? [item] : []));");
+    // No menu link is written into the footer by hand.
+    const footer = layout.slice(layout.indexOf('<footer'), layout.indexOf('</footer>'));
+    expect(footer).not.toMatch(/href="\/(scorecard|laws|bills|notices|calendar|rebate-pilot|data|methods|tools|writing|about|products|contact)\/"/);
+  });
+});
+
 describe('The phone menu', () => {
   it('keeps a section with pages of its own behind one row that opens', () => {
     expect(layout).toContain("class:list={['nav-fold', { on: item.items.some(here) }]} open={item.items.some(here)}");

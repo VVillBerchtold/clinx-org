@@ -28,6 +28,12 @@ const data = getDataset();
 const path = Astro.url.pathname;
 /** True for the menu link of the section this page is in. */
 const here = (link: { href: string }): boolean => path.startsWith(link.href);
+// The footer follows the main menu: the 340B group, then the data and the tools, then the rest of the site.
+const footGroups = NAV.flatMap((item) => ('items' in item ? [item] : []));
+const footLinks = NAV.flatMap((item) => ('href' in item ? [item] : []));
+const WORK = ['/data/', '/methods/', '/tools/', '/writing/'];
+const footWork = footLinks.filter((link) => WORK.includes(link.href));
+const footSite = [...footLinks.filter((link) => !WORK.includes(link.href)), { href: '/privacy/', label: 'Privacy and security' }];
 const refreshFiles = import.meta.glob<{ last_refresh: string }>('../../refresh/last-refresh.json', { eager: true, import: 'default' });
 const lastRefresh = Object.values(refreshFiles)[0]?.last_refresh;
 const fullTitle = path === '/' ? title : `${title} | ${SITE_NAME}`;
@@ -166,28 +172,38 @@ const labels: Node[] = unlisted ? [] : [...about, ...(crumbs.length > 0 ? [trail
             <a class="mark" href="/" aria-label="ClinX home"><Wordmark /></a>
             <p>Open healthcare data and tools, built by Will Berchtold in Rhode Island.</p>
           </div>
-          <nav aria-label="340B">
-            <h2>340B</h2>
+          {
+            footGroups.map((group) => (
+              <nav class="foot-wide" aria-label={group.label}>
+                <h2>{group.label}</h2>
+                <ul>
+                  {group.items.map((link) => (
+                    <li>
+                      <a href={link.href}>{link.label}</a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            ))
+          }
+          <nav aria-label="Data and tools">
+            <h2>Data and tools</h2>
             <ul>
-              <li><a href="/scorecard/">Scorecard</a></li>
-              <li><a href="/laws/">State laws</a></li>
-              <li><a href="/bills/">Bills</a></li>
-              <li><a href="/notices/">Federal notices</a></li>
-              <li><a href="/calendar/">Calendar</a></li>
-              <li><a href="/rebate-pilot/">Rebate pilot</a></li>
-              <li><a href="/data/">Data</a></li>
-              <li><a href="/methods/">Methods</a></li>
+              {footWork.map((link) => (
+                <li>
+                  <a href={link.href}>{link.label}</a>
+                </li>
+              ))}
             </ul>
           </nav>
           <nav aria-label="ClinX">
             <h2>ClinX</h2>
             <ul>
-              <li><a href="/tools/">Tools</a></li>
-              <li><a href="/writing/">Writing</a></li>
-              <li><a href="/about/">About</a></li>
-              <li><a href="/products/">Products</a></li>
-              <li><a href="/contact/">Contact</a></li>
-              <li><a href="/privacy/">Privacy and security</a></li>
+              {footSite.map((link) => (
+                <li>
+                  <a href={link.href}>{link.label}</a>
+                </li>
+              ))}
             </ul>
           </nav>
         </div>
