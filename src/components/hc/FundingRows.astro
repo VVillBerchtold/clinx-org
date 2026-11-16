@@ -1,0 +1,56 @@
+---
+import '../../styles/hc-funding.css';
+import { agencyNote, dayText, eventPage, kindLabel, statusLabel, flagLabels, type FundingData, type FundingEvent } from '../../lib/hc-funding';
+import { weekdayOf } from '../../lib/calendar';
+
+/**
+ * A list of dated events in the order given: the day on the left; on the right the kind of date,
+ * whether HRSA estimates it, whether the opportunity is a forecast or posted, its title and the links
+ * to its page here and to the agency's own page. A date of a Federal Register document shows the
+ * document's type and its own sentence about the date.
+ */
+interface Props {
+  events: readonly FundingEvent[];
+  data: FundingData;
+}
+const { events, data } = Astro.props;
+const opportunities = new Map(data.opportunities.map((o) => [o.id, o]));
+---
+
+<ul class="fund-rows">
+  {
+    events.map((event) => {
+      const opportunity = event.source === 'grants.gov' ? opportunities.get(event.sourceId) : undefined;
+      const note = event.source === 'federal register' ? agencyNote(event) : '';
+      return (
+        <li
+          class="fund-row"
+          data-fund-row
+          data-kind={event.kind}
+          data-names={String(opportunity?.namesHealthCenters ?? false)}
+          data-program={String(opportunity?.healthCenterProgram ?? false)}
+        >
+          <time class="fund-day" datetime={event.day}>
+            <span aria-hidden="true">{weekdayOf(event.day)}</span>
+            <strong aria-hidden="true">{Number(event.day.slice(8))}</strong>
+            <span class="visually-hidden">{dayText(event.day)}</span>
+          </time>
+          <div class="fund-body">
+            <p class="fund-head">
+              <span class="fund-kind">{kindLabel(event.kind)}</span>
+              {event.estimated ? <span class="fund-chip est">Estimated</span> : <span class="fund-chip firm">Firm</span>}
+              <span class="fund-source">{opportunity ? `${statusLabel(opportunity.status)}, ${opportunity.number}` :`Federal Register ${event.status.toLowerCase()}`}</span>
+              {opportunity && flagLabels(opportunity).map((label) => <span class="fund-chip flag">{label}</span>)}
+            </p>
+            <p class="fund-title">{event.title}</p>
+            {note !== '' && <p class="fund-note">{note}</p>}
+            <p class="fund-more">
+              {opportunity && <a href={eventPage(event)}>Opportunity page on ClinX</a>}
+              <a href={event.url}>{opportunity ? 'Grants.gov page' : 'Federal Register page'}</a>
+            </p>
+          </div>
+        </li>
+      );
+    })
+  }
+</ul>

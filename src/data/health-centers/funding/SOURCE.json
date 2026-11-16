@@ -1,0 +1,18 @@
+{
+  "part": "funding",
+  "snapshot_day": "2026-11-16",
+  "opportunities": 49,
+  "register_documents": 32,
+  "events": 151,
+  "source_commit": "f1186c2c427fb3265a28a23136399ce07c5571a6",
+  "source_commit_had_uncommitted_changes": false,
+  "files": {
+    "index.json": "a39799f770e2c0b7654332d648c777bf9c5d40d13ac4fa6fd00480f6d8a69957",
+    "opportunities.json": "befca7e6e04d24168036e7cfc86964a076d79eb7e15346125f5fc65bb5daf3a6",
+    "deadlines.json": "ef4c4b6e2a9238fe2e7ee5119fc5f14883c976237b2d46679b7758c22e7393f3",
+    "register.json": "7971e5f48a8eea6403814f59a496a624b92bf65bdcece3383134e285b0aa675f",
+    "opportunities.csv": "d898b8540f2012e27ccf77e48957479bc6bc0e93b87ccecea7b824c60dad744c",
+    "deadlines.csv": "2866b5aff21290cfef945393e4381a809270be04c8ab7193d240218c1e5c2e74",
+    "register.csv": "73f29826dac4b165f378f0938a5ccc54453e5c051298fe526aa98edce245f6fa"
+  }
+}

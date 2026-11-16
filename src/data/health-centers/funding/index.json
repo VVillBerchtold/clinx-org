@@ -1,0 +1,154 @@
+{
+  "events": {
+    "by_kind": {
+      "application due": 49,
+      "award expected": 47,
+      "comments close": 7,
+      "notice expected": 45,
+      "takes effect": 3
+    },
+    "dated_before_the_window_left_out": 21,
+    "estimated": 139,
+    "firm": 12,
+    "total": 151
+  },
+  "events_without_a_date": {
+    "by_kind": {},
+    "total": 0
+  },
+  "next_ten": [
+    {
+      "date": "2026-11-16",
+      "estimated": true,
+      "kind": "application due",
+      "note": "HRSA labels this date as estimated. Electronically submitted applications must be submitted no later than 11:59 p.m., ET, on the listed application due date.",
+      "source": "grants.gov",
+      "source_id": "363324",
+      "status": "forecasted",
+      "title": "Teaching Health Center Graduate Medical Education (THCGME) Program",
+      "url": "https://www.grants.gov/search-results-detail/363324"
+    },
+    {
+      "date": "2026-11-17",
+      "estimated": true,
+      "kind": "notice expected",
+      "note": "HRSA labels this date as estimated.",
+      "source": "grants.gov",
+      "source_id": "363523",
+      "status": "forecasted",
+      "title": "The Home Visiting Research, Improvement, Sustainability and Evaluation Center (HV-RISE)",
+      "url": "https://www.grants.gov/search-results-detail/363523"
+    },
+    {
+      "date": "2026-11-19",
+      "estimated": false,
+      "kind": "comments close",
+      "note": "Comments on this ICR should be received no later than November 19, 2026.",
+      "source": "federal register",
+      "source_id": "2026-21385",
+      "status": "Notice",
+      "title": "Agency Information Collection Activities: Submission to OMB for Review and Approval; Public Comment Request; Health Center Program Forms-OMB No. 0915-0285-Revision",
+      "url": "https://www.federalregister.gov/documents/2026/10/20/2026-21385/agency-information-collection-activities-submission-to-omb-for-review-and-approval-public-comment"
+    },
+    {
+      "date": "2026-11-20",
+      "estimated": true,
+      "kind": "notice expected",
+      "note": "HRSA labels this date as estimated.",
+      "source": "grants.gov",
+      "source_id": "363410",
+      "status": "forecasted",
+      "title": "Leadership Education in Adolescent Health (LEAH)",
+      "url": "https://www.grants.gov/search-results-detail/363410"
+    },
+    {
+      "date": "2026-11-20",
+      "estimated": true,
+      "kind": "notice expected",
+      "note": "HRSA labels this date as estimated.",
+      "source": "grants.gov",
+      "source_id": "363411",
+      "status": "forecasted",
+      "title": "Maternal and Child Health (MCH) Nutrition Training Program",
+      "url": "https://www.grants.gov/search-results-detail/363411"
+    },
+    {
+      "date": "2026-11-21",
+      "estimated": true,
+      "kind": "notice expected",
+      "note": "HRSA labels this date as estimated.",
+      "source": "grants.gov",
+      "source_id": "363414",
+      "status": "forecasted",
+      "title": "Ryan White HIV/AIDS Program Part B AIDS Drug Assistance Program Training and Technical Assistance",
+      "url": "https://www.grants.gov/search-results-detail/363414"
+    },
+    {
+      "date": "2026-11-23",
+      "estimated": false,
+      "kind": "comments close",
+      "note": "Comments on this ICR should be received no later than November 23, 2026.",
+      "source": "federal register",
+      "source_id": "2026-21673",
+      "status": "Notice",
+      "title": "Agency Information Collection Activities: Submission to OMB for Review and Approval; Public Comment Request: National Practitioner Data Bank for Adverse Information on Physicians and Other Health Care Practitioners-45 CFR Part 60 Regulations and Forms, OMB No. 0906-0081-Revision",
+      "url": "https://www.federalregister.gov/documents/2026/10/23/2026-21673/agency-information-collection-activities-submission-to-omb-for-review-and-approval-public-comment"
+    },
+    {
+      "date": "2026-11-30",
+      "estimated": true,
+      "kind": "notice expected",
+      "note": "HRSA labels this date as estimated.",
+      "source": "grants.gov",
+      "source_id": "363419",
+      "status": "forecasted",
+      "title": "Fiscal Year (FY) 2027 Service Area Competition (SAC)",
+      "url": "https://www.grants.gov/search-results-detail/363419"
+    },
+    {
+      "date": "2026-11-30",
+      "estimated": true,
+      "kind": "notice expected",
+      "note": "HRSA labels this date as estimated.",
+      "source": "grants.gov",
+      "source_id": "363420",
+      "status": "forecasted",
+      "title": "Fiscal Year (FY) Service Area Competition (SAC)",
+      "url": "https://www.grants.gov/search-results-detail/363420"
+    },
+    {
+      "date": "2026-12-02",
+      "estimated": true,
+      "kind": "notice expected",
+      "note": "HRSA labels this date as estimated.",
+      "source": "grants.gov",
+      "source_id": "363272",
+      "status": "forecasted",
+      "title": "Centers of Excellence (COE)",
+      "url": "https://www.grants.gov/search-results-detail/363272"
+    }
+  ],
+  "opportunities": {
+    "by_document_kind": {
+      "forecast": 47,
+      "synopsis": 2
+    },
+    "by_status": {
+      "forecasted": 47,
+      "posted": 2
+    },
+    "health_center_program": 4,
+    "names_health_centers": 11,
+    "total": 49,
+    "with_date_conflicts": 0
+  },
+  "register_documents": {
+    "by_type": {
+      "Notice": 26,
+      "Proposed Rule": 2,
+      "Rule": 4
+    },
+    "total": 32
+  },
+  "snapshot_day": "2026-11-16"
+}
