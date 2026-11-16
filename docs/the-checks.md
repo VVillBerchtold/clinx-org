@@ -38,6 +38,7 @@
 **Search engines told two different stories**
 - `robots.txt`, each page's own "do not list" tag and `sitemap.xml` must agree: either the private preview (nothing listed) or the public site (everything listed except "page not found" and the contact form's answer pages).
 - A "Draft wording" tag on a public build.
+- An About page that does not link every page in the main menu and every tool. The About page builds its list from the menu, so this fails only if someone breaks that link.
 - A page whose canonical address is not its own, or a missing link-preview picture.
 
 ## The drug pages get their own scan

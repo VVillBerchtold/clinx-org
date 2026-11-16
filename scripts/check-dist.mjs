@@ -584,6 +584,28 @@ for (const { page, target } of links) {
   }
 }
 
+// The About page says what is on the site. It must link every page the main menu links and every tool,
+// so a section or a tool added later cannot be left out of it. The home page and About itself are not
+// expected there.
+{
+  const aboutPath = join(dist, 'about', 'index.html');
+  if (!existsSync(aboutPath)) fail('/about/', 'missing from the build');
+  else {
+    const about = readFileSync(aboutPath, 'utf8');
+    const header = /<header\b[\s\S]*?<\/header>/.exec(about)?.[0] ?? '';
+    const main = /<main\b[\s\S]*?<\/main>/.exec(about)?.[0] ?? '';
+    const hrefs = (html) => new Set([...html.matchAll(/href="(\/[^"#]*)(?:#[^"]*)?"/g)].map((m) => m[1]));
+    const inMenu = [...hrefs(header)].filter((h) => h !== '/' && h !== '/about/');
+    const toolsDir = join(dist, 'tools');
+    const toolPages = existsSync(toolsDir)
+      ? readdirSync(toolsDir).filter((name) => existsSync(join(toolsDir, name, 'index.html'))).map((name) => `/tools/${name}/`)
+      : [];
+    if (inMenu.length < 10) fail('/about/', `the main menu was read as ${inMenu.length} links, too few to be right`);
+    const said = hrefs(main);
+    for (const want of [...inMenu, ...toolPages]) if (!said.has(want)) fail('/about/', `the About page does not link ${want}, which the site has`);
+  }
+}
+
 if (problems.length > 0) {
   for (const p of problems.slice(0, 60)) console.error(`check-dist: ${p}`);
   if (problems.length > 60) console.error(`check-dist: ... and ${problems.length - 60} more`);

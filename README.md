@@ -9,7 +9,7 @@
 
 # clinx-org
 
-This is the code for [clinx.org](https://clinx.org), a free website that shows what hospitals and health centers report to their states about the federal 340B drug program.
+This is the code for [clinx.org](https://clinx.org), a free website of open healthcare data and small tools for clinics. So far the data covers the federal 340B drug program (what hospitals and health centers report to their states, the state laws, the bills, the federal notices and their dates) and the federally funded health centers (their yearly reports to HRSA, funding dates and shortage areas). The tools work on a report in your browser and keep the file on your computer.
 
 You do not need to be a programmer to find your way around here. This page explains what the site is, where its numbers come from and where each part lives. The deeper notes are in [`docs/`](docs/), one topic to a page.
 

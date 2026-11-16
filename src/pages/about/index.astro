@@ -4,13 +4,25 @@ import Base from '../../layouts/Base.astro';
 import Arrow from '../../components/Arrow.astro';
 import Draft from '../../components/Draft.astro';
 import PageHead from '../../components/PageHead.astro';
-import { LINKEDIN_URL, REPOSITORIES, X_URL } from '../../lib/site';
+import { LINKEDIN_URL, NAV, REPOSITORIES, TOOL_LINKS, X_URL, type NavGroup } from '../../lib/site';
 import { aboutPageNode, founderNode } from '../../lib/structured-data';
+
+/**
+ * What is on the site today, taken from the main menu and the list of tools, so this page changes
+ * when a section or a tool is added and cannot fall behind the rest of the site.
+ */
+const groups: { label: string; home: string | undefined; items: readonly { href: string; label: string; note?: string }[] }[] = [
+  ...NAV.filter((entry): entry is NavGroup => 'items' in entry).map((g) => ({ label: g.label, home: g.home, items: g.items })),
+  { label: 'Tools', home: '/tools/', items: TOOL_LINKS },
+];
+// A tool page with no line in TOOL_LINKS stops the build here.
+const toolPages = Object.keys(import.meta.glob('../tools/*/index.astro')).length;
+if (toolPages !== TOOL_LINKS.length) throw new Error(`The site has ${toolPages} tool pages but TOOL_LINKS in src/lib/site.ts lists ${TOOL_LINKS.length}`);
 ---
 
 <Base
   title="About: the mission and founder Will Berchtold"
-  description="Why ClinX exists, how it works and who builds it: Will Berchtold, founder of ClinX and ReferralFinderX. How it stays independent and how to report a correction."
+  description="Why ClinX exists, what it publishes, how it works and who builds it: Will Berchtold, founder of ClinX and ReferralFinderX. How it stays independent and how to report a correction."
   crumbs={[{ name: 'About', path: '/about/' }]}
   about={[aboutPageNode(), founderNode()]}
 >
@@ -30,9 +42,31 @@ import { aboutPageNode, founderNode } from '../../lib/structured-data';
       <p>
         ClinX is built to close that gap: open data that anyone can check and reuse, and tools a clinic can adopt without a large contract or a long project.
       </p>
+    </div>
+  </section>
+
+  <section class="split" aria-labelledby="here">
+    <h2 id="here">What is here</h2>
+    <div class="split-body">
       <p>
-        The 340B Scorecard is the first project. States are starting to publish what hospitals and health centers report about the federal 340B drug program. The filings are PDFs, one for each filer. The scorecard puts the numbers in one place, in a form anyone can check, with nothing added. Each state is added as its filings become public.
+        So far the data covers the federal 340B drug program and the federally funded health centers, and the tools work on the reports a clinic already has. Everything on this site is free to use.
       </p>
+      {
+        groups.map((g) => (
+          <>
+            <h3 class="label here-label">{g.home ? <a href={g.home}>{g.label}</a> : g.label}</h3>
+            <ul class="repos">
+              {g.items.map((item) => (
+                <li>
+                  <strong><a href={item.href}>{item.label}</a></strong>
+                  <span>{item.note}</span>
+                </li>
+              ))}
+            </ul>
+          </>
+        ))
+      }
+      <p>Every table can be downloaded from the <a href="/data/">Data</a> page, and an AI assistant can <a href="/data/#assistants">read the same tables</a>. The articles and guides are under <a href="/writing/">Writing</a>.</p>
     </div>
   </section>
 
@@ -42,7 +76,7 @@ import { aboutPageNode, founderNode } from '../../lib/structured-data';
       <ol class="rules">
         <li>
           <strong>As filed</strong>
-          <p>Every figure is copied from a public filing and links to the page it came from. Nothing is corrected or estimated. Where a filing's own figures differ, both are shown.</p>
+          <p>Every figure is copied from a public record and links to the page or file it came from. Nothing is corrected or estimated. Where a filing's own figures differ, both are shown.</p>
         </li>
         <li>
           <strong>Shown, not judged</strong>
@@ -112,23 +146,23 @@ import { aboutPageNode, founderNode } from '../../lib/structured-data';
     <div class="split-body">
       <p class="head-tag"><Draft /></p>
       <p>
-        Will works at a Rhode Island community health center, and health centers are among the filers shown here. ClinX is his own project. It is not connected to his employer and does not speak for it.
+        Will works at a Rhode Island community health center, and health centers are among the organizations whose public reports are shown here. ClinX is his own project. It is not connected to his employer and does not speak for it.
       </p>
-      <p>Every filer's figures are shown the same way: as filed, with a link to the page.</p>
-      <p>The 340B Scorecard is free and stands apart from anything ClinX sells. It does not depend on <a href="/products/">ReferralFinderX</a>, and ReferralFinderX does not depend on it.</p>
+      <p>Every organization's figures are shown the same way: as filed or as published, with a link to the source.</p>
+      <p>The open data and the tools on this site are free and stand apart from anything ClinX sells. They do not depend on <a href="/products/">ReferralFinderX</a>, and ReferralFinderX does not depend on them.</p>
     </div>
   </section>
 
   <section class="split" aria-labelledby="corrections">
     <h2 id="corrections">Report a correction</h2>
     <div class="split-body">
-      <p>If a figure here does not match the filing it cites, please report it.</p>
+      <p>If a figure here does not match the source it cites, please report it.</p>
       <ol>
-        <li>Name the filing, the schedule and the line.</li>
-        <li>Say what the site shows and what the PDF page prints.</li>
+        <li>Name the page on ClinX and the figure. For a 340B filing, name the schedule and the line.</li>
+        <li>Say what the site shows and what the source prints.</li>
       </ol>
-      <p>The PDF governs. A confirmed correction is released as a new version of the dataset and listed in its changelog.</p>
-      <p class="head-tag"><span>Corrections go through <a href={`${REPOSITORIES.dataset}/issues`}>the dataset's public issue list</a>, or the <a href="/contact/">contact form</a>.</span> <Draft /></p>
+      <p>The source governs. A confirmed correction is released as a new version of the data and listed in its changelog.</p>
+      <p class="head-tag"><span>Corrections go through <a href={`${REPOSITORIES.dataset}/issues`}>the 340B dataset's public issue list</a>, or the <a href="/contact/">contact form</a>.</span> <Draft /></p>
     </div>
   </section>
 
@@ -136,7 +170,7 @@ import { aboutPageNode, founderNode } from '../../lib/structured-data';
     <h2 id="licences">Licences</h2>
     <div class="split-body">
       <p>
-        The code is under the MIT licence. The data is under Creative Commons Attribution 4.0 (CC BY 4.0). The filings themselves are public records of the state they were filed with.
+        The code is under the MIT licence. The data is under Creative Commons Attribution 4.0 (CC BY 4.0). The filings and files themselves are public records of the state or federal agency that published them.
       </p>
       <p>The names ClinX and ReferralFinderX and their logos are not covered by those licences.</p>
     </div>

@@ -144,6 +144,23 @@
   letter-spacing: -0.015em;
 }
 
+/* About: the name of a group above its list of pages */
+.split-body > .here-label {
+  margin-top: 1rem;
+}
+/* The list sits flush under its group's name */
+.split-body > .here-label + .repos {
+  padding-left: 0;
+  margin-top: -0.5rem;
+}
+/* On a narrow screen every line goes under its name, so the rows match */
+@media (max-width: 640px) {
+  .split-body > .here-label + .repos li {
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+}
+
 /* Three plain rules, each with its number */
 .rules {
   list-style: none;

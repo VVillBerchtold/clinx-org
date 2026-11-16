@@ -1,4 +1,4 @@
-/** The site is ClinX; the 340B Scorecard is its first project. */
+/** The site is ClinX. The 340B Scorecard was its first project; the main menu below lists everything it holds now. */
 export const SITE_NAME = 'ClinX';
 
 /** The site's public address, with no slash at the end. */
@@ -133,6 +133,15 @@ export const CLEANER_COPY_ARTICLE_TITLE = 'Getting a clinic report ready for AI 
 export const CLEANER_COPY_ARTICLE_PUBLISHED = '2026-11-16';
 /** The tool that looks through a report for what would trip up a script or a pivot table. */
 export const FILE_CHECK = 'File Check';
+
+/**
+ * The tools, each with one line on what it gives back. The About page lists them and stops the build
+ * when a tool page exists that is not named here.
+ */
+export const TOOL_LINKS: readonly NavLink[] = [
+  { href: '/tools/cleaner-copy/', label: CLEANER_COPY, note: 'A copy of a report with randomized values in the columns you choose' },
+  { href: '/tools/file-check/', label: FILE_CHECK, note: 'What in a report will trip up a script or a pivot table' },
+];
 /** The article about what a workbook holds outside its cells, and the day it goes public. */
 export const WORKBOOK_ARTICLE_TITLE = 'What an Excel workbook carries besides its cells';
 export const WORKBOOK_ARTICLE_PUBLISHED = '2026-11-16';
