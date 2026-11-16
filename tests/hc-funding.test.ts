@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { CSV_COLUMNS, FUNDING_FILES, FUNDING_KINDS, csvShape, fundingProblems } from '../scripts/hc/funding.mjs';
 import {
   BLOCKED_WORDS, DATE_NAMES, DOWNLOADS, FUNDING_HOME, KINDS, KIND_NOTES, PRINT_BLOCKED_PARAGRAPHS, agencyNote, ahead, byMonth, countText, dayText, eventTitle, eventUid, flagLabels, foundByText,
@@ -13,6 +13,9 @@ import filterScript from '../src/scripts/hc-funding-filter.ts?raw';
 import feedEndpoint from '../src/pages/health-centers/funding.ics.ts?raw';
 import jsonEndpoint from '../src/pages/data/health-centers/funding/[name].json.ts?raw';
 import csvEndpoint from '../src/pages/data/health-centers/funding/[name].csv.ts?raw';
+
+// These tests read every published cell of every health center; a hosted runner needs more than the default five seconds.
+vi.setConfig({ testTimeout: 60_000 });
 
 // A stylesheet is asked for as text with ?inline.
 const styles = Object.values(import.meta.glob('../src/styles/hc-funding.css', { query: '?inline', import: 'default', eager: true }) as Record<string, string>)[0]!;

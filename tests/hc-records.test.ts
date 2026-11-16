@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { parseCsv } from '../src/lib/csv';
 import {
   MARKS,
@@ -39,6 +39,9 @@ import routeEarlier from '../src/pages/health-centers/records/[key]/[year]/index
 import dataCenter from '../src/pages/data/health-centers/records/centers/[key].json.ts?raw';
 import dataCenters from '../src/pages/data/health-centers/records/health-centers.csv.ts?raw';
 import dataLines from '../src/pages/data/health-centers/records/lines.csv.ts?raw';
+
+// These tests read every published cell of every health center; a hosted runner needs more than the default five seconds.
+vi.setConfig({ testTimeout: 60_000 });
 
 /**
  * Health center records: one page for each health center and year, built from HRSA's Uniform Data System

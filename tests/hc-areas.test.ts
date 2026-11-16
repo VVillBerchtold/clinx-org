@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { parseCsv } from '../src/lib/csv';
 import {
   AREAS_PATH,
@@ -30,6 +30,9 @@ import {
   type ChangeRow,
 } from '../src/lib/hc-areas';
 import { CHANGE_COLUMNS, PROPOSED_COLUMNS, RECENT_COLUMNS, SITE_COLUMNS, shapeProblems, windowStart } from '../scripts/hc/areas.mjs';
+
+// These tests read every published cell of every health center; a hosted runner needs more than the default five seconds.
+vi.setConfig({ testTimeout: 60_000 });
 
 /**
  * The shortage area tracker. What these tests hold fixed: the pages' counts are the counts of the copied

@@ -13,6 +13,12 @@ interface Props {
   center: string;
 }
 const { table, year, center } = Astro.props;
+// A table read from two sheets prints the sheet with each address, which is too long to sit beside a figure.
+const slim = table.sheets.length === 1;
+const LONG_FROM = 24;
+const SHORT_TITLE = 40;
+/** A table of this many value columns or fewer has one text line to a row at desktop width. */
+const SLIM_TO = 3;
 const lineName = (line: string): string => (/^L[0-9]/.test(line) ? `Line ${line.slice(1)}` : line);
 const markSentence = (mark: string): string => {
   const m = MARKS.find((x) => x.name === mark)!;
@@ -45,13 +51,17 @@ const sheetNote = table.sheets
       <p>{markSentence(table.onlyMark)}</p>
     ) : (
       <>
-        <p class="hcr-where">Cells are in HRSA's workbook, {sheetNote}. The small code under a cell is its address there.</p>
+        <p class="hcr-where">Cells are in HRSA's workbook, {sheetNote}. The small code with each figure is its address there.</p>
         {table.layout === 'grid' ? (
           table.blocks.map((block) => {
             const dense = block.columns.length >= DENSE_FROM;
+            // A long table of one or two columns and short line titles is set in two halves side by side, so the page is half as long.
+            const cut = Math.ceil(block.rows.length / 2);
+            const halves = block.columns.length <= 2 && block.rows.length >= LONG_FROM && block.rows.every((r) => r.title.length <= SHORT_TITLE) ? [block.rows.slice(0, cut), block.rows.slice(cut)] : [block.rows];
             const keyed = dense && block.columns.some((c) => shortColumn(table.name, c.title) !== columnParts(c.title).words);
             return (
             <>
+            {table.blocks.length > 1 && <p class="hcr-block-head">{range(block.rows)}{block.part ? `, ${block.part}` : ''}</p>}
             {keyed && (
               <div class="hcr-key">
                 <p>The column headings of {table.blocks.length > 1 ? `${range(block.rows)}` : 'this table'} are shortened. HRSA's title of each column:</p>
@@ -65,9 +75,11 @@ const sheetNote = table.sheets
                 </dl>
               </div>
             )}
-            <div class:list={['table-wrap', 'wide', 'stack', 'hcr-grid', `n${Math.min(block.columns.length, DENSE_FROM)}`, { 'hcr-dense': dense, 'hcr-roomy': dense && block.columns.length <= 7, 'hcr-many': block.columns.length >= 9 }]}>
+            <div class:list={['hcr-pieces', { 'hcr-halves': halves.length > 1 }]}>
+            {halves.map((rows, h) => (
+            <div class:list={['table-wrap', 'wide', 'stack', 'hcr-grid', `n${Math.min(block.columns.length, DENSE_FROM)}`, { 'hcr-slim': slim && block.columns.length <= SLIM_TO, 'hcr-dense': dense, 'hcr-roomy': dense && block.columns.length <= 7, 'hcr-many': block.columns.length >= 9 }]}>
               <table role="table">
-                <caption><span>{table.name}: {table.label !== '' ? `${table.label}, ` : ''}{table.blocks.length > 1 ? `${range(block.rows)}, ` : ''}{block.part ? `${block.part}, ` : ''}{center}, {year}</span></caption>
+                <caption class="visually-hidden"><span>{table.name}: {table.label !== '' ? `${table.label}, ` : ''}{table.blocks.length > 1 ? `${range(block.rows)}, ` : ''}{block.part ? `${block.part}, ` : ''}{center}, {year}{h > 0 ? ', continued' : ''}</span></caption>
                 <thead role="rowgroup">
                   <tr role="row">
                     <th role="columnheader" scope="col">Line</th>
@@ -81,7 +93,7 @@ const sheetNote = table.sheets
                   </tr>
                 </thead>
                 <tbody role="rowgroup">
-                  {block.rows.map((r) => (
+                  {rows.map((r) => (
                     <tr role="row">
                       <th role="rowheader" scope="row"><span class="hcr-line">{lineName(r.line)}</span>{r.title}</th>
                       {r.cells.map((c, i) => (
@@ -97,6 +109,8 @@ const sheetNote = table.sheets
                   ))}
                 </tbody>
               </table>
+            </div>
+            ))}
             </div>
             </>
             );

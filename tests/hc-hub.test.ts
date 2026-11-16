@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { BANNED, RECORDS_TITLES, fundingParagraphs, printedHcWords, withoutPrintedHcWords } from '../scripts/hc/printed-words.mjs';
 import { AREAS_PATH, getIndex, stateCodes } from '../src/lib/hc-areas';
 import { FUNDING_HOME, ahead, getFunding, paragraphs } from '../src/lib/hc-funding';
@@ -22,6 +22,9 @@ import areasCare from '../src/components/hc/AreasCare.astro?raw';
 import fundingFront from '../src/pages/health-centers/funding/index.astro?raw';
 import fundingOne from '../src/pages/health-centers/funding/[id]/index.astro?raw';
 import checkDist from '../scripts/check-dist.mjs?raw';
+
+// These tests read every published cell of every health center; a hosted runner needs more than the default five seconds.
+vi.setConfig({ testTimeout: 60_000 });
 
 /**
  * The front page of the health centers section, its place in the menu and the trail of its pages, and the one
