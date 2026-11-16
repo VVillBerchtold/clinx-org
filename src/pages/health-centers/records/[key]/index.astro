@@ -1,13 +1,23 @@
 ---
 import RecordsCenterPage from '../../../../components/hc/RecordsCenterPage.astro';
-import { centerKeys, lastYearOf, slugOf } from '../../../../lib/hc-records';
+import RecordsStatePage from '../../../../components/hc/RecordsStatePage.astro';
+import { centerKeys, lastYearOf, listByState, slugOf } from '../../../../lib/hc-records';
 
-/** A health center's latest report (2025 for nearly all): /health-centers/records/<key>/. */
+/**
+ * Two kinds of page share this address:
+ * a health center's latest report (2025 for nearly all), /health-centers/records/<key>/, and
+ * the list of one state's or territory's health centers, /health-centers/records/<two letters>/.
+ * A health center's key is six characters or more, so the two never meet; the build stops if they do.
+ */
 export function getStaticPaths() {
   // A health center's short address shows the latest report HRSA's files hold for it.
-  return centerKeys().map((key) => ({ params: { key: slugOf(key) }, props: { centerKey: key, year: lastYearOf(key) } }));
+  const centers = centerKeys().map((key) => ({ params: { key: slugOf(key) }, props: { centerKey: key, year: lastYearOf(key), state: '' } }));
+  const states = listByState().map((g) => ({ params: { key: g.code.toLowerCase() }, props: { centerKey: '', year: 0, state: g.code } }));
+  const taken = new Set(centers.map((c) => c.params.key));
+  for (const s of states) if (taken.has(s.params.key)) throw new Error(`A health center and a state share the address ${s.params.key}`);
+  return [...centers, ...states];
 }
-const { centerKey, year } = Astro.props;
+const { centerKey, year, state } = Astro.props;
 ---
 
-<RecordsCenterPage centerKey={centerKey} year={year} />
+{state === '' ? <RecordsCenterPage centerKey={centerKey} year={year} /> : <RecordsStatePage code={state} />}

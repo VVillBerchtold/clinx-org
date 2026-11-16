@@ -29,8 +29,62 @@
 }
 .hcr-filter input { min-width: min(100%, 20rem); }
 .hcr-filter select { min-width: min(100%, 14rem); }
+/* A search box that stands by itself is a comfortable width for a name. */
+.hcr-filter-one label { flex: 0 1 26rem; }
+.hcr-filter-one input { width: 100%; }
 .hcr-count { margin: 0 0 0.75rem; font-size: var(--text-sm); color: var(--muted); }
 .hcr-list tr[hidden], .hcr-list tbody[hidden] { display: none; }
+/* A state's page: the counts of its five files, in one even row above its list. */
+.hcr-state-main { min-width: 0; }
+.hcr-state-main > .small { max-width: 70ch; margin: 0 0 var(--s4); }
+.hcr-yearcounts {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0 0 0.75rem;
+  padding: 0;
+  list-style: none;
+}
+.hcr-yearcounts li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0;
+  max-width: none;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+}
+.hcr-yearcounts strong { font: 700 1.375rem/1.1 var(--display); letter-spacing: -0.015em; font-variant-numeric: tabular-nums; }
+@media (max-width: 480px) {
+  .hcr-yearcounts { gap: 0.25rem; }
+  .hcr-yearcounts li { padding: 0.5rem 0.4rem; }
+  .hcr-yearcounts .label { font-size: 0.625rem; letter-spacing: 0.02em; }
+  .hcr-yearcounts strong { font-size: 1.125rem; }
+}
+/* Every health center by name: closed until opened or searched; columns keep it short. */
+.hcr-namelist {
+  columns: 20rem auto;
+  column-gap: 2rem;
+  margin: 0;
+  padding: 0.5rem 1.25rem 1rem;
+  list-style: none;
+}
+.hcr-namelist li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  margin: 0;
+  max-width: none;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--line);
+  break-inside: avoid;
+}
+.hcr-namelist li[hidden] { display: none; }
+.hcr-namelist a { font-size: var(--text-sm); font-weight: 650; overflow-wrap: anywhere; }
+.hcr-namelist span { font-size: var(--text-xs); color: var(--muted); }
+.hcr-names[hidden] { display: none; }
 /* The heading of a state's group in the list. */
 .hcr-list .hcr-group th {
   padding-block: 1.125rem 0.5rem;
@@ -51,6 +105,10 @@
 .hcr-years { display: flex; flex-wrap: wrap; gap: 0.25rem 0.625rem; margin: 0; padding: 0; list-style: none; }
 .hcr-years li { margin: 0; padding: 0; max-width: none; }
 .hcr-years a { font-size: var(--text-sm); font-variant-numeric: tabular-nums; }
+/* On a wide screen the five years of a health center sit on one line, so a long list stays short. */
+@media (min-width: 761px) {
+  .hcr-list .hcr-years { flex-wrap: nowrap; }
+}
 
 /* Facts at the head of a page */
 .hcr-facts { margin-top: var(--s2); max-width: 52rem; }

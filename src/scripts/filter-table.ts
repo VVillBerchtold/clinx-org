@@ -3,7 +3,7 @@
  * Without this script the list is whole and the filter is not drawn.
  *
  * Markup: an element with `data-filter` (hidden until this script runs) holding an input with
- * `data-filter-text` and a select with `data-filter-kind`; the rows to filter are the rows of the
+ * `data-filter-text` and, where the list has kinds, a select with `data-filter-kind`; the rows to filter are the rows of the
  * table `data-filter-table`, each with `data-search` (lower case text to match) and `data-kind`.
  */
 
@@ -15,7 +15,7 @@ function enhance(box: HTMLElement): void {
   const kind = box.querySelector<HTMLSelectElement>('[data-filter-kind]');
   const count = document.querySelector<HTMLElement>('[data-filter-count]');
   const none = document.querySelector<HTMLElement>('[data-filter-none]');
-  if (!table || !text || !kind || table.tBodies.length === 0) return;
+  if (!table || !text || table.tBodies.length === 0) return;
 
   // A table may hold its rows in groups, one body for each, with a heading row (`data-filter-group`)
   // that is not itself filtered. A group with no row left to show is hidden whole.
@@ -25,7 +25,7 @@ function enhance(box: HTMLElement): void {
 
   const apply = (): void => {
     const words = text.value.toLowerCase().split(/\s+/).filter(Boolean);
-    const wanted = kind.value;
+    const wanted = kind?.value ?? '';
     let shown = 0;
     for (const row of rows) {
       const haystack = row.dataset['search'] ?? '';
@@ -39,7 +39,7 @@ function enhance(box: HTMLElement): void {
   };
 
   text.addEventListener('input', apply);
-  kind.addEventListener('change', apply);
+  kind?.addEventListener('change', apply);
   box.hidden = false;
   apply();
 }

@@ -41,7 +41,7 @@ const words = printedHcWords(root);
 describe('the front page numbers', () => {
   it('are the counts in the copied files', () => {
     const [records, fund, areas] = cards;
-    expect(records!.facts[0]!.value).toBe(String(listRows().length));
+    expect(records!.facts[0]!.value).toBe(listRows().length.toLocaleString('en-US'));
     expect(records!.facts[1]!.value).toBe(`${source.years[0]} to ${source.latest_year}`);
     expect(fund!.facts[0]!.value).toBe(`${funding.opportunities.length} (${funding.opportunities.filter((o) => o.status === 'forecasted').length} forecast, ${funding.opportunities.filter((o) => o.status !== 'forecasted').length} posted)`);
     expect(fund!.facts[1]!.value).toBe(String(ahead(funding).length));

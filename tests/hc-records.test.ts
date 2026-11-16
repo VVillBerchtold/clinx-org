@@ -25,7 +25,8 @@ import {
   nameSentence,
   placesWords,
   rawFile,
-  stateAnchor,
+  statePath,
+  listByName,
   yearsMissing,
   recordsSource,
   refreshDay,
@@ -38,6 +39,7 @@ import { MAP_PLACES } from '../src/lib/state-map';
 import { problems, shapeProblems, parseCsv as nodeParseCsv } from '../scripts/hc/records.mjs';
 import centerPage from '../src/components/hc/RecordsCenterPage.astro?raw';
 import listPage from '../src/components/hc/RecordsListPage.astro?raw';
+import statePage from '../src/components/hc/RecordsStatePage.astro?raw';
 import tableComponent from '../src/components/hc/RecordsTable.astro?raw';
 import yearSwitch from '../src/components/hc/RecordsYearSwitch.astro?raw';
 import lib from '../src/lib/hc-records.ts?raw';
@@ -66,6 +68,7 @@ const latest = source.latest_year;
 const ownFiles: Record<string, string> = {
   'RecordsCenterPage.astro': centerPage,
   'RecordsListPage.astro': listPage,
+  'RecordsStatePage.astro': statePage,
   'RecordsTable.astro': tableComponent,
   'RecordsYearSwitch.astro': yearSwitch,
   'hc-records.ts': lib,
@@ -78,28 +81,116 @@ const ownFiles: Record<string, string> = {
   'lines.csv.ts': dataLines,
 };
 
-const views = keys.flatMap((key) => yearsOf(key).map((year) => buildYearView(key, year)));
+/**
+ * One look at every page of every health center and year. A page is built, checked and let go, so the tests never
+ * hold more than one page at a time: there are 6,821 pages and 9.9 million cells. What is kept of a page is small
+ * (its address, its tables' names and states), and anything that is wrong is kept as a sentence in `faults`, which
+ * the tests below expect to be empty.
+ */
+interface SeenPage {
+  key: string;
+  year: number;
+  path: string;
+  clinxWithheld: number;
+  tables: { name: string; status: string; onlyMark: string | null }[];
+}
+const seen: SeenPage[] = [];
+const faults = { tables: [] as string[], sites: [] as string[], values: [] as string[], totals: [] as string[] };
+const tally = { checked: 0, marks: 0, withheld: 0, held: 0 };
+/** Published names that hold a long dash of their own (HRSA prints some site names with one). */
+const publishedDashes = new Set<string>();
+const fault = (list: string[], text: string): void => {
+  if (list.length < 20) list.push(text);
+};
+const PLAIN_NUMBER = /^-?(0|[1-9]\d*)(\.\d+)?$/;
+const lineFacts = new Map<number, { count: number; tables: string[] }>();
+for (const year of source.years) {
+  const lines = linesOf(year);
+  lineFacts.set(year, { count: lines.length, tables: [...new Set(lines.map((l) => l.table))].sort() });
+}
+for (const key of keys) {
+  const file = JSON.parse(rawFile(`centers/${key}.json`));
+  for (const year of yearsOf(key)) {
+    const v = buildYearView(key, year);
+    const at = `${key} ${year}`;
+    const doc = file.years[String(year)];
+    seen.push({ key, year, path: v.path, clinxWithheld: v.clinxWithheld, tables: v.tables.map((t) => ({ name: t.name, status: t.status, onlyMark: t.onlyMark ?? null })) });
+
+    // Tables: one for each table of the year's dictionary, with every line of it.
+    const facts = lineFacts.get(year)!;
+    if ([...new Set(v.tables.map((t) => t.name))].sort().join('|') !== facts.tables.join('|')) fault(faults.tables, `${at}: the tables are not those of the dictionary`);
+    let cells = 0;
+    for (const t of v.tables) for (const b of t.blocks) for (const r of b.rows) for (const c of r.cells) if (c !== null) cells += 1;
+    if (cells !== facts.count) fault(faults.tables, `${at}: ${cells} cells for ${facts.count} lines`);
+    if (v.tables.reduce((n, t) => n + t.cellCount, 0) > facts.count) fault(faults.tables, `${at}: the tables count more cells than the dictionary has lines`);
+
+    // Sites and ZIP code rows.
+    if (v.sites.length !== v.header.sites) fault(faults.sites, `${at}: ${v.sites.length} sites listed, the file says ${v.header.sites}`);
+    if (v.sites.length !== doc.sites.rows.length) fault(faults.sites, `${at}: ${v.sites.length} sites listed, the file holds ${doc.sites.rows.length}`);
+    if (v.zips.length !== doc.zip_codes.rows.length) fault(faults.sites, `${at}: ${v.zips.length} ZIP code rows, the file holds ${doc.zip_codes.rows.length}`);
+    for (const row of [v.header, ...v.sites]) {
+      for (const text of Object.values(row as unknown as Record<string, unknown>)) if (typeof text === 'string' && text.includes('—')) publishedDashes.add(text);
+    }
+
+    // Values: every cell as published.
+    tally.held += Object.keys(doc.values).length;
+    for (const t of v.tables) {
+      for (const b of t.blocks) {
+        for (const r of b.rows) {
+          for (const c of r.cells) {
+            if (!c || c.kind === 'unnamed' || c.kind === 'absent') continue;
+            const published = doc.values[c.uiid];
+            if (c.kind === 'value') {
+              // Only a plain number gets separators and a sign; any other text is as published.
+              const undrawn = typeof published === 'string' && PLAIN_NUMBER.test(published) ? c.text.replace(/[$,]/g, '') : c.text;
+              if (c.raw !== published || undrawn !== published) fault(faults.values, `${at} ${c.uiid}: the page has "${c.text}", the file has "${published}"`);
+              tally.checked += 1;
+            } else if (c.kind === 'mark') {
+              if ((published !== '-' && published !== '--' && published !== '---') || c.text !== '') fault(faults.values, `${at} ${c.uiid}: a mark on the page, "${published}" in the file`);
+              tally.marks += 1;
+            } else if (c.kind === 'clinx') {
+              if (published !== null) fault(faults.values, `${at} ${c.uiid}: withheld on the page, "${published}" in the file`);
+              tally.withheld += 1;
+            } else if (c.kind === 'typed' && published !== undefined) fault(faults.values, `${at} ${c.uiid}: typed text on the page, "${published}" in the file`);
+          }
+        }
+      }
+    }
+
+    // The cells that hold a total sit under their own column.
+    for (const g of v.glance) {
+      for (const r of g.rows) {
+        if (r.cells.length !== g.columns.length) fault(faults.totals, `${at} ${g.id}: ${r.cells.length} cells for ${g.columns.length} columns`);
+        r.cells.forEach((c, i) => {
+          if (c && c.columnTitle !== g.columns[i]!.title) fault(faults.totals, `${at} ${g.id}: "${c.columnTitle}" under "${g.columns[i]!.title}"`);
+        });
+      }
+    }
+  }
+}
 
 describe('the copied tables', () => {
   it('are what the pages expect, and match their record', () => {
     expect(problems({ siteRoot: root })).toEqual([]);
   });
 
-  const PLACES = ['CT', 'DC', 'DE', 'MA', 'MD', 'ME', 'NH', 'NJ', 'NY', 'PA', 'RI', 'VT'];
+  // Every state and territory code in HRSA's files, A to Z: the 50 states, the District of Columbia and eight territories.
+  const PLACES = 'AK AL AR AS AZ CA CO CT DC DE FL FM GA GU HI IA ID IL IN KS KY LA MA MD ME MH MI MN MO MP MS MT NC ND NE NH NJ NM NV NY OH OK OR PA PR PW RI SC SD TN TX UT VA VI VT WA WI WV WY'.split(' ');
 
-  it('hold 258 health centers in twelve places from the District of Columbia to Maine for 2021 to 2025', () => {
-    expect(keys).toHaveLength(258);
+  it('hold 1,377 health centers in 59 states and territories for 2021 to 2025', () => {
+    expect(PLACES).toHaveLength(59);
+    expect(keys).toHaveLength(1377);
     expect(source.years).toEqual([2021, 2022, 2023, 2024, 2025]);
     expect(source.states).toEqual(PLACES);
-    // One row for each health center and year HRSA's file lists it: 256, 255, 255, 254 and 253.
-    expect(headerRows()).toHaveLength(1273);
-    expect(source.years.map((y) => headerRows().filter((h) => h.year === y).length)).toEqual([256, 255, 255, 254, 253]);
+    // One row for each health center and year HRSA's file lists it: 1,373, 1,370, 1,363, 1,359 and 1,356.
+    expect(headerRows()).toHaveLength(6821);
+    expect(source.years.map((y) => headerRows().filter((h) => h.year === y).length)).toEqual([1373, 1370, 1363, 1359, 1356]);
     expect(new Set(headerRows().map((h) => h.state))).toEqual(new Set(PLACES));
   });
 
-  it('give a health center a report only for the years HRSA lists it: seven are not in all five files', () => {
+  it('give a health center a report only for the years HRSA lists it: 25 are not in all five files', () => {
     const partial = keys.filter((k) => yearsOf(k).length < source.years.length);
-    expect(partial).toHaveLength(7);
+    expect(partial).toHaveLength(25);
     for (const k of keys) {
       const years = yearsOf(k);
       // No gap: the years a health center is listed are next to one another.
@@ -123,7 +214,6 @@ describe('the copied tables', () => {
 
   it('name the states coming next: each is in HRSA\'s file and none has its reports here yet', () => {
     const latestRows = coverageRows().filter((c) => c.year === latest);
-    expect(NEXT_STATES.length).toBeGreaterThan(0);
     for (const code of NEXT_STATES) {
       const row = latestRows.find((c) => c.state === code);
       expect(row, code).toBeDefined();
@@ -171,12 +261,12 @@ describe('the copied tables', () => {
     const missing = { ...files };
     delete missing['centers/010030.json'];
     expect(shapeProblems(missing).some((p) => /010030/.test(p))).toBe(true);
-    // A count that differs from the list, and a state marked covered that the pages do not cover.
+    // A count that differs from the list, and a state the pages cover marked as not covered.
     const miscounted = { ...files, 'coverage.csv': files['coverage.csv']!.replace('2025,RI,8,yes', '2025,RI,9,yes') };
     expect(shapeProblems(miscounted).some((p) => /2025\/RI counts 9/.test(p))).toBe(true);
-    const overclaimed = { ...files, 'coverage.csv': files['coverage.csv']!.replace('2025,AK,27,no', '2025,AK,27,yes') };
-    expect(shapeProblems(overclaimed).some((p) => /2025\/AK/.test(p))).toBe(true);
-  }, 60_000);
+    const underclaimed = { ...files, 'coverage.csv': files['coverage.csv']!.replace('2025,AK,27,yes', '2025,AK,27,no') };
+    expect(shapeProblems(underclaimed).some((p) => /2025\/AK/.test(p))).toBe(true);
+  }, 300_000);
 
   it('read the same with the sync script and the site', () => {
     expect(nodeParseCsv(copy('lines.csv')).records).toHaveLength(parseCsv(copy('lines.csv')).length);
@@ -184,10 +274,10 @@ describe('the copied tables', () => {
 });
 
 describe('the addresses', () => {
-  const paths = views.map((v) => v.path);
+  const paths = seen.map((v) => v.path);
 
   it('are one for each health center and year, each unique, lower case and ending with a slash', () => {
-    expect(views).toHaveLength(1273);
+    expect(seen).toHaveLength(6821);
     expect(new Set(paths).size).toBe(paths.length);
     for (const p of paths) expect(p).toMatch(/^\/health-centers\/records\/[0-9a-z]+\/(20(2[1-4])\/)?$/);
     for (const k of keys) {
@@ -198,7 +288,7 @@ describe('the addresses', () => {
   });
 
   it('give the latest year no year in the address, and every other year its own', () => {
-    expect(paths.filter((p) => !/\/20\d\d\/$/.test(p))).toHaveLength(258);
+    expect(paths.filter((p) => !/\/20\d\d\/$/.test(p))).toHaveLength(1377);
     expect(paths.filter((p) => /\/2025\/$/.test(p))).toHaveLength(0);
   });
 });
@@ -206,8 +296,8 @@ describe('the addresses', () => {
 describe('the list', () => {
   const list = listRows();
 
-  it('has the 258 health centers, by state A to Z and by name A to Z within a state', () => {
-    expect(list).toHaveLength(258);
+  it('has the 1,377 health centers, by state A to Z and by name A to Z within a state', () => {
+    expect(list).toHaveLength(1377);
     const order = (a: (typeof list)[number], b: (typeof list)[number]) => a.stateName.localeCompare(b.stateName, 'en') || a.name.localeCompare(b.name, 'en') || a.key.localeCompare(b.key, 'en');
     expect([...list].sort(order).map((r) => r.key)).toEqual(list.map((r) => r.key));
     for (const r of list) {
@@ -224,50 +314,39 @@ describe('the list', () => {
   it('groups the list by state, one group for each place, with every health center in one group', () => {
     const groups = listByState();
     expect(groups.map((g) => g.name)).toEqual([...groups.map((g) => g.name)].sort((a, b) => a.localeCompare(b, 'en')));
-    expect(groups).toHaveLength(12);
+    expect(groups).toHaveLength(59);
     expect(groups.reduce((n, g) => n + g.rows.length, 0)).toBe(list.length);
     for (const g of groups) {
       expect(g.rows.every((r) => r.state === g.code)).toBe(true);
       expect(g.rows).toHaveLength(new Set(headerRows().filter((h) => h.state === g.code).map((h) => h.key)).size);
-      expect(stateAnchor(g.code)).toBe(`in-${g.code.toLowerCase()}`);
+      expect(statePath(g.code)).toBe(`/health-centers/records/${g.code.toLowerCase()}/`);
     }
-    expect(placesWords(groups.map((g) => g.code))).toBe('eleven states and the District of Columbia');
+    expect(placesWords(groups.map((g) => g.code))).toBe('59 states and territories');
+    expect(placesWords(['CT', 'DC', 'DE', 'MA', 'MD', 'ME', 'NH', 'NJ', 'NY', 'PA', 'RI', 'VT'])).toBe('eleven states and the District of Columbia');
     expect(placesWords(['MA', 'RI'])).toBe('two states');
   });
 });
 
 describe('a page: counts', () => {
   it('has a table for each table of the dictionary of its year, with every line of it', () => {
-    for (const v of views) {
-      const lines = linesOf(v.year);
-      expect(new Set(v.tables.map((t) => t.name)), `${v.key} ${v.year}`).toEqual(new Set(lines.map((l) => l.table)));
-      let cells = 0;
-      for (const t of v.tables) for (const b of t.blocks) for (const r of b.rows) cells += r.cells.filter((c) => c !== null).length;
-      expect(cells, `${v.key} ${v.year}`).toBe(lines.length);
-      expect(v.tables.reduce((n, t) => n + t.cellCount, 0)).toBeLessThanOrEqual(lines.length);
-    }
+    expect(faults.tables).toEqual([]);
   });
 
   it('lists as many sites as the file says, and as many ZIP code rows as the file holds', () => {
-    for (const v of views) {
-      expect(v.sites, `${v.key} ${v.year}`).toHaveLength(v.header.sites);
-      const doc = JSON.parse(rawFile(`centers/${v.key}.json`)).years[String(v.year)];
-      expect(v.zips).toHaveLength(doc.zip_codes.rows.length);
-      expect(v.sites).toHaveLength(doc.sites.rows.length);
-    }
+    expect(faults.sites).toEqual([]);
   });
 
-  it('withholds by ClinX the 188 cells the data says it withheld, and no others', () => {
-    const total = views.reduce((n, v) => n + v.clinxWithheld, 0);
-    expect(total).toBe(188);
-    expect(views.filter((v) => v.clinxWithheld > 0).every((v) => v.year === 2021 || v.year === 2022)).toBe(true);
+  it('withholds by ClinX the 833 cells the data says it withheld, and no others', () => {
+    const total = seen.reduce((n, v) => n + v.clinxWithheld, 0);
+    expect(total).toBe(833);
+    expect(seen.filter((v) => v.clinxWithheld > 0).every((v) => v.year === 2021 || v.year === 2022)).toBe(true);
   });
 
   it('says an unnamed row in one sentence for each table of a year that has them', () => {
-    const v2021 = views.filter((v) => v.year === 2021);
-    // HRSA's 2021 file has a named row for 16 of the 256 health centers and none for the other 240 (table_status.csv).
-    for (const name of ['Table 5', 'Table 8A', 'Table 9D']) expect(v2021.filter((v) => v.tables.find((t) => t.name === name)!.status === 'unnamed'), name).toHaveLength(240);
-    const v2025 = views.filter((v) => v.year === 2025);
+    const v2021 = seen.filter((v) => v.year === 2021);
+    // HRSA's 2021 file has a named row for 94 of the 1,373 health centers and none for the other 1,279 (table_status.csv).
+    for (const name of ['Table 5', 'Table 8A', 'Table 9D']) expect(v2021.filter((v) => v.tables.find((t) => t.name === name)!.status === 'unnamed'), name).toHaveLength(1279);
+    const v2025 = seen.filter((v) => v.year === 2025);
     expect(v2025.every((v) => v.tables.every((t) => t.status === 'present'))).toBe(true);
     // A table where every cell is one mark is one sentence, not a grid of marks.
     const confidential = v2025.flatMap((v) => v.tables.filter((t) => t.onlyMark === 'withheld_confidential'));
@@ -278,45 +357,12 @@ describe('a page: counts', () => {
 
 describe('a page: published values', () => {
   it('prints every value as published: only separators and a dollar sign are drawn', () => {
-    let checked = 0;
-    let marks = 0;
-    let withheld = 0;
-    let held = 0;
-    for (const v of views) {
-      const doc = JSON.parse(rawFile(`centers/${v.key}.json`)).years[String(v.year)];
-      held += Object.keys(doc.values).length;
-      for (const t of v.tables) {
-        for (const b of t.blocks) {
-          for (const r of b.rows) {
-            for (const c of r.cells) {
-              if (!c || c.kind === 'unnamed' || c.kind === 'absent') continue;
-              const published = doc.values[c.uiid];
-              if (c.kind === 'value') {
-                expect(c.raw).toBe(published);
-                // Only a plain number gets separators and a sign; any other text is as published.
-                const plainNumber = /^-?(0|[1-9]\d*)(\.\d+)?$/.test(published);
-                const undrawn = plainNumber ? c.text.replace(/[$,]/g, '') : c.text;
-                expect(undrawn, `${v.key} ${v.year} ${c.uiid}`).toBe(published);
-                checked += 1;
-              } else if (c.kind === 'mark') {
-                expect(['-', '--', '---']).toContain(published);
-                expect(c.text).toBe('');
-                marks += 1;
-              } else if (c.kind === 'clinx') {
-                expect(published).toBeNull();
-                withheld += 1;
-              }
-              else if (c.kind === 'typed') expect(published).toBeUndefined();
-            }
-          }
-        }
-      }
-    }
-    // Every cell of the files is on a page: a value, a mark or a cell ClinX withheld (1,847,014 cells in all, 682,666 of them marks).
-    expect(checked + marks + withheld).toBe(held);
-    expect(held).toBe(1847014);
-    expect(marks).toBe(457734 + 176038 + 48894);
-    expect(withheld).toBe(188);
+    expect(faults.values).toEqual([]);
+    // Every cell of the files is on a page: a value, a mark or a cell ClinX withheld (9,931,615 cells in all, 3,585,928 of them marks).
+    expect(tally.checked + tally.marks + tally.withheld).toBe(tally.held);
+    expect(tally.held).toBe(9931615);
+    expect(tally.marks).toBe(2397824 + 940280 + 247824);
+    expect(tally.withheld).toBe(833);
   });
 
   it('matches the values of the engine file for a sample of cells', () => {
@@ -330,16 +376,7 @@ describe('a page: published values', () => {
   });
 
   it('shows the cells that hold a total as the file holds them, and never a sum of its own', () => {
-    for (const v of views) {
-      for (const g of v.glance) {
-        for (const r of g.rows) {
-          expect(r.cells.length).toBe(g.columns.length);
-          r.cells.forEach((c, i) => {
-            if (c) expect(c.columnTitle, `${v.key} ${v.year} ${g.id}`).toBe(g.columns[i]!.title);
-          });
-        }
-      }
-    }
+    expect(faults.totals).toEqual([]);
     expect(buildYearView('010030', 2025).glance.map((g) => g.id)).toEqual(['glance-patients', 'glance-income', 'glance-insurance', 'glance-visits']);
     // The bars of a block share one scale, the largest published figure in it; a mark or a zero has no bar.
     for (const g of buildYearView('011820', 2025).glance) {
@@ -406,7 +443,7 @@ describe('marks', () => {
 describe('the head of a page', () => {
   it('says in one sentence where a name differs between years', () => {
     const renamed = keys.filter((k) => nameSentence(k) !== '');
-    expect(renamed).toHaveLength(10);
+    expect(renamed).toHaveLength(74);
     for (const k of renamed) {
       const sentence = nameSentence(k);
       let rest = sentence;
@@ -460,7 +497,7 @@ describe('the pages\' own words', () => {
   });
 
   it('give no advice and no comparison', () => {
-    for (const [name, text] of Object.entries({ centerPage, listPage, tableComponent, yearSwitch })) {
+    for (const [name, text] of Object.entries({ centerPage, listPage, statePage, tableComponent, yearSwitch })) {
       expect(/\byou\b|\byour\b|\bshould\b|\bmust\b|\bcompare[sd]? with\b|\brank(ed|ing|s)?\b/i.test(text.replace(/(No health center|Nothing) is ranked( or compared with another)?/g, '')), name).toBe(false);
     }
   });
@@ -482,9 +519,14 @@ describe('the built pages', () => {
     return out;
   };
 
-  it.runIf(built)('are 1,274, none over 1.5 MB, with no email or telephone shape and no em dash', () => {
+  it.runIf(built)('are 6,881, none over 1.5 MB, with no email or telephone shape and no em dash of the site\'s own', () => {
     const all = pages();
-    expect(all).toHaveLength(1274);
+    // A site name HRSA prints with a long dash is shown as published; the page's own words never hold one.
+    const escaped = (text: string): string => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    const asPublished = [...publishedDashes].flatMap((name) => [name, escaped(name)]).sort((a, b) => b.length - a.length);
+    expect(asPublished.length).toBeGreaterThan(0);
+    // 6,821 reports, the front page and a page for each of the 59 states and territories.
+    expect(all).toHaveLength(6821 + 1 + 59);
     const email = /[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\.[A-Za-z]{2,}/;
     const phone = /(?<![0-9])\(?[0-9]{3}\)?[-. ][0-9]{3}[-. ][0-9]{4}(?![0-9])/;
     for (const p of all) {
@@ -493,10 +535,12 @@ describe('the built pages', () => {
       const text = html.replace(/<script[\s\S]*?<\/script>/g, ' ').replace(/<[^>]*>/g, ' ');
       expect(email.test(text), p).toBe(false);
       expect(phone.test(text), p).toBe(false);
-      expect(dash.test(html), p).toBe(false);
+      let own = html;
+      if (dash.test(own)) for (const name of asPublished) own = own.replaceAll(name, '');
+      expect(dash.test(own), p).toBe(false);
       expect(/<script\b(?![^>]*\bsrc=)[^>]*>(?!\s*<\/script>)/.test(html.replace(/<script[^>]*type="application\/ld\+json"[\s\S]*?<\/script>/g, '')), p).toBe(false);
     }
-  });
+  }, 600_000);
 
   it.runIf(built)('print the counts the data holds', () => {
     const html = readFileSync(join(dist, '010030', 'index.html'), 'utf8');
@@ -504,12 +548,17 @@ describe('the built pages', () => {
     expect(html).toContain(`<dt>Sites listed</dt><dd>${v.sites.length}</dd>`);
     expect(html).toContain(`HRSA's file lists ${v.zips.length} ZIP code rows`);
     expect(html).toContain('<h1>HOLYOKE HEALTH CENTER, INC.</h1>');
+    // The front page lists every health center once by name, and leads to a page for each state and territory.
     const list = readFileSync(join(dist, 'index.html'), 'utf8');
-    expect((list.match(/<tr role="row" data-search=/g) ?? []).length).toBe(258);
-    // Each state's group has its anchor, and each filled tile of the map leads to one.
+    expect((list.match(/<li data-search=/g) ?? []).length).toBe(1377);
+    expect(listByName().map((r) => r.key).sort()).toEqual(listRows().map((r) => r.key).sort());
     for (const g of listByState()) {
-      expect(list).toContain(`id="${stateAnchor(g.code)}"`);
-      expect(list).toContain(`href="#${stateAnchor(g.code)}"`);
+      expect(list).toContain(`href="${statePath(g.code)}"`);
+      // A state's page lists each of its health centers once, and no other.
+      const page = readFileSync(join(dist, g.code.toLowerCase(), 'index.html'), 'utf8');
+      expect((page.match(/<tr role="row" data-search=/g) ?? []).length, g.code).toBe(g.rows.length);
+      for (const r of g.rows) expect(page, `${g.code} ${r.key}`).toContain(`href="${r.path}"`);
+      expect(page).toContain(`<h1>${g.name}</h1>`);
     }
   });
 

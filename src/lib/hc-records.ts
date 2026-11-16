@@ -10,7 +10,7 @@ import { join } from 'node:path';
 import { cwd } from 'node:process';
 import { parseCsv } from './csv';
 import { numberWord } from './site';
-import { MAP_PLACES, STATES } from './state-map';
+import { MAP_PLACES, STATES, type MapCard, type MapTile, type StateTile } from './state-map';
 
 const csvTexts = import.meta.glob('../data/health-centers/records/*.csv', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
 // One file for each health center. There are too many, and they are too large together, to load them
@@ -241,18 +241,17 @@ export function placesWords(codes: readonly string[]): string {
 /**
  * The states whose reports are being added next, by their two-letter codes. The records page draws
  * them with an outline on its map and says "Coming next" in its table. A state leaves this list when
- * its reports arrive (tests/hc-records.test.ts fails if a state is in both).
+ * its reports arrive (tests/hc-records.test.ts fails if a state is in both). The list is empty now:
+ * every state and territory in HRSA's files has its reports here.
  */
-export const NEXT_STATES: readonly string[] = ['FL', 'GA', 'NC', 'SC', 'VA', 'WV'];
+export const NEXT_STATES: readonly string[] = [];
 /** A list in words: "Florida, Georgia and Virginia". */
 export function listWords(items: readonly string[]): string {
   if (items.length <= 1) return items.join('');
   return `${items.slice(0, -1).join(', ')} and ${items.at(-1)}`;
 }
-/** The anchor of a state's part of the list of health centers. */
-export const stateAnchor = (code: string): string => `in-${code.toLowerCase()}`;
-/** The address of a state's part of the list. */
-export const statePath = (code: string): string => `${RECORDS_PATH}#${stateAnchor(code)}`;
+/** The address of the page that lists one state's or territory's health centers: /health-centers/records/<two letters>/. */
+export const statePath = (code: string): string => `${RECORDS_PATH}${code.toLowerCase()}/`;
 export const centerDownload = (key: string): string => `${DATA_PATH}centers/${slugOf(key)}.json`;
 export const DOWNLOADS = {
   centers: `${DATA_PATH}health-centers.csv`,
@@ -325,14 +324,28 @@ export interface StateGroup {
   rows: ListRow[];
 }
 /** The list in its groups: one for each state the records cover, A to Z by the state's name. */
+let groupCache: StateGroup[] | undefined;
 export function listByState(): StateGroup[] {
+  if (groupCache) return groupCache;
   const groups: StateGroup[] = [];
   for (const row of listRows()) {
     const last = groups[groups.length - 1];
     if (last && last.code === row.state) last.rows.push(row);
     else groups.push({ code: row.state, name: row.stateName, rows: [row] });
   }
+  groupCache = groups;
   return groups;
+}
+/** Every health center A to Z by name, for the list by name on the records front page. */
+export function listByName(): ListRow[] {
+  return [...listRows()].sort((a, b) => a.name.localeCompare(b.name, 'en') || a.stateName.localeCompare(b.stateName, 'en') || a.key.localeCompare(b.key, 'en'));
+}
+/** "1 health center", "174 health centers". */
+export const centersWord = (n: number): string => `${n.toLocaleString('en-US')} ${n === 1 ? 'health center' : 'health centers'}`;
+/** A place's name as it reads after "in" or "of": "the District of Columbia", "the Marshall Islands", "Guam". */
+export function placeInWords(code: string): string {
+  const name = placeName(code);
+  return /^(District|Federated|Marshall|Northern|U\.S\.)/.test(name) ? `the ${name}` : name;
 }
 
 export interface CoverageRow {
@@ -842,4 +855,55 @@ export function cellWords(cell: RCell): string {
     default:
       return '';
   }
+}
+
+/**
+ * The map of the records pages: the same tiles and the same cards on the front page and beside each
+ * state's list. A filled tile leads to the page of that state or territory.
+ */
+function latestCoverage(): Map<string, CoverageRow> {
+  const latest = recordsSource().latest_year;
+  return new Map(coverageRows().filter((c) => c.year === latest).map((c) => [c.state, c]));
+}
+const yearSpan = (): string => `${recordsSource().years[0]} to ${recordsSource().latest_year}`;
+/** The states whose reports are coming next: in HRSA's latest file, named in NEXT_STATES, and with no report here yet. */
+export function nextStates(): Set<string> {
+  const inLatest = latestCoverage();
+  const have = new Set(listByState().map((g) => g.code));
+  return new Set(NEXT_STATES.filter((code) => inLatest.has(code) && !have.has(code)));
+}
+/** One tile of the records map. `current` is the place whose page the map is on, when it is on one. */
+export function recordsTile(place: StateTile, current = ''): MapTile {
+  const group = listByState().find((g) => g.code === place.code);
+  if (group) return { tone: 'has', href: statePath(place.code), label: `${centersWord(group.rows.length)}, reports for ${yearSpan()}`, current: place.code === current, card: true };
+  if (nextStates().has(place.code)) return { tone: 'next', card: true };
+  return latestCoverage().has(place.code) ? { tone: 'none', card: true } : { tone: 'none' };
+}
+/**
+ * The card of each place on the records map: what HRSA's latest file lists there and what ClinX shows.
+ * The short form is for the small map beside a state's list: one line, the count of health centers.
+ */
+export function recordsCards(short = false): MapCard[] {
+  const latest = recordsSource().latest_year;
+  const inLatest = latestCoverage();
+  const groups = new Map(listByState().map((g) => [g.code, g]));
+  const next = nextStates();
+  return MAP_PLACES.flatMap((place): MapCard[] => {
+    const count = inLatest.get(place.code);
+    if (!count) return [];
+    const group = groups.get(place.code);
+    const fileRow = { label: `Health centers in HRSA's ${latest} file`, values: [count.healthCenters.toLocaleString('en-US')] };
+    if (next.has(place.code)) return [{ code: place.code, name: place.name, kicker: 'Coming next', rows: [fileRow], note: 'Their reports are being added next.' }];
+    if (!group) return [{ code: place.code, name: place.name, kicker: 'To be added', rows: [fileRow], note: 'Their reports are not on ClinX yet.' }];
+    if (short) return [{ code: place.code, name: place.name, rows: [{ label: 'Health centers with a report here', values: [group.rows.length.toLocaleString('en-US')] }] }];
+    return [
+      {
+        code: place.code,
+        name: place.name,
+        kicker: 'Reports shown',
+        rows: [fileRow, { label: 'Health centers with a report here', values: [group.rows.length.toLocaleString('en-US')] }, { label: 'Report years', values: [yearSpan()] }],
+        go: `Select the tile to open the list for ${placeInWords(place.code)}.`,
+      },
+    ];
+  });
 }

@@ -15,6 +15,9 @@ if (!existsSync(dist)) {
 
 const problems = [];
 const fail = (where, message) => problems.push(`${where}: ${message}`);
+// A piece of text cut out of a page, kept as its own short text. Without this the piece would keep
+// the whole page in memory, and with thousands of large pages that is more than the program may use.
+const own = (text) => Buffer.from(text, 'utf8').toString('utf8');
 
 function walk(dir) {
   const out = [];
@@ -200,7 +203,7 @@ for (const file of htmlFiles) {
   for (const m of noComments.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)) {
     const attrs = attributesOf(m[1]);
     if (attrs.length === 1 && attrs[0][0] === 'type' && attrs[0][1] === 'application/ld+json') {
-      labelBlocks.push(m[2]);
+      labelBlocks.push(own(m[2]));
       continue;
     }
     const hasSrc = attrs.some(([n]) => n === 'src');
@@ -236,7 +239,7 @@ for (const file of htmlFiles) {
     for (const [n, v] of attrs) {
       if (n === 'style') fail(page, 'style attribute');
       if (/^on[a-z]+$/.test(n)) fail(page, `${n} event handler attribute`);
-      if (n === 'id') pageIds.add(v);
+      if (n === 'id') pageIds.add(own(v));
       if ((n === 'src' || n === 'srcset') && (isExternal(v) || /(^|,\s*)https?:\/\//i.test(v))) fail(page, `${n} points outside the site: ${v}`);
     }
 
@@ -268,18 +271,18 @@ for (const file of htmlFiles) {
       if (get('name') === 'robots' && /noindex/.test(get('content') ?? '')) unlisted = true;
       if (get('property') === 'og:image') {
         ogImages.push(get('content') ?? '');
-        shareImages.add(get('content') ?? '');
+        shareImages.add(own(get('content') ?? ''));
       }
     }
 
     // Links to check: anything on this site.
     if (name === 'a' || name === 'link') {
       const href = get('href');
-      if (href !== undefined) links.push({ page, target: href });
+      if (href !== undefined) links.push({ page, target: own(href) });
     }
     if (name === 'script' || name === 'img') {
       const src = get('src');
-      if (src !== undefined) links.push({ page, target: src });
+      if (src !== undefined) links.push({ page, target: own(src) });
     }
   }
 
@@ -388,7 +391,7 @@ else {
       const wanted = [...listedPages].sort();
       if (named.join('\n') !== wanted.join('\n')) fail('sitemap.xml', `names ${named.length} page(s) but ${wanted.length} may be listed`);
     }
-    if (/Draft wording/.test(htmlFiles.map((f) => readFileSync(f, 'utf8')).join(''))) fail('pages', 'a "Draft wording" tag is on a public build');
+    if (htmlFiles.some((f) => /Draft wording/.test(readFileSync(f, 'utf8')))) fail('pages', 'a "Draft wording" tag is on a public build');
   }
 }
 // Link previews. Every page names exactly one picture (checked page by page above). It must be one of

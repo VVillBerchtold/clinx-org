@@ -8,10 +8,11 @@
 // Files copied: health-centers.csv, lines.csv, notes.csv, coverage.csv (how many health centers HRSA
 // lists in each state each year, and whether these records cover the state) and one centers/<key>.json
 // for each health center. A health center has a row and a report only for the years HRSA's file lists
-// it. Not copied: values.csv (the same cells as the center files, about 90 MB), sites.csv and zips.csv
-// (the same rows as the center files; their counts are checked against the center files when copying),
-// index.json, differences.csv, sum_rules.csv and line_comparison.csv (checks of the folder, not shown).
-import { existsSync, readFileSync } from 'node:fs';
+// it. Not copied: the values/ folder (the same cells as the center files, one file for each year and
+// state), sites.csv and the zips/ folder (the same rows as the center files; their counts are checked
+// against the center files when copying), index.json, differences.csv, sum_rules.csv and
+// line_comparison.csv (checks of the folder, not shown).
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { copyPart, partDir, readRecord } from './shared.mjs';
 
@@ -19,7 +20,13 @@ export const PART = 'records';
 export const FROM = 'data/records';
 
 export const YEARS = [2021, 2022, 2023, 2024, 2025];
-export const STATES = ['CT', 'DC', 'DE', 'MA', 'MD', 'ME', 'NH', 'NJ', 'NY', 'PA', 'RI', 'VT'];
+// Every code in HRSA's files: the 50 states, the District of Columbia, five territories (AS, GU, MP,
+// PR, VI) and the three freely associated states (FM, MH, PW).
+export const STATES = [
+  'AK', 'AL', 'AR', 'AS', 'AZ', 'CA', 'CO', 'CT', 'DC', 'DE', 'FL', 'FM', 'GA', 'GU', 'HI', 'IA', 'ID', 'IL', 'IN', 'KS',
+  'KY', 'LA', 'MA', 'MD', 'ME', 'MH', 'MI', 'MN', 'MO', 'MP', 'MS', 'MT', 'NC', 'ND', 'NE', 'NH', 'NJ', 'NM', 'NV', 'NY',
+  'OH', 'OK', 'OR', 'PA', 'PR', 'PW', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VA', 'VI', 'VT', 'WA', 'WI', 'WV', 'WY',
+];
 export const HEALTH_CENTER_COLUMNS = [
   'health_center', 'grant_number', 'year', 'sheet_row', 'name_as_published', 'street', 'address_line_2', 'city', 'state', 'zip',
   'funding_chc', 'funding_mhc', 'funding_ho', 'funding_ph', 'funding_msaw', 'funding_hp', 'funding_rph', 'urban_rural', 'sites',
@@ -245,10 +252,16 @@ export function sync({ siteRoot, engineRoot }) {
   if (found.length > 0) throw new Error(`the records tables are not what this site expects:\n  ${found.slice(0, 20).join('\n  ')}`);
 
   // The engine's own lists of sites and ZIP code rows must hold as many rows as the center files.
-  for (const [name, total] of [['sites.csv', files.__totals.sites], ['zips.csv', files.__totals.zips]]) {
-    const n = parseCsv(read(name)).records.length;
-    if (n !== total) throw new Error(`${name} has ${n} rows and the center files hold ${total}`);
+  // The ZIP code rows are kept as one file for each year and state (zips/<year>/<state>.csv).
+  const sites = parseCsv(read('sites.csv')).records.length;
+  if (sites !== files.__totals.sites) throw new Error(`sites.csv has ${sites} rows and the center files hold ${files.__totals.sites}`);
+  let zips = 0;
+  for (const year of YEARS) {
+    const folder = join(dir, 'zips', String(year));
+    if (!existsSync(folder)) throw new Error(`no ${FROM}/zips/${year} in ${engineRoot}`);
+    for (const name of readdirSync(folder).filter((n) => n.endsWith('.csv')).sort()) zips += parseCsv(read(`zips/${year}/${name}`)).records.length;
   }
+  if (zips !== files.__totals.zips) throw new Error(`the files under zips/ have ${zips} rows and the center files hold ${files.__totals.zips}`);
   const centerTexts = keys.map((k) => files[`centers/${k}.json`]);
   const facts = {
     years: YEARS,

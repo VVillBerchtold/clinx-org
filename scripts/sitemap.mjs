@@ -25,7 +25,9 @@ for (const file of pagesIn(dist)) {
   if (/<meta name="robots" content="[^"]*noindex/.test(html)) continue;
   const canonical = html.match(/<link rel="canonical" href="([^"]+)"/);
   if (!canonical) throw new Error(`${relative(dist, file).split(sep).join('/')}: no canonical address`);
-  addresses.push(canonical[1]);
+  // Kept as its own short text. A piece cut out of a page would keep the whole page in memory, and
+  // with thousands of large pages that is more than the program is allowed.
+  addresses.push(Buffer.from(canonical[1]).toString());
 }
 addresses.sort();
 

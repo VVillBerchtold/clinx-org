@@ -1,0 +1,167 @@
+---
+import '../../styles/home.css';
+import '../../styles/scorecard.css';
+import '../../styles/laws.css';
+import '../../styles/hc-records.css';
+import Base from '../../layouts/Base.astro';
+import PageHead from '../PageHead.astro';
+import StateMap from '../StateMap.astro';
+import { areaPath, getIndex } from '../../lib/hc-areas';
+import { DOWNLOADS, RECORDS_PATH, centerPath, centersWord, coverageRows, listByState, placeInWords, recordsCards, recordsSource, recordsTile, statePath } from '../../lib/hc-records';
+import { HC_HOME, HC_NAME, numberWordCap } from '../../lib/site';
+import { stateMapSvg } from '../../lib/state-map';
+
+/**
+ * The health centers of one state or territory whose Uniform Data System reports ClinX shows
+ * (/health-centers/records/<two letters>/).
+ *
+ * In plain words: the list of that place's health centers, A to Z by name, each as the latest HRSA file
+ * that lists it names it, with a link to each year's report. Beside the list is the way to the other
+ * states and territories: the same map as the records front page, with this place marked.
+ * Nothing is ranked.
+ */
+interface Props {
+  code: string;
+}
+const { code } = Astro.props;
+const group = listByState().find((g) => g.code === code);
+if (!group) throw new Error(`No health center of ${code} has a report here`);
+const name = group.name;
+const place = placeInWords(code);
+const rows = group.rows;
+const source = recordsSource();
+const years = source.years;
+const latest = source.latest_year;
+const span = `${years[0]} to ${latest}`;
+const one = rows.length === 1;
+
+// How many health centers HRSA's file of each year lists for this place.
+const perYear = years.map((year) => ({ year, count: coverageRows().find((c) => c.state === code && c.year === year)?.healthCenters ?? 0 }));
+const inLatest = perYear[perYear.length - 1]!.count;
+const earlierOnly = rows.length - inLatest;
+const earlierSentence =
+  earlierOnly === 0
+    ? ''
+    : earlierOnly === 1
+      ? ` One of them is listed only in the files of earlier years.`
+      : ` ${numberWordCap(earlierOnly)} of them are listed only in the files of earlier years.`;
+
+const hasAreas = getIndex().states.includes(code);
+const mapSvg = stateMapSvg({
+  id: 'records-state-map',
+  title: 'Other states and territories',
+  desc: `A map of the states and territories as tiles. Each tile leads to the list of that place's health centers. This page is the list for ${place}.`,
+  tile: (p) => recordsTile(p, code),
+  territories: true,
+});
+// A short list needs no filter.
+const withFilter = rows.length >= 12;
+---
+
+<Base
+  title={`${name}: health center records`}
+  crumbs={[
+    { name: HC_NAME, path: HC_HOME },
+    { name: 'Health center records', path: RECORDS_PATH },
+    { name, path: statePath(code) },
+  ]}
+  description={`The ${centersWord(rows.length)} of ${place} in HRSA's Uniform Data System files, ${span}, A to Z by name, each with a link to every year's report.`}
+>
+  <PageHead title={name} trail={[{ label: HC_NAME, href: HC_HOME }, { label: 'Records', href: RECORDS_PATH }, { label: name }]}>
+    <p class="lede">
+      HRSA's Uniform Data System files for {span} list {centersWord(rows.length)} for {place}. {one ? 'Its reports are' : 'They are'} here, {one ? 'one page for each year' : 'A to Z by name, with one page for each health center and year'}.
+    </p>
+  </PageHead>
+
+  <div class="law-layout hcr-state">
+    <div class="hcr-state-main">
+      <h2 id="list" class="visually-hidden">The health centers</h2>
+      <ul class="hcr-yearcounts" aria-label={`Health centers HRSA's file lists for ${place}, by year`}>
+        {
+          perYear.map((y) => (
+            <li>
+              <span class="label">{y.year} file</span>
+              <strong>{y.count.toLocaleString('en-US')}</strong>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="small muted">
+        Health centers HRSA's file of each year lists for {place}. A name below is as the latest file that lists the health center gives it.{earlierSentence} Select a name to open the latest report, or a year to open that year's.
+      </p>
+
+      {
+        withFilter && (
+          <>
+            <div class="hcr-filter hcr-filter-one" data-filter hidden>
+              <label>
+                Name or city
+                <input type="search" data-filter-text autocomplete="off" spellcheck="false" />
+              </label>
+            </div>
+            <p class="hcr-count" data-filter-count aria-live="polite" />
+          </>
+        )
+      }
+
+      <div class="table-wrap wide stack hcr-list">
+        <table data-filter-table role="table">
+          <caption><span>{name}: health centers with a report on ClinX</span></caption>
+          <thead role="rowgroup">
+            <tr role="row">
+              <th role="columnheader" scope="col">Health center</th>
+              <th role="columnheader" scope="col">City</th>
+              <th role="columnheader" scope="col">Reports</th>
+            </tr>
+          </thead>
+          <tbody role="rowgroup">
+            {
+              rows.map((r) => (
+                <tr role="row" data-search={`${r.name} ${r.city}`.toLowerCase()} data-kind={r.state}>
+                  <th role="rowheader" scope="row"><a href={r.path}>{r.name}</a></th>
+                  <td role="cell" data-label="City">{r.city}</td>
+                  <td role="cell" data-label="Reports">
+                    <ul class="hcr-years">
+                      {[...r.years].sort((a, b) => b - a).map((y) => <li><a href={centerPath(r.key, y)}>{y}</a></li>)}
+                    </ul>
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+      {withFilter && <p class="small muted" data-filter-none hidden>No health center matches. Clear the box to see all of them.</p>}
+
+      <ul class="hcr-links">
+        <li><a class="btn ghost" href={DOWNLOADS.centers}>All health centers listed (CSV)</a></li>
+        <li><a class="btn ghost" href={DOWNLOADS.coverage}>Health centers by state and year (CSV)</a></li>
+      </ul>
+    </div>
+
+    <aside class="law-aside" aria-label="More health center records">
+      <a class="law-score" href={RECORDS_PATH}>
+        <span class="label">Health center records</span>
+        <strong>All states and territories</strong>
+        <span>The map, and every health center by name</span>
+      </a>
+      <div class="law-map">
+        <h2 class="label">Other states and territories</h2>
+        <StateMap strip svg={mapSvg} legend={[{ tone: 'has', label: 'Select a tile to open its list' }]} rest={{ note: 'Point at a tile to see how many health centers it has.' }} cards={recordsCards(true)} />
+      </div>
+      {
+        hasAreas && (
+          <a class="law-score" href={areaPath(code)}>
+            <span class="label">Shortage areas</span>
+            <strong>{name}</strong>
+            <span>Shortage areas and health center sites in HRSA's files</span>
+          </a>
+        )
+      }
+    </aside>
+  </div>
+</Base>
+
+<script>
+  import '../../scripts/filter-table';
+</script>
