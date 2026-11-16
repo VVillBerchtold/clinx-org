@@ -8,12 +8,14 @@ import PageHead from '../PageHead.astro';
 import StateMap from '../StateMap.astro';
 import {
   DOWNLOADS,
+  NEXT_STATES,
   RECORDS_PATH,
   centerPath,
   coverageRows,
   formatDay,
   listByState,
   listRows,
+  listWords,
   megabytes,
   placesWords,
   recordsSource,
@@ -26,8 +28,8 @@ import { MAP_PLACES, stateMapSvg, type MapCard, type MapTile, type StateTile } f
 /**
  * The list of the health centers whose Uniform Data System reports ClinX shows, and where they are.
  *
- * In plain words: a map shows which states have reports here now and which are still to be added, with
- * the number of health centers HRSA's latest file lists in each. Under it is the list itself, one group
+ * In plain words: a map shows which states have reports here now, which are coming next and which are
+ * still to be added, with the number of health centers HRSA's latest file lists in each. Under it is the list itself, one group
  * for each state, each health center as the latest file that lists it names it, with a link to each
  * year's report. The map's tiles lead to a state's group on this same page. A filter by name, city or
  * state works over the plain list. Nothing is ranked: states are A to Z, and so are the names in each.
@@ -53,7 +55,10 @@ const listedLatest = [...inLatest.values()].reduce((sum, c) => sum + c.healthCen
 const shownLatest = [...inLatest.values()].filter((c) => c.covered).reduce((sum, c) => sum + c.healthCenters, 0);
 const earlierOnly = rows.length - shownLatest;
 const reports = rows.reduce((sum, r) => sum + r.years.length, 0);
-const toCome = inLatest.size - groups.length;
+// The states being added next: outlined on the map. One whose reports have arrived is no longer "next".
+const next = new Set(NEXT_STATES.filter((code) => inLatest.has(code) && !groupOf.has(code)));
+const nextNames = MAP_PLACES.filter((p) => next.has(p.code)).map((p) => p.name).sort((a, b) => a.localeCompare(b, 'en'));
+const toCome = inLatest.size - groups.length - next.size;
 // Health centers that an earlier file lists and the latest file does not.
 const earlierSentence =
   earlierOnly === 0
@@ -65,6 +70,7 @@ const earlierSentence =
 const tile = (place: StateTile): MapTile => {
   const group = groupOf.get(place.code);
   if (group) return { tone: 'has', href: `#${stateAnchor(place.code)}`, label: `${centersWord(group.rows.length)}, reports for ${span}`, card: true };
+  if (next.has(place.code)) return { tone: 'next', card: true };
   return inLatest.has(place.code) ? { tone: 'none', card: true } : { tone: 'none' };
 };
 const cards: MapCard[] = MAP_PLACES.flatMap((place): MapCard[] => {
@@ -72,6 +78,7 @@ const cards: MapCard[] = MAP_PLACES.flatMap((place): MapCard[] => {
   if (!count) return [];
   const group = groupOf.get(place.code);
   const fileRow = { label: `Health centers in HRSA's ${latest} file`, values: [num(count.healthCenters)] };
+  if (next.has(place.code)) return [{ code: place.code, name: place.name, kicker: 'Coming next', rows: [fileRow], note: 'Their reports are being added next.' }];
   if (!group) return [{ code: place.code, name: place.name, kicker: 'To be added', rows: [fileRow], note: 'Their reports are not on ClinX yet.' }];
   return [
     {
@@ -86,7 +93,7 @@ const cards: MapCard[] = MAP_PLACES.flatMap((place): MapCard[] => {
 const mapSvg = stateMapSvg({
   id: 'records-map',
   title: 'Where the health center reports are',
-  desc: `A map of the states and territories as tiles. A filled tile is a place whose health centers have their reports on ClinX: ${groups.map((g) => g.name).join(', ')}. A filled tile leads to that place in the list on this page. The reports of the other ${toCome} are still to be added. The table under the map gives every count.`,
+  desc: `A map of the states and territories as tiles. A filled tile is a place whose health centers have their reports on ClinX: ${groups.map((g) => g.name).join(', ')}. A filled tile leads to that place in the list on this page.${next.size > 0 ? ` An outlined tile is a state whose reports are coming next: ${nextNames.join(', ')}.` : ''} The reports of the other ${toCome} are still to be added. The table under the map gives every count.`,
   tile,
   territories: true,
 });
@@ -98,7 +105,7 @@ const rest = {
     { label: 'Of them, with reports on ClinX', values: [num(shownLatest)] },
     { label: 'Places with reports on ClinX', values: [`${groups.length} of ${inLatest.size}`] },
   ],
-  note: 'ClinX is adding the reports state by state. The filled tiles have them now.',
+  note: next.size > 0 ? 'ClinX is adding the reports state by state. The filled tiles have them now, and the outlined tiles are coming next.' : 'ClinX is adding the reports state by state. The filled tiles have them now.',
 };
 const allPlaces = [...MAP_PLACES].filter((p) => inLatest.has(p.code)).sort((a, b) => a.name.localeCompare(b.name, 'en'));
 
@@ -129,13 +136,14 @@ const items = [
   <section class="hcr-section" aria-labelledby="where">
     <h2 id="where">Where the reports are</h2>
     <p>
-      HRSA's {latest} file lists {num(listedLatest)} health centers in {inLatest.size} states and territories. ClinX shows the reports of {num(shownLatest)} of them so far, in {places}. Select a filled tile to go to that state in the list.
+      HRSA's {latest} file lists {num(listedLatest)} health centers in {inLatest.size} states and territories. ClinX shows the reports of {num(shownLatest)} of them so far, in {places}. Select a filled tile to go to that state in the list.{next.size > 0 && ` Coming next: ${listWords(nextNames)}.`}
     </p>
     <StateMap
       svg={mapSvg}
       legend={[
-        { tone: 'has', label: 'Reports shown. Select a tile to go to its list' },
-        { tone: 'none', label: 'To be added' },
+        { tone: 'has' as const, label: 'Reports shown. Select a tile to go to its list' },
+        ...(next.size > 0 ? [{ tone: 'next' as const, label: 'Coming next' }] : []),
+        { tone: 'none' as const, label: 'To be added' },
       ]}
       rest={rest}
       cards={cards}
@@ -162,7 +170,7 @@ const items = [
                   <th role="rowheader" scope="row">{p.name}</th>
                   <td role="cell" class="num" data-label={`In HRSA's ${latest} file`}>{num(inLatest.get(p.code)!.healthCenters)}</td>
                   <td role="cell" data-label="Reports on ClinX">
-                    {groupOf.has(p.code) ? <a href={`#${stateAnchor(p.code)}`}>{span}</a> : 'To be added'}
+                    {groupOf.has(p.code) ? <a href={`#${stateAnchor(p.code)}`}>{span}</a> : next.has(p.code) ? 'Coming next' : 'To be added'}
                   </td>
                 </tr>
               ))

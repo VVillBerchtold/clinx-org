@@ -213,6 +213,17 @@ export function placesWords(codes: readonly string[]): string {
   const states = `${numberWord(n)} ${n === 1 ? 'state' : 'states'}`;
   return withDc ? `${states} and the District of Columbia` : states;
 }
+/**
+ * The states whose reports are being added next, by their two-letter codes. The records page draws
+ * them with an outline on its map and says "Coming next" in its table. A state leaves this list when
+ * its reports arrive (tests/hc-records.test.ts fails if a state is in both).
+ */
+export const NEXT_STATES: readonly string[] = ['FL', 'GA', 'NC', 'SC', 'VA', 'WV'];
+/** A list in words: "Florida, Georgia and Virginia". */
+export function listWords(items: readonly string[]): string {
+  if (items.length <= 1) return items.join('');
+  return `${items.slice(0, -1).join(', ')} and ${items.at(-1)}`;
+}
 /** The anchor of a state's part of the list of health centers. */
 export const stateAnchor = (code: string): string => `in-${code.toLowerCase()}`;
 /** The address of a state's part of the list. */

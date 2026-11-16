@@ -15,6 +15,8 @@ import {
   splitBySection,
   glanceScale,
   coverageRows,
+  NEXT_STATES,
+  listWords,
   headerRows,
   lastYearOf,
   linesOf,
@@ -117,6 +119,19 @@ describe('the copied tables', () => {
     for (const c of rows.filter((x) => x.covered)) expect(headerRows().filter((h) => h.state === c.state && h.year === c.year), `${c.state} ${c.year}`).toHaveLength(c.healthCenters);
     // Every code in the file has a tile on the map.
     for (const c of latestRows) expect(MAP_PLACES.some((p) => p.code === c.state), c.state).toBe(true);
+  });
+
+  it('name the states coming next: each is in HRSA\'s file and none has its reports here yet', () => {
+    const latestRows = coverageRows().filter((c) => c.year === latest);
+    expect(NEXT_STATES.length).toBeGreaterThan(0);
+    for (const code of NEXT_STATES) {
+      const row = latestRows.find((c) => c.state === code);
+      expect(row, code).toBeDefined();
+      expect(row!.covered, `${code} has its reports here, so it is no longer coming next`).toBe(false);
+    }
+    expect(listWords(['Florida'])).toBe('Florida');
+    expect(listWords(['Florida', 'Georgia'])).toBe('Florida and Georgia');
+    expect(listWords(['Florida', 'Georgia', 'Virginia'])).toBe('Florida, Georgia and Virginia');
   });
 
   it('say where each workbook came from, with a SHA-256 and a day', () => {
