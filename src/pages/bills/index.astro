@@ -4,13 +4,14 @@
  * The bills themselves are on each place's page (src/pages/bills/[slug]).
  * Everything shown comes from the bills table (src/lib/bills.ts).
  */
+import StateMap from '../../components/StateMap.astro';
 import '../../styles/scorecard.css';
 import '../../styles/laws.css';
 import '../../styles/bills.css';
 import Base from '../../layouts/Base.astro';
 import PageHead from '../../components/PageHead.astro';
 import { formatDate } from '../../lib/data';
-import { BILLS_HOME, CONGRESS, billHref, billsMapSvg, billsPath, getBills, latestSteps, placeName, statesWithBills, stepOf } from '../../lib/bills';
+import { BILLS_HOME, CONGRESS, billHref, billsMapSvg, billsPath, getBills, latestSteps, placeName, statesWithBills, stepOf, billsMapCards } from '../../lib/bills';
 import { LAWS_HOME } from '../../lib/laws';
 
 const data = getBills();
@@ -39,11 +40,13 @@ const short = (title: string): string => (title.length <= 96 ? title : `${title.
 
   <div class="law-top">
     <div class="law-map">
-      <Fragment set:html={billsMapSvg(data, 'bills-map')} />
-      <ul class="legend">
-        <li><span class="key live" aria-hidden="true"></span>Has a 340B bill</li>
-        <li><span class="key" aria-hidden="true"></span>No bill listed</li>
-      </ul>
+      <StateMap
+        strip
+        svg={billsMapSvg(data, 'bills-map')}
+        legend={[{ tone: 'has', label: 'Has a 340B bill' }, { tone: 'none', label: 'No bill listed' }]}
+        rest={{ note: 'Point at a state to see how many bills name 340B there.' }}
+        cards={billsMapCards(data)}
+      />
     </div>
     <div class="law-index">
       <a class="law-score bill-door" href={billsPath(CONGRESS)}>

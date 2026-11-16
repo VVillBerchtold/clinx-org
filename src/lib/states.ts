@@ -4,6 +4,10 @@
  * about a state's law: "watch" entries carry the state's own page as their source.
  */
 
+import { STATES, stateMapSvg, type MapCard, type MapTile, type StateTile } from './state-map';
+
+export { STATES, TILE, type StateTile } from './state-map';
+
 /**
  * live: its filings are in the dataset.
  * law:  the state has a 340B reporting law in force, read from the law itself.
@@ -59,31 +63,6 @@ export const REPORTING_GROUPS: readonly GroupInfo[] = [
 ];
 
 export const GROUP_IDS: readonly ReportingGroup[] = REPORTING_GROUPS.map((g) => g.id);
-
-export interface StateTile {
-  code: string;
-  name: string;
-  /** Column and row in the tile map (the familiar grid layout of the United States). */
-  col: number;
-  row: number;
-}
-
-const GRID: readonly (readonly [string, string, number, number])[] = [
-  ['AK', 'Alaska', 0, 0], ['ME', 'Maine', 10, 0],
-  ['VT', 'Vermont', 9, 1], ['NH', 'New Hampshire', 10, 1],
-  ['WA', 'Washington', 0, 2], ['ID', 'Idaho', 1, 2], ['MT', 'Montana', 2, 2], ['ND', 'North Dakota', 3, 2], ['MN', 'Minnesota', 4, 2],
-  ['IL', 'Illinois', 5, 2], ['WI', 'Wisconsin', 6, 2], ['MI', 'Michigan', 7, 2], ['NY', 'New York', 8, 2], ['RI', 'Rhode Island', 9, 2], ['MA', 'Massachusetts', 10, 2],
-  ['OR', 'Oregon', 0, 3], ['NV', 'Nevada', 1, 3], ['WY', 'Wyoming', 2, 3], ['SD', 'South Dakota', 3, 3], ['IA', 'Iowa', 4, 3],
-  ['IN', 'Indiana', 5, 3], ['OH', 'Ohio', 6, 3], ['PA', 'Pennsylvania', 7, 3], ['NJ', 'New Jersey', 8, 3], ['CT', 'Connecticut', 9, 3],
-  ['CA', 'California', 0, 4], ['UT', 'Utah', 1, 4], ['CO', 'Colorado', 2, 4], ['NE', 'Nebraska', 3, 4], ['MO', 'Missouri', 4, 4],
-  ['KY', 'Kentucky', 5, 4], ['WV', 'West Virginia', 6, 4], ['VA', 'Virginia', 7, 4], ['MD', 'Maryland', 8, 4], ['DE', 'Delaware', 9, 4],
-  ['AZ', 'Arizona', 1, 5], ['NM', 'New Mexico', 2, 5], ['KS', 'Kansas', 3, 5], ['AR', 'Arkansas', 4, 5], ['TN', 'Tennessee', 5, 5],
-  ['NC', 'North Carolina', 6, 5], ['SC', 'South Carolina', 7, 5], ['DC', 'District of Columbia', 8, 5],
-  ['OK', 'Oklahoma', 3, 6], ['LA', 'Louisiana', 4, 6], ['MS', 'Mississippi', 5, 6], ['AL', 'Alabama', 6, 6], ['GA', 'Georgia', 7, 6],
-  ['HI', 'Hawaii', 0, 7], ['TX', 'Texas', 3, 7], ['FL', 'Florida', 8, 7],
-];
-
-export const STATES: readonly StateTile[] = GRID.map(([code, name, col, row]) => ({ code, name, col, row }));
 
 export interface StateSource {
   label: string;
@@ -335,45 +314,34 @@ export function statesWith(status: StateStatus): StateTile[] {
   return STATES.filter((s) => stateStatus(s.code) === status).sort((a, b) => a.name.localeCompare(b.name, 'en'));
 }
 
-/** Tile map geometry in SVG units. */
-export const TILE = { size: 40, gap: 6, cols: 11, rows: 8, radius: 9 } as const;
-
-const esc = (t: string): string => t.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
+/** How the Scorecard's map draws one state: filled with a ring when its filings are shown, outlined when it has a reporting law. */
+function scorecardTile(place: StateTile): MapTile {
+  const entry = STATE_REGISTRY[place.code];
+  if (entry?.status === 'live' && entry.href) return { tone: 'has', href: entry.href, label: 'open the scorecard', ring: true, card: true };
+  if (entry?.status === 'law') return { tone: 'next', card: true };
+  return { tone: 'none' };
+}
 
 /**
- * The map as inline SVG. Live states are links. The same information is given as a list
+ * The Scorecard's map as inline SVG. Live states are links. The same information is given as a list
  * next to the map, so the picture itself is one labelled image.
  */
 export function tileMapSvg(id: string): string {
-  const step = TILE.size + TILE.gap;
-  const pad = 10; // room for the ring around a live tile
-  const width = TILE.cols * step - TILE.gap + pad * 2;
-  const height = TILE.rows * step - TILE.gap + pad * 2;
   const live = statesWith('live').map((s) => s.name);
   const law = statesWith('law').map((s) => s.name);
   const desc =
     `A grid of the 50 states and the District of Columbia. In the scorecard: ${live.join(', ') || 'none yet'}.` +
     (law.length > 0 ? ` With a 340B reporting law, not in the scorecard yet: ${law.join(', ')}.` : '');
+  return stateMapSvg({ id, title: 'States in the 340B Scorecard', desc, tile: scorecardTile });
+}
 
-  const parts: string[] = [
-    `<svg class="tilemap" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" role="group" aria-labelledby="${id}-t ${id}-d">`,
-    `<title id="${id}-t">States in the 340B Scorecard</title>`,
-    `<desc id="${id}-d">${esc(desc)}</desc>`,
-  ];
-  for (const s of STATES) {
-    const x = pad + s.col * step;
-    const y = pad + s.row * step;
+/** One line for each state on the Scorecard's map, shown under the map while its tile is pointed at. */
+export function scorecardMapCards(): MapCard[] {
+  return STATES.flatMap((s) => {
     const entry = STATE_REGISTRY[s.code];
-    const status = entry?.status ?? 'none';
-    const rect = `<rect class="tile" x="${x}" y="${y}" width="${TILE.size}" height="${TILE.size}" rx="${TILE.radius}"/>`;
-    const text = `<text class="abbr" x="${x + TILE.size / 2}" y="${y + TILE.size / 2 + 4.5}" text-anchor="middle">${s.code}</text>`;
-    if (status === 'live' && entry?.href) {
-      const ring = `<rect class="ring" x="${x}" y="${y}" width="${TILE.size}" height="${TILE.size}" rx="${TILE.radius}"/>`;
-      parts.push(`<a class="tile-g live r${s.row}" href="${esc(entry.href)}" aria-label="${s.code}, ${esc(s.name)}: open the scorecard">${ring}${rect}${text}</a>`);
-    } else {
-      parts.push(`<g class="tile-g ${status} r${s.row}">${rect}${text}</g>`);
-    }
-  }
-  parts.push('</svg>');
-  return parts.join('');
+    if (!entry || entry.status === 'none') return [];
+    const kind = REPORTING_GROUPS.find((g) => g.id === entry.group)?.label ?? '';
+    const note = entry.status === 'live' ? `In the scorecard. ${kind}. ${entry.summary ?? ''}`.trim() : `Has a 340B reporting law, and is not in the scorecard yet. ${kind}.`;
+    return [{ code: s.code, name: s.name, note }];
+  });
 }

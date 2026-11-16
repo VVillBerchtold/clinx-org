@@ -4,6 +4,7 @@
  * up comes first; what has happened follows, the newest month first, with earlier years folded away.
  * Everything shown comes from the calendar table (src/lib/calendar.ts).
  */
+import StateMap from './StateMap.astro';
 import '../styles/scorecard.css';
 import '../styles/laws.css';
 import '../styles/bills.css';
@@ -12,7 +13,7 @@ import Base from '../layouts/Base.astro';
 import CalendarRows from './CalendarRows.astro';
 import PageHead from './PageHead.astro';
 import { CONGRESS, billsPath, getBills } from '../lib/bills';
-import { CALENDAR_HOME, byMonth, byYear, calendarFilePath, calendarMapSvg, calendarPath, calendarPlaceName, comingUp, eventsOf, getCalendar, isSessionDay, legislatureName, past } from '../lib/calendar';
+import { CALENDAR_HOME, byMonth, byYear, calendarFilePath, calendarMapSvg, calendarPath, calendarPlaceName, comingUp, eventsOf, getCalendar, isSessionDay, legislatureName, past, calendarMapCards } from '../lib/calendar';
 import { getLaws, lawsOf, lawsPath } from '../lib/laws';
 import { formatDate } from '../lib/data';
 import { AGENCIES, NOTICES_HOME, getNotices, pilotStart } from '../lib/notices';
@@ -162,11 +163,13 @@ const description = agencies
       }
       <div class="law-map">
         <h2 class="label">{national ? 'Calendars of the states' : 'Other states'}</h2>
-        <Fragment set:html={calendarMapSvg(data, 'place-calendar-map', national ? {} : { current: place })} />
-        <ul class="legend">
-          <li><span class="key live" aria-hidden="true"></span>Has dates on the calendar</li>
-          <li><span class="key" aria-hidden="true"></span>No dates listed</li>
-        </ul>
+        <StateMap
+          strip
+          svg={calendarMapSvg(data, 'place-calendar-map', national ? {} : { current: place })}
+          legend={[{ tone: 'has', label: 'Has dates on the calendar' }, { tone: 'none', label: 'No dates listed' }]}
+          rest={{ note: 'Point at a state to see how many dates it has.' }}
+          cards={calendarMapCards(data)}
+        />
         <p class="bill-ways">
           {!federal && <a class="law-all" href={calendarPath(CONGRESS)}>Congress</a>}
           {!agencies && <a class="law-all" href={calendarPath(AGENCIES)}>Federal agencies</a>}

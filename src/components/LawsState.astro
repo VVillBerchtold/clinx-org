@@ -4,12 +4,13 @@
  * the passage that names the program and links to the official page.
  * Everything shown comes from the dataset's laws table (src/lib/laws.ts).
  */
+import StateMap from './StateMap.astro';
 import '../styles/scorecard.css';
 import '../styles/laws.css';
 import Base from '../layouts/Base.astro';
 import PageHead from './PageHead.astro';
 import { formatDate } from '../lib/data';
-import { LAWS_HOME, getLaws, kindPath, lawName, lawsMapSvg, lawsOf, lawsPath, ownerOf, savedTextUrl, type Law } from '../lib/laws';
+import { LAWS_HOME, getLaws, kindPath, lawName, lawsMapSvg, lawsOf, lawsPath, ownerOf, savedTextUrl, type Law, lawsMapCards } from '../lib/laws';
 import { numberWordCap } from '../lib/site';
 import { billsPath, getBills } from '../lib/bills';
 import { STATE_REGISTRY, type StateTile } from '../lib/states';
@@ -168,11 +169,13 @@ const pdf = (form: string): string => (form.includes('pdf') ? ' (PDF)' : '');
       }
       <div class="law-map">
         <h2 class="label">Other states</h2>
-        <Fragment set:html={lawsMapSvg(laws, 'state-laws-map', { current: state.code })} />
-        <ul class="legend">
-          <li><span class="key live" aria-hidden="true"></span>Has a 340B law</li>
-          <li><span class="key" aria-hidden="true"></span>No law listed</li>
-        </ul>
+        <StateMap
+          strip
+          svg={lawsMapSvg(laws, 'state-laws-map', { current: state.code })}
+          legend={[{ tone: 'has', label: 'Has a 340B law' }, { tone: 'none', label: 'No law listed' }]}
+          rest={{ note: 'Point at a state to see how many laws it has.' }}
+          cards={lawsMapCards(laws)}
+        />
         <a class="law-all" href={LAWS_HOME}>All state laws</a>
       </div>
     </aside>

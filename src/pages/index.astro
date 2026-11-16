@@ -1,4 +1,5 @@
 ---
+import StateMap from '../components/StateMap.astro';
 import '../styles/home.css';
 import Base from '../layouts/Base.astro';
 import { founderNode, siteNode } from '../lib/structured-data';
@@ -7,7 +8,7 @@ import Draft from '../components/Draft.astro';
 import { getBills } from '../lib/bills';
 import { CLEANER_COPY, FILE_CHECK, HC_HOME, HC_NAME, REFERRALFINDERX_URL, numberWord, numberWordCap } from '../lib/site';
 import { partDays } from '../lib/hc-hub';
-import { REPORTING_GROUPS, statesInGroup, statesWith, tileMapSvg } from '../lib/states';
+import { REPORTING_GROUPS, statesInGroup, statesWith, tileMapSvg, scorecardMapCards } from '../lib/states';
 
 const live = statesWith('live');
 const law = statesWith('law');
@@ -95,12 +96,13 @@ const ways = [
             </div>
           </div>
           <div class="work-show">
-            <Fragment set:html={tileMapSvg('home-map')} />
-            <ul class="legend">
-              <li><span class="key live" aria-hidden="true"></span>In the scorecard</li>
-              <li><span class="key law" aria-hidden="true"></span>Has a 340B reporting law</li>
-              <li><span class="key" aria-hidden="true"></span>Neither yet</li>
-            </ul>
+            <StateMap
+              strip
+              svg={tileMapSvg('home-map')}
+              legend={[{ tone: 'has', label: 'In the scorecard' }, { tone: 'next', label: 'Has a 340B reporting law' }, { tone: 'none', label: 'Neither yet' }]}
+              rest={{ note: 'Point at a state to see what it makes public.' }}
+              cards={scorecardMapCards()}
+            />
             <p class="work-note">{numberWordCap(live.length)} states are in the scorecard, of {numberWord(live.length + law.length)} with a reporting law. A state is added once what it makes public has been copied and checked. What a state makes public differs:</p>
             <ul class="work-kinds">
               {

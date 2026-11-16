@@ -9,7 +9,8 @@
  * that have one. Nothing here adds to or changes what the table says.
  */
 import { LAW_KINDS, lawsPath, type LawKind } from './laws';
-import { STATES, TILE, stateName, type StateTile } from './states';
+import { stateMapSvg, type MapCard } from './state-map';
+import { STATES, stateName, type StateTile } from './states';
 
 /** Congress, in the table's place column. Every other place is a state's two letters. */
 export const CONGRESS = 'US';
@@ -301,8 +302,6 @@ export function lawsPageOf(place: string, statesWithLaws: ReadonlySet<string>): 
   return place !== CONGRESS && statesWithLaws.has(place) ? lawsPath(place) : null;
 }
 
-const esc = (t: string): string => t.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
-
 /**
  * The map of states as inline SVG, for the bills pages. A state with a listed bill is drawn filled
  * and is a link to its page; a state with none is a plain tile. `current` marks the state whose
@@ -310,32 +309,31 @@ const esc = (t: string): string => t.replaceAll('&', '&amp;').replaceAll('<', '&
  */
 export function billsMapSvg(data: BillsData, id: string, options: { current?: string } = {}): string {
   const { current } = options;
-  const step = TILE.size + TILE.gap;
-  const pad = 10;
-  const width = TILE.cols * step - TILE.gap + pad * 2;
-  const height = TILE.rows * step - TILE.gap + pad * 2;
+  const counts = billCounts(data);
+  const filled = statesWithBills(data);
+  return stateMapSvg({
+    id,
+    title: 'States with a bill that names 340B',
+    desc: `A grid of the 50 states and the District of Columbia. With a bill that names 340B: ${filled.map((s) => s.name).join(', ')}.`,
+    tile: (s) => {
+      const n = counts.get(s.code) ?? 0;
+      if (n === 0) return { tone: 'none' };
+      return { tone: 'has', href: billsPath(s.code), label: `${n} ${n === 1 ? 'bill' : 'bills'}`, current: s.code === current, card: true };
+    },
+  });
+}
+
+function billCounts(data: BillsData): Map<string, number> {
   const counts = new Map<string, number>();
   for (const bill of data.bills) counts.set(bill.place, (counts.get(bill.place) ?? 0) + 1);
-  const filled = statesWithBills(data);
-  const parts: string[] = [
-    `<svg class="tilemap lawmap" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" role="group" aria-labelledby="${id}-t ${id}-d">`,
-    `<title id="${id}-t">States with a bill that names 340B</title>`,
-    `<desc id="${id}-d">${esc(`A grid of the 50 states and the District of Columbia. With a bill that names 340B: ${filled.map((s) => s.name).join(', ')}.`)}</desc>`,
-  ];
-  for (const s of STATES) {
-    const x = pad + s.col * step;
-    const y = pad + s.row * step;
-    const n = counts.get(s.code) ?? 0;
-    const rect = `<rect class="tile" x="${x}" y="${y}" width="${TILE.size}" height="${TILE.size}" rx="${TILE.radius}"/>`;
-    const abbr = `<text class="abbr" x="${x + TILE.size / 2}" y="${y + TILE.size / 2 + 4.5}" text-anchor="middle">${s.code}</text>`;
-    if (n === 0) {
-      parts.push(`<g class="tile-g none r${s.row}">${rect}${abbr}</g>`);
-      continue;
-    }
-    const here = s.code === current ? ' here' : '';
-    const now = s.code === current ? ' aria-current="page"' : '';
-    parts.push(`<a class="tile-g has${here} r${s.row}" href="${billsPath(s.code)}" aria-label="${s.code}, ${esc(s.name)}: ${n} ${n === 1 ? 'bill' : 'bills'}"${now}>${rect}${abbr}</a>`);
-  }
-  parts.push('</svg>');
-  return parts.join('');
+  return counts;
+}
+
+/** One line for each state with a bill, shown under the map while its tile is pointed at. */
+export function billsMapCards(data: BillsData): MapCard[] {
+  const counts = billCounts(data);
+  return STATES.filter((s) => counts.has(s.code)).map((s) => {
+    const n = counts.get(s.code)!;
+    return { code: s.code, name: s.name, note: `${n} ${n === 1 ? 'bill names' : 'bills name'} 340B. Select the tile to read ${n === 1 ? 'it' : 'them'}.` };
+  });
 }

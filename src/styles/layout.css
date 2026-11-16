@@ -1582,31 +1582,6 @@ th[aria-sort='descending'] button::after {
   font-size: 13px;
   font-weight: 600;
 }
-.tilemap .law .tile {
-  fill: var(--accent-wash);
-  stroke: var(--accent);
-  stroke-width: 2;
-  opacity: 1;
-}
-.tilemap .law .abbr {
-  fill: var(--ink);
-}
-.tilemap .live .tile {
-  fill: var(--accent);
-  opacity: 1;
-}
-.tilemap .live .abbr {
-  fill: var(--bg);
-  font-weight: 700;
-}
-.tilemap .live .ring {
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 2;
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: ring 2.4s ease-out infinite;
-}
 @keyframes ring {
   from {
     transform: scale(1);
@@ -1665,13 +1640,6 @@ th[aria-sort='descending'] button::after {
   height: 14px;
   border-radius: 4px;
   background: var(--tick);
-}
-.key.live {
-  background: var(--accent);
-}
-.key.law {
-  background: var(--accent-wash);
-  box-shadow: inset 0 0 0 2px var(--accent);
 }
 
 /* ---------- Footer ---------- */

@@ -4,6 +4,7 @@
  * up, and the newest steps anywhere. Each place's whole record is on its own page (src/pages/calendar/[slug]).
  * Everything shown comes from the calendar table (src/lib/calendar.ts).
  */
+import StateMap from '../../components/StateMap.astro';
 import '../../styles/scorecard.css';
 import '../../styles/laws.css';
 import '../../styles/bills.css';
@@ -13,7 +14,7 @@ import CalendarRows from '../../components/CalendarRows.astro';
 import PageHead from '../../components/PageHead.astro';
 import { formatDate } from '../../lib/data';
 import { BILLS_HOME, CONGRESS } from '../../lib/bills';
-import { CALENDAR_HOME, byMonth, calendarFilePath, calendarMapSvg, calendarPath, calendarPlaceName, comingUp, eventsOf, getCalendar, isBillStep, isNoticeDay, isSessionDay, kindLabel, latestSteps } from '../../lib/calendar';
+import { CALENDAR_HOME, byMonth, calendarFilePath, calendarMapSvg, calendarPath, calendarPlaceName, comingUp, eventsOf, getCalendar, isBillStep, isNoticeDay, isSessionDay, kindLabel, latestSteps, calendarMapCards } from '../../lib/calendar';
 import { AGENCIES, NOTICES_HOME } from '../../lib/notices';
 
 const data = getCalendar();
@@ -43,11 +44,13 @@ const arrow = 'M3 9h12M10 4l5 5-5 5';
 
   <div class="law-top">
     <div class="law-map">
-      <Fragment set:html={calendarMapSvg(data, 'calendar-map')} />
-      <ul class="legend">
-        <li><span class="key live" aria-hidden="true"></span>Has dates on the calendar</li>
-        <li><span class="key" aria-hidden="true"></span>No dates listed</li>
-      </ul>
+      <StateMap
+        strip
+        svg={calendarMapSvg(data, 'calendar-map')}
+        legend={[{ tone: 'has', label: 'Has dates on the calendar' }, { tone: 'none', label: 'No dates listed' }]}
+        rest={{ note: 'Point at a state to see how many dates it has.' }}
+        cards={calendarMapCards(data)}
+      />
     </div>
     <div class="law-index">
       <a class="law-score bill-door" href={calendarPath(CONGRESS)}>

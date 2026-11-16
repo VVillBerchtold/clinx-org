@@ -7,7 +7,8 @@
  * or changes what the table says.
  */
 import { REPOSITORIES } from './site';
-import { STATES, TILE, stateName, type StateTile } from './states';
+import { stateMapSvg, type MapCard } from './state-map';
+import { STATES, stateName, type StateTile } from './states';
 
 /** The kinds a law may have, in the order the dataset lists them. Must match KNOWN_LAW_KINDS in scripts/dataset-shape.mjs. */
 export const LAW_KINDS = ['contract-pharmacy', 'payer-nondiscrimination', 'reporting', 'medicaid', 'use-of-savings', 'study', 'other'] as const;
@@ -205,8 +206,6 @@ export function savedTextUrl(data: LawsData, path: string): string {
   return `${REPOSITORIES.dataset}/blob/v${data.version}/${path}`;
 }
 
-const esc = (t: string): string => t.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
-
 /**
  * The map of states as inline SVG, for the laws pages. A state with a listed law is drawn filled
  * and is a link to its page; a state with none is a plain tile. With `kind`, only states with a
@@ -214,36 +213,33 @@ const esc = (t: string): string => t.replaceAll('&', '&amp;').replaceAll('<', '&
  */
 export function lawsMapSvg(data: LawsData, id: string, options: { current?: string; kind?: LawKind } = {}): string {
   const { current, kind } = options;
-  const step = TILE.size + TILE.gap;
-  const pad = 10;
-  const width = TILE.cols * step - TILE.gap + pad * 2;
-  const height = TILE.rows * step - TILE.gap + pad * 2;
+  const counts = lawCounts(data, kind);
+  const filled = [...STATES].filter((s) => counts.has(s.code)).sort((a, b) => a.name.localeCompare(b.name, 'en'));
+  const what = kind === undefined ? 'a 340B law' : 'a law of this kind';
+  return stateMapSvg({
+    id,
+    title: `States with ${what}`,
+    desc: `A grid of the 50 states and the District of Columbia. With ${what}: ${filled.map((s) => s.name).join(', ')}.`,
+    tile: (s) => {
+      const n = counts.get(s.code) ?? 0;
+      if (n === 0) return { tone: 'none' };
+      return { tone: 'has', href: lawsPath(s.code), label: lawCountWords(n, kind), current: s.code === current, card: true };
+    },
+  });
+}
+
+const lawCountWords = (n: number, kind?: LawKind): string => `${n} ${n === 1 ? 'law' : 'laws'}${kind === undefined ? '' : ' of this kind'}`;
+
+function lawCounts(data: LawsData, kind?: LawKind): Map<string, number> {
   const counts = new Map<string, number>();
   for (const law of data.laws) {
     if (kind === undefined || law.kinds.includes(kind)) counts.set(law.state, (counts.get(law.state) ?? 0) + 1);
   }
-  const filled = [...STATES].filter((s) => counts.has(s.code)).sort((a, b) => a.name.localeCompare(b.name, 'en'));
-  const what = kind === undefined ? 'a 340B law' : 'a law of this kind';
-  const parts: string[] = [
-    `<svg class="tilemap lawmap" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" role="group" aria-labelledby="${id}-t ${id}-d">`,
-    `<title id="${id}-t">States with ${what}</title>`,
-    `<desc id="${id}-d">${esc(`A grid of the 50 states and the District of Columbia. With ${what}: ${filled.map((s) => s.name).join(', ')}.`)}</desc>`,
-  ];
-  for (const s of STATES) {
-    const x = pad + s.col * step;
-    const y = pad + s.row * step;
-    const n = counts.get(s.code) ?? 0;
-    const rect = `<rect class="tile" x="${x}" y="${y}" width="${TILE.size}" height="${TILE.size}" rx="${TILE.radius}"/>`;
-    const abbr = `<text class="abbr" x="${x + TILE.size / 2}" y="${y + TILE.size / 2 + 4.5}" text-anchor="middle">${s.code}</text>`;
-    if (n === 0) {
-      parts.push(`<g class="tile-g none r${s.row}">${rect}${abbr}</g>`);
-      continue;
-    }
-    const here = s.code === current ? ' here' : '';
-    const now = s.code === current ? ' aria-current="page"' : '';
-    const label = `${n} ${n === 1 ? 'law' : 'laws'}${kind === undefined ? '' : ' of this kind'}`;
-    parts.push(`<a class="tile-g has${here} r${s.row}" href="${lawsPath(s.code)}" aria-label="${s.code}, ${esc(s.name)}: ${label}"${now}>${rect}${abbr}</a>`);
-  }
-  parts.push('</svg>');
-  return parts.join('');
+  return counts;
+}
+
+/** One line for each state with a law, shown under the map while its tile is pointed at. */
+export function lawsMapCards(data: LawsData, options: { kind?: LawKind } = {}): MapCard[] {
+  const counts = lawCounts(data, options.kind);
+  return STATES.filter((s) => counts.has(s.code)).map((s) => ({ code: s.code, name: s.name, note: `${lawCountWords(counts.get(s.code)!, options.kind)}. Select the tile to read ${counts.get(s.code) === 1 ? 'it' : 'them'}.` }));
 }

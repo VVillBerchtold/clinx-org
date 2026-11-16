@@ -14,7 +14,8 @@
 import { CONGRESS, billsPath, placeName } from './bills';
 import { AGENCIES, noticeHref } from './notices';
 import { SITE_URL } from './site';
-import { STATES, TILE, stateName, type StateTile } from './states';
+import { stateMapSvg, type MapCard } from './state-map';
+import { STATES, stateName, type StateTile } from './states';
 
 /** The kinds of event: a bill's steps in the order it meets them, a hearing, a session's days, then a federal notice's days. */
 export const EVENT_KINDS = [
@@ -308,8 +309,6 @@ export function eventBillHref(event: CalendarEvent): string {
   return event.billId === '' ? billsPath(event.place) : `${billsPath(event.place)}#${event.billId}`;
 }
 
-const esc = (t: string): string => t.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
-
 /**
  * The map of states as inline SVG, for the calendar pages. A state with an event is drawn filled
  * and is a link to its calendar; a state with none is a plain tile. `current` marks the state
@@ -317,32 +316,29 @@ const esc = (t: string): string => t.replaceAll('&', '&amp;').replaceAll('<', '&
  */
 export function calendarMapSvg(data: CalendarData, id: string, options: { current?: string } = {}): string {
   const { current } = options;
-  const step = TILE.size + TILE.gap;
-  const pad = 10;
-  const width = TILE.cols * step - TILE.gap + pad * 2;
-  const height = TILE.rows * step - TILE.gap + pad * 2;
-  const has = new Set(data.events.map((e) => e.place));
-  const filled = STATES.filter((s) => has.has(s.code));
-  const parts: string[] = [
-    `<svg class="tilemap lawmap" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" role="group" aria-labelledby="${id}-t ${id}-d">`,
-    `<title id="${id}-t">States with dates on the 340B calendar</title>`,
-    `<desc id="${id}-d">${esc(`A grid of the 50 states and the District of Columbia. On the calendar: ${[...filled].sort((a, b) => a.name.localeCompare(b.name, 'en')).map((s) => s.name).join(', ')}.`)}</desc>`,
-  ];
-  for (const s of STATES) {
-    const x = pad + s.col * step;
-    const y = pad + s.row * step;
-    const rect = `<rect class="tile" x="${x}" y="${y}" width="${TILE.size}" height="${TILE.size}" rx="${TILE.radius}"/>`;
-    const abbr = `<text class="abbr" x="${x + TILE.size / 2}" y="${y + TILE.size / 2 + 4.5}" text-anchor="middle">${s.code}</text>`;
-    if (!has.has(s.code)) {
-      parts.push(`<g class="tile-g none r${s.row}">${rect}${abbr}</g>`);
-      continue;
-    }
-    const here = s.code === current ? ' here' : '';
-    const now = s.code === current ? ' aria-current="page"' : '';
-    parts.push(`<a class="tile-g has${here} r${s.row}" href="${calendarPath(s.code)}" aria-label="${s.code}, ${esc(s.name)}: 340B calendar"${now}>${rect}${abbr}</a>`);
-  }
-  parts.push('</svg>');
-  return parts.join('');
+  const counts = dateCounts(data);
+  const filled = STATES.filter((s) => counts.has(s.code));
+  return stateMapSvg({
+    id,
+    title: 'States with dates on the 340B calendar',
+    desc: `A grid of the 50 states and the District of Columbia. On the calendar: ${[...filled].sort((a, b) => a.name.localeCompare(b.name, 'en')).map((s) => s.name).join(', ')}.`,
+    tile: (s) => (counts.has(s.code) ? { tone: 'has', href: calendarPath(s.code), label: '340B calendar', current: s.code === current, card: true } : { tone: 'none' }),
+  });
+}
+
+function dateCounts(data: CalendarData): Map<string, number> {
+  const counts = new Map<string, number>();
+  for (const event of data.events) counts.set(event.place, (counts.get(event.place) ?? 0) + 1);
+  return counts;
+}
+
+/** One line for each state with dates, shown under the map while its tile is pointed at. */
+export function calendarMapCards(data: CalendarData): MapCard[] {
+  const counts = dateCounts(data);
+  return STATES.filter((s) => counts.has(s.code)).map((s) => {
+    const n = counts.get(s.code)!;
+    return { code: s.code, name: s.name, note: `${n} ${n === 1 ? 'date' : 'dates'} on the calendar. Select the tile to see ${n === 1 ? 'it' : 'them'}.` };
+  });
 }
 
 // ---------- The calendar file (.ics) ----------

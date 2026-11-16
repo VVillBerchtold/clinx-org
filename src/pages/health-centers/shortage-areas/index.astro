@@ -6,10 +6,12 @@ import Base from '../../../layouts/Base.astro';
 import { HC_HOME, HC_NAME } from '../../../lib/site';
 import OnPage from '../../../components/OnPage.astro';
 import PageHead from '../../../components/PageHead.astro';
+import StateMap from '../../../components/StateMap.astro';
 import AreasCare from '../../../components/hc/AreasCare.astro';
 import AreasCountsTable from '../../../components/hc/AreasCountsTable.astro';
 import AreasFilter from '../../../components/hc/AreasFilter.astro';
 import AreasSource from '../../../components/hc/AreasSource.astro';
+import { stateMapSvg, type MapCard } from '../../../lib/state-map';
 import { AREAS_PATH, areaPath, changesSentence, day, EVENTS, getIndex, getState, nameOf, NO_STATE, num, SERIES, SERIES_INFO, stateCodes } from '../../../lib/hc-areas';
 
 /**
@@ -21,6 +23,28 @@ const when = day(index.snapshot_day);
 const from = day(index.window_start);
 const codes = stateCodes();
 const national = index.national_counts;
+
+// The map over the table: one tile for each state and territory, and beside it the same counts the table gives.
+const onMap = new Set(codes.filter((code) => code !== NO_STATE));
+const COLUMNS = ['Designated', 'Proposed'];
+const figures = (designations: typeof national.designations) =>
+  SERIES.map((s) => ({ label: SERIES_INFO[s].short, values: [num(designations[s].Designated.designations), num(designations[s]['Proposed For Withdrawal'].designations)] }));
+const cards: MapCard[] = [...onMap].map((code) => ({
+  code,
+  kicker: `Files of ${when}`,
+  name: nameOf(code),
+  columns: COLUMNS,
+  rows: figures(getState(code).counts.designations),
+  go: `Select the tile to open ${nameOf(code)}.`,
+}));
+const mapSvg = stateMapSvg({
+  id: 'areas-map',
+  title: 'States and territories with a shortage areas page',
+  desc: 'A grid of the 50 states and the District of Columbia, with a row of territories under it. Each is a link to its page. The table after the map gives the same counts for each.',
+  territories: true,
+  tile: (place) => (onMap.has(place.code) ? { tone: 'has', href: areaPath(place.code), label: 'shortage areas and health center sites', card: true } : { tone: 'none' }),
+});
+const rest = { kicker: `Files of ${when}`, name: 'All states and territories', columns: COLUMNS, rows: figures(national.designations) };
 ---
 
 <Base
@@ -48,11 +72,13 @@ const national = index.national_counts;
   <section class="section" aria-labelledby="states-heading">
     <div class="section-head">
       <h2 id="states-heading">Pick a state</h2>
-      <p>States and territories A to Z. Select a name to open its page.</p>
+      <p>Select a state on the map, or a name in the table under it.</p>
     </div>
     <p>
       Each count is the number of designations in HRSA’s files of {when} with that state as primary state and that status. HRSA writes the code XX where a row gives no state, and those rows are the last line of the list.
     </p>
+    <StateMap svg={mapSvg} legend={[{ tone: 'has', label: 'Has a page. Select a tile to open it' }]} rest={rest} cards={cards} />
+    <h3 class="hc-map-next" id="states-list">The same counts as a table</h3>
     <AreasFilter target="states-table" textLabel="State or territory" />
     <div class="table-wrap wide stack hc-list hc-states">
       <table id="states-table" data-sortable>

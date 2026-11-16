@@ -1,4 +1,5 @@
 ---
+import StateMap from '../../components/StateMap.astro';
 import '../../styles/home.css';
 import '../../styles/scorecard.css';
 import '../../styles/laws.css';
@@ -10,7 +11,7 @@ import StateStandings from '../../components/StateStandings.astro';
 import { buildDrugReportViews, buildReportViews, buildTotalsViews, buildViews, buildWorkbookViews, countPhrase, getDataset } from '../../lib/data';
 import { LAWS_HOME, getLaws, statesByLaws } from '../../lib/laws';
 import { numberWord, numberWordCap } from '../../lib/site';
-import { REPORTING_GROUPS, REGISTRY_READ_ON, statesInGroup, statesWith, tileMapSvg } from '../../lib/states';
+import { REPORTING_GROUPS, REGISTRY_READ_ON, statesInGroup, statesWith, tileMapSvg, scorecardMapCards } from '../../lib/states';
 
 const data = getDataset();
 const views = buildViews(data);
@@ -46,12 +47,13 @@ const readOn = new Date(`${REGISTRY_READ_ON}T00:00:00Z`).toLocaleDateString('en-
 
   <div class="states">
     <div class="hero-map">
-      <Fragment set:html={tileMapSvg('scorecard-map')} />
-      <ul class="legend">
-        <li><span class="key live" aria-hidden="true"></span>In the scorecard</li>
-        <li><span class="key law" aria-hidden="true"></span>Has a 340B reporting law</li>
-        <li><span class="key" aria-hidden="true"></span>Neither yet</li>
-      </ul>
+      <StateMap
+        strip
+        svg={tileMapSvg('scorecard-map')}
+        legend={[{ tone: 'has', label: 'In the scorecard' }, { tone: 'next', label: 'Has a 340B reporting law' }, { tone: 'none', label: 'Neither yet' }]}
+        rest={{ note: 'Point at a state to see what it makes public.' }}
+        cards={scorecardMapCards()}
+      />
     </div>
     <nav class="reporting-index" aria-label="Kinds of state reporting">
       <h2 class="label">{numberWordCap(live.length + law.length)} states, four kinds of reporting</h2>

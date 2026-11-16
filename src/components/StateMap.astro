@@ -1,0 +1,72 @@
+---
+/**
+ * The map of states with a panel beside it, the one way every section lets a reader pick a state.
+ *
+ * In plain words: the map is on the left. The panel on the right opens with the figures for the whole map
+ * (the `rest` card). While the pointer or the keyboard is on a tile,
+ * the panel shows that state's card in its place: the same figures the page's table gives for the
+ * state. It works with scripts off (src/styles/state-map.css). On a touch screen there is no pointer
+ * to rest on a tile, so the panel keeps its opening content and a tap opens the state.
+ *
+ * The slim form (`strip`) is for a map that sits in a narrow column: the panel is one line under the
+ * map, with a state's name and a sentence about it.
+ *
+ * The cards repeat figures that are in the page's table, so they are kept from screen readers; a
+ * tile's own label says the same in words.
+ */
+import '../styles/state-map.css';
+import type { MapCard, RestCard, TileTone } from '../lib/state-map';
+
+interface Props {
+  /** The picture, from stateMapSvg or one of the sections' own map functions built on it. */
+  svg: string;
+  /** What each way of drawing a tile means on this map, in the order to list them. */
+  legend: readonly { tone: TileTone; label: string }[];
+  /** What the panel shows before a tile is pointed at: the totals for the whole map, for example. */
+  rest: RestCard;
+  /** One card for each tile that has figures. */
+  cards?: readonly MapCard[];
+  /** True for the slim form: one line under the map in place of a panel beside it. */
+  strip?: boolean;
+}
+const { svg, legend, rest, cards = [], strip = false } = Astro.props;
+const panels: { card: RestCard; code: string }[] = [{ card: rest, code: '' }, ...cards.map((card) => ({ card, code: card.code.toLowerCase() }))];
+---
+
+<div class:list={['statemap', { 'statemap-strip': strip }]}>
+  <div class="statemap-map">
+    <Fragment set:html={svg} />
+    <ul class="legend">
+      {legend.map((item) => <li><span class:list={['key', `key-${item.tone}`]} aria-hidden="true"></span>{item.label}</li>)}
+    </ul>
+  </div>
+  <div class="statemap-panel">
+    {
+      panels.map(({ card, code }) => (
+        <div class:list={[code === '' ? 'statemap-rest' : ['statemap-card', `c-${code}`]]} aria-hidden={code === '' ? undefined : 'true'}>
+          {card.kicker && <p class="statemap-kicker">{card.kicker}</p>}
+          {card.name && <p class="statemap-name">{card.name}</p>}
+          {card.rows && card.rows.length > 0 && (
+            <div class:list={['statemap-figures', `cols-${card.columns?.length ?? 1}`]}>
+              {card.columns && (
+                <div class="statemap-row statemap-head">
+                  <span />
+                  {card.columns.map((c) => <span>{c}</span>)}
+                </div>
+              )}
+              {card.rows.map((row) => (
+                <div class="statemap-row">
+                  <span>{row.label}</span>
+                  {row.values.map((v) => <span class="statemap-value">{v}</span>)}
+                </div>
+              ))}
+            </div>
+          )}
+          {card.note && <p class="statemap-note">{card.note}</p>}
+          {card.go && <p class="statemap-go">{card.go}</p>}
+          {code === '' && cards.length > 0 && !strip && <p class="statemap-hint">Point at a state to see its figures here.</p>}
+        </div>
+      ))
+    }
+  </div>
+</div>

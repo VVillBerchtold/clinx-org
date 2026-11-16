@@ -5,6 +5,7 @@
  * only mention it are a short list at the end.
  * Everything shown comes from the bills table (src/lib/bills.ts).
  */
+import StateMap from './StateMap.astro';
 import '../styles/scorecard.css';
 import '../styles/laws.css';
 import '../styles/bills.css';
@@ -12,7 +13,7 @@ import Base from '../layouts/Base.astro';
 import BillCard from './BillCard.astro';
 import PageHead from './PageHead.astro';
 import { formatDate } from '../lib/data';
-import { BILLS_HOME, CONGRESS, STEPS, billsMapSvg, billsPath, getBills, placeName, sessionsOf, stepOf } from '../lib/bills';
+import { BILLS_HOME, CONGRESS, STEPS, billsMapSvg, billsPath, getBills, placeName, sessionsOf, stepOf, billsMapCards } from '../lib/bills';
 import { getLaws, lawsOf, lawsPath } from '../lib/laws';
 import { numberWordCap } from '../lib/site';
 import { STATE_REGISTRY } from '../lib/states';
@@ -140,11 +141,13 @@ const stepNotes = ['Filed or introduced', 'Approved by a committee', 'Passed by 
       }
       <div class="law-map">
         <h2 class="label">{federal ? 'Bills in the states' : 'Other states'}</h2>
-        <Fragment set:html={billsMapSvg(data, 'place-bills-map', federal ? {} : { current: place })} />
-        <ul class="legend">
-          <li><span class="key live" aria-hidden="true"></span>Has a 340B bill</li>
-          <li><span class="key" aria-hidden="true"></span>No bill listed</li>
-        </ul>
+        <StateMap
+          strip
+          svg={billsMapSvg(data, 'place-bills-map', federal ? {} : { current: place })}
+          legend={[{ tone: 'has', label: 'Has a 340B bill' }, { tone: 'none', label: 'No bill listed' }]}
+          rest={{ note: 'Point at a state to see how many bills name 340B there.' }}
+          cards={billsMapCards(data)}
+        />
         <p class="bill-ways">
           {!federal && <a class="law-all" href={billsPath(CONGRESS)}>Bills in Congress</a>}
           <a class="law-all" href={BILLS_HOME}>All bills</a>

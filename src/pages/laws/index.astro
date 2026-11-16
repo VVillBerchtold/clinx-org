@@ -4,11 +4,12 @@
  * The laws themselves are on each state's page and each kind's page (src/pages/laws/[slug]).
  * Everything shown comes from the dataset's laws table (src/lib/laws.ts).
  */
+import StateMap from '../../components/StateMap.astro';
 import '../../styles/scorecard.css';
 import '../../styles/laws.css';
 import Base from '../../layouts/Base.astro';
 import PageHead from '../../components/PageHead.astro';
-import { LAWS_HOME, getLaws, kindPath, lawsMapSvg, lawsOfKind, statesByLaws } from '../../lib/laws';
+import { LAWS_HOME, getLaws, kindPath, lawsMapSvg, lawsOfKind, statesByLaws, lawsMapCards } from '../../lib/laws';
 
 const laws = getLaws();
 const { withLaws } = statesByLaws(laws);
@@ -29,11 +30,13 @@ const arrow = 'M3 9h12M10 4l5 5-5 5';
 
   <div class="law-top">
     <div class="law-map">
-      <Fragment set:html={lawsMapSvg(laws, 'laws-map')} />
-      <ul class="legend">
-        <li><span class="key live" aria-hidden="true"></span>Has a 340B law</li>
-        <li><span class="key" aria-hidden="true"></span>No law listed</li>
-      </ul>
+      <StateMap
+        strip
+        svg={lawsMapSvg(laws, 'laws-map')}
+        legend={[{ tone: 'has', label: 'Has a 340B law' }, { tone: 'none', label: 'No law listed' }]}
+        rest={{ note: 'Point at a state to see how many laws it has.' }}
+        cards={lawsMapCards(laws)}
+      />
     </div>
     <div class="law-index">
       <h2 class="label">Or pick a kind of law</h2>
