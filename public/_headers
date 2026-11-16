@@ -10,3 +10,7 @@
 /contact/
   ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'
+
+# The proof that clinx.org owns its name in the official MCP Registry: a public key, read as plain text.
+/.well-known/mcp-registry-auth
+  Content-Type: text/plain; charset=utf-8
