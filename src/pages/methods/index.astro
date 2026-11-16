@@ -46,7 +46,7 @@ const comparisonCount = differences.length - formCount;
 >
   <PageHead title="Methods" trail={[{ label: '340B Scorecard' }]}>
     <p class="lede">Where the figures come from, how they were checked, and how each measure is calculated.</p>
-    <OnPage title="Methods" items={numbered.map((s) => ({ id: s.id, label: s.title.replace(/^\d+\.\s*/, '') }))} />
+    <OnPage title="Methods" items={[...numbered.map((s) => ({ id: s.id, label: s.title.replace(/^\d+\.\s*/, '') })), { id: 'fetching', label: 'How ClinX fetches public files' }]} />
   </PageHead>
 
   <div class="prose doc-page">
@@ -109,5 +109,16 @@ const comparisonCount = differences.length - formCount;
       </>
     ))
   }
+
+  <h2 id="fetching">How ClinX fetches public files</h2>
+  <p>
+    Some public files are read by small programs, not by hand. Each of them introduces itself by name, <code>ClinX Open Data Reader (+https://clinx.org/methods/)</code>, with a link back to this page, so the people who run a site can see who is asking and why.
+  </p>
+  <p>
+    A program asks for one file at a time. It saves each official file unchanged and records the address it came from, the file's size and its SHA-256, so anyone can check that a saved copy matches what the state published.
+  </p>
+  <p>
+    If a site shows a robot check, the program stops there. It never answers the check and never works past it. Where a site turns programs away, a person opens the page and reads it.
+  </p>
   </div>
 </Base>

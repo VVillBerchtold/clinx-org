@@ -6,7 +6,7 @@ The rules for using them are in [`docs/brand.md`](../../docs/brand.md). This pag
 |---|---|
 | `outlines.mjs` | The shapes of the five letters of "ClinX", read once from Bricolage Grotesque at weight 800. Data only |
 | `build.mjs` | Draws the wordmark, the mark and the tab icon from those shapes. The site's header uses it too (`src/components/Wordmark.astro`) |
-| `share-card.html` | The picture a link to clinx.org shows when shared |
+| `share-cards.json`, `share-cards.html`, `make-share-cards.mjs` | The pictures a link to a page of clinx.org shows when shared: the words of each card, the one template that draws them, and the script that saves them |
 | `repo-cards.html` | The pictures the three repositories show when shared |
 
 ## The drawings (SVG)
@@ -34,9 +34,9 @@ rsvg-convert -w 32   clinx-mark.svg        -o ../favicon-32.png
 
 ## The cards
 
-Run `npm install` first, because the cards load the typefaces from `node_modules`. Then open the file in a browser window of the stated size and save a picture of it.
+Run `npm ci` first, because the cards load the typefaces from `node_modules`. The share cards are drawn by a script; the repository cards are opened in a browser window of the stated size and saved by hand.
 
-- `share-card.html` at 1200 by 630 becomes `public/brand/share-card.png`.
+- The share cards: one for the home page and one for each section of the site (the list and the words are in `share-cards.json`). Run `node scripts/brand/make-share-cards.mjs <folder with playwright-core>` and the pictures, 1200 by 630, are written to `public/brand/share/<id>.png`. The note at the top of the script says what it needs: Node, `npm ci`, a folder with `playwright-core`, and a Chromium headless shell. Nothing of this becomes a package of the site; the pictures are committed. A page uses the card of its section (`src/lib/share-cards.ts`), and `npm run check:dist` fails if a page names a picture that is not one of the cards, or one that is not 1200 by 630.
 - `repo-cards.html#clinx-340b`, `#clinx-radar` and `#clinx-org` at 1280 by 640 become `public/brand/card-clinx-340b.png` and so on. Each is then uploaded by hand in that repository's settings on GitHub, under Social preview.
 
 ## Check by looking

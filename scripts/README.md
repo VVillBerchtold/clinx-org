@@ -19,7 +19,8 @@ None of these ship to a reader's browser. They run when the site is built, check
 | `reference/build-fda-ndc.mjs` | Once a month, or by hand | Rebuilds the drug names file from the FDA directory |
 | `deploy/publish.sh` | Only when a person publishes | Publishes `dist/` with one pinned tool |
 | `brand/build.mjs` | By hand, and when the site is built | Draws the ClinX wordmark, mark and tab icon from one set of letter shapes ([how](brand/README.md)) |
-| `brand/share-card.html`, `brand/repo-cards.html` | By hand | The drawings behind the link-preview pictures |
+| `brand/make-share-cards.mjs` (with `share-cards.json` and `share-cards.html`) | A script, by hand, when a card changes | Draws the link-preview pictures of the site's sections into `public/brand/share/` |
+| `brand/repo-cards.html` | By hand | The drawing behind the three repository pictures |
 
 The check scripts have no dependencies on purpose: a check should not rest on the thing it checks.
 

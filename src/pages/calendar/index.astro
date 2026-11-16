@@ -73,7 +73,7 @@ const arrow = 'M3 9h12M10 4l5 5-5 5';
                 <strong>{calendarPlaceName(event.place)}</strong>
                 <span class="kind-count">{formatDate(event.day)}</span>
                 <span class="kind-what">
-                  {event.kind === 'date set by a notice' ? event.what : `${kindLabel(event.kind)}: ${isSessionDay(event) || isNoticeDay(event) ? event.what : event.bill}`}
+                  {event.kind === 'date set by a notice' ? event.what : `${kindLabel(event.kind)}: ${isSessionDay(event) || isNoticeDay(event) || event.bill === '' ? event.what : event.bill}`}
                 </span>
               </a>
             </li>

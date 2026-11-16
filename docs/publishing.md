@@ -48,7 +48,7 @@ Because one setting drives all four, they cannot drift apart. `npm run check:dis
 
 ## Link previews
 
-Every page names its own public address and carries what a link preview needs: a title, a description and one picture, `public/brand/share-card.png` (1200 by 630). The picture is drawn from `scripts/brand/share-card.html`. The note at the top of that file says how to redraw it.
+Every page names its own public address and carries what a link preview needs: a title, a description and one picture, the card of the page's section, from `public/brand/share/` (1200 by 630). The cards are drawn by `scripts/brand/make-share-cards.mjs` from `scripts/brand/share-cards.json`; the note at the top of the script says how to redraw them. `npm run check:dist` fails if a page has no picture or two, names one that is not a known card, or the file is not a 1200 by 630 PNG.
 
 ## Before the first publish
 

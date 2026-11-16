@@ -4,7 +4,8 @@ import '../styles/tokens.css';
 import '../styles/layout.css';
 import displayFont from '../../node_modules/@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-opsz-normal.woff2?url';
 import bodyFont from '../../node_modules/@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2?url';
-import { CSP_FORM_META, CSP_META, NAV, PREVIEW, SHARE_CARD, SITE_NAME, SITE_URL } from '../lib/site';
+import { CSP_FORM_META, CSP_META, NAV, PREVIEW, SITE_NAME, SITE_URL } from '../lib/site';
+import { shareCard, shareCardFor } from '../lib/share-cards';
 import { formatDate, getDataset } from '../lib/data';
 import { toBlock, trailNode, type Crumb, type Node } from '../lib/structured-data';
 
@@ -21,9 +22,11 @@ interface Props {
   crumbs?: readonly Crumb[];
   /** What else this page is, for search engines: a site, a person, a dataset, an article. */
   about?: readonly Node[];
+  /** The picture a shared link shows: the id of a card in scripts/brand/share-cards.json. Left out, the card of the page's section. */
+  card?: string;
 }
 
-const { title, description, bleed = false, postsForm = false, unlisted = false, crumbs = [], about = [] } = Astro.props;
+const { title, description, bleed = false, postsForm = false, unlisted = false, crumbs = [], about = [], card } = Astro.props;
 const data = getDataset();
 const path = Astro.url.pathname;
 /** True for the menu link of the section this page is in. */
@@ -38,6 +41,7 @@ const refreshFiles = import.meta.glob<{ last_refresh: string }>('../../refresh/l
 const lastRefresh = Object.values(refreshFiles)[0]?.last_refresh;
 const fullTitle = path === '/' ? title : `${title} | ${SITE_NAME}`;
 const canonical = SITE_URL + path;
+const share = card ? shareCard(card) : shareCardFor(path);
 // One block of data for search engines. An unlisted page carries none.
 const labels: Node[] = unlisted ? [] : [...about, ...(crumbs.length > 0 ? [trailNode(crumbs)] : [])];
 ---
@@ -61,10 +65,10 @@ const labels: Node[] = unlisted ? [] : [...about, ...(crumbs.length > 0 ? [trail
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={SITE_URL + SHARE_CARD.path} />
-    <meta property="og:image:width" content={String(SHARE_CARD.width)} />
-    <meta property="og:image:height" content={String(SHARE_CARD.height)} />
-    <meta property="og:image:alt" content={SHARE_CARD.alt} />
+    <meta property="og:image" content={SITE_URL + share.path} />
+    <meta property="og:image:width" content={String(share.width)} />
+    <meta property="og:image:height" content={String(share.height)} />
+    <meta property="og:image:alt" content={share.alt} />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="/favicon.ico" sizes="48x48" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any" />

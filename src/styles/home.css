@@ -192,6 +192,7 @@
   line-height: 1.5;
   white-space: nowrap;
 }
+/* The chip says what the state makes public. Filled: each report. Ringed: some figures by filer. Quiet: totals or a plan. Dashed: nothing public yet. */
 .v-posted .chip {
   background: var(--accent);
   color: var(--bg);
@@ -202,13 +203,55 @@
   color: var(--ink);
   box-shadow: inset 0 0 0 1px var(--accent);
 }
+.v-totals .chip {
+  background: var(--surface-2);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--tick);
+}
 .v-planned .chip {
   background: none;
   color: var(--ink);
   box-shadow: inset 0 0 0 1px var(--tick);
 }
-.standing > p {
+.v-unconfirmed .chip,
+.v-none .chip {
+  background: none;
+  color: var(--muted);
+  border: 1px dashed var(--tick);
+  line-height: 1.35;
+}
+.standing-say {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
   max-width: 40rem;
+}
+.standing-open {
+  align-self: flex-start;
+  min-height: 2.75rem;
+}
+.standing-held {
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+.standing-law summary {
+  width: fit-content;
+  cursor: pointer;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 0.2em;
+}
+.standing-law summary:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: var(--r-sm);
+}
+.standing-law p {
+  margin-top: 0.625rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
 }
 .standing-src {
   list-style: none;
@@ -325,6 +368,35 @@
 .work-note {
   color: var(--muted);
   font-size: var(--text-sm);
+}
+.work-kinds {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.work-kinds a {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--r-md);
+  background: var(--bg);
+  box-shadow: inset 0 0 0 1px var(--line);
+  text-decoration: none;
+  transition: box-shadow 0.2s;
+}
+.work-kinds a:hover,
+.work-kinds a:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+.work-kinds strong {
+  font-size: var(--text-sm);
+}
+.work-kinds span {
+  color: var(--muted);
+  font-size: var(--text-xs);
 }
 .work-zero {
   display: flex;

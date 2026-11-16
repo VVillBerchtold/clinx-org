@@ -156,12 +156,13 @@
 .steps.at5 i {
   background: var(--accent);
 }
-/* A bill whose session is over, or that was vetoed, went no further: its steps are drawn grey. */
+/* A bill whose session is over, that was vetoed, or that did not pass went no further: its steps are drawn grey. */
 .steps.over.at1 i:nth-child(-n + 1),
 .steps.over.at2 i:nth-child(-n + 2),
 .steps.over.at3 i:nth-child(-n + 3),
 .steps.over.at4 i:nth-child(-n + 4),
-.steps.vetoed.at4 i:nth-child(-n + 4) {
+.steps.vetoed.at4 i:nth-child(-n + 4),
+.steps.ended i {
   background: var(--tick);
 }
 .bill-stage-words {

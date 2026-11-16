@@ -10,8 +10,9 @@
  * build if one is malformed or names a page or file this site does not have.
  */
 import type { Dataset } from './data';
+import { shareCard } from './share-cards';
 import { stateName } from './states';
-import { ARTICLE_PUBLISHED, ARTICLE_TITLE, GITHUB_URL, LINKEDIN_URL, REFERRALFINDERX_FOUNDER_URL, REFERRALFINDERX_URL, REPOSITORIES, SHARE_CARD, SITE_NAME, SITE_URL, X_URL } from './site';
+import { ARTICLE_PUBLISHED, ARTICLE_TITLE, GITHUB_URL, LINKEDIN_URL, REFERRALFINDERX_FOUNDER_URL, REFERRALFINDERX_URL, REPOSITORIES, SITE_NAME, SITE_URL, X_URL } from './site';
 
 export type Node = Record<string, unknown>;
 
@@ -161,7 +162,7 @@ export function articleNode(description: string, piece: { path: string; title: s
     mainEntityOfPage: `${SITE_URL}${piece.path}`,
     datePublished: piece.published,
     inLanguage: 'en-US',
-    image: SITE_URL + SHARE_CARD.path,
+    image: SITE_URL + shareCard('writing').path,
     author: { '@id': FOUNDER_ID },
     publisher: { '@id': FOUNDER_ID },
     isPartOf: { '@id': SITE_ID },

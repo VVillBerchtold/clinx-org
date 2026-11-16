@@ -4,8 +4,6 @@ export const SITE_NAME = 'ClinX';
 /** The site's public address, with no slash at the end. */
 export const SITE_URL = 'https://clinx.org';
 
-/** The picture a link to the site shows when it is shared (1200 by 630). */
-export const SHARE_CARD = { path: '/brand/share-card.png', width: 1200, height: 630, alt: 'ClinX. 340B filings, state by state.' };
 export const PROJECT_NAME = '340B Scorecard';
 
 /**

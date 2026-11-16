@@ -216,7 +216,7 @@ a.kind:focus-visible {
   gap: var(--s5);
   min-width: 0;
 }
-.law {
+article.law {
   display: flex;
   flex-direction: column;
   gap: var(--s5);
@@ -226,7 +226,7 @@ a.kind:focus-visible {
   background: var(--surface);
   scroll-margin-top: 5rem;
 }
-.law:target {
+article.law:target {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-wash);
 }

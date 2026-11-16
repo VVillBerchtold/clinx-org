@@ -12,7 +12,53 @@
 export type StateStatus = 'live' | 'law' | 'none';
 
 /** What the public can see of a state's filings, as far as the law or the state's own page says. */
-export type Visibility = 'posted' | 'named' | 'partial' | 'planned' | 'totals' | 'unconfirmed';
+export type Visibility = 'posted' | 'named' | 'partial' | 'planned' | 'totals' | 'unconfirmed' | 'none';
+
+/**
+ * The kind of reporting a state has, by what the state itself makes public.
+ * own-reports:            each filer's own report is posted.
+ * named-in-state-report:  one state report with a figure for each named entity.
+ * state-totals:           one state report with totals only (or, by the law, one to come).
+ * not-posted-yet:         reports are required and none is public yet.
+ */
+export type ReportingGroup = 'own-reports' | 'named-in-state-report' | 'state-totals' | 'not-posted-yet';
+
+export interface GroupInfo {
+  id: ReportingGroup;
+  label: string;
+  /** What this kind of source can and cannot tell a reader. */
+  description: string;
+}
+
+/** The four kinds, in the order the pages show them: from the most a reader can see to nothing yet. */
+export const REPORTING_GROUPS: readonly GroupInfo[] = [
+  {
+    id: 'own-reports',
+    label: "Each filer's own report is posted",
+    description:
+      'The state posts the report each covered entity sent in. A reader can see every line a filer reported, and the page it is on. Each state has its own form, so figures from two states are shown side by side only as each state printed them.',
+  },
+  {
+    id: 'named-in-state-report',
+    label: 'One state report with a figure for each named entity',
+    description:
+      "The state puts the figures in one report of its own and names the entities in it. A reader can see one figure for each entity named. The entities' own reports are not public, so the detail behind a figure is out of reach.",
+  },
+  {
+    id: 'state-totals',
+    label: 'One state report with totals only',
+    description:
+      'The state publishes figures added together for the whole state. A reader can see the state totals and nothing about any one hospital or health center. Where a law sets this up and no report has been posted yet, the entry says so.',
+  },
+  {
+    id: 'not-posted-yet',
+    label: 'Reports are required, none is public yet',
+    description:
+      'A reporting law is in force or about to be, and covered entities must report. The state has not made a report public, so there is nothing to copy yet. Each entry names the official source where one will appear.',
+  },
+];
+
+export const GROUP_IDS: readonly ReportingGroup[] = REPORTING_GROUPS.map((g) => g.id);
 
 export interface StateTile {
   code: string;
@@ -46,6 +92,10 @@ export interface StateSource {
 
 export interface StateEntry {
   status: StateStatus;
+  /** The kind of reporting the state has. Every state with a reporting law has one. */
+  group: ReportingGroup;
+  /** What a reader can get from the state today, in a sentence or two. */
+  publicNow: string;
   /** For a live state: its page on this site. */
   href?: string;
   /** For a live state: what is in the scorecard, in a few words. */
@@ -63,36 +113,55 @@ export interface StateEntry {
 export const VISIBILITY_LABEL: Readonly<Record<Visibility, string>> = {
   posted: 'Each report posted',
   named: 'Some filers named',
-  partial: 'Some figures by filer',
+  partial: 'Some figures by filer, set by law',
   planned: 'Posting set by law',
   totals: 'State totals only',
   unconfirmed: 'Not yet confirmed',
+  none: 'None public yet',
 };
 
 /**
  * Only states that are in the dataset, or whose reporting law was read at its source.
- * Each "law" entry was checked against the pages in `sources` on 11 November 2026;
- * Hawaii and Illinois were added from the dataset's laws table on 15 November 2026.
+ * Each "law" entry was checked against the pages in `sources` between 11 and 16 November 2026;
+ * Hawaii and Illinois were added from the dataset's laws table on 15 November 2026, and Illinois,
+ * Indiana, Maine, Ohio and Washington were read again on 16 November 2026.
+ * This is the one place these facts are typed: the pages, the home page's map note and the open file
+ * 340b-reporting-states.json are all written from it.
  */
 export const STATE_REGISTRY: Readonly<Record<string, StateEntry>> = {
-  RI: { status: 'live', href: '/scorecard/ri/', summary: 'Calendar year 2025' },
+  RI: {
+    status: 'live',
+    group: 'own-reports',
+    href: '/scorecard/ri/',
+    summary: 'Calendar year 2025',
+    visibility: 'posted',
+    publicNow: "Each covered entity's own report for calendar year 2025, as a PDF on the state's Form RIOAG-340B, with every schedule.",
+    stands: "Rhode Island's law has each covered entity report by April 1 each year to the Governor, the Speaker of the House, the Senate President and the Auditor General. The Auditor General posts each report on its website.",
+    sources: [{ label: 'R.I. Gen. Laws 5-19.3', href: 'https://webserver.rilegislature.gov/PublicLaws/law25/law25288.htm' }],
+  },
   CO: {
     status: 'law',
+    group: 'not-posted-yet',
     visibility: 'unconfirmed',
+    publicNow: 'Nothing is known to be public. Whether the figures are published for each hospital has not been confirmed.',
     stands: 'Hospitals add 340B figures to the yearly report they send the state, under a law passed in 2025. Whether the figures are published for each hospital is not yet confirmed.',
     sources: [{ label: 'Senate Bill 25-071', href: 'https://content.leg.colorado.gov/sites/default/files/2025a_071_signed.pdf' }],
   },
   HI: {
     status: 'law',
+    group: 'state-totals',
     visibility: 'planned',
+    publicNow: 'Nothing yet. The first yearly report of the figures added together is due no later than October 1, 2027.',
     stands: "From July 1, 2026, covered entities report each year to the state's hospital trade association on their use of contract pharmacies. The law has the association post a yearly report of the figures added together, the first no later than October 1, 2027.",
     sources: [{ label: 'HRS 481N-6', href: 'https://data.capitol.hawaii.gov/hrscurrent/Vol11_Ch0476-0490/HRS0481N/HRS_0481N-0006.htm' }],
   },
   ID: {
     status: 'live',
+    group: 'state-totals',
     href: '/scorecard/id/',
     summary: "2025 data · statewide totals, from the state's report",
     visibility: 'totals',
+    publicNow: "The State Controller's report for 2025, with the figures of all covered entities added together. It gives no figure for any one entity.",
     stands: "Idaho's law has covered entities report by April 1 each year and keeps those filings confidential. Before November 15 each year the State Controller publishes a report of the figures added together. What is public is that report.",
     sources: [
       { label: 'Idaho Code 41-351', href: 'https://legislature.idaho.gov/statutesrules/idstat/Title41/T41CH3/SECT41-351/' },
@@ -102,27 +171,43 @@ export const STATE_REGISTRY: Readonly<Record<string, StateEntry>> = {
   },
   IL: {
     status: 'law',
-    visibility: 'unconfirmed',
-    stands: 'Covered entities send a 340B report to the General Assembly by August 1 each year. Hospitals with fewer than 100 beds, critical access hospitals, safety-net hospitals and grantees start in 2029. Whether the reports are published is not yet confirmed.',
+    group: 'not-posted-yet',
+    visibility: 'none',
+    publicNow: 'Nothing is public yet.',
+    stands:
+      'Covered entities report to the General Assembly "On or before August 1, 2026 and each August 1 thereafter", under Section 20 of the act. The act was signed on August 7, 2026, after that first date, so the first reports can be expected by August 1, 2027. That is a reading of the dates; the act does not say it. Hospitals with fewer than 100 beds, critical access hospitals, safety-net hospitals and grantees start in 2029. Section 25 adds a report on 340B in Medicaid, which the Medicaid department makes by January 1, 2028.',
     sources: [{ label: 'Public Act 104-0758', href: 'https://www.ilga.gov/Legislation/PublicActs/View/104-0758' }],
   },
   IN: {
     status: 'law',
-    visibility: 'totals',
-    stands: 'Reports are due to the Department of Health by April 1 each year. The department says the figures are added together in a yearly public report.',
-    sources: [{ label: "The department's page", href: 'https://www.in.gov/health/cshcr/reports-on-healthcare-facilities/' }],
+    group: 'state-totals',
+    visibility: 'planned',
+    publicNow: 'Nothing is shown here yet. The law calls for one report of the figures added together, and this page does not say that one has been posted.',
+    stands: 'Reports are due to the Department of Health by April 1 each year. The law has the department publish a yearly report of the figures added together.',
+    sources: [
+      { label: 'IC 16-40-6 (Senate Bill 118, 2025)', href: 'https://iga.in.gov/pdf-documents/124/2025/senate/bills/SB0118/SB0118.05.ENRH.pdf' },
+      { label: "The department's page", href: 'https://www.in.gov/health/cshcr/reports-on-healthcare-facilities/' },
+    ],
   },
   ME: {
     status: 'law',
-    visibility: 'planned',
-    stands: 'Hospitals report each year to the Maine Health Data Organization. The law tells the organization to post each report on its website.',
-    sources: [{ label: '22 M.R.S. 1728', href: 'https://legislature.maine.gov/statutes/22/title22sec1728.html' }],
+    group: 'state-totals',
+    visibility: 'totals',
+    publicNow:
+      "The Maine Health Data Organization's first annual 340B report, dated April 2, 2026, for fiscal year 2024. It gives state totals for 27 hospitals and each hospital's own description of how it uses the program. It has no dollar figure for a single hospital.",
+    stands: 'Hospitals report each year to the Maine Health Data Organization. The law has the organization post a summary report. It does not have the organization post each hospital\'s report.',
+    sources: [
+      { label: '22 M.R.S. 1728', href: 'https://legislature.maine.gov/statutes/22/title22sec1728.html' },
+      { label: "The organization's first annual report (PDF)", href: 'https://mhdo.maine.gov/_pdf/340B_Annual_Report_260402.pdf' },
+    ],
   },
   MN: {
     status: 'live',
+    group: 'named-in-state-report',
     href: '/scorecard/mn/',
     summary: "2024 data · one figure per entity, from the state's report",
     visibility: 'named',
+    publicNow: "The Department of Health's report to the legislature, with one net 340B revenue figure for each entity it names, and a table of statewide totals.",
     stands: "Minnesota's law has the Department of Health collect data from covered entities and report on it each year to the legislature. The entities' own reports to the department are not public. What is public is the department's report, which prints one net 340B revenue figure for each entity it names.",
     sources: [
       { label: 'Minn. Stat. 62J.461', href: 'https://www.revisor.mn.gov/statutes/cite/62J.461' },
@@ -131,15 +216,23 @@ export const STATE_REGISTRY: Readonly<Record<string, StateEntry>> = {
   },
   OH: {
     status: 'law',
-    visibility: 'planned',
-    stands: 'Covered entities report to the Department of Health by July 1 each year, starting in 2026. The law tells the department to post what is reported on its website.',
-    sources: [{ label: 'Ohio Revised Code 3701.88', href: 'https://codes.ohio.gov/ohio-revised-code/section-3701.88' }],
+    group: 'own-reports',
+    visibility: 'posted',
+    publicNow:
+      'Since October 1, 2026 the Department of Health has posted each covered entity\'s report: 241 workbooks for calendar year 2025, on the department\'s template. ClinX does not show them yet.',
+    stands: 'Covered entities report to the Department of Health by July 1 each year, starting in 2026. The law tells the department to post what is reported on its website, and it has.',
+    sources: [
+      { label: 'Ohio Revised Code 3701.88', href: 'https://codes.ohio.gov/ohio-revised-code/section-3701.88' },
+      { label: "The department's collection of the reports", href: 'https://collection.cloudinary.com/stateofohio/c28ef875c34349e6d43fb68257a0d06d' },
+    ],
   },
   VT: {
     status: 'live',
+    group: 'own-reports',
     href: '/scorecard/vt/',
     summary: 'Fiscal year 2025 · marked draft by the state',
     visibility: 'posted',
+    publicNow: "Each hospital's one-page financial detail for fiscal year 2025, marked draft by the state, and a free-text narrative beside it.",
     stands: "Vermont's law asks hospitals to report. Health centers and other clinics in the 340B program are not covered by it. Hospitals report to the Green Mountain Care Board by January 31 each year, and the Board posts each hospital's report.",
     sources: [
       { label: '18 V.S.A. 9406', href: 'https://legislature.vermont.gov/statutes/section/18/221/09406' },
@@ -154,7 +247,10 @@ export const STATE_REGISTRY: Readonly<Record<string, StateEntry>> = {
   },
   WA: {
     status: 'law',
+    group: 'not-posted-yet',
     visibility: 'partial',
+    publicNow:
+      "No report under the law yet. In December 2024 the Health Care Authority published a survey report by type of provider, from 109 answers out of 500. It is a sample, so it gives no state totals, and it was not a report under this law.",
     stands: "Federally qualified health centers and hospitals report to the Health Care Authority by April 1 after each fiscal year, under a law that took effect on June 11, 2026. The authority's yearly report is to show some items for each filer and the rest by type of filer.",
     sources: [{ label: 'Chapter 227, Laws of 2026', href: 'https://lawfilesext.leg.wa.gov/biennium/2025-26/Pdf/Bills/Session%20Laws/Senate/5981-S2.SL.pdf' }],
   },
@@ -168,6 +264,63 @@ export function stateName(code: string): string {
   const s = STATES.find((x) => x.code === code.toUpperCase());
   if (!s) throw new Error(`Unknown state: ${code}`);
   return s.name;
+}
+
+/** The states of one kind of reporting, A to Z. Only states with a reporting law have one. */
+export function statesInGroup(group: ReportingGroup): StateTile[] {
+  return STATES.filter((s) => STATE_REGISTRY[s.code]?.group === group).sort((a, b) => a.name.localeCompare(b.name, 'en'));
+}
+
+/** The day the facts in the registry were last read at their sources. */
+export const REGISTRY_READ_ON = '2026-11-16';
+
+export interface StatesFile {
+  about: string;
+  updated: string;
+  groups: { id: ReportingGroup; label: string; description: string }[];
+  states: {
+    state: string;
+    name: string;
+    group: ReportingGroup;
+    on_clinx: boolean;
+    what_is_public: string;
+    where_it_stands: string;
+    scorecard_url: string | null;
+    sources: { label: string; url: string }[];
+  }[];
+}
+
+/**
+ * The open file /data/340b-reporting-states.json, written from the registry so the facts are typed once.
+ * Only states with a reporting law are listed, in the order of their kind of reporting and then A to Z.
+ */
+export function statesFile(siteUrl: string): StatesFile {
+  return {
+    about: 'The states with a 340B reporting law, grouped by what each state makes public, with what is public today and where to read it.',
+    updated: REGISTRY_READ_ON,
+    groups: REPORTING_GROUPS.map((g) => ({ id: g.id, label: g.label, description: g.description })),
+    states: REPORTING_GROUPS.flatMap((g) =>
+      statesInGroup(g.id).map((tile) => {
+        const e = STATE_REGISTRY[tile.code]!;
+        const onClinx = e.status === 'live' && e.href !== undefined;
+        return {
+          state: tile.code,
+          name: tile.name,
+          group: g.id,
+          on_clinx: onClinx,
+          what_is_public: e.publicNow,
+          where_it_stands: e.stands ?? '',
+          scorecard_url: onClinx ? `${siteUrl}${e.href}` : null,
+          sources: (e.sources ?? []).map((src) => ({ label: src.label, url: src.href })),
+        };
+      }),
+    ),
+  };
+}
+
+/** The file exactly as it is served, so the page can print its SHA-256. */
+export function statesFileText(siteUrl: string): string {
+  return `${JSON.stringify(statesFile(siteUrl), null, 2)}\n`;
 }
 
 export function statesWith(status: StateStatus): StateTile[] {

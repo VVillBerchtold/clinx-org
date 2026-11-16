@@ -6,8 +6,8 @@ import OnPage from '../../components/OnPage.astro';
 import PageHead from '../../components/PageHead.astro';
 import { buildStateDrugViews, formatDate, getDataset, stateDrugCsv } from '../../lib/data';
 import { getBillsRecord } from '../../lib/bills';
-import { stateName } from '../../lib/states';
-import { PREVIEW, REPOSITORIES } from '../../lib/site';
+import { stateName, statesFileText } from '../../lib/states';
+import { PREVIEW, REPOSITORIES, SITE_URL } from '../../lib/site';
 import { renderSections } from '../../lib/markdown';
 import { datasetNode } from '../../lib/structured-data';
 
@@ -34,6 +34,8 @@ const billFiles = [
   { name: 'events.csv', id: 'calendar', what: 'The 340B calendar, one row per date: every dated step of a listed bill in the legislature’s own words, hearings with a listed bill on the agenda, the days each session starts and ends, and the dates of federal rules and notices' },
   { name: '340b-events.json', what: 'The calendar in one document, with what each kind of event means' },
 ];
+// The states with a reporting law, grouped by what each state makes public: written by this site from its own registry.
+const statesFileHash = await sha256Hex(statesFileText(SITE_URL));
 const dictionary = renderSections(data.dictionaryMarkdown);
 const intro = dictionary.find((s) => s.title === '');
 const fileSections = dictionary.filter((s) => s.title !== '');
@@ -101,6 +103,14 @@ const describe: Record<string, string> = {
             </li>
           ))
         }
+        <li id="reporting-states">
+          <div>
+            <strong>340b-reporting-states.json</strong>
+            <p>The states with a 340B reporting law, grouped by what each state makes public (each filer&rsquo;s own report, one state report naming entities, state totals only, or nothing public yet), with what is public today, whether the Scorecard holds the state&rsquo;s figures, and the official sources. Made by this site; it is the same list the <a href="/scorecard/">Scorecard</a> shows.</p>
+          </div>
+          <a class="btn ghost" href="/data/340b-reporting-states.json" download aria-label="Download 340b-reporting-states.json">Download</a>
+          <span class="hash"><span class="visually-hidden">SHA-256: </span>{statesFileHash}</span>
+        </li>
         {
           drugFiles.map(({ view, sha256 }) => (
             <li>

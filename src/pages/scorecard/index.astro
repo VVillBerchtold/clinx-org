@@ -4,11 +4,13 @@ import '../../styles/scorecard.css';
 import '../../styles/laws.css';
 import Base from '../../layouts/Base.astro';
 import PageHead from '../../components/PageHead.astro';
+import Arrow from '../../components/Arrow.astro';
+import Draft from '../../components/Draft.astro';
 import StateStandings from '../../components/StateStandings.astro';
 import { buildReportViews, buildTotalsViews, buildViews, countPhrase, getDataset } from '../../lib/data';
 import { LAWS_HOME, getLaws, statesByLaws } from '../../lib/laws';
 import { numberWordCap } from '../../lib/site';
-import { STATE_REGISTRY, statesWith, tileMapSvg } from '../../lib/states';
+import { REPORTING_GROUPS, REGISTRY_READ_ON, statesInGroup, statesWith, tileMapSvg } from '../../lib/states';
 
 const data = getDataset();
 const views = buildViews(data);
@@ -18,6 +20,7 @@ const live = statesWith('live');
 const law = statesWith('law');
 const laws = getLaws();
 const lawStates = statesByLaws(laws).withLaws.length;
+const counts: Record<string, string> = {};
 const countIn = (code: string): string => {
   const report = reports.find((r) => r.state === code);
   if (report) return `${report.entities.length} rows`;
@@ -25,11 +28,14 @@ const countIn = (code: string): string => {
   if (totals) return `${totals.count} ${totals.spec.countOf.noun}`;
   return countPhrase(views.filter((v) => v.entity.state === code));
 };
+for (const s of live) counts[s.code] = countIn(s.code);
+const groups = REPORTING_GROUPS.map((g) => ({ ...g, states: statesInGroup(g.id) }));
+const readOn = new Date(`${REGISTRY_READ_ON}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 ---
 
-<Base title="340B Scorecard: filings by state" crumbs={[{ name: 'Scorecard', path: '/scorecard/' }]} description="The states in the 340B Scorecard. Pick a state to see what its filers reported, or what the state published about them. Every figure links to the page it came from.">
+<Base title="340B Scorecard: filings by state" crumbs={[{ name: 'Scorecard', path: '/scorecard/' }]} description="The 340B Scorecard and the states with a reporting law, grouped by what each state makes public. Pick a state to see what its filers reported, or what the state published about them. Every figure links to the page it came from.">
   <PageHead title="Scorecard" trail={[{ label: '340B Scorecard' }]}>
-    <p class="lede">Pick a state. Each state's page lists what its filers reported, or what the state published about them. Where a state posts each filer's report, every report has its own page with the figures as filed.</p>
+    <p class="lede">States report 340B figures in different ways. Some post each filer's report, some publish one report of their own, some publish totals only, and some have a law and nothing public yet. Pick a state to see what it makes public. Every figure links to the page it came from.</p>
   </PageHead>
 
   <div class="states">
@@ -41,35 +47,46 @@ const countIn = (code: string): string => {
         <li><span class="key" aria-hidden="true"></span>Neither yet</li>
       </ul>
     </div>
-    <div class="state-list">
-      <h2 class="label">In the scorecard</h2>
-      {
-        live.map((s) => (
-          <a class="state-link" href={STATE_REGISTRY[s.code]?.href}>
-            <strong>{s.name}</strong>
-            <span>
-              {countIn(s.code)} · {STATE_REGISTRY[s.code]?.summary}
-            </span>
-            <svg viewBox="0 0 18 18" fill="none" aria-hidden="true" focusable="false"><path d="M3 9h12M10 4l5 5-5 5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg>
-          </a>
-        ))
-      }
+    <nav class="reporting-index" aria-label="Kinds of state reporting">
+      <h2 class="label">{numberWordCap(live.length + law.length)} states, four kinds of reporting</h2>
+      <ol>
+        {
+          groups.map((g) => (
+            <li>
+              <a href={`#${g.id}`}>
+                <strong>{g.label}</strong>
+                <span class="reporting-index-states">{g.states.map((s) => s.name).join(', ')}</span>
+                <Arrow />
+              </a>
+            </li>
+          ))
+        }
+      </ol>
       <div class="note">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="2" /><path d="M10 9v5M10 6v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
         <div>
           <p><strong>Each state has its own form.</strong> Figures are shown in each state's own terms and are not added up across states.</p>
         </div>
       </div>
-    </div>
+    </nav>
   </div>
 
-  <section class="section" aria-labelledby="law-title">
-    <div class="section-head">
-      <h2 id="law-title">{numberWordCap(law.length)} more states have a reporting law</h2>
-      <p>What each state makes public differs. A state is added here once what it makes public can be copied and every figure has been checked against the page it came from.</p>
-    </div>
-    <StateStandings />
-  </section>
+  {
+    groups.map((g) => (
+      <section class="section reporting-kind" id={g.id} aria-labelledby={`${g.id}-title`}>
+        <div class="section-head">
+          <h2 id={`${g.id}-title`}>{g.label}</h2>
+          <p>{numberWordCap(g.states.length)} {g.states.length === 1 ? 'state' : 'states'}</p>
+        </div>
+        <p class="reporting-say">{g.description}</p>
+        <StateStandings group={g.id} counts={counts} />
+      </section>
+    ))
+  }
+  <p class="scale-note standings-note">
+    <span>Read from each state's law and the state's own pages between 11 and {readOn}. The same facts are in the open file <a href="/data/340b-reporting-states.json">340b-reporting-states.json</a>.</span>
+    <Draft />
+  </p>
 
   <section class="section" aria-labelledby="laws-title">
     <div class="section-head">

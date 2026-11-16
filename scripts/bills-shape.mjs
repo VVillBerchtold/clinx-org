@@ -25,6 +25,7 @@ export const EVENT_KINDS = [
   'vetoed',
   'became law',
   'hearing',
+  'report due',
   'session starts',
   'session ends',
   'notice published',
@@ -32,6 +33,12 @@ export const EVENT_KINDS = [
   'takes effect',
   'date set by a notice',
 ];
+/**
+ * Kinds the table may leave out of its list of kinds without being wrong. A table made before the kind
+ * existed has none of its rows and does not list it; a table made after has both. 'report due' may
+ * name a bill or none.
+ */
+export const OPTIONAL_EVENT_KINDS = ['report due'];
 /** Kinds that belong to no one bill. */
 export const SESSION_KINDS = ['session starts', 'session ends'];
 /** Kinds that belong to a federal notice. */
@@ -105,7 +112,7 @@ export const BILL_ROLES = ['main', 'part', 'mention'];
 /** Where a bill names the program. */
 export const NAMED_IN = ['title', 'summary', 'text', 'earlier text'];
 /** How far a bill has got. "Passed the ..." names one chamber in the legislature's own word. */
-export const BILL_STAGES = ['Introduced', 'Reported by committee', 'Passed both chambers', 'Passed the legislature', 'Sent to the President', 'Sent to the governor', 'Vetoed', 'Became law'];
+export const BILL_STAGES = ['Introduced', 'Reported by committee', 'Passed both chambers', 'Passed the legislature', 'Sent to the President', 'Sent to the governor', 'Vetoed', 'Did not pass', 'Became law'];
 
 const DAY = /^\d{4}-\d{2}-\d{2}$/;
 const DATE_COLUMNS = ['session_end', 'introduced_date', 'stage_date', 'latest_action_date', 'text_date', 'status_updated', 'retrieved'];
@@ -227,7 +234,7 @@ function eventsProblems(texts, billIds, noticeIds) {
     return [...problems, '340b-events.json: not valid JSON'];
   }
   if (!DAY.test(document.retrieved ?? '')) problems.push('340b-events.json: no retrieved date');
-  if (JSON.stringify(Object.keys(document.kinds ?? {})) !== JSON.stringify(EVENT_KINDS)) problems.push('340b-events.json: the kinds of event are not the ones this site knows');
+  if (JSON.stringify(Object.keys(document.kinds ?? {}).filter((k) => !OPTIONAL_EVENT_KINDS.includes(k))) !== JSON.stringify(EVENT_KINDS.filter((k) => !OPTIONAL_EVENT_KINDS.includes(k)))) problems.push('340b-events.json: the kinds of event are not the ones this site knows');
   if (!Array.isArray(document.events) || document.events.length === 0) return [...problems, '340b-events.json: no events'];
   const seen = new Set();
   for (const event of document.events) {
@@ -246,7 +253,7 @@ function eventsProblems(texts, billIds, noticeIds) {
     if (ofNotice ? event.jurisdiction !== AGENCIES || !id.startsWith(`${event.notice_id}-`) : !PLACE.test(event.jurisdiction) || id.slice(0, 2).toUpperCase() !== event.jurisdiction) say('its place does not match its name');
     if (!EVENT_KINDS.includes(event.kind)) say(`unknown kind ${event.kind}`);
     else if (ofNotice ? event.bill_id !== '' || !noticeIds.has(event.notice_id) : event.notice_id !== '') say(ofNotice ? 'does not point at a notice in the table' : 'names a notice, but is not a date of one');
-    else if (!ofNotice && (SESSION_KINDS.includes(event.kind) ? event.bill_id !== '' : !billIds.has(event.bill_id))) say('does not point at a bill in the table');
+    else if (!ofNotice && (SESSION_KINDS.includes(event.kind) ? event.bill_id !== '' : OPTIONAL_EVENT_KINDS.includes(event.kind) ? event.bill_id !== '' && !billIds.has(event.bill_id) : !billIds.has(event.bill_id))) say('does not point at a bill in the table');
     if (!event.what) say('no words');
     if (!/^https?:\/\/[^\s]+$/.test(event.link)) say('no official page');
     if (!event.source) say('does not say where it comes from');

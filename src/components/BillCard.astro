@@ -5,7 +5,7 @@
  * Everything shown comes from the bills table (src/lib/bills.ts).
  */
 import { formatDate } from '../lib/data';
-import { STEPS, hostOf, namedInWords, sessionOver, stepOf, type Bill, type BillsData } from '../lib/bills';
+import { STEPS, didNotPass, hostOf, namedInWords, sessionOver, stepOf, type Bill, type BillsData } from '../lib/bills';
 import type { LawKind } from '../lib/laws';
 
 interface Props {
@@ -17,6 +17,8 @@ const { bill, data, kindLabels } = Astro.props;
 const step = stepOf(bill);
 const over = sessionOver(data, bill);
 const vetoed = bill.stage === 'Vetoed';
+// A bill that did not pass is finished: its five steps are drawn grey, like a bill whose session has ended.
+const ended = didNotPass(bill);
 
 /** "2026-03-24 Motion failed" -> "24 March 2026: Motion failed". */
 const dated = (value: string): string => {
@@ -78,9 +80,9 @@ const pdf = (url: string): string => (/\.pdf(?:$|\?)/i.test(url) ? ' (PDF)' : ''
   {bill.summary && <p class="law-summary">{bill.summary}</p>}
 
   {
-    step > 0 && (
+    (step > 0 || ended) && (
       <p class="bill-stage">
-        <span class:list={['steps', `at${step}`, { over, vetoed }]} aria-hidden="true">
+        <span class:list={['steps', `at${step}`, { over, vetoed, ended }]} aria-hidden="true">
           {STEPS.map(() => (
             <i />
           ))}

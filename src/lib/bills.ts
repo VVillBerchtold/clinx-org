@@ -193,22 +193,37 @@ export const STEPS = ['Introduced', 'Committee', 'One chamber', 'Both chambers',
 
 /**
  * How far along the five steps a bill is: 0 where no step is recorded, 5 where it became law.
- * A vetoed bill passed both chambers, so it stands at 4.
+ * A vetoed bill passed both chambers, so it stands at 4. A bill that did not pass is finished and the
+ * table does not say how far it got, so it has no step: 0, drawn as a finished bill (see `ended`).
  */
 export function stepOf(bill: Bill): number {
   const stage = bill.stage;
   if (stage === '') return 0;
   if (stage === 'Introduced') return 1;
   if (stage === 'Reported by committee') return 2;
+  if (stage === DID_NOT_PASS) return 0;
   if (stage === 'Became law') return 5;
   if (['Passed both chambers', 'Passed the legislature', 'Sent to the President', 'Sent to the governor', 'Vetoed'].includes(stage)) return 4;
   if (stage.startsWith('Passed the ')) return 3;
   throw new Error(`Bills file: ${bill.billId} has the stage "${stage}", which this site does not know`);
 }
 
+/** The stage of a bill that failed and will go no further. */
+export const DID_NOT_PASS = 'Did not pass';
+
+/** True for a bill that did not pass. */
+export function didNotPass(bill: Bill): boolean {
+  return bill.stage === DID_NOT_PASS;
+}
+
+/** True where the bill is finished: it became law, it did not pass, or its session ended. Anything else is still in progress. */
+export function isFinished(data: BillsData, bill: Bill): boolean {
+  return stepOf(bill) === 5 || didNotPass(bill) || sessionOver(data, bill);
+}
+
 /** True where the bill's session was over when the table was built and the bill had not become law. */
 export function sessionOver(data: BillsData, bill: Bill): boolean {
-  return bill.sessionEnd < data.retrieved && stepOf(bill) < 5;
+  return bill.sessionEnd < data.retrieved && stepOf(bill) < 5 && !didNotPass(bill);
 }
 
 /**

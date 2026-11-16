@@ -17,7 +17,8 @@ describe('the calendar table', () => {
     expect(billsProblems(files)).toEqual([]);
     expect([...EVENT_KINDS]).toEqual(SHAPE_KINDS);
     expect(Object.keys(JSON.parse(files['340b-events.json']!).events[0])).toEqual(EVENT_COLUMNS);
-    expect([...data.kindNotes.keys()]).toEqual([...EVENT_KINDS]);
+    // 'report due' may be missing from a table made before that kind existed; every other kind is always listed.
+    expect([...data.kindNotes.keys()]).toEqual(EVENT_KINDS.filter((k) => k !== 'report due' || data.kindNotes.has(k)));
   });
 
   it('is in day order, and every event points at its bill or its federal notice', () => {
@@ -63,6 +64,47 @@ describe('the calendar table', () => {
     expect(() => parseEvents(broken((e) => (e['kind'] = 'introduced')))).toThrow(/date of a federal notice/);
     expect(billsProblems({ ...files, '340b-events.json': broken((e) => (e['notice_id'] = 'fr-1999-00000')) }).join('\n')).toMatch(/does not point at a notice|does not match its name/);
     expect(billsProblems({ ...files, '340b-events.json': broken((e) => (e['bill_id'] = 'us-119-hr1')) }).join('\n')).toMatch(/does not point at a notice/);
+  });
+});
+
+describe('the calendar kind "report due"', () => {
+  const document = JSON.parse(files['340b-events.json']!);
+  const base = document.events.find((e: Record<string, unknown>) => e['kind'] === 'introduced');
+  /** A table with one report-due date added, naming the bill of an existing step or none. */
+  const withReportDue = (bill: boolean, listed: boolean): { json: string; copy: Record<string, unknown> } => {
+    const copy = structuredClone(document);
+    const event = { ...structuredClone(base), event_id: `${base.event_id}-report`, kind: 'report due', what: 'Annual report due to the department', ...(bill ? {} : { bill_id: '', bill: '' }) };
+    copy.events.push(event);
+    if (listed) copy.kinds = { ...copy.kinds, 'report due': 'A day a report is due.' };
+    return { json: JSON.stringify(copy), copy };
+  };
+
+  it('is a known kind, with a plain label, and today\'s table needs neither it nor a note for it', () => {
+    expect(EVENT_KINDS).toContain('report due');
+    expect(kindLabel('report due')).toBe('Report due');
+    expect(billsProblems(files)).toEqual([]);
+    expect(data.events.some((e) => e.kind === 'report due')).toBe(data.kindNotes.has('report due'));
+  });
+
+  it('is read, with or without a bill, and the shape check accepts both forms of the table', () => {
+    for (const bill of [true, false]) {
+      for (const listed of [true, false]) {
+        const { json } = withReportDue(bill, listed);
+        const read = parseEvents(json);
+        const added = read.events.find((e) => e.kind === 'report due')!;
+        expect(added.billId === '').toBe(!bill);
+        expect(isBillStep(added)).toBe(bill);
+        expect(eventTitle(added)).toContain('Report due');
+        // The CSV copy gets one more row, so it still has as many rows as the JSON file has events.
+        expect(billsProblems({ ...files, '340b-events.json': json, 'events.csv': `${files['events.csv']!.trimEnd()}\nextra\n` })).toEqual([]);
+      }
+    }
+  });
+
+  it('still refuses a report due that names a bill the table does not hold', () => {
+    const { copy } = withReportDue(true, true);
+    (copy['events'] as Record<string, unknown>[]).at(-1)!['bill_id'] = 'xx-0-none';
+    expect(billsProblems({ ...files, '340b-events.json': JSON.stringify(copy) }).join('\n')).toMatch(/does not point at a bill/);
   });
 });
 

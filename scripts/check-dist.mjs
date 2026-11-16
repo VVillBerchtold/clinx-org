@@ -186,6 +186,7 @@ for (const file of htmlFiles) {
   let captions = 0;
   let sawCsp = false;
   const canonicals = [];
+  const ogImages = [];
   let unlisted = false;
   let sawTitle = false;
   let sawDescription = false;
@@ -236,7 +237,10 @@ for (const file of htmlFiles) {
       }
       if (get('name') === 'description' && (get('content') ?? '').trim() !== '') sawDescription = true;
       if (get('name') === 'robots' && /noindex/.test(get('content') ?? '')) unlisted = true;
-      if (get('property') === 'og:image') shareImages.add(get('content') ?? '');
+      if (get('property') === 'og:image') {
+        ogImages.push(get('content') ?? '');
+        shareImages.add(get('content') ?? '');
+      }
     }
 
     // Links to check: anything on this site.
@@ -250,6 +254,7 @@ for (const file of htmlFiles) {
     }
   }
 
+  if (ogImages.length !== 1) fail(page, `has ${ogImages.length} link-preview pictures, expected exactly one`);
   if (h1 !== 1) fail(page, `has ${h1} <h1>, expected exactly one`);
   if (!sawCsp) fail(page, 'no Content-Security-Policy meta tag');
   const ownAddress = SITE + page.replace(/index\.html$/, '');
@@ -345,9 +350,69 @@ else {
     if (/Draft wording/.test(htmlFiles.map((f) => readFileSync(f, 'utf8')).join(''))) fail('pages', 'a "Draft wording" tag is on a public build');
   }
 }
-if (shareImages.size !== 1) fail('pages', `expected one link-preview picture on every page, found ${shareImages.size}`);
+// Link previews. Every page names exactly one picture (checked page by page above). It must be one of
+// the known cards in scripts/brand/share-cards.json, a file in the build, and a PNG of 1200 by 630 (read from the file itself).
+const shareList = JSON.parse(readFileSync(join(root, 'scripts', 'brand', 'share-cards.json'), 'utf8'));
+const knownCards = new Map(shareList.cards.map((c) => [`${SITE}/brand/share/${c.id}.png`, c.id]));
 for (const image of shareImages) {
-  if (!image.startsWith(`${SITE}/`) || !existsSync(join(dist, image.slice(SITE.length)))) fail('pages', `the link-preview picture is not a built file: ${image}`);
+  if (!knownCards.has(image)) {
+    fail('pages', `the link-preview picture is not one of the known cards: ${image}`);
+    continue;
+  }
+  const file = join(dist, image.slice(SITE.length));
+  if (!existsSync(file)) {
+    fail('pages', `the link-preview picture is not a built file: ${image}`);
+    continue;
+  }
+  const bytes = readFileSync(file);
+  const isPng = bytes.length > 24 && bytes.subarray(0, 8).toString('hex') === '89504e470d0a1a0a' && bytes.subarray(12, 16).toString('latin1') === 'IHDR';
+  const size = isPng ? [bytes.readUInt32BE(16), bytes.readUInt32BE(20)] : [0, 0];
+  if (!isPng) fail(image, 'is not a PNG');
+  else if (size[0] !== shareList.width || size[1] !== shareList.height) fail(image, `is ${size[0]} by ${size[1]}, expected ${shareList.width} by ${shareList.height}`);
+}
+for (const [image, id] of knownCards) if (!shareImages.has(image)) fail('pages', `the share card "${id}" is used by no page`);
+
+// The open file of the states with a reporting law (data/340b-reporting-states.json), written by the site from its registry.
+const REPORTING_GROUP_IDS = ['own-reports', 'named-in-state-report', 'state-totals', 'not-posted-yet'];
+const statesFilePath = join(dist, 'data', '340b-reporting-states.json');
+if (!existsSync(statesFilePath)) fail('data/340b-reporting-states.json', 'missing from the build');
+else {
+  let doc;
+  try {
+    doc = JSON.parse(readFileSync(statesFilePath, 'utf8'));
+  } catch {
+    fail('data/340b-reporting-states.json', 'not valid JSON');
+  }
+  if (doc) {
+    const where = 'data/340b-reporting-states.json';
+    const text = (v) => typeof v === 'string' && v.trim() !== '';
+    if (JSON.stringify(Object.keys(doc)) !== JSON.stringify(['about', 'updated', 'groups', 'states'])) fail(where, 'the top-level fields are not about, updated, groups, states');
+    if (!text(doc.about)) fail(where, 'no "about" sentence');
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(doc.updated ?? '')) fail(where, 'no "updated" day');
+    const groupIds = (doc.groups ?? []).map((g) => g.id);
+    if (JSON.stringify(groupIds) !== JSON.stringify(REPORTING_GROUP_IDS)) fail(where, `the groups are not ${REPORTING_GROUP_IDS.join(', ')}`);
+    for (const g of doc.groups ?? []) if (!text(g.label) || !text(g.description)) fail(where, `group ${g.id} has no label or description`);
+    const scorecard = existsSync(join(dist, 'scorecard', 'index.html')) ? readFileSync(join(dist, 'scorecard', 'index.html'), 'utf8') : '';
+    const seenStates = new Set();
+    for (const st of doc.states ?? []) {
+      const at = `${where}: ${st.state}`;
+      if (JSON.stringify(Object.keys(st)) !== JSON.stringify(['state', 'name', 'group', 'on_clinx', 'what_is_public', 'where_it_stands', 'scorecard_url', 'sources'])) fail(at, 'the fields are not the agreed ones');
+      if (!/^[A-Z]{2}$/.test(st.state ?? '') || seenStates.has(st.state)) fail(at, 'not a two-letter state code, or listed twice');
+      seenStates.add(st.state);
+      if (!REPORTING_GROUP_IDS.includes(st.group)) fail(at, `unknown group ${st.group}`);
+      if (!text(st.name) || !text(st.what_is_public) || !text(st.where_it_stands)) fail(at, 'a name or a sentence is missing');
+      if (typeof st.on_clinx !== 'boolean') fail(at, 'on_clinx is not true or false');
+      else if (st.on_clinx) {
+        const expect = `${SITE}/scorecard/${st.state.toLowerCase()}/`;
+        if (st.scorecard_url !== expect) fail(at, `scorecard_url should be ${expect}`);
+        else if (!existsSync(join(dist, 'scorecard', st.state.toLowerCase(), 'index.html'))) fail(at, 'scorecard_url names a page that is not built');
+      } else if (st.scorecard_url !== null) fail(at, 'scorecard_url must be null where the Scorecard holds no figures');
+      if (!Array.isArray(st.sources) || st.sources.length === 0 || st.sources.some((x) => !text(x.label) || !/^https:\/\/\S+$/.test(x.url ?? ''))) fail(at, 'sources need a label and an https address');
+      if (!scorecard.includes(`id="state-${(st.state ?? '').toLowerCase()}"`)) fail(at, 'is not shown on the Scorecard page');
+    }
+    // The other way: every state the Scorecard page shows under a kind is in the file.
+    for (const m of scorecard.matchAll(/class="standing [^"]*" id="state-([a-z]{2})"/g)) if (!seenStates.has(m[1].toUpperCase())) fail(where, `${m[1].toUpperCase()} is on the Scorecard page but not in the file`);
+  }
 }
 
 // Every internal link must resolve to a built file, and every #fragment to an id on that page.

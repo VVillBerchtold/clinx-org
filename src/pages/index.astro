@@ -5,11 +5,12 @@ import { founderNode, siteNode } from '../lib/structured-data';
 import Arrow from '../components/Arrow.astro';
 import Draft from '../components/Draft.astro';
 import { getBills } from '../lib/bills';
-import { CLEANER_COPY, FILE_CHECK, REFERRALFINDERX_URL, numberWord } from '../lib/site';
-import { statesWith, tileMapSvg } from '../lib/states';
+import { CLEANER_COPY, FILE_CHECK, REFERRALFINDERX_URL, numberWord, numberWordCap } from '../lib/site';
+import { REPORTING_GROUPS, statesInGroup, statesWith, tileMapSvg } from '../lib/states';
 
 const live = statesWith('live');
 const law = statesWith('law');
+const kinds = REPORTING_GROUPS.map((g) => ({ ...g, states: statesInGroup(g.id) }));
 const bills = getBills().bills.length;
 const n = (x: number): string => x.toLocaleString('en-US');
 /** The tools, counted from their pages, so the figure moves when one is added. */
@@ -98,7 +99,19 @@ const ways = [
               <li><span class="key law" aria-hidden="true"></span>Has a 340B reporting law</li>
               <li><span class="key" aria-hidden="true"></span>Neither yet</li>
             </ul>
-            <p class="work-note">{numberWord(live.length)[0]!.toUpperCase() + numberWord(live.length).slice(1)} states are in the scorecard, of {numberWord(live.length + law.length)} with a reporting law. A state is added once what it makes public has been copied and checked.</p>
+            <p class="work-note">{numberWordCap(live.length)} states are in the scorecard, of {numberWord(live.length + law.length)} with a reporting law. A state is added once what it makes public has been copied and checked. What a state makes public differs:</p>
+            <ul class="work-kinds">
+              {
+                kinds.map((k) => (
+                  <li>
+                    <a href={`/scorecard/#${k.id}`}>
+                      <strong>{k.label}</strong>
+                      <span>{k.states.map((s) => s.name).join(', ')}</span>
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
           </div>
         </article>
 

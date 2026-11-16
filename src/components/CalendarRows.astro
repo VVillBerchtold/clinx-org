@@ -40,7 +40,7 @@ const notices = new Map(getNotices().notices.map((n) => [n.noticeId, n]));
               <span class="cal-kind">{kindLabel(event.kind)}</span>
               {showPlace && <a href={calendarPath(event.place)}>{calendarPlaceName(event.place)}</a>}
               {notice && <a href={eventNoticeHref(event)}>{notice.citation}</a>}
-              {!session && !notice && <a href={eventBillHref(event)}>{event.bill}</a>}
+              {!session && !notice && event.bill !== '' && <a href={eventBillHref(event)}>{event.bill}</a>}
             </p>
             {!session && !notice && titles.get(event.billId) && <p class="cal-title">{titles.get(event.billId)}</p>}
             <p class="cal-what">{event.what}</p>

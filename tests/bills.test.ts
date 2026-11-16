@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { BILL_ROLES, CONGRESS, NAMED_IN, STEPS, billHref, billsMapSvg, billsPath, hostOf, inPageOrder, latestSteps, namedInWords, parseBills, placeName, sessionOver, sessionsOf, statesWithBills, stepOf, type Bill } from '../src/lib/bills';
+import { BILL_ROLES, CONGRESS, didNotPass, isFinished, NAMED_IN, STEPS, billHref, billsMapSvg, billsPath, hostOf, inPageOrder, latestSteps, namedInWords, parseBills, placeName, sessionOver, sessionsOf, statesWithBills, stepOf, type Bill } from '../src/lib/bills';
 import { LAW_KINDS } from '../src/lib/laws';
 import { BILL_COLUMNS, BILL_FILES, BILL_ROLES as SHAPE_ROLES, NAMED_IN as SHAPE_NAMED_IN, billsProblems } from '../scripts/bills-shape.mjs';
 import { STATES } from '../src/lib/states';
@@ -91,6 +91,24 @@ describe('bills', () => {
     expect(sessionOver(data, made({ sessionEnd: '2025-05-02', stage: 'Introduced' }))).toBe(true);
     expect(sessionOver(data, made({ sessionEnd: '2025-05-02', stage: 'Became law' }))).toBe(false);
     expect(sessionOver(data, made({ sessionEnd: '2999-01-01', stage: 'Introduced' }))).toBe(false);
+  });
+
+  it('reads the stage "Did not pass" as a finished bill, and the shape check accepts it', () => {
+    const bill = data.bills[0]!;
+    const made = (changes: Partial<Bill>): Bill => ({ ...bill, ...changes });
+    const failed = made({ stage: 'Did not pass', sessionEnd: '2999-01-01' });
+    expect(didNotPass(failed)).toBe(true);
+    expect(stepOf(failed)).toBe(0);
+    expect(isFinished(data, failed)).toBe(true);
+    // A bill that did not pass in a session that is still open is finished, and says nothing about the session ending.
+    expect(sessionOver(data, failed)).toBe(false);
+    expect(isFinished(data, made({ stage: 'Introduced', sessionEnd: '2999-01-01' }))).toBe(false);
+    expect(isFinished(data, made({ stage: 'Introduced', sessionEnd: '2025-05-02' }))).toBe(true);
+    expect(isFinished(data, made({ stage: 'Became law', sessionEnd: '2999-01-01' }))).toBe(true);
+    const document = JSON.parse(files['340b-bills.json']!);
+    document.bills[0].stage = 'Did not pass';
+    expect(billsProblems({ ...files, '340b-bills.json': JSON.stringify(document) }).filter((p) => /stage/.test(p))).toEqual([]);
+    expect(parseBills(JSON.stringify(document)).bills[0]!.stage).toBe('Did not pass');
   });
 
   it('orders a page: about 340B, then a part on it, then named in the title, then named in the text', () => {

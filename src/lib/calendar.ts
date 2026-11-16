@@ -28,6 +28,7 @@ export const EVENT_KINDS = [
   'vetoed',
   'became law',
   'hearing',
+  'report due',
   'session starts',
   'session ends',
   'notice published',
@@ -36,6 +37,12 @@ export const EVENT_KINDS = [
   'date set by a notice',
 ] as const;
 export type EventKind = (typeof EVENT_KINDS)[number];
+
+/**
+ * A day a report is due under a law or a bill. It names a bill where the table knows which one, and
+ * may name none. It is never a day of a session or of a federal notice.
+ */
+const REPORT_KIND: EventKind = 'report due';
 
 /** Kinds that belong to a legislature, not to one bill. */
 const SESSION_KINDS: readonly EventKind[] = ['session starts', 'session ends'];
@@ -122,8 +129,8 @@ export function parseEvents(json: string): CalendarData {
     if (!/^https?:\/\//.test(event.link)) throw new Error(`Calendar file: ${event.eventId} has no official page`);
     const ofNotice = NOTICE_KINDS.includes(event.kind);
     if (ofNotice !== (event.noticeId !== '') || ofNotice !== (event.place === AGENCIES)) throw new Error(`Calendar file: ${event.eventId} should ${ofNotice ? '' : 'not '}be a date of a federal notice`);
-    const ofBill = !ofNotice && !SESSION_KINDS.includes(event.kind);
-    if (ofBill !== (event.billId !== '')) throw new Error(`Calendar file: ${event.eventId} should ${ofBill ? '' : 'not '}name a bill`);
+    const ofBill = !ofNotice && !SESSION_KINDS.includes(event.kind) && event.kind !== REPORT_KIND;
+    if ((ofBill || event.kind !== REPORT_KIND) && ofBill !== (event.billId !== '')) throw new Error(`Calendar file: ${event.eventId} should ${ofBill ? '' : 'not '}name a bill`);
     return event;
   });
   const retrieved = text(document, 'retrieved');
@@ -298,7 +305,7 @@ export function eventNoticeHref(event: CalendarEvent): string {
 
 /** The address of the bill an event belongs to: its card on its place's bills page. */
 export function eventBillHref(event: CalendarEvent): string {
-  return `${billsPath(event.place)}#${event.billId}`;
+  return event.billId === '' ? billsPath(event.place) : `${billsPath(event.place)}#${event.billId}`;
 }
 
 const esc = (t: string): string => t.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
@@ -359,6 +366,7 @@ export function eventTitle(event: CalendarEvent): string {
   if (event.kind === 'date set by a notice') return event.what;
   if (isNoticeDay(event)) return `${kindLabel(event.kind)}: ${event.what}`;
   if (isSessionDay(event)) return `${placeName(event.place)}: ${event.kind} (${event.what})`;
+  if (event.bill === '') return `${placeName(event.place)}: ${kindLabel(event.kind)} (${event.what})`;
   return `${placeName(event.place)} ${event.bill}: ${kindLabel(event.kind)}`;
 }
 

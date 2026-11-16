@@ -1,20 +1,31 @@
 ---
-import Draft from './Draft.astro';
+/**
+ * The states of one kind of reporting, A to Z: what each state makes public today, a link to its
+ * Scorecard page where ClinX holds its figures, and the official sources. The law and where it
+ * stands are one tap away. Everything shown is typed once, in the registry (src/lib/states.ts).
+ */
+import Arrow from './Arrow.astro';
 import { getLaws, lawsOf, lawsPath } from '../lib/laws';
-import { STATE_REGISTRY, VISIBILITY_LABEL, statesWith } from '../lib/states';
+import { STATE_REGISTRY, VISIBILITY_LABEL, statesInGroup, type ReportingGroup } from '../lib/states';
 
-/** The states with a 340B reporting law that are not in the scorecard yet, A to Z. */
-const law = statesWith('law');
+interface Props {
+  group: ReportingGroup;
+  /** For a state in the Scorecard, how much of it is there, in a few words ("14 rows"). */
+  counts?: Readonly<Record<string, string>>;
+}
+const { group, counts = {} } = Astro.props;
 const laws = getLaws();
+const states = statesInGroup(group);
 ---
 
 <ul class="standings">
   {
-    law.map((s) => {
+    states.map((s) => {
       const e = STATE_REGISTRY[s.code];
       if (!e?.visibility || !e.stands || !e.sources) throw new Error(`State ${s.code} is missing its details`);
+      const mine = lawsOf(laws, s.code).length > 0;
       return (
-        <li class={`standing v-${e.visibility}`}>
+        <li class={`standing v-${e.visibility}`} id={`state-${s.code.toLowerCase()}`}>
           <div class="standing-id">
             <span class="standing-code" aria-hidden="true">{s.code}</span>
             <div>
@@ -22,7 +33,20 @@ const laws = getLaws();
               <span class="chip">{VISIBILITY_LABEL[e.visibility]}</span>
             </div>
           </div>
-          <p>{e.stands}</p>
+          <div class="standing-say">
+            <p>{e.publicNow}</p>
+            {e.status === 'live' && e.href && (
+              <a class="btn standing-open" href={e.href}>
+                Open the scorecard for {s.name}
+                <Arrow />
+              </a>
+            )}
+            {e.status === 'live' && counts[s.code] && <p class="standing-held">In the scorecard: {counts[s.code]} · {e.summary}</p>}
+            <details class="standing-law">
+              <summary>The law and where it stands</summary>
+              <p>{e.stands}</p>
+            </details>
+          </div>
           <ul class="standing-src">
             {e.sources.map((src) => (
               <li>
@@ -32,7 +56,7 @@ const laws = getLaws();
                 </a>
               </li>
             ))}
-            {lawsOf(laws, s.code).length > 0 && (
+            {mine && (
               <li>
                 <a href={lawsPath(s.code)}>
                   All 340B laws
@@ -46,7 +70,3 @@ const laws = getLaws();
     })
   }
 </ul>
-<p class="scale-note standings-note">
-  <span>Read from each state's law and the state's own pages between 11 and 15 November 2026.</span>
-  <Draft />
-</p>
