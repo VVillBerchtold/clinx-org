@@ -42,8 +42,8 @@ describe('csv reader', () => {
 });
 
 describe('dataset loaders', () => {
-  it('has 27 filings: 14 for Rhode Island (7 health centers and 7 hospital filings) and 13 for Vermont, 27 records of the Minnesota state publication and one of the Idaho state publication', () => {
-    expect(data.filings).toHaveLength(27 + 27 + 1);
+  it('has 27 filings: 14 for Rhode Island (7 health centers and 7 hospital filings) and 13 for Vermont, 27 records for each of the two Minnesota years, one of the Idaho state publication and one of the Maine state publication', () => {
+    expect(data.filings).toHaveLength(27 + 27 + 27 + 1 + 1);
     expect(data.filings.filter((f) => f.recordKind === 'filing')).toHaveLength(27);
     expect(allViews).toHaveLength(27);
     expect(views).toHaveLength(14);
@@ -89,8 +89,8 @@ describe('dataset loaders', () => {
   });
 
   it('counts rows and differences from the data', () => {
-    expect(data.rowCount).toBe(2989 + 157 + 70 + 105);
-    expect(data.discrepancies).toHaveLength(22 + 4 + 7 + 3);
+    expect(data.rowCount).toBe(2989 + 157 + 70 + 105 + 145 + 284);
+    expect(data.discrepancies).toHaveLength(22 + 4 + 7 + 3 + 6);
   });
 
   it('finds the comparability paragraph in METHODS.md', () => {
@@ -182,7 +182,8 @@ describe('Vermont reports', () => {
   });
 
   it('lists each narrative as a separate document with its address and SHA-256', () => {
-    const narratives = data.attachments.filter((a) => a.kind === 'narrative');
+    // Maine's one narrative attachment is a range of pages of its report, with no document of its own.
+    const narratives = data.attachments.filter((a) => a.kind === 'narrative' && a.filingId.startsWith('vt-'));
     expect(narratives).toHaveLength(13);
     for (const a of narratives) {
       expect(a.documentUrl).toMatch(/^https:\/\//);

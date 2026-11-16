@@ -423,3 +423,111 @@ ul.stats.report-tiles strong a {
     width: auto;
   }
 }
+
+/* A state's drug lists (Maine): the NDC is a code, so it keeps its digits together, and the class sits
+   quietly under the drug. The hospitals the report names are a plain list in columns. */
+.drug-list td.ndc {
+  white-space: nowrap;
+  font-size: var(--text-sm);
+}
+.drug-list tbody th[scope='row'] .sub {
+  max-width: 28rem;
+}
+.prose ul.name-list {
+  list-style: none;
+  margin: var(--s4) 0 0;
+  padding: 0;
+  columns: 16rem 2;
+  column-gap: var(--s6);
+}
+.prose ul.name-list li {
+  break-inside: avoid;
+  padding: 0.3125rem 0;
+  border-top: 1px solid var(--line);
+  max-width: none;
+}
+
+/* The switch between a state's years: two links that read as one control, the page being read filled in.
+   Under it, one sentence about what the two reports print. */
+.year-switch-block {
+  margin-top: var(--s4);
+  max-width: var(--measure);
+}
+.year-switch ul {
+  display: inline-flex;
+  margin: 0;
+  padding: 0.1875rem;
+  list-style: none;
+  gap: 0.125rem;
+  border: 1px solid var(--line);
+  border-radius: var(--pill);
+  background: var(--surface);
+}
+.year-switch li {
+  margin: 0;
+  padding: 0;
+  max-width: none;
+}
+.year-switch a {
+  display: block;
+  padding: 0.5rem 1.125rem;
+  border-radius: var(--pill);
+  color: var(--muted);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-decoration: none;
+}
+.year-switch a:hover {
+  color: var(--ink);
+}
+.year-switch a[aria-current] {
+  background: var(--cta);
+  color: var(--cta-ink);
+}
+.year-switch-note {
+  margin: var(--s3) 0 0;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+/* A row that another page links to: kept clear of the bar at the top, and marked when it is the target. */
+.report-entities tbody tr[id] {
+  scroll-margin-top: 6rem;
+}
+.report-entities tbody tr:target > * {
+  background: var(--accent-wash);
+}
+.report-entities a.other-year {
+  font-weight: 450;
+}
+
+/* The 2023 table's last heading is the report's own long sentence. On a phone its sort button wraps
+   inside the screen instead of running past it. */
+@media (max-width: 600px) {
+  .report-earlier thead th,
+  .table-wrap.wide.stack.report-earlier thead th {
+    white-space: normal;
+  }
+  .report-earlier thead th button {
+    max-width: 100%;
+    text-align: left;
+    white-space: normal;
+  }
+}
+
+/* On a wide screen the long headings wrap in a few lines so all five columns fit the card. */
+@media (min-width: 601px) {
+  .report-earlier thead th {
+    white-space: normal;
+  }
+  .report-earlier thead th button {
+    text-align: right;
+    white-space: normal;
+  }
+  .report-earlier thead th:first-child button,
+  .report-earlier thead th:nth-child(2) button {
+    text-align: left;
+  }
+  .report-earlier thead th:last-child {
+    min-width: 11rem;
+  }
+}

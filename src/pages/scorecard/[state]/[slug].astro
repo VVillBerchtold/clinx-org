@@ -15,6 +15,7 @@ import Pager from '../../../components/Pager.astro';
 import { stateName } from '../../../lib/states';
 import {
   CATEGORY_LABEL,
+  buildEarlierReportViews,
   buildViews,
   compareNames,
   drugViewFor,
@@ -33,6 +34,9 @@ import { filedDrugShown } from '../../../lib/filed-drug-display';
 
 export function getStaticPaths() {
   const views = buildViews(getDataset());
+  // A state's earlier year has its own page at /scorecard/<state>/<year>/ ([year].astro): no entity may take that address.
+  const years = new Set(buildEarlierReportViews(getDataset()).map((v) => `${v.state.toLowerCase()}/${v.year}`));
+  for (const v of views) if (years.has(`${v.entity.state.toLowerCase()}/${v.entity.slug}`)) throw new Error(`${v.entity.path} is also the address of a year's page`);
   return views.map((view) => {
     // The filings beside this one: same state, same year, A to Z by name as filed.
     const set = views

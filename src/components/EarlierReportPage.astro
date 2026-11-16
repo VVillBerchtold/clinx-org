@@ -1,0 +1,249 @@
+---
+import '../styles/home.css';
+import '../styles/scorecard.css';
+import Base from '../layouts/Base.astro';
+import Cited from './Cited.astro';
+import DifferencesTable from './DifferencesTable.astro';
+import OnPage from './OnPage.astro';
+import PageHead from './PageHead.astro';
+import YearSwitch from './YearSwitch.astro';
+import { earlierReportViewFor, formatDate, getDataset, pdfHref, type Discrepancy } from '../lib/data';
+import { barPercentOfScale } from '../lib/meter';
+import { numberWord, numberWordCap } from '../lib/site';
+import { STATE_REGISTRY, stateName } from '../lib/states';
+
+/**
+ * A state's page for an earlier year of a report that names entities (Minnesota's 2023 data). It shows
+ * only the columns and tables that report prints: each entity's scope of reported data, net 340B revenue,
+ * share of the statewide figure and share attributed to the state's own programs, then the report's table
+ * of totals by grouping and payer. Nothing is carried from the other year, and no change between the years is
+ * printed. The words that depend on the form come from forms.ts; the figures and the report's own
+ * sentences come from the dataset.
+ */
+interface Props {
+  code: string;
+}
+
+const { code } = Astro.props;
+const data = getDataset();
+const report = earlierReportViewFor(data, code);
+const { spec, filing, entities, groupings, notes, earlier } = report;
+const name = stateName(code);
+const entry = STATE_REGISTRY[code];
+const year = report.year;
+const pdf = (page: number) => pdfHref(filing, page);
+const pageLabel = (page: number) => `Page ${page} of the report PDF`;
+const t = earlier.entityTable;
+const tt = earlier.totalsTable;
+// The date the report is dated, from its own title ("... Legislature, November 25, 2024").
+const issued = /,\s*([A-Z][a-z]+ \d{1,2}, \d{4})$/.exec(filing.formRevision)?.[1];
+if (!issued) throw new Error(`${code}: the report's title does not end with its date`);
+
+// Bars: one scale for the whole table, a round number of millions above every figure.
+const MILLION_CENTS = 100_000_000;
+const STEP_CENTS = 50 * MILLION_CENTS;
+const figures = entities.map((e) => e.netCents).filter((c): c is number => c !== null);
+const scaleCents = Math.max(STEP_CENTS, Math.ceil(Math.max(...figures) / STEP_CENTS) * STEP_CENTS);
+const scaleMillions = (scaleCents / MILLION_CENTS).toLocaleString('en-US');
+
+const owners = new Map<Discrepancy, string | null>(report.differences.map((d) => [d, null]));
+const details = groupings.filter((g) => g.grouping.kind !== 'total');
+const total = groupings.find((g) => g.grouping.kind === 'total')!;
+const cell = (text: string): string => (text === '' ? 'blank' : text);
+const shared = entities.filter((e) => e.otherYear).length;
+---
+
+<Base
+  title={`${name} 340B report: ${year} data by entity`}
+  crumbs={[{ name: 'Scorecard', path: '/scorecard/' }, { name, path: `/scorecard/${code.toLowerCase()}/` }, { name: `${year} data`, path: `/scorecard/${code.toLowerCase()}/${year}/` }]}
+  description={`Net 340B revenue for the ${entities.length} entities named in the ${spec.agency.startsWith(name) ? spec.agency : `${name} ${spec.agency}`}'s report of ${issued}, ${year} data, as printed, with its totals by grouping and payer and the places where its figures differ. Every figure links to its page of the report.`}
+>
+  <PageHead title={name} trail={[{ label: 'Scorecard', href: '/scorecard/' }, { label: name, href: `/scorecard/${code.toLowerCase()}/` }, { label: `${year} data, state report` }]}>
+    <p class="lede">
+      This is the earlier of the two reports ClinX holds for {name}. The {spec.agency}'s report of {issued} names {numberWord(entities.length)} entities and prints one net 340B revenue figure for each, for {year}. The entities' own filings are not public. Every figure below is the state's, as printed, and links to its page of the report.
+    </p>
+    <YearSwitch code={code} years={report.years} current={year} />
+    <OnPage
+      title={name}
+      items={[
+        { id: 'entities', label: 'The entities' },
+        { id: 'statewide', label: 'Totals by grouping and payer' },
+        ...(report.differences.length > 0 ? [{ id: 'differences', label: 'Differences' }] : []),
+        { id: 'read-with-care', label: 'Read it with care' },
+        { id: 'sources', label: 'Where the figures come from' },
+      ]}
+    />
+  </PageHead>
+
+  <div class="prose">
+    <h2 id="entities">The entities in the report</h2>
+    <p>
+      Listed A to Z by name as {spec.asWord}: {numberWord(entities.length)} rows. Select a column heading to sort.{shared > 0 ? ` ${numberWordCap(shared)} of the entities are also named in the report for the other year, and their rows link to each other.` : ''}
+    </p>
+    <figure class="page-quote">
+      <blockquote>
+        <p><strong>{notes.entityTableTitle.labelAsFiled}</strong></p>
+        <p>{notes.aboveEntityTable.labelAsFiled}</p>
+      </blockquote>
+      <figcaption>
+        The title and the paragraph the report prints above the table, word for word.{' '}
+        <Cited value="Open the page" href={pdf(notes.aboveEntityTable.page)} label={pageLabel(notes.aboveEntityTable.page)} />
+      </figcaption>
+    </figure>
+
+    <div class="table-wrap wide stack report-entities report-earlier" id="table-entities">
+      <table data-sortable role="table">
+        <caption><span>Entities named in the report, {year} data: scope of reported data and net 340B revenue as {spec.asWord}</span></caption>
+        <thead role="rowgroup">
+          <tr role="row">
+            <th role="columnheader" scope="col" data-sort="text">Name as {spec.asWord}</th>
+            <th role="columnheader" scope="col" data-sort="text">{t.scope.heading}</th>
+            <th role="columnheader" scope="col" class="num" data-sort="number">{t.net.heading}</th>
+            <th role="columnheader" scope="col" class="num" data-sort="number">{t.pct.heading}</th>
+            <th role="columnheader" scope="col" class="num" data-sort="number">{t.programs.heading}</th>
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          {
+            entities.map((e) => (
+              <tr role="row" id={e.anchor} class="tone-plain">
+                <th role="rowheader" scope="row">
+                  {e.name}
+                  {e.otherYear && <a class="sub other-year" href={e.otherYear.href}>Also named in the {e.otherYear.year} data</a>}
+                </th>
+                <td role="cell" data-label={t.scope.heading}>
+                  <Cited value={e.scope.answerAsFiled} href={pdf(e.scope.page)} label={`${t.scope.heading} for ${e.name}, page ${e.scope.page} of the report PDF`} />
+                </td>
+                <td role="cell" class="num share" data-label={t.net.heading} data-value={e.netCents ?? ''}>
+                  <span class="rail">
+                    <span class="rail-track">
+                      {e.netCents !== null && <svg class="bar" width={`${barPercentOfScale(e.netCents, scaleCents)}%`} height="10" aria-hidden="true" focusable="false" />}
+                    </span>
+                    <Cited value={cell(e.net.amountAsFiled)} href={pdf(e.net.page)} label={e.cite.net} />
+                  </span>
+                </td>
+                <td role="cell" class="num" data-label={t.pct.heading} data-value={e.pctValue}>
+                  <Cited value={cell(e.pct.amountAsFiled)} href={pdf(e.pct.page)} label={e.cite.pct} />
+                </td>
+                <td role="cell" class="num wide-cell" data-label={t.programs.heading} data-value={e.programsValue}>
+                  <Cited value={cell(e.programs.amountAsFiled)} href={pdf(e.programs.page)} label={e.cite.programs} />
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="small muted">Bars are drawn to one scale: the full width is ${scaleMillions} million.</p>
+    <figure class="page-quote">
+      <blockquote>
+        <p>{notes.entityTableSource.labelAsFiled}</p>
+        <p>{notes.entityTableNote.labelAsFiled}</p>
+      </blockquote>
+      <figcaption>
+        The two lines the report prints under the table, word for word.{' '}
+        <Cited value="Open the page" href={pdf(notes.entityTableNote.page)} label={pageLabel(notes.entityTableNote.page)} />
+      </figcaption>
+    </figure>
+
+    <h2 id="statewide">Totals by grouping and payer</h2>
+    <p>
+      The report's second table gives net 340B revenue for the whole state, as printed: {numberWord(details.length)} groupings of entities, each split by who paid, and a total row. The first column keeps the grouping's major type as the report prints it.
+    </p>
+    <figure class="page-quote">
+      <blockquote>
+        <p><strong>{notes.totalsTableTitle.labelAsFiled}</strong></p>
+      </blockquote>
+      <figcaption>
+        The title the report prints above the table, word for word.{' '}
+        <Cited value="Open the page" href={pdf(notes.totalsTableTitle.page)} label={pageLabel(notes.totalsTableTitle.page)} />
+      </figcaption>
+    </figure>
+    <div class="table-wrap wide stack report-grid" id="table-statewide">
+      <table role="table">
+        <caption><span>Statewide net 340B revenue as {spec.asWord}, {year} data, by grouping and payer ($)</span></caption>
+        <thead role="rowgroup">
+          <tr role="row">
+            <th role="columnheader" scope="col">{tt.groupingHeading}</th>
+            {tt.payers.map((p) => <th role="columnheader" scope="col" class="num">{p.heading}</th>)}
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          {
+            details.map((g) => (
+              <tr role="row">
+                <th role="rowheader" scope="row">
+                  {g.grouping.label}
+                  {g.majorType && <span class="sub">{tt.majorTypeHeading}: {g.majorType.answerAsFiled}</span>}
+                </th>
+                {g.cells.map((c) => (
+                  <td role="cell" class="num" data-label={c.payer.heading}>
+                    <Cited value={c.row.amountAsFiled} href={pdf(c.row.page)} label={c.cite} />
+                  </td>
+                ))}
+              </tr>
+            ))
+          }
+        </tbody>
+        <tfoot role="rowgroup">
+          <tr role="row">
+            <th role="rowheader" scope="row">{total.grouping.label}</th>
+            {total.cells.map((c) => (
+              <td role="cell" class="num" data-label={c.payer.heading}>
+                <Cited value={c.row.amountAsFiled} href={pdf(c.row.page)} label={c.cite} />
+              </td>
+            ))}
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    <p class="small muted">The names of the groupings and the payers are the report's own words.</p>
+    <figure class="page-quote">
+      <blockquote>
+        <p>{notes.totalsTableSource.labelAsFiled}</p>
+      </blockquote>
+      <figcaption>
+        The line the report prints under the table, word for word.{' '}
+        <Cited value="Open the page" href={pdf(notes.totalsTableSource.page)} label={pageLabel(notes.totalsTableSource.page)} />
+      </figcaption>
+    </figure>
+
+    {
+      report.differences.length > 0 && (
+        <DifferencesTable
+          differences={report.differences}
+          name={name}
+          spec={spec}
+          owners={owners}
+          lead={`${numberWordCap(report.differences.length)} places where two figures of the report differ. Nothing was changed; both figures are kept as ${spec.asWord}. All are about the statewide totals.`}
+        />
+      )
+    }
+
+    <section aria-labelledby="read-with-care">
+      <div class="note">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="2"></circle><path d="M10 9v5M10 6v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+        <div>
+          <p><strong id="read-with-care">Read it with care.</strong> This is a table the state published, with one figure for each entity. It is not what the entities filed. The paragraph quoted above the table says the data are incomplete, because most entities reported only pharmacy-dispensed drugs.</p>
+          <p>The report for the other year prints other columns, and the two may not cover the same thing. ClinX does not set one beside the other or work out a change between them. The other states' measures cannot be calculated from this table: it prints no acquisition cost and no payments to pharmacies or vendors. <a href="/methods/#5-measures">Methods</a> sets out each calculation.</p>
+        </div>
+      </div>
+    </section>
+
+    <h2 id="sources">Where the figures come from</h2>
+    {entry?.stands && <p>{entry.stands}</p>}
+    {entry?.sources && <div class="btn-row">{entry.sources.map((src) => <a class="btn ghost" href={src.href}>{src.label}</a>)}</div>}
+    <dl class="facts panel">
+      <dt>Report PDF</dt>
+      <dd><a href={pdfHref(filing, 1)}>Open the report on the {spec.publisher}</a></dd>
+      <dt>Title</dt>
+      <dd>{filing.formRevision}</dd>
+      <dt>SHA-256</dt>
+      <dd><span class="mono">{filing.pdfSha256}</span></dd>
+      <dt>Retrieved</dt>
+      <dd>{formatDate(filing.retrievedAt)}</dd>
+      <dt>Pages used</dt>
+      <dd>{report.pages.first} to {report.pages.last} of {filing.pageCount}</dd>
+    </dl>
+  </div>
+</Base>

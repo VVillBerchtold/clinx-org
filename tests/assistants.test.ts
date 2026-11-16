@@ -54,7 +54,7 @@ describe('the door for assistants: answers', () => {
   it('lists the tools and answers a question from the site\'s own files', async () => {
     const { env, asked } = makeEnv();
     const listed = (await (await handleAssistants(ask({ jsonrpc: '2.0', id: 1, method: 'tools/list' }), env)).json()) as Reply;
-    expect(listed.result.tools.map((t) => t.name)).toEqual(['find_bills', 'get_bill', 'find_laws', 'get_law', 'find_notices', 'get_notice', 'calendar', 'state_overview', 'about_the_data']);
+    expect(listed.result.tools.map((t) => t.name)).toEqual(['find_bills', 'get_bill', 'find_laws', 'get_law', 'find_notices', 'get_notice', 'calendar', 'reporting_states', 'find_filings', 'get_filing', 'state_overview', 'about_the_data']);
     expect(asked).toEqual([]);
 
     const response = await handleAssistants(ask(call('about_the_data')), env);
@@ -64,10 +64,10 @@ describe('the door for assistants: answers', () => {
     const built = JSON.parse(tableText('340b-notices.json')!) as { notices: unknown[] };
     expect(about.counts.notices).toBe(built.notices.length);
     expect(about.counts.bills).toBeGreaterThan(200);
-    expect([...asked].sort()).toEqual(['/data/340b-bills.json', '/data/340b-events.json', '/data/340b-notices.json', '/data/340b-state-laws.json']);
+    expect([...asked].sort()).toEqual(['/data/340b-bills.json', '/data/340b-events.json', '/data/340b-notices.json', '/data/340b-reporting-states.json', '/data/340b-state-filings.json', '/data/340b-state-laws.json']);
 
     await handleAssistants(ask(call('find_bills', { state: 'RI' })), env);
-    expect(asked).toHaveLength(4);
+    expect(asked).toHaveLength(6);
   });
 
   it('answers the rebate pilot notice with its page on this site', async () => {

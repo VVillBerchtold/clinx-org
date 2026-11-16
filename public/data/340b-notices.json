@@ -1,5 +1,5 @@
 {
- "retrieved": "2026-11-15",
+ "retrieved": "2026-11-16",
  "source": "The Federal Register's own data service, federalregister.gov/api/v1",
  "roles": [
   {
@@ -48,7 +48,7 @@
    "pages": 215,
    "notice_url": "https://www.federalregister.gov/documents/2026/11/09/2026-22792/medicare-drug-price-negotiation-program-and-medicare-prescription-drug-benefit-program",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-11-09/pdf/2026-22792.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -77,7 +77,7 @@
    "pages": 1029,
    "notice_url": "https://www.federalregister.gov/documents/2026/11/09/2026-22743/medicare-and-medicaid-programs-cy-2027-payment-policies-under-the-physician-fee-schedule-and-other",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-11-09/pdf/2026-22743.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": [
     {
      "day": "2027-09-30",
@@ -112,7 +112,7 @@
    "pages": 479,
    "notice_url": "https://www.federalregister.gov/documents/2026/11/06/2026-22739/medicare-program-hospital-outpatient-prospective-payment-and-ambulatory-surgical-center-payment",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-11-06/pdf/2026-22739.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -141,7 +141,7 @@
    "pages": 105,
    "notice_url": "https://www.federalregister.gov/documents/2026/11/02/2026-22306/improving-transparency-into-pharmacy-benefit-manager-fee-disclosure",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-11-02/pdf/2026-22306.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -170,7 +170,7 @@
    "pages": 82,
    "notice_url": "https://www.federalregister.gov/documents/2026/10/20/2026-21420/medicare-program-implementation-of-sections-6219-6220-and-6224-of-the-consolidated-appropriations",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-10-20/pdf/2026-21420.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -199,7 +199,7 @@
    "pages": 181,
    "notice_url": "https://www.federalregister.gov/documents/2026/10/02/2026-20281/global-benchmark-for-efficient-drug-pricing-globe-model",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-10-02/pdf/2026-20281.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": [
     {
      "day": "2027-01-01",
@@ -239,7 +239,7 @@
    "pages": 5,
    "notice_url": "https://www.federalregister.gov/documents/2026/09/24/2026-19535/request-for-information-medicare-part-d-reasonable-and-relevant-pharmacy-contracting-standards",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-09-24/pdf/2026-19535.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -268,7 +268,7 @@
    "pages": 69,
    "notice_url": "https://www.federalregister.gov/documents/2026/08/13/2026-16508/medicaid-program-prohibition-on-federal-medicaid-and-childrens-health-insurance-program-funding-for",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-08-13/pdf/2026-16508.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -298,7 +298,7 @@
    "pages": 892,
    "notice_url": "https://www.federalregister.gov/documents/2026/08/04/2026-15833/medicare-program-hospital-inpatient-prospective-payment-systems-for-acute-care-hospitals-ipps-and",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-08-04/pdf/2026-15833.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -329,7 +329,7 @@
    "pages": 21,
    "notice_url": "https://www.federalregister.gov/documents/2026/08/03/2026-15633/notice-regarding-340b-rebate-model-pilot-program",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-08-03/pdf/2026-15633.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": [
     {
      "day": "2026-08-24",
@@ -374,7 +374,7 @@
    "pages": 716,
    "notice_url": "https://www.federalregister.gov/documents/2026/07/16/2026-14327/medicare-and-medicaid-programs-cy-2027-payment-policies-under-the-physician-fee-schedule-and-other",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-07-16/pdf/2026-14327.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -403,7 +403,7 @@
    "pages": 299,
    "notice_url": "https://www.federalregister.gov/documents/2026/07/07/2026-13656/medicare-program-hospital-outpatient-prospective-payment-and-ambulatory-surgical-center-payment",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-07-07/pdf/2026-13656.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -434,7 +434,7 @@
    "pages": 1,
    "notice_url": "https://www.federalregister.gov/documents/2026/06/22/2026-12442/340b-rebate-model-pilot-program-application-implementation-and-evaluation-correction",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-06-22/pdf/2026-12442.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -464,7 +464,7 @@
    "pages": 3,
    "notice_url": "https://www.federalregister.gov/documents/2026/06/15/2026-11989/agency-information-collection-activities-proposed-collection-public-comment-request-information",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-06-15/pdf/2026-11989.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -494,7 +494,7 @@
    "pages": 352,
    "notice_url": "https://www.federalregister.gov/documents/2026/05/20/2026-10050/patient-protection-and-affordable-care-act-hhs-notice-of-benefit-and-payment-parameters-for-2027-and",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-05-20/pdf/2026-10050.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -523,7 +523,7 @@
    "pages": 576,
    "notice_url": "https://www.federalregister.gov/documents/2026/04/14/2026-07203/medicare-program-hospital-inpatient-prospective-payment-systems-for-acute-care-hospitals-ipps-and",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-04-14/pdf/2026-07203.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -554,7 +554,7 @@
    "pages": 1,
    "notice_url": "https://www.federalregister.gov/documents/2026/02/26/2026-03838/request-for-information-340b-rebate-model-pilot-program-extension",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-02-26/pdf/2026-03838.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -584,7 +584,7 @@
    "pages": 2,
    "notice_url": "https://www.federalregister.gov/documents/2026/02/26/2026-03833/agency-information-collection-activities-proposed-collection-public-comment-request-information",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-02-26/pdf/2026-03833.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -615,7 +615,7 @@
    "pages": 5,
    "notice_url": "https://www.federalregister.gov/documents/2026/02/17/2026-03042/request-for-information-340b-rebate-model-pilot-program",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-02-17/pdf/2026-03042.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -645,7 +645,7 @@
    "pages": 195,
    "notice_url": "https://www.federalregister.gov/documents/2026/02/11/2026-02769/patient-protection-and-affordable-care-act-hhs-notice-of-benefit-and-payment-parameters-for-2027-and",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-02-11/pdf/2026-02769.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -673,7 +673,7 @@
    "pages": 18,
    "notice_url": "https://www.federalregister.gov/documents/2026/01/28/2026-01688/annual-civil-monetary-penalties-inflation-adjustment",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-01-28/pdf/2026-01688.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -703,7 +703,7 @@
    "pages": 4,
    "notice_url": "https://www.federalregister.gov/documents/2026/01/08/2026-00179/agency-information-collection-activities-proposed-collection-public-comment-request-information",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2026-01-08/pdf/2026-00179.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -732,7 +732,7 @@
    "pages": 92,
    "notice_url": "https://www.federalregister.gov/documents/2025/12/23/2025-23705/guarding-us-medicare-against-rising-drug-costs-guard-model",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-12-23/pdf/2025-23705.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -761,7 +761,7 @@
    "pages": 93,
    "notice_url": "https://www.federalregister.gov/documents/2025/12/23/2025-23702/global-benchmark-for-efficient-drug-pricing-globe-model",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-12-23/pdf/2025-23702.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -791,7 +791,7 @@
    "pages": 641,
    "notice_url": "https://www.federalregister.gov/documents/2025/11/25/2025-20907/medicare-program-hospital-outpatient-prospective-payment-and-ambulatory-surgical-center-payment",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-11-25/pdf/2025-20907.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -820,7 +820,7 @@
    "pages": 12,
    "notice_url": "https://www.federalregister.gov/documents/2025/11/19/2025-20251/medicare-program-medicare-part-b-monthly-actuarial-rates-premium-rates-and-annual-deductible",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-11-19/pdf/2025-20251.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -849,7 +849,7 @@
    "pages": 1216,
    "notice_url": "https://www.federalregister.gov/documents/2025/11/05/2025-19787/medicare-and-medicaid-programs-cy-2026-payment-policies-under-the-physician-fee-schedule-and-other",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-11-05/pdf/2025-19787.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -879,7 +879,7 @@
    "pages": 3,
    "notice_url": "https://www.federalregister.gov/documents/2025/09/12/2025-17641/agency-information-collection-activities-proposed-collection-public-comment-request-information",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-09-12/pdf/2025-17641.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -910,7 +910,7 @@
    "pages": 3,
    "notice_url": "https://www.federalregister.gov/documents/2025/08/07/2025-14998/340b-program-notice-application-process-for-the-340b-rebate-model-pilot-program-correction",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-08-07/pdf/2025-14998.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -940,7 +940,7 @@
    "pages": 3,
    "notice_url": "https://www.federalregister.gov/documents/2025/08/07/2025-14955/agency-information-collection-activities-proposed-collection-public-comment-request-information",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-08-07/pdf/2025-14955.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -970,7 +970,7 @@
    "pages": 773,
    "notice_url": "https://www.federalregister.gov/documents/2025/08/04/2025-14681/medicare-program-hospital-inpatient-prospective-payment-systems-for-acute-care-hospitals-ipps-and",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-08-04/pdf/2025-14681.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -1001,7 +1001,7 @@
    "pages": 3,
    "notice_url": "https://www.federalregister.gov/documents/2025/08/01/2025-14619/340b-program-notice-application-process-for-the-340b-rebate-model-pilot-program",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-08-01/pdf/2025-14619.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -1031,7 +1031,7 @@
    "pages": 390,
    "notice_url": "https://www.federalregister.gov/documents/2025/07/17/2025-13360/medicare-and-medicaid-programs-hospital-outpatient-prospective-payment-and-ambulatory-surgical",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-07-17/pdf/2025-13360.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -1060,7 +1060,7 @@
    "pages": 910,
    "notice_url": "https://www.federalregister.gov/documents/2025/07/16/2025-13271/medicare-and-medicaid-programs-cy-2026-payment-policies-under-the-physician-fee-schedule-and-other",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-07-16/pdf/2025-13271.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -1089,7 +1089,7 @@
    "pages": 490,
    "notice_url": "https://www.federalregister.gov/documents/2025/04/30/2025-06271/medicare-program-hospital-inpatient-prospective-payment-systems-for-acute-care-hospitals-and-the",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-04-30/pdf/2025-06271.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -1117,7 +1117,7 @@
    "pages": 4,
    "notice_url": "https://www.federalregister.gov/documents/2025/04/18/2025-06837/lowering-drug-prices-by-once-again-putting-americans-first",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-04-18/pdf/2025-06837.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -1146,7 +1146,7 @@
    "pages": 130,
    "notice_url": "https://www.federalregister.gov/documents/2025/04/15/2025-06008/medicare-and-medicaid-programs-contract-year-2026-policy-and-technical-changes-to-the-medicare",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-04-15/pdf/2025-06008.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   },
   {
@@ -1176,7 +1176,7 @@
    "pages": 2,
    "notice_url": "https://www.federalregister.gov/documents/2025/01/15/2025-00831/agency-information-collection-activities-submission-to-omb-for-review-and-approval-public-comment",
    "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-01-15/pdf/2025-00831.pdf",
-   "retrieved": "2026-11-15",
+   "retrieved": "2026-11-16",
    "dates_read": []
   }
  ]

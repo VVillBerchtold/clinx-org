@@ -1,0 +1,49 @@
+---
+/**
+ * The switch between the years of one state's report, and one plain sentence about the two reports.
+ * Two links styled as a segmented control; the page being read is marked with aria-current. The
+ * sentence says only what the two reports print: the earlier report has a scope column, the latest
+ * has none, and the figures of one year are never carried into the other year's table.
+ */
+import { earlierReportViewFor, getDataset, type ReportYear } from '../lib/data';
+
+interface Props {
+  code: string;
+  years: readonly ReportYear[];
+  /** The year of the page being read. */
+  current: string;
+}
+
+const { code, years, current } = Astro.props;
+const data = getDataset();
+const earlier = years.length > 1 ? earlierReportViewFor(data, code) : null;
+const scopes = earlier ? [...new Set(earlier.entities.map((e) => e.scope.answerAsFiled))] : [];
+const scopeCount = (word: string): number => earlier?.entities.filter((e) => e.scope.answerAsFiled === word).length ?? 0;
+const scopeHeading = earlier?.earlier.entityTable.scope.heading ?? '';
+const quoted = (word: string): string => `“${word}”`;
+const latestYear = years[0]?.year;
+const isEarlier = earlier !== null && current === earlier.year;
+---
+
+{
+  earlier && (
+    <div class="year-switch-block">
+      <nav class="year-switch" aria-label="Year of data">
+        <ul>
+          {
+            years.map((y) => (
+              <li>
+                <a href={y.path} aria-current={y.year === current ? 'page' : undefined}>{y.year} data</a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+      <p class="year-switch-note">
+        The two reports do not print the same columns, and they may not cover the same thing. The {earlier.year} report's table has a column, {quoted(scopeHeading)}, and marks{' '}
+        {scopes.map((w, i) => `${scopeCount(w)}${i === 0 ? ` of its ${earlier.entities.length} rows` : ''} ${quoted(w)}${i < scopes.length - 1 ? ' and ' : ''}`).join('')}.
+        {' '}The {latestYear} report's table has no such column{isEarlier ? <>; <a href={years[0]!.path}>the {latestYear} page</a> quotes the paragraph the report prints above it</> : <>; its paragraph above the table is quoted below</>}. Each page shows only what its own report prints, and ClinX shows no change from one year to the other.
+      </p>
+    </div>
+  )
+}

@@ -1,5 +1,5 @@
 import { parseCsv } from './csv';
-import { anyFormSpec, entityType as toEntityType, formSpec, recordKind as toRecordKind, reportFormSpec, totalsFormSpec, type DrugScheduleSpec, type EntityType, type FormSpec, type RecordKind, type ReportFormSpec, type ReportGroup, type RowKey, type SubmissionRow, type TotalsFigure, type TotalsFormSpec, type TotalsRow, type TotalsTableSpec } from './forms';
+import { anyFormSpec, drugListsFormSpec, entityType as toEntityType, formSpec, recordKind as toRecordKind, reportFormSpec, totalsFormSpec, type DrugListSpec, type DrugListsFormSpec, type DrugReportFigure, type DrugScheduleSpec, type EarlierGrouping, type EarlierPayer, type EarlierReportSpec, type EntityType, type FormSpec, type RecordKind, type ReportFormSpec, type ReportGroup, type RowKey, type SubmissionRow, type TotalsFigure, type TotalsFormSpec, type TotalsRow, type TotalsTableSpec } from './forms';
 import { amountScale, claimsSortValue, largestBy, type AmountScale, type ClaimsStatus } from './drugs';
 import { centsToDecimal, foldName, groupDrugRows, toCsv, type DrugGroup } from './drug-groups';
 import { fdaNameFor, fdaTitle, getFdaNames, type FdaName, type FdaNames, type FdaSource } from './fda-names';
@@ -81,6 +81,8 @@ export interface LineItem {
   normalizedVendor: string;
   category: string;
   descriptionAsFiled: string;
+  /** Maine's drug lists: the drug's NDC as printed, with its leading zeros; blank on every other row. */
+  ndcAsFiled: string;
   amountAsFiled: string;
   /** Whole cents for a dollar amount; null for a percentage, a cell with no figure (N/A, N/R) or text. */
   amountCents: Cents | null;
@@ -363,6 +365,7 @@ export function buildDataset(raw: RawDataset): Dataset {
       normalizedVendor: r['normalized_vendor']!,
       category: r['category']!,
       descriptionAsFiled: r['description_as_filed']!,
+      ndcAsFiled: r['ndc_as_filed']!,
       amountAsFiled,
       amountCents: unit === 'usd' ? parseCents(amountAsFiled) : null,
       answerAsFiled: r['answer_as_filed']!,
@@ -704,6 +707,23 @@ export interface ReportEntityRow {
   pctValue: string;
   /** Says which column and page a link leads to. */
   cite: { net: string; pct: string };
+  /** The same entity's row in the other year's report, when that report names it too. */
+  otherYear: OtherYearRow | null;
+  /** The anchor of this row on its page. */
+  anchor: string;
+}
+
+/** Where the same entity is named in the other year's report. */
+export interface OtherYearRow {
+  year: string;
+  /** The address of the other year's page, with the anchor of the row. */
+  href: string;
+}
+
+/** One year of a state's report, for the switch between years. */
+export interface ReportYear {
+  year: string;
+  path: string;
 }
 
 export interface ReportTotalRow {
@@ -743,6 +763,18 @@ export interface ReportView {
   differences: ReportDifference[];
   /** The entity rows' net revenue added together, in cents. */
   entitySumCents: Cents;
+  /** Every year the dataset holds for this state's report, latest first, with this page's own year in it. */
+  years: ReportYear[];
+}
+
+/** The anchor of an entity's row on a report page. */
+export function entityAnchor(entity: Entity): string {
+  return `entity-${entity.slug}`;
+}
+
+/** The address of a state's report page for one year: the latest year is the state's own address. */
+export function reportPath(state: string, year: string, latest: string): string {
+  return year === latest ? `/scorecard/${state.toLowerCase()}/` : `/scorecard/${state.toLowerCase()}/${year}/`;
 }
 
 function oneRow(rows: readonly LineItem[], schedule: string, line: string, who: string): LineItem {
@@ -753,10 +785,16 @@ function oneRow(rows: readonly LineItem[], schedule: string, line: string, who: 
 
 export function buildReportViews(data: Dataset): ReportView[] {
   const entityById = new Map(data.entities.map((e) => [e.entityId, e]));
-  const reportFilings = data.filings.filter((f) => f.recordKind !== 'filing' && anyFormSpec(f.form).layout === 'state-report');
+  // The latest year only: a form's earlier year has its own view (buildEarlierReportViews).
+  const reportFilings = data.filings.filter((f) => {
+    if (f.recordKind === 'filing') return false;
+    const spec = anyFormSpec(f.form);
+    return spec.layout === 'state-report' && f.reportingYear !== spec.earlier?.year;
+  });
   const states = [...new Set(reportFilings.map((f) => f.state))].sort();
   return states.map((state) => {
     const mine = reportFilings.filter((f) => f.state === state);
+    const years = reportYears(data, state);
     const spec = reportFormSpec(sharedValue(mine.map((f) => f.form), `${state}: form`));
     const totalsFilings = mine.filter((f) => f.recordKind === 'state_report_totals');
     if (totalsFilings.length !== 1) throw new Error(`${state}: expected one totals record, found ${totalsFilings.length}`);
@@ -795,6 +833,8 @@ export function buildReportViews(data: Dataset): ReportView[] {
             net: `${t.netHeading} for ${entity.nameAsFiled}, page ${page} of the report PDF`,
             pct: `${t.pctHeading} for ${entity.nameAsFiled}, page ${page} of the report PDF`,
           },
+          otherYear: otherYearOf(data, entity, filing.reportingYear, years),
+          anchor: entityAnchor(entity),
         };
       })
       .sort((a, b) => compareNames(a.name, b.name));
@@ -859,8 +899,26 @@ export function buildReportViews(data: Dataset): ReportView[] {
       .map((difference) => ({ difference, owner: ownerOf(difference.filingId) }))
       .sort((a, b) => (a.owner === null ? 0 : 1) - (b.owner === null ? 0 : 1) || (a.owner !== null && b.owner !== null ? compareNames(a.owner, b.owner) : 0));
 
-    return { state, spec, filing: statewide, entities, totals, notes, differences, entitySumCents };
+    return { state, spec, filing: statewide, entities, totals, notes, differences, entitySumCents, years };
   });
+}
+
+/** The years a state's report is held for, latest first. The form says which year is the earlier one. */
+function reportYears(data: Dataset, state: string): ReportYear[] {
+  const mine = data.filings.filter((f) => f.state === state && f.recordKind === 'state_report_totals' && anyFormSpec(f.form).layout === 'state-report');
+  const spec = reportFormSpec(sharedValue(mine.map((f) => f.form), `${state}: form`));
+  const latest = [...new Set(mine.map((f) => f.reportingYear))].filter((y) => y !== spec.earlier?.year);
+  if (latest.length !== 1) throw new Error(`${state}: expected one latest year, found ${latest.length}`);
+  const all = [latest[0]!, ...(spec.earlier && mine.some((f) => f.reportingYear === spec.earlier!.year) ? [spec.earlier.year] : [])];
+  return all.map((year) => ({ year, path: reportPath(state, year, latest[0]!) }));
+}
+
+/** The same entity's row in the other year, when the other year's report names it (the entity id is the key). */
+function otherYearOf(data: Dataset, entity: Entity, thisYear: string, years: readonly ReportYear[]): OtherYearRow | null {
+  const other = years.find((y) => y.year !== thisYear);
+  if (!other) return null;
+  const has = data.filings.some((f) => f.entityId === entity.entityId && f.recordKind === 'state_report_row' && f.reportingYear === other.year);
+  return has ? { year: other.year, href: `${other.path}#${entityAnchor(entity)}` } : null;
 }
 
 /** The report view of one state; a state without one stops the build. */
@@ -1038,6 +1096,318 @@ export function buildTotalsViews(data: Dataset): TotalsView[] {
 export function totalsViewFor(data: Dataset, state: string): TotalsView {
   const found = buildTotalsViews(data).find((v) => v.state === state);
   if (!found) throw new Error(`${state}: no report of statewide totals in the dataset`);
+  return found;
+}
+
+// ---------------------------------------------------------------------------
+// A state's page for an earlier year (Minnesota's 2023 data): the same kind of record as the latest
+// year's, with other columns and other tables. Each year shows only what its own printed document has; no
+// figure is carried from one year to the other.
+
+export interface EarlierEntityRow {
+  entity: Entity;
+  filing: Filing;
+  /** The name exactly as this year's document prints it (the entity's own name may be the latest year's). */
+  name: string;
+  scope: LineItem;
+  net: LineItem;
+  pct: LineItem;
+  programs: LineItem;
+  netCents: Cents | null;
+  pctValue: string;
+  programsValue: string;
+  cite: { net: string; pct: string; programs: string };
+  /** The same entity's row in the latest year, when that year names it too. */
+  otherYear: OtherYearRow | null;
+  anchor: string;
+}
+
+export interface EarlierGroupingRow {
+  grouping: EarlierGrouping;
+  /** The grouping's major type as printed; null on the Total row, which prints none. */
+  majorType: LineItem | null;
+  cells: { payer: EarlierPayer; row: LineItem; cite: string }[];
+}
+
+export interface EarlierReportView {
+  state: string;
+  spec: ReportFormSpec;
+  earlier: EarlierReportSpec;
+  year: string;
+  filing: Filing;
+  entities: EarlierEntityRow[];
+  groupings: EarlierGroupingRow[];
+  notes: Record<Exclude<keyof EarlierReportSpec['notes'], 'schedule'>, LineItem>;
+  differences: Discrepancy[];
+  years: ReportYear[];
+  /** The first and last page of the PDF the figures come from. */
+  pages: { first: number; last: number };
+}
+
+export function buildEarlierReportViews(data: Dataset): EarlierReportView[] {
+  const entityById = new Map(data.entities.map((e) => [e.entityId, e]));
+  const out: EarlierReportView[] = [];
+  const states = [...new Set(data.filings.filter((f) => f.recordKind !== 'filing' && anyFormSpec(f.form).layout === 'state-report').map((f) => f.state))].sort();
+  for (const state of states) {
+    const mine = data.filings.filter((f) => f.state === state && f.recordKind !== 'filing' && anyFormSpec(f.form).layout === 'state-report');
+    const spec = reportFormSpec(sharedValue(mine.map((f) => f.form), `${state}: form`));
+    const e = spec.earlier;
+    if (!e) continue;
+    const records = mine.filter((f) => f.reportingYear === e.year);
+    if (records.length === 0) continue;
+    const years = reportYears(data, state);
+    const totalsFilings = records.filter((f) => f.recordKind === 'state_report_totals');
+    if (totalsFilings.length !== 1) throw new Error(`${state} ${e.year}: expected one totals record, found ${totalsFilings.length}`);
+    const statewide = totalsFilings[0]!;
+    const pdfPage = (filing: Filing, page: number): number => {
+      if (page > filing.pageCount) throw new Error(`${filing.filingId}: page ${page} is beyond the ${filing.pageCount} pages of the PDF`);
+      return page;
+    };
+    const usedPages: number[] = [];
+
+    const t = e.entityTable;
+    const entities: EarlierEntityRow[] = records
+      .filter((f) => f.recordKind === 'state_report_row')
+      .map((filing) => {
+        const entity = entityById.get(filing.entityId)!;
+        const rows = data.lineItems.filter((r) => r.filingId === filing.filingId);
+        if (rows.length !== 4) throw new Error(`${filing.filingId}: expected four figure rows, found ${rows.length}`);
+        const scope = oneRow(rows, t.schedule, t.scope.line, filing.filingId);
+        const net = oneRow(rows, t.schedule, t.net.line, filing.filingId);
+        const pct = oneRow(rows, t.schedule, t.pct.line, filing.filingId);
+        const programs = oneRow(rows, t.schedule, t.programs.line, filing.filingId);
+        for (const [row, column] of [[scope, t.scope], [net, t.net], [pct, t.pct], [programs, t.programs]] as const) {
+          if (row.unit !== column.unit) throw new Error(`${filing.filingId}: ${column.line} has the wrong unit`);
+          if (row.descriptionAsFiled !== column.heading) throw new Error(`${filing.filingId}: a column heading is not the one the document prints`);
+          if (row.labelAsFiled !== scope.labelAsFiled) throw new Error(`${filing.filingId}: the four figures are not under one name`);
+        }
+        if (new Set(rows.map((r) => r.page)).size !== 1) throw new Error(`${filing.filingId}: the figures are on different pages`);
+        if (scope.answerAsFiled === '') throw new Error(`${filing.filingId}: the scope is blank`);
+        const page = pdfPage(filing, net.page);
+        usedPages.push(page);
+        const number = (row: LineItem): string => {
+          const text = row.amountAsFiled.trim().replace(/%$/, '');
+          return /^\d+(?:\.\d+)?$/.test(text) ? text : '';
+        };
+        const name = scope.labelAsFiled;
+        return {
+          entity,
+          filing,
+          name,
+          scope,
+          net,
+          pct,
+          programs,
+          netCents: net.amountCents,
+          pctValue: number(pct),
+          programsValue: number(programs),
+          cite: {
+            net: `${t.net.heading} for ${name}, page ${page} of the report PDF`,
+            pct: `${t.pct.heading} for ${name}, page ${page} of the report PDF`,
+            programs: `${t.programs.heading} for ${name}, page ${page} of the report PDF`,
+          },
+          otherYear: otherYearOf(data, entity, e.year, years),
+          anchor: entityAnchor(entity),
+        };
+      })
+      .sort((a, b) => compareNames(a.name, b.name));
+
+    const statewideRows = data.lineItems.filter((r) => r.filingId === statewide.filingId);
+    const tt = e.totalsTable;
+    const groupings: EarlierGroupingRow[] = tt.groupings.map((grouping) => {
+      const typeRows = statewideRows.filter((r) => r.schedule === tt.schedule && r.line === `${grouping.id}_${tt.majorTypeSuffix}`);
+      if (typeRows.length > 1) throw new Error(`${statewide.filingId}: ${grouping.id} has more than one major type`);
+      const majorType = typeRows[0] ?? null;
+      if ((grouping.kind === 'total') !== (majorType === null)) throw new Error(`${statewide.filingId}: ${grouping.id} should ${grouping.kind === 'total' ? 'not ' : ''}have a major type`);
+      if (majorType && (majorType.labelAsFiled !== grouping.label || majorType.descriptionAsFiled !== tt.majorTypeHeading || majorType.answerAsFiled === '')) throw new Error(`${statewide.filingId}: the major type of ${grouping.id} is not as the document prints it`);
+      const cells = tt.payers.map((payer) => {
+        const row = oneRow(statewideRows, tt.schedule, `${grouping.id}_${payer.id}`, statewide.filingId);
+        if (row.unit !== 'usd' || row.amountCents === null) throw new Error(`${statewide.filingId}: ${row.line} is not a dollar figure`);
+        if (row.labelAsFiled !== grouping.label) throw new Error(`${statewide.filingId}: ${row.line} is labelled "${row.labelAsFiled}", expected "${grouping.label}"`);
+        if (row.descriptionAsFiled !== payer.heading) throw new Error(`${statewide.filingId}: ${row.line} is under the heading "${row.descriptionAsFiled}", expected "${payer.heading}"`);
+        if (row.rowKind !== grouping.kind) throw new Error(`${statewide.filingId}: ${row.line} is a ${row.rowKind} row, expected ${grouping.kind}`);
+        usedPages.push(pdfPage(statewide, row.page));
+        return { payer, row, cite: `${grouping.label}, ${payer.heading}, page ${row.page} of the report PDF` };
+      });
+      if (majorType) usedPages.push(pdfPage(statewide, majorType.page));
+      return { grouping, majorType, cells };
+    });
+    const noteLines = Object.entries(e.notes).filter(([key]) => key !== 'schedule') as [Exclude<keyof EarlierReportSpec['notes'], 'schedule'>, string][];
+    const expected = tt.groupings.length * tt.payers.length + (tt.groupings.length - 1) + noteLines.length;
+    if (statewideRows.length !== expected) throw new Error(`${statewide.filingId}: expected ${expected} rows, found ${statewideRows.length}`);
+
+    const notes = {} as EarlierReportView['notes'];
+    for (const [key, line] of noteLines) {
+      notes[key] = oneRow(statewideRows, e.notes.schedule, line, statewide.filingId);
+      usedPages.push(pdfPage(statewide, notes[key].page));
+    }
+
+    // The sums the dataset lists must be the ones this site's own rows give.
+    const own = data.discrepancies.filter((d) => records.some((r) => r.filingId === d.filingId));
+    const rowsRule = own.find((d) => d.rule === `${t.schedule}.rows=stated_entities`);
+    if (rowsRule && Number(rowsRule.expected) !== entities.length) throw new Error(`${statewide.filingId}: the listed row count differs from the ${entities.length} rows`);
+    const grid = new Map(groupings.map((g) => [g.grouping.id, new Map(g.cells.map((c) => [c.payer.id, c.row.amountCents!]))]));
+    for (const d of own.filter((x) => x.rule.startsWith(`${tt.schedule}.column_`))) {
+      const payer = d.rule.slice(`${tt.schedule}.column_`.length).replace(/\.rows=total$/, '');
+      const sum = sumCents(groupings.filter((g) => g.grouping.kind !== 'total').map((g) => grid.get(g.grouping.id)!.get(payer)!));
+      if (parseCents(d.expected) !== sum || parseCents(d.filed) !== grid.get('total')!.get(payer)!) throw new Error(`${statewide.filingId}: the listed sum of ${payer} differs from the rows added together`);
+    }
+
+    const pagesSorted = usedPages.sort((a, b) => a - b);
+    out.push({ state, spec, earlier: e, year: e.year, filing: statewide, entities, groupings, notes, differences: own, years, pages: { first: pagesSorted[0]!, last: pagesSorted[pagesSorted.length - 1]! } });
+  }
+  return out;
+}
+
+/** The earlier year's view of one state; a state without one stops the build. */
+export function earlierReportViewFor(data: Dataset, state: string): EarlierReportView {
+  const found = buildEarlierReportViews(data).find((v) => v.state === state);
+  if (!found) throw new Error(`${state}: no earlier year in the dataset`);
+  return found;
+}
+
+// ---------------------------------------------------------------------------
+// A state's own document of statewide figures and lists of drugs (Maine): one record, no row that names a
+// hospital, and no measure. Nothing here branches on the state.
+
+/** One of the summary's figures: the row, how it is printed and where it is. */
+export interface DrugReportFigureCell {
+  figure: DrugReportFigure;
+  row: LineItem;
+  /** The figure exactly as printed ("27", "$409.9M", "60.0%"). */
+  printed: string;
+  /** The sentence the figure is printed in. */
+  sentence: string;
+  cite: string;
+}
+
+export interface DrugListRow {
+  /** The NDC as printed, leading zeros kept. */
+  ndc: string;
+  /** The drug's description and its therapeutic class, as printed. */
+  drug: string;
+  drugClass: string;
+  cost: LineItem;
+  savings: LineItem;
+  hospitals: LineItem;
+  /** The number of hospitals that named the drug, as a number. */
+  hospitalCount: number;
+  page: number;
+}
+
+export interface DrugListView {
+  spec: DrugListSpec;
+  /** The title and sub-title printed above the list, and the sentence that gives the share. */
+  title: LineItem;
+  subtitle: LineItem;
+  share: LineItem;
+  rows: DrugListRow[];
+  /** The first and last page of the PDF the list is printed on. */
+  pages: { first: number; last: number };
+}
+
+export interface DrugReportView {
+  state: string;
+  spec: DrugListsFormSpec;
+  filing: Filing;
+  summaryTitle: LineItem;
+  summary: DrugReportFigureCell[];
+  lists: DrugListView[];
+  /** The hospitals named, in the order the pages print them. */
+  hospitals: string[];
+  /** The dataset's description of the pages where each hospital describes its programs. */
+  descriptions: Attachment;
+  /** The count the site's lists give for the state. */
+  count: number;
+  differences: Discrepancy[];
+  pages: { first: number; last: number };
+}
+
+/** The hospital names in the attachment's note: the words between "in the order the pages print them: " and the sentence after the list. */
+export function hospitalNames(note: string): string[] {
+  const start = 'in the order the pages print them: ';
+  const from = note.indexOf(start);
+  const to = note.indexOf('. The descriptions');
+  if (from < 0 || to < from) throw new Error('The attachment note does not list the hospitals the way this site reads it');
+  return note.slice(from + start.length, to).split('; ');
+}
+
+export function buildDrugReportViews(data: Dataset): DrugReportView[] {
+  const records = data.filings.filter((f) => f.recordKind !== 'filing' && anyFormSpec(f.form).layout === 'state-drug-lists');
+  const states = [...new Set(records.map((f) => f.state))].sort();
+  return states.map((state) => {
+    const mine = records.filter((f) => f.state === state);
+    if (mine.length !== 1 || mine[0]!.recordKind !== 'state_report_totals') throw new Error(`${state}: expected one statewide record, found ${mine.length}`);
+    const filing = mine[0]!;
+    const spec = drugListsFormSpec(filing.form);
+    const who = filing.filingId;
+    const rows = data.lineItems.filter((r) => r.filingId === who);
+    const used = new Set<LineItem>();
+    const take = (schedule: string, line: string): LineItem => {
+      const row = oneRow(rows, schedule, line, who);
+      if (row.page > filing.pageCount) throw new Error(`${who}: page ${row.page} is beyond the ${filing.pageCount} pages of the PDF`);
+      used.add(row);
+      return row;
+    };
+
+    const summaryTitle = take(spec.notes.schedule, spec.summary.titleNote);
+    const summary: DrugReportFigureCell[] = spec.summary.figures.map((figure) => {
+      const row = take(spec.summary.schedule, figure.line);
+      const printed = figure.kind === 'text' ? row.answerAsFiled : row.amountAsFiled;
+      if (printed === '') throw new Error(`${who}: ${figure.line} is blank`);
+      if (figure.kind === 'text' && row.unit !== 'none') throw new Error(`${who}: ${figure.line} should be kept as printed text`);
+      if (figure.kind === 'count' && (row.unit !== 'count' || !/^\d+$/.test(printed))) throw new Error(`${who}: ${figure.line} is not a count`);
+      if (figure.kind === 'percent' && (row.unit !== 'percent' || !printed.endsWith('%'))) throw new Error(`${who}: ${figure.line} is not a percentage`);
+      if (row.labelAsFiled === '') throw new Error(`${who}: the sentence of ${figure.line} is blank`);
+      return { figure, row, printed, sentence: row.labelAsFiled, cite: `${figure.caption}, page ${row.page} of the report PDF` };
+    });
+
+    const lists: DrugListView[] = spec.lists.map((list) => {
+      const listRows = rows.filter((r) => r.schedule === list.schedule);
+      const share = take(list.schedule, list.shareLine);
+      if (share.unit !== 'percent') throw new Error(`${who}: the share of ${list.schedule} is not a percentage`);
+      const ndcs: string[] = [];
+      for (const r of listRows) if (r.line !== list.shareLine && !ndcs.includes(r.ndcAsFiled)) ndcs.push(r.ndcAsFiled);
+      if (ndcs.length !== list.drugs) throw new Error(`${who}: ${list.schedule} holds ${ndcs.length} drugs, the form says ${list.drugs}`);
+      const drugRows: DrugListRow[] = ndcs.map((ndc) => {
+        if (!/^\d{11}$/.test(ndc)) throw new Error(`${who}: "${ndc}" is not an eleven-digit NDC`);
+        const cost = take(list.schedule, `${ndc}_${list.costSuffix}`);
+        const savings = take(list.schedule, `${ndc}_${list.savingsSuffix}`);
+        const hospitals = take(list.schedule, `${ndc}_${list.hospitalsSuffix}`);
+        if (cost.unit !== 'usd' || savings.unit !== 'usd' || hospitals.unit !== 'count') throw new Error(`${who}: ${ndc} has a figure with the wrong unit`);
+        if (cost.labelAsFiled === '' || cost.nameAsFiled === '') throw new Error(`${who}: ${ndc} has no drug or no class`);
+        for (const r of [savings, hospitals]) {
+          if (r.labelAsFiled !== cost.labelAsFiled || r.nameAsFiled !== cost.nameAsFiled || r.ndcAsFiled !== ndc) throw new Error(`${who}: the three figures of ${ndc} do not name one drug`);
+        }
+        if (cost.page !== savings.page || cost.page !== hospitals.page) throw new Error(`${who}: ${ndc} is on more than one page`);
+        return { ndc, drug: cost.labelAsFiled, drugClass: cost.nameAsFiled, cost, savings, hospitals, hospitalCount: parseCount(hospitals.amountAsFiled, `${who} ${hospitals.line}`), page: cost.page };
+      });
+      const pages = drugRows.map((r) => r.page).sort((a, b) => a - b);
+      return { spec: list, title: take(spec.notes.schedule, list.titleNote), subtitle: take(spec.notes.schedule, list.subtitleNote), share, rows: drugRows, pages: { first: pages[0]!, last: pages[pages.length - 1]! } };
+    });
+
+    // Every row of the record is drawn; a row this page does not know stops the build.
+    const stray = rows.filter((r) => !used.has(r));
+    if (stray.length > 0) throw new Error(`${who}: ${stray.length} row(s) the page does not know, the first is ${stray[0]!.schedule} ${stray[0]!.line}`);
+
+    const countRow = oneRow(rows, spec.countOf.schedule, spec.countOf.line, who);
+    const count = parseCount(countRow.amountAsFiled, `${who} ${countRow.schedule} ${countRow.line}`);
+    const attachments = data.attachments.filter((a) => a.filingId === who && a.kind === 'narrative');
+    if (attachments.length !== 1) throw new Error(`${who}: expected one attachment of hospital descriptions, found ${attachments.length}`);
+    const descriptions = attachments[0]!;
+    const hospitals = hospitalNames(descriptions.note);
+    if (hospitals.length !== count) throw new Error(`${who}: the attachment names ${hospitals.length} hospitals, the summary says ${count}`);
+    if (new Set(hospitals).size !== hospitals.length) throw new Error(`${who}: a hospital is named twice`);
+    if (descriptions.lastPage > filing.pageCount) throw new Error(`${who}: the descriptions end beyond the PDF`);
+    const pages = [...used].map((r) => r.page).sort((a, b) => a - b);
+    return { state, spec, filing, summaryTitle, summary, lists, hospitals, descriptions, count, differences: data.discrepancies.filter((d) => d.filingId === who), pages: { first: pages[0]!, last: pages[pages.length - 1]! } };
+  });
+}
+
+/** The drug-list view of one state; a state without one stops the build. */
+export function drugReportViewFor(data: Dataset, state: string): DrugReportView {
+  const found = buildDrugReportViews(data).find((v) => v.state === state);
+  if (!found) throw new Error(`${state}: no statewide figures with lists of drugs in the dataset`);
   return found;
 }
 

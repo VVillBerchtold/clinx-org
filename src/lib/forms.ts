@@ -44,8 +44,8 @@ export interface RowKey {
 /** What every form says, whoever made the record. */
 export interface FormBase {
   id: string;
-  /** 'schedules': a cover page and lettered schedules. 'one-page': a single page of figures. 'state-report': tables in a state's own report, one row per entity. 'state-totals': a state's own report that prints statewide totals only. */
-  layout: 'schedules' | 'one-page' | 'state-report' | 'state-totals';
+  /** 'schedules': a cover page and lettered schedules. 'one-page': a single page of figures. 'state-report': tables in a state's own report, one row per entity. 'state-totals': a state's own report that prints statewide totals only. 'state-drug-lists': a state's own report that prints statewide totals and lists of drugs, no row naming a filer. */
+  layout: 'schedules' | 'one-page' | 'state-report' | 'state-totals' | 'state-drug-lists';
   /** The kinds of record a filing of this form may be. */
   recordKinds: readonly RecordKind[];
   /** One filing of this form, and the word for the period it covers. */
@@ -128,6 +128,48 @@ export interface ReportFormSpec extends FormBase {
   notes: { schedule: string; aboveEntityTable: string; entityTableTitle: string; entityTableSource: string; aboveTotalsTable: string; totalsTableTitle: string; totalsTableSource: string };
   /** The entity type that follows from a printed type. */
   typeFor: (printedType: string) => EntityType;
+  /**
+   * The same state's report of an earlier year, when the dataset holds one. It prints other columns and
+   * other tables, so it has its own lines; the form says which year it is (`reporting_year`) and
+   * how to read it. The page of the earlier year shows only what that report prints.
+   */
+  earlier?: EarlierReportSpec;
+}
+
+/** One column of the earlier report's entity table, besides the entity's name: the line and the heading the report prints. */
+export interface EarlierColumn {
+  line: string;
+  heading: string;
+  unit: 'usd' | 'percent' | 'none';
+}
+
+/** One payer column of the earlier report's table of totals. */
+export interface EarlierPayer {
+  /** The line ends in `_<id>`. */
+  id: string;
+  /** The heading the report prints. */
+  heading: string;
+}
+
+/** One grouping (row) of the earlier report's table of totals. */
+export interface EarlierGrouping {
+  /** The line starts with `<id>_`. */
+  id: string;
+  /** The row's label exactly as the report prints it. */
+  label: string;
+  kind: RowKind;
+}
+
+/** How to read a state's report of an earlier year: an entity table and a table of totals by grouping and payer. */
+export interface EarlierReportSpec {
+  /** The `reporting_year` of its records. */
+  year: string;
+  /** The entity table: scope, net revenue, share of the statewide figure and share attributed to the state's own programs. */
+  entityTable: { schedule: string; scope: EarlierColumn; net: EarlierColumn; pct: EarlierColumn; programs: EarlierColumn };
+  /** The totals table: one row per grouping (with its major type as text), one column per payer and a Total column; the last grouping is the Total row. */
+  totalsTable: { schedule: string; majorTypeSuffix: string; majorTypeHeading: string; groupingHeading: string; payers: readonly EarlierPayer[]; groupings: readonly EarlierGrouping[] };
+  /** The report's own words around the tables: the line of each page note. */
+  notes: { schedule: string; aboveEntityTable: string; entityTableTitle: string; entityTableSource: string; entityTableNote: string; totalsTableTitle: string; totalsTableSource: string };
 }
 
 /** A row of a table in a statewide report: a figure cell and a percentage cell under the same label. */
@@ -197,7 +239,52 @@ export interface TotalsFormSpec extends FormBase {
   notes: { schedule: string; summary: readonly string[]; closing: readonly string[]; notDrawn: readonly string[] };
 }
 
-export type AnyFormSpec = FormSpec | ReportFormSpec | TotalsFormSpec;
+/** One of a drug report's lists of drugs: a share sentence, then three figures for each drug. */
+export interface DrugListSpec {
+  /** The schedule in line_items.csv; also the list's anchor on the page. */
+  schedule: string;
+  /** Short name used in this site's own words, for example "most costly". */
+  short: string;
+  /** The line of the share sentence, and the lines of a page note that hold the report's title and sub-title of the list. */
+  shareLine: string;
+  titleNote: string;
+  subtitleNote: string;
+  /** A drug's three lines are `<ndc>_<suffix>`. */
+  costSuffix: string;
+  savingsSuffix: string;
+  hospitalsSuffix: string;
+  /** The drugs the report prints in this list, which the dataset must hold exactly. */
+  drugs: number;
+}
+
+/** A figure the summary prints in a sentence: its line, the kind of cell it is, and the short name this site gives it. */
+export interface DrugReportFigure {
+  line: string;
+  /** 'count' and 'percent' have a parsed amount; 'text' is a figure printed with a letter for millions, kept as text. */
+  kind: 'count' | 'percent' | 'text';
+  /** What the figure is, in a few words. */
+  caption: string;
+}
+
+/**
+ * A form on which a state prints statewide figures and lists of drugs added across its hospitals: one
+ * record, no row that names a hospital, and none of the three measures.
+ */
+export interface DrugListsFormSpec extends FormBase {
+  layout: 'state-drug-lists';
+  /** The state body that prints the report. */
+  agency: string;
+  /** The summary's four figures, in the order printed. */
+  summary: { schedule: string; figures: readonly DrugReportFigure[]; titleNote: string };
+  /** The lists of drugs, in the order printed. */
+  lists: readonly DrugListSpec[];
+  /** The line of the summary whose count the site's lists give for the state, and the word for what is counted. */
+  countOf: { schedule: string; line: string; noun: string };
+  /** The line of the page notes the form keeps. */
+  notes: { schedule: string };
+}
+
+export type AnyFormSpec = FormSpec | ReportFormSpec | TotalsFormSpec | DrugListsFormSpec;
 
 const A = (line: string): RowKey => ({ schedule: 'A', line, kind: 'detail' });
 
@@ -297,12 +384,44 @@ const MN: ReportFormSpec = {
   periodWord: 'data year',
   asWord: 'printed',
   publisher: "Minnesota Department of Health's website",
-  shownSchedules: ['table_6_1', 'table_6_2', 'page_note'],
+  shownSchedules: ['table_6_1', 'table_6_2', 'table_5', 'table_6', 'page_note'],
   withheldSchedules: [],
   entityTable: { schedule: 'table_6_1', netLine: 'net_revenue', pctLine: 'pct_of_statewide', netHeading: 'Net 340B Revenue ($)', pctHeading: '% of Statewide Net 340B Revenue' },
   totalsTable: { schedule: 'table_6_2', netSuffix: 'net_revenue', pctSuffix: 'pct_of_total', netHeading: 'Net 340B Revenue ($)', pctHeading: '% of Total', groups: MN_GROUPS },
   notes: { schedule: 'page_note', aboveEntityTable: 'note_1', entityTableTitle: 'note_2', entityTableSource: 'note_3', aboveTotalsTable: 'note_4', totalsTableTitle: 'note_5', totalsTableSource: 'note_6' },
   typeFor: (printedType) => (/\bHospital\b/.test(printedType) ? 'hospital' : 'other'),
+  earlier: {
+    year: '2023',
+    entityTable: {
+      schedule: 'table_5',
+      scope: { line: 'scope', heading: 'Scope of Reported Data', unit: 'none' },
+      net: { line: 'net_revenue', heading: 'Net 340B Revenue ($)', unit: 'usd' },
+      pct: { line: 'pct_of_statewide', heading: '% of Statewide Net 340B Revenue', unit: 'percent' },
+      programs: { line: 'pct_mhcp', heading: '% of Entity’s 340B Net Revenue attributed to Minnesota Health Care Programs', unit: 'percent' },
+    },
+    totalsTable: {
+      schedule: 'table_6',
+      majorTypeSuffix: 'major_type',
+      majorTypeHeading: 'Covered Entity Major Type',
+      groupingHeading: 'Covered Entity Grouping',
+      payers: [
+        { id: 'commercial', heading: 'Commercial' },
+        { id: 'medicare', heading: 'Medicare' },
+        { id: 'mhcp', heading: 'Minnesota Health Care Programs (MHCP)' },
+        { id: 'other', heading: 'Other' },
+        { id: 'total', heading: 'Total' },
+      ],
+      groupings: [
+        { id: 'general_acute_care', label: 'General Acute Care Hospitals (DSH)', kind: 'detail' },
+        { id: 'critical_access', label: 'Critical Access Hospitals', kind: 'detail' },
+        { id: 'other_hospitals', label: 'Other Hospitals', kind: 'detail' },
+        { id: 'disease_specific_grantees', label: 'Disease Specific Federal Grantees', kind: 'detail' },
+        { id: 'safety_net_grantees', label: 'Safety-Net Federal Grantees', kind: 'detail' },
+        { id: 'total', label: 'Total', kind: 'total' },
+      ],
+    },
+    notes: { schedule: 'page_note', aboveEntityTable: 'note_1', entityTableTitle: 'note_2', entityTableSource: 'note_3', entityTableNote: 'note_4', totalsTableTitle: 'note_5', totalsTableSource: 'note_6' },
+  },
   titleSuffix: (year) => `340B data, ${year}`,
 };
 
@@ -410,7 +529,56 @@ const ID: TotalsFormSpec = {
   titleSuffix: (year) => `340B data, ${year}`,
 };
 
-export const FORMS: Readonly<Record<string, AnyFormSpec>> = { [RI.id]: RI, [VT.id]: VT, [MN.id]: MN, [ID.id]: ID };
+const ME_COSTLY: DrugListSpec = {
+  schedule: 'top3_costly',
+  short: 'most costly',
+  shareLine: 'pct_of_acquisition_cost',
+  titleNote: 'note_2',
+  subtitleNote: 'note_3',
+  costSuffix: 'acquisition_cost',
+  savingsSuffix: 'estimated_savings',
+  hospitalsSuffix: 'hospitals',
+  drugs: 37,
+};
+
+const ME_FREQUENT: DrugListSpec = {
+  ...ME_COSTLY,
+  schedule: 'top3_frequent',
+  short: 'most frequently dispensed',
+  titleNote: 'note_4',
+  subtitleNote: 'note_5',
+  drugs: 54,
+};
+
+const ME: DrugListsFormSpec = {
+  id: 'me-mhdo-340b-report',
+  layout: 'state-drug-lists',
+  recordKinds: ['state_report_totals'],
+  agency: 'Maine Health Data Organization',
+  noun: 'report',
+  nounPlural: 'reports',
+  periodWord: 'fiscal year',
+  asWord: 'printed',
+  publisher: "Maine Health Data Organization's website",
+  shownSchedules: ['summary', 'top3_costly', 'top3_frequent', 'page_note'],
+  withheldSchedules: [],
+  summary: {
+    schedule: 'summary',
+    titleNote: 'note_1',
+    figures: [
+      { line: 'hospitals_reporting', kind: 'count', caption: 'Hospitals that sent data' },
+      { line: 'acquisition_cost', kind: 'text', caption: 'Spent to acquire drugs under 340B' },
+      { line: 'pct_of_drug_spend', kind: 'percent', caption: 'Share of the hospitals\' spending on all drugs' },
+      { line: 'estimated_savings', kind: 'text', caption: 'Estimated savings' },
+    ],
+  },
+  lists: [ME_COSTLY, ME_FREQUENT],
+  countOf: { schedule: 'summary', line: 'hospitals_reporting', noun: 'hospitals' },
+  notes: { schedule: 'page_note' },
+  titleSuffix: (year) => `340B report, fiscal ${year}`,
+};
+
+export const FORMS: Readonly<Record<string, AnyFormSpec>> = { [RI.id]: RI, [VT.id]: VT, [MN.id]: MN, [ID.id]: ID, [ME.id]: ME };
 
 /** Any form the site knows; an unknown id stops the build. */
 export function anyFormSpec(id: string): AnyFormSpec {
@@ -422,7 +590,7 @@ export function anyFormSpec(id: string): AnyFormSpec {
 /** A form on which entities file their own figures (the three measures exist). */
 export function formSpec(id: string): FormSpec {
   const spec = anyFormSpec(id);
-  if (spec.layout === 'state-report' || spec.layout === 'state-totals') throw new Error(`The form "${id}" is a state's report about entities, not a filing`);
+  if (spec.layout === 'state-report' || spec.layout === 'state-totals' || spec.layout === 'state-drug-lists') throw new Error(`The form "${id}" is a state's report about entities, not a filing`);
   return spec;
 }
 
@@ -437,5 +605,12 @@ export function reportFormSpec(id: string): ReportFormSpec {
 export function totalsFormSpec(id: string): TotalsFormSpec {
   const spec = anyFormSpec(id);
   if (spec.layout !== 'state-totals') throw new Error(`The form "${id}" is not a state's report of statewide totals`);
+  return spec;
+}
+
+/** A form on which a state prints statewide figures and lists of drugs. */
+export function drugListsFormSpec(id: string): DrugListsFormSpec {
+  const spec = anyFormSpec(id);
+  if (spec.layout !== 'state-drug-lists') throw new Error(`The form "${id}" is not a state's report of statewide figures and lists of drugs`);
   return spec;
 }

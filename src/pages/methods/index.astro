@@ -4,6 +4,7 @@ import Base from '../../layouts/Base.astro';
 import OnPage from '../../components/OnPage.astro';
 import PageHead from '../../components/PageHead.astro';
 import { buildViews, comparabilityFollowOns, comparabilityParagraph, compareNames, formatFigure, getDataset } from '../../lib/data';
+import { anyFormSpec } from '../../lib/forms';
 import { renderInline, renderSections } from '../../lib/markdown';
 import { drawFiguresInText } from '../../lib/money';
 import { stateName } from '../../lib/states';
@@ -20,7 +21,13 @@ const whose = (filingId: string): { name: string; href: string } | null => {
   const f = filingById.get(filingId);
   const e = f && entityById.get(f.entityId);
   if (!f || !e) return null;
-  return { name: f.recordKind === 'state_report_totals' ? `${stateName(f.state)}: statewide totals` : e.nameAsFiled, href: `/scorecard/${f.state.toLowerCase()}/#differences` };
+  // A state that has an earlier year's report keeps that year's differences on the year's own page.
+  const spec = anyFormSpec(f.form);
+  const twoYears = spec.layout === 'state-report' && spec.earlier !== undefined;
+  const onEarlier = spec.layout === 'state-report' && spec.earlier?.year === f.reportingYear;
+  const where = onEarlier ? `/scorecard/${f.state.toLowerCase()}/${f.reportingYear}/` : `/scorecard/${f.state.toLowerCase()}/`;
+  const totals = twoYears ? `${stateName(f.state)}: statewide totals, ${f.reportingYear} data` : `${stateName(f.state)}: statewide totals`;
+  return { name: f.recordKind === 'state_report_totals' ? totals : e.nameAsFiled, href: `${where}#differences` };
 };
 
 // The comparability paragraph gets its own heading below, so it is taken out of section 5 here.

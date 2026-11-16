@@ -16,9 +16,9 @@ import { TOOLS, InputError } from './tools.js';
 
 export const SERVER = {
   name: 'clinx-340b',
-  title: 'ClinX: 340B laws, bills, federal notices and calendar',
-  version: '0.1.0',
-  description: 'Open tables about the federal 340B drug pricing program: state laws on the books, bills in Congress and the state legislatures, federal rules and notices, and a calendar of their dates.',
+  title: 'ClinX: 340B laws, bills, federal notices, filed reports and calendar',
+  version: '0.2.0',
+  description: 'Open tables about the federal 340B drug pricing program: state laws on the books, bills in Congress and the state legislatures, federal rules and notices, the reports covered entities and states have filed, the states whose law requires reports, and a calendar of their dates.',
   websiteUrl: 'https://clinx.org',
 };
 
@@ -32,8 +32,8 @@ const HOUR_MS = 60 * 60 * 1000;
 
 export const INSTRUCTIONS = [
   'Read-only lookups over ClinX\'s open tables on the federal 340B drug pricing program.',
-  'find_laws and get_law cover state laws already on the books; find_bills and get_bill cover bills in Congress (state "US") and the state legislatures; find_notices and get_notice cover the rules, proposed rules and notices federal agencies publish in the Federal Register (place "FED"), with comment deadlines and effective dates; calendar gives dated steps, hearings, session days and federal dates; state_overview gives one state, Congress or the federal agencies at a glance; about_the_data says where the tables come from and when each was last brought up to date.',
-  'Every row carries a link to the official page: cite it. Summaries are a reading aid written by a person from the official text, not legal advice, and a bill\'s summary can trail a newer version of its text. For a federal rule or notice the Federal Register governs. Dates on the calendar can move.',
+  'find_laws and get_law cover state laws already on the books; find_bills and get_bill cover bills in Congress (state "US") and the state legislatures; find_notices and get_notice cover the rules, proposed rules and notices federal agencies publish in the Federal Register (place "FED"), with comment deadlines and effective dates; calendar gives dated steps, hearings, session days and federal dates; reporting_states lists the states whose law requires 340B reports, grouped by what the public can see; find_filings and get_filing cover the reports covered entities and states have filed, with every figure exactly as filed; state_overview gives one state, Congress or the federal agencies at a glance; about_the_data says where the tables come from and when each was last brought up to date.',
+  'Every row carries a link to the official page: cite it. Summaries are a reading aid written by a person from the official text, not legal advice, and a bill\'s summary can trail a newer version of its text. A bill at the stage Did not pass is finished. For a federal rule or notice the Federal Register governs. A filed report is given exactly as the official file prints it, a claim count of 1 to 5 is never given, and ClinX ranks no filer. Dates on the calendar can move.',
 ].join(' ');
 
 /** What a tool says when the tables cannot be fetched. */

@@ -90,7 +90,7 @@ describe('the Minnesota view', () => {
 
   it('has no measure for any Minnesota record, and no Minnesota view among the filings', () => {
     const ids = new Set(data.filings.filter((f) => f.state === 'MN').map((f) => f.filingId));
-    expect(ids.size).toBe(27);
+    expect(ids.size).toBe(54);
     expect(data.measures.some((m) => ids.has(m.filingId))).toBe(false);
     expect(buildViews(data).some((v) => v.entity.state === 'MN')).toBe(false);
     expect(buildReportViews(data).map((v) => v.state)).toEqual(['MN']);

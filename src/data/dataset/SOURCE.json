@@ -1,23 +1,23 @@
 {
-  "dataset_version": "0.6.0",
-  "dataset_commit": "759a51bd50993fb8b55883151c46008d34432db5",
+  "dataset_version": "0.7.0",
+  "dataset_commit": "a0efcc8f9e337604870d635a8a3f528480049e7e",
   "dataset_commit_had_uncommitted_changes": false,
   "small_claim_counts_left_out_by_this_site": 0,
   "files": {
-    "340b-state-filings.json": "5da044b5d6215fcaf0f02fc3c30505d1df90b00d252ed77debc66f83bf49a3c8",
-    "340b-state-laws.json": "834fe74caf5cdef5561d9d97758fcb8791a44a897cf43f55c51a40b08697f646",
-    "attachments.csv": "154111cf25d084d6eb6d532233883839d8ff3d9eba06ff7218c0aaf5a0263ac5",
-    "discrepancies.csv": "5c24e9b17364febce4ca196ab1c509eaa4769f65be1afa1c4cc1a0a520174dbf",
-    "entities.csv": "38ef99b3e6996d9cb6633c42df628a431ad2c48c055538b98723ad9c6abfdd67",
+    "340b-state-filings.json": "f9c06ccfb76bf5be551a1cb8887dab1b3199a6e6d28dc15ac8631608e0ba59d2",
+    "340b-state-laws.json": "76e70ac7e1c465dcf91818b516fefab0900458b93d7ddde1cc78c8db785d8d44",
+    "attachments.csv": "941c8480df3edc5f79d0d23895bcee423b5b0e18a82efb597c9d8cdb77aae96a",
+    "discrepancies.csv": "07cbc519c1999d44b3ce3f51a531c8ffe2f76552e24bfab338f5b04243ee63e0",
+    "entities.csv": "a319e4dc3a2a7141323e186bc65be5cf523f2fb281673c06a4afb2c8852e8d49",
     "external-share-dark.svg": "71d93a040ea4742c4d883e7c82b280f81a9d6af60f125001b85bd1c9bb1c866d",
     "external-share-light.svg": "07bbb9e93b818afd8cdb19ef639cad3d2e5f2e9c70b5d88d60dababf69cb0a37",
-    "filings.csv": "8114ee96734b2c3c82892d1f77e0445c4478de8825d3da1c1850f97320752a8b",
-    "line_items.csv": "4ddb41e16860c0b47528a5d366438e08ae8662470ec9ec6b4258ac22da077eb6",
+    "filings.csv": "4f05e340287b3de83163f0a3583a65e68f4c4ab8c9344fb15dc4ded93876d49b",
+    "line_items.csv": "d87afc54514103bbff4054dd6890ba4c4994818bcacabf12c128418ce6d0d0ab",
     "measures.csv": "6ec83e2c1d78a48b1e02df907cb3161f2b86fb9149c5da4254211ba9b5491843",
     "state-laws-not-listed.csv": "d518c92ee8da362652ef5eb603ed74cc9d1ed6e36dc3dc946d344852c02a3f26",
     "state-laws.csv": "9801d91f19c06082787aa0dc5d2fc6ebec5f65da3b2925e6d6501587e6940e52",
     "vendors.csv": "390ff9979310f94f5754d6544f905a27704fd964e3bae027cb0529303861e768",
-    "METHODS.md": "d640001fadabe3b27592fd017ea6c200f0fbfd189695640dfa332008f3df015a",
-    "DATA_DICTIONARY.md": "a2c66d629b38e939eecae9e5aa4113f1a327067481af3fefa83c5be5c4df5a5d"
+    "METHODS.md": "6b86730d92d0d6cf00b5b30ad67d82089180e5ea5bfc8a4ede44cf59da9c5f56",
+    "DATA_DICTIONARY.md": "1c740c622b42211fca60bc50710c80514228c4be19351b31d7ace738b32620d1"
   }
 }

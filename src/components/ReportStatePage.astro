@@ -6,6 +6,7 @@ import Cited from './Cited.astro';
 import DifferencesTable from './DifferencesTable.astro';
 import OnPage from './OnPage.astro';
 import PageHead from './PageHead.astro';
+import YearSwitch from './YearSwitch.astro';
 import { formatDate, getDataset, pdfHref, reportViewFor, type Discrepancy, type LineItem } from '../lib/data';
 import { barPercentOfScale } from '../lib/meter';
 import { numberWord, numberWordCap } from '../lib/site';
@@ -50,7 +51,7 @@ const toneOf = (type: string): 'hosp' | 'hc' => (spec.typeFor(type) === 'hospita
 const otherTypes = [...new Set(entities.filter((e) => toneOf(e.typeAsPrinted) === 'hc').map((e) => e.typeAsPrinted))];
 
 // The pages of the report PDF that the figures come from.
-const reportRecords = new Set(data.filings.filter((f) => f.state === code && f.recordKind !== 'filing').map((f) => f.filingId));
+const reportRecords = new Set(data.filings.filter((f) => f.state === code && f.recordKind !== 'filing' && f.reportingYear === year).map((f) => f.filingId));
 const pagesUsed = [...new Set(data.lineItems.filter((r) => reportRecords.has(r.filingId)).map((r) => r.page))].sort((a, b) => a - b);
 const firstPage = pagesUsed[0]!;
 const lastPage = pagesUsed[pagesUsed.length - 1]!;
@@ -76,6 +77,7 @@ const cell = (r: LineItem): string => (r.amountAsFiled === '' ? 'blank' : r.amou
         </p>
       )
     }
+    <YearSwitch code={code} years={report.years} current={year} />
     <OnPage
       title={name}
       items={[
@@ -119,8 +121,11 @@ const cell = (r: LineItem): string => (r.amountAsFiled === '' ? 'blank' : r.amou
         <tbody role="rowgroup">
           {
             entities.map((e) => (
-              <tr role="row" class={`tone-${toneOf(e.typeAsPrinted)}`}>
-                <th role="rowheader" scope="row">{e.name}</th>
+              <tr role="row" id={e.anchor} class={`tone-${toneOf(e.typeAsPrinted)}`}>
+                <th role="rowheader" scope="row">
+                  {e.name}
+                  {e.otherYear && <a class="sub other-year" href={e.otherYear.href}>Also named in the {e.otherYear.year} data</a>}
+                </th>
                 <td role="cell" data-label={`Type as ${spec.asWord}`}>{e.typeAsPrinted}</td>
                 <td role="cell" data-label={`City as ${spec.asWord}`}>{e.cityAsPrinted}</td>
                 <td role="cell" class="num share" data-label={spec.entityTable.netHeading} data-value={e.netCents ?? ''}>

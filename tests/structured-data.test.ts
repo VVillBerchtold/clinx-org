@@ -76,8 +76,8 @@ describe('the dataset, as dataset search engines read it', () => {
     const description = String(node.description);
     expect(description.length).toBeGreaterThanOrEqual(50);
     expect(description.length).toBeLessThanOrEqual(5000);
-    for (const state of ['Idaho', 'Minnesota', 'Rhode Island', 'Vermont']) expect(description).toContain(state);
-    expect((node.spatialCoverage as { name: string }[]).map((p) => p.name)).toEqual(['Idaho, United States', 'Minnesota, United States', 'Rhode Island, United States', 'Vermont, United States']);
+    for (const state of ['Idaho', 'Maine', 'Minnesota', 'Rhode Island', 'Vermont']) expect(description).toContain(state);
+    expect((node.spatialCoverage as { name: string }[]).map((p) => p.name)).toEqual(['Idaho, United States', 'Maine, United States', 'Minnesota, United States', 'Rhode Island, United States', 'Vermont, United States']);
   });
 
   it('lists every download on the Data page, each with its type and fingerprint', () => {

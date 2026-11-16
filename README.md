@@ -27,7 +27,7 @@ It lists the federal rules and notices that name 340B too: what each one does ab
 
 An AI assistant can read the laws, bills, notices and calendar as well, at `clinx.org/mcp`. It only reads, and the site keeps no question it is asked.
 
-Four states are in the scorecard today: Rhode Island, Vermont, Minnesota and Idaho. Each state has its own form, so the site never adds two states together or sets them side by side as if they were alike.
+Five states are in the scorecard today: Rhode Island, Vermont, Minnesota (two years of its report), Idaho and Maine. Each state has its own form, so the site never adds two states together or sets them side by side as if they were alike.
 
 ## Where the numbers come from
 

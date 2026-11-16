@@ -193,11 +193,13 @@ export const STATE_REGISTRY: Readonly<Record<string, StateEntry>> = {
     ],
   },
   ME: {
-    status: 'law',
+    status: 'live',
     group: 'state-totals',
+    href: '/scorecard/me/',
+    summary: "Fiscal year 2024 · statewide totals and drug lists, from the state's report",
     visibility: 'totals',
     publicNow:
-      "The Maine Health Data Organization's first annual 340B report, dated April 2, 2026, for fiscal year 2024. It gives state totals for 27 hospitals and each hospital's own description of how it uses the program. It has no dollar figure for a single hospital.",
+      "The Maine Health Data Organization's first annual 340B report, dated April 2, 2026, for fiscal year 2024. It gives four totals for the 27 hospitals added together, a list of the most costly drugs and a list of the most frequently dispensed drugs, and each hospital's own description of how it uses the program. It has no dollar figure for a single hospital. ClinX shows the totals and both lists, and lists the hospitals' descriptions without copying them.",
     stands: 'Hospitals report each year to the Maine Health Data Organization. The law has the organization post a summary report. It does not have the organization post each hospital\'s report.',
     sources: [
       { label: '22 M.R.S. 1728', href: 'https://legislature.maine.gov/statutes/22/title22sec1728.html' },
@@ -208,13 +210,14 @@ export const STATE_REGISTRY: Readonly<Record<string, StateEntry>> = {
     status: 'live',
     group: 'named-in-state-report',
     href: '/scorecard/mn/',
-    summary: "2024 data · one figure per entity, from the state's report",
+    summary: "2024 data and 2023 data · one figure per entity, from the state's reports",
     visibility: 'named',
-    publicNow: "The Department of Health's report to the legislature, with one net 340B revenue figure for each entity it names, and a table of statewide totals.",
+    publicNow: "The Department of Health's report to the legislature, with one net 340B revenue figure for each entity it names, and a table of statewide totals. ClinX shows two years: the report for 2024 data and the earlier one, of November 25, 2024, for 2023 data.",
     stands: "Minnesota's law has the Department of Health collect data from covered entities and report on it each year to the legislature. The entities' own reports to the department are not public. What is public is the department's report, which prints one net 340B revenue figure for each entity it names.",
     sources: [
       { label: 'Minn. Stat. 62J.461', href: 'https://www.revisor.mn.gov/statutes/cite/62J.461' },
-      { label: "The department's report (PDF)", href: 'https://www.health.mn.gov/data/340b/docs/2025report.pdf' },
+      { label: "The department's report, 2024 data (PDF)", href: 'https://www.health.mn.gov/data/340b/docs/2025report.pdf' },
+      { label: "The department's earlier report, 2023 data (PDF)", href: 'https://www.health.mn.gov/data/340b/docs/2024report.pdf' },
     ],
   },
   OH: {

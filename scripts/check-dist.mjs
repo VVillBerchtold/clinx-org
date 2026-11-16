@@ -77,6 +77,14 @@ const PRINTED_LABELS = [
   { page: '/scorecard/mn/index.html', phrase: 'Top 25' },
   { page: '/methods/index.html', phrase: 'Top 25' },
   { page: '/data/index.html', phrase: 'Top 25' },
+  // Minnesota's report of 25 November 2024 (2023 data) prints the same kind of paragraph above its Table 5.
+  { page: '/scorecard/mn/2023/index.html', phrase: 'generated the top 90% of statewide net 340B revenue' },
+  // Maine's report names its two lists "Top 3 Most Costly ..." and "Top 3 Most Frequently Dispensed ...", and each sentence
+  // above a list says "top 3". They are shown as printed, with the report's own titles quoted.
+  { page: '/scorecard/me/index.html', phrase: 'Top 3' },
+  { page: '/scorecard/me/index.html', phrase: 'top 3' },
+  // The data dictionary (shown on /data/) describes Maine's hospital count as the hospitals with the NDC "in their top three".
+  { page: '/data/index.html', phrase: 'in their top three' },
 ];
 // A bill's own words (its title, the passage quoted from its text, its latest step, its sponsor) are shown as the
 // legislature printed them on the bills pages. Where one of them holds a word this check bans, exactly that text is
@@ -412,6 +420,33 @@ else {
     }
     // The other way: every state the Scorecard page shows under a kind is in the file.
     for (const m of scorecard.matchAll(/class="standing [^"]*" id="state-([a-z]{2})"/g)) if (!seenStates.has(m[1].toUpperCase())) fail(where, `${m[1].toUpperCase()} is on the Scorecard page but not in the file`);
+  }
+}
+
+// A state with more than one year of a report has a year switch on every one of its year pages: one link for each year,
+// the page being read marked with aria-current, and the state address showing the latest year.
+{
+  const scorecardDir = join(dist, 'scorecard');
+  for (const state of existsSync(scorecardDir) ? readdirSync(scorecardDir) : []) {
+    const stateDir = join(scorecardDir, state);
+    if (!statSync(stateDir).isDirectory()) continue;
+    for (const year of readdirSync(stateDir).filter((n) => /^\d{4}$/.test(n))) {
+      for (const [page, expectYear] of [[`/scorecard/${state}/${year}/index.html`, year], [`/scorecard/${state}/index.html`, null]]) {
+        const file = join(dist, page);
+        if (!existsSync(file)) {
+          fail(page, 'a year page is built but this page is not');
+          continue;
+        }
+        const html = readFileSync(file, 'utf8');
+        const block = /<nav class="year-switch"[\s\S]*?<\/nav>/.exec(html)?.[0] ?? '';
+        const found = [...block.matchAll(/<a href="([^"]+)"([^>]*)>(\d{4}) data<\/a>/g)];
+        const current = found.filter((m) => /aria-current/.test(m[2]));
+        if (found.length < 2) fail(page, 'has no year switch with a link for each year');
+        else if (current.length !== 1) fail(page, 'the year switch must mark exactly one year with aria-current');
+        else if (expectYear !== null && current[0][3] !== expectYear) fail(page, `the year switch marks ${current[0][3]}, expected ${expectYear}`);
+        else if (expectYear === null && current[0][1] !== `/scorecard/${state}/`) fail(page, 'the state address must show the latest year');
+      }
+    }
   }
 }
 

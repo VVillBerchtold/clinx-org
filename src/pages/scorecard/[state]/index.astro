@@ -1,13 +1,15 @@
 ---
 import FilingStatePage from '../../../components/FilingStatePage.astro';
 import ReportStatePage from '../../../components/ReportStatePage.astro';
+import DrugListsStatePage from '../../../components/DrugListsStatePage.astro';
 import TotalsStatePage from '../../../components/TotalsStatePage.astro';
-import { buildReportViews, buildTotalsViews, buildViews, getDataset } from '../../../lib/data';
+import { buildDrugReportViews, buildReportViews, buildTotalsViews, buildViews, getDataset } from '../../../lib/data';
 
 /**
  * One page per state. The kind of record the state's rows are decides the page: a state whose filers
  * file for themselves gets the table of filings; a state that prints a report about its entities gets
- * that report's page; a state that prints statewide totals only gets the page of totals. Nothing here
+ * that report's page; a state that prints statewide totals only gets the page of totals, and one that
+ * also prints lists of drugs gets the page of totals and drug lists. Nothing here
  * looks at a state's code.
  */
 export function getStaticPaths() {
@@ -15,22 +17,24 @@ export function getStaticPaths() {
   const filingStates = [...new Set(buildViews(data).map((v) => v.entity.state))];
   const reportStates = buildReportViews(data).map((v) => v.state);
   const totalsStates = buildTotalsViews(data).map((v) => v.state);
-  const all = [...filingStates, ...reportStates, ...totalsStates];
+  const drugStates = buildDrugReportViews(data).map((v) => v.state);
+  const all = [...filingStates, ...reportStates, ...totalsStates, ...drugStates];
   const twice = all.filter((c, i) => all.indexOf(c) !== i);
   if (twice.length > 0) throw new Error(`${twice.join(', ')}: a state cannot have more than one kind of page`);
   return [
     ...filingStates.map((code) => ({ params: { state: code.toLowerCase() }, props: { code, kind: 'filings' as const } })),
     ...reportStates.map((code) => ({ params: { state: code.toLowerCase() }, props: { code, kind: 'report' as const } })),
     ...totalsStates.map((code) => ({ params: { state: code.toLowerCase() }, props: { code, kind: 'totals' as const } })),
+    ...drugStates.map((code) => ({ params: { state: code.toLowerCase() }, props: { code, kind: 'drug-lists' as const } })),
   ];
 }
 
 interface Props {
   code: string;
-  kind: 'filings' | 'report' | 'totals';
+  kind: 'filings' | 'report' | 'totals' | 'drug-lists';
 }
 
 const { code, kind } = Astro.props;
 ---
 
-{kind === 'totals' ? <TotalsStatePage code={code} /> : kind === 'report' ? <ReportStatePage code={code} /> : <FilingStatePage code={code} />}
+{kind === 'drug-lists' ? <DrugListsStatePage code={code} /> : kind === 'totals' ? <TotalsStatePage code={code} /> : kind === 'report' ? <ReportStatePage code={code} /> : <FilingStatePage code={code} />}

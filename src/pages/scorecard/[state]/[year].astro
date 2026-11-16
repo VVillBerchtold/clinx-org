@@ -1,0 +1,21 @@
+---
+import EarlierReportPage from '../../../components/EarlierReportPage.astro';
+import { buildEarlierReportViews, getDataset } from '../../../lib/data';
+
+/**
+ * The page of an earlier year of a state's report, at /scorecard/<state>/<year>/. The latest year is the
+ * state's own address and is not built here. A year is four digits, and an entity page's address is made
+ * from a name, so the two cannot meet; the build stops if they ever would (see getStaticPaths in [slug].astro).
+ */
+export function getStaticPaths() {
+  return buildEarlierReportViews(getDataset()).map((v) => ({ params: { state: v.state.toLowerCase(), year: v.year }, props: { code: v.state } }));
+}
+
+interface Props {
+  code: string;
+}
+
+const { code } = Astro.props;
+---
+
+<EarlierReportPage code={code} />
