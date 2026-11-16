@@ -12,8 +12,8 @@ import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSyn
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-/** The files a web host needs: the server, its tools, the table reader, the web door, the counter. */
-export const MCP_FILES = ['core.js', 'tools.js', 'tables.js', 'tables.d.ts', 'http.js', 'http.d.ts', 'usage.js', 'usage.d.ts', 'index.d.ts'];
+/** The files a web host needs: the server, its tools, the table reader, the web door, the counter, the cut of the filed reports file and the page-address rule. */
+export const MCP_FILES = ['core.js', 'tools.js', 'tables.js', 'tables.d.ts', 'http.js', 'http.d.ts', 'usage.js', 'usage.d.ts', 'index.d.ts', 'split.js', 'split.d.ts', 'pages.js', 'pages.d.ts'];
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export const MCP_DIR = join(root, 'worker', 'mcp');

@@ -1,5 +1,6 @@
 import { parseCsv } from './csv';
-import { anyFormSpec, drugListsFormSpec, entityType as toEntityType, formSpec, recordKind as toRecordKind, reportFormSpec, totalsFormSpec, type DrugListSpec, type DrugListsFormSpec, type DrugReportFigure, type DrugScheduleSpec, type EarlierGrouping, type EarlierPayer, type EarlierReportSpec, type EntityType, type FormSpec, type RecordKind, type ReportFormSpec, type ReportGroup, type RowKey, type SubmissionRow, type TotalsFigure, type TotalsFormSpec, type TotalsRow, type TotalsTableSpec } from './forms';
+import { filingSlug } from '../../worker/mcp/pages.js';
+import { anyFormSpec, drugListsFormSpec, entityType as toEntityType, formSpec, recordKind as toRecordKind, reportFormSpec, totalsFormSpec, type DrugListSpec, type DrugListsFormSpec, type DrugReportFigure, type DrugScheduleSpec, type EarlierGrouping, type EarlierPayer, type EarlierReportSpec, type EntityType, type FormSpec, type RecordKind, type ReportFormSpec, type ReportGroup, type RowKey, type SubmissionRow, type TotalsFigure, type TotalsFormSpec, type TotalsRow, type TotalsTableSpec, type WorkbookFormSpec, workbookFormSpec, workbookSchedules } from './forms';
 import { amountScale, claimsSortValue, largestBy, type AmountScale, type ClaimsStatus } from './drugs';
 import { centsToDecimal, foldName, groupDrugRows, toCsv, type DrugGroup } from './drug-groups';
 import { fdaNameFor, fdaTitle, getFdaNames, type FdaName, type FdaNames, type FdaSource } from './fda-names';
@@ -40,6 +41,12 @@ export interface Entity {
   cityAsFiled: string;
   slug: string;
   path: string;
+  /** Ohio: HRSA's name for the entity, from HRSA's list of the day in `hrsaListDate`. The workbook itself prints a 340B ID and no name. Blank otherwise. */
+  hrsaName: string;
+  /** Ohio: the 340B ID the way HRSA spells it, whose first letters say what kind of entity it is. */
+  hrsaIdSpelling: string;
+  hrsaListDate: string;
+  hrsaMatch: string;
 }
 
 export interface Filing {
@@ -66,6 +73,14 @@ export interface Filing {
   coverPageUrl: string;
   /** An entity's own filing, a row a state printed about an entity, or a state's totals (see forms.ts). */
   recordKind: RecordKind;
+  /** The file's own name at the state, and its size in bytes (the column in the dataset is named for PDFs). */
+  sourceFile: string;
+  pdfBytes: number;
+  /** Ohio: the other entities a workbook that names several 340B IDs is the filing of, as entity ids. */
+  otherEntityIds: string[];
+  /** The address part and the address of a filer's own page: the same rule the assistants server uses (worker/mcp/pages.js). */
+  slug: string;
+  path: string;
 }
 
 export type Unit = 'usd' | 'percent' | 'count' | 'none';
@@ -91,6 +106,13 @@ export interface LineItem {
   unit: Unit;
   page: number;
   note: string;
+  /** A prescription count as the workbook stores it (Ohio), or words in its place; blank when withheld or on any other form. */
+  claimsAsFiled: string;
+  /** Why the figure is not given: fewer_than_6, beside_small or reveals_small; blank when it is. */
+  claimsWithheld: string;
+  /** Ohio: the workbook cell the row was read from. */
+  sourceCell: string;
+  verification: string;
 }
 
 /** One row of a drug schedule. A claim count that is left out has `claims` null and says so in `claimsStatus`. */
@@ -155,6 +177,8 @@ export interface Dataset {
   commit: string;
   /** SHA-256 of each copied file, from SOURCE.json. */
   hashes: Record<string, string>;
+  /** Size in bytes of each copied file, as the text is held (the files are UTF-8). */
+  sizes: Record<string, number>;
   entities: Entity[];
   filings: Filing[];
   lineItems: LineItem[];
@@ -286,11 +310,18 @@ export function buildDataset(raw: RawDataset): Dataset {
       cityAsFiled: r['city_as_filed']!,
       slug,
       path: `/scorecard/${state.toLowerCase()}/${slug}/`,
+      hrsaName: r['hrsa_name']!,
+      hrsaIdSpelling: r['hrsa_id_spelling']!,
+      hrsaListDate: r['hrsa_list_date']!,
+      hrsaMatch: r['hrsa_match']!,
     };
   });
 
-  const filings: Filing[] = parseCsv(need(files, 'filings.csv')).map((r) => ({
-    filingId: r['filing_id']!,
+  const filings: Filing[] = parseCsv(need(files, 'filings.csv')).map((r) => {
+    const filingId = r['filing_id']!;
+    const slug = filingSlug({ filing_id: filingId, state: r['state']!, reporting_year: r['reporting_year']! });
+    return {
+    filingId,
     entityId: r['entity_id']!,
     state: r['state']!,
     reportingYear: r['reporting_year']!,
@@ -309,7 +340,13 @@ export function buildDataset(raw: RawDataset): Dataset {
     submissionAsFiled: r['submission_as_filed']!,
     coverPageUrl: r['cover_page_url']!,
     recordKind: toRecordKind(r['record_kind']!),
-  }));
+    sourceFile: r['source_file']!,
+    pdfBytes: Number(r['pdf_bytes']),
+    otherEntityIds: r['other_entity_ids']!.split(';').map((id) => id.trim()).filter((id) => id !== ''),
+    slug,
+    path: `/scorecard/${r['state']!.toLowerCase()}/${slug}/`,
+  };
+  });
   const specByFiling = new Map(filings.map((f) => [f.filingId, anyFormSpec(f.form)]));
   const entityById = new Map(entities.map((e) => [e.entityId, e]));
   for (const f of filings) {
@@ -347,7 +384,7 @@ export function buildDataset(raw: RawDataset): Dataset {
       drugRows.push(readDrugRow(r, drugSchedule, pageCountOf.get(r['filing_id']!)!));
       continue;
     }
-    if (!spec.shownSchedules.includes(schedule)) {
+    if (!(spec.layout === 'workbook' ? workbookSchedules(spec).has(schedule) : spec.shownSchedules.includes(schedule))) {
       if (spec.withheldSchedules.includes(schedule)) continue;
       throw new Error(`${r['filing_id']}: schedule "${schedule}" is not on the form ${spec.id}`);
     }
@@ -367,12 +404,21 @@ export function buildDataset(raw: RawDataset): Dataset {
       descriptionAsFiled: r['description_as_filed']!,
       ndcAsFiled: r['ndc_as_filed']!,
       amountAsFiled,
-      amountCents: unit === 'usd' ? parseCents(amountAsFiled) : null,
+      // A workbook stores its figures as floating-point numbers ("602.56000000000006"): they are shown as stored and never turned into cents.
+      amountCents: unit === 'usd' && spec.layout !== 'workbook' ? parseCents(amountAsFiled) : null,
       answerAsFiled: r['answer_as_filed']!,
       unit,
       page: toPage(r['page']!, `${r['filing_id']} schedule ${schedule}`),
       note: r['note']!,
+      claimsAsFiled: r['claims_as_filed']!,
+      claimsWithheld: r['claims_withheld']!,
+      sourceCell: r['source_cell']!,
+      verification: r['verification']!,
     });
+    const last = lineItems[lineItems.length - 1]!;
+    // The small-number rule, again, on what the page can print: a whole count of 1 to 5 never gets this far, and a withheld cell holds no figure.
+    if (/^\s*[1-5]\s*$/.test(last.claimsAsFiled.replaceAll(',', ''))) throw new Error(`${last.filingId} ${schedule} ${last.line}: carries a count of 1 to 5; the dataset should have left it out (METHODS section 9)`);
+    if (last.claimsWithheld !== '' && (last.claimsAsFiled !== '' || (spec.layout === 'workbook' && (unit === 'count' || unit === 'percent') && amountAsFiled !== ''))) throw new Error(`${last.filingId} ${schedule} ${last.line}: marked ${last.claimsWithheld} but still carries a figure`);
   }
 
   const measures: Measure[] = parseCsv(need(files, 'measures.csv')).map((r) => ({
@@ -419,6 +465,7 @@ export function buildDataset(raw: RawDataset): Dataset {
     version: source.dataset_version,
     commit: source.dataset_commit,
     hashes: source.files,
+    sizes: Object.fromEntries(Object.entries(files).map(([name, text]) => [name, new TextEncoder().encode(text).length])),
     entities,
     filings,
     lineItems,
@@ -525,7 +572,7 @@ function figureRowsOf(data: Dataset, filing: Filing, spec: FormSpec): LineItem[]
 
 export function buildViews(data: Dataset): FilingView[] {
   const entityById = new Map(data.entities.map((e) => [e.entityId, e]));
-  return data.filings.filter((f) => f.recordKind === 'filing').map((filing) => {
+  return data.filings.filter((f) => f.recordKind === 'filing' && anyFormSpec(f.form).layout !== 'workbook').map((filing) => {
     const entity = entityById.get(filing.entityId);
     if (!entity) throw new Error(`Filing without entity: ${filing.filingId}`);
     const spec = formSpec(filing.form);
@@ -1447,7 +1494,7 @@ export function buildDrugViews(data: Dataset): DrugView[] {
   const entityById = new Map(data.entities.map((e) => [e.entityId, e]));
   const views: DrugView[] = [];
   for (const filing of data.filings) {
-    if (filing.recordKind !== 'filing') continue;
+    if (filing.recordKind !== 'filing' || anyFormSpec(filing.form).layout === 'workbook') continue;
     const spec = formSpec(filing.form);
     const drug = spec.drugSchedule;
     if (!drug) continue;
@@ -1662,4 +1709,101 @@ export function stateDrugCsv(view: StateDrugView): string {
     }
   }
   return toCsv(DRUG_CSV_HEADER, lines);
+}
+
+// ---------------------------------------------------------------------------
+// Workbook filers (Ohio): one Excel workbook for each filer, a 340B ID and no name.
+
+/** One entity a workbook is the filing of: its 340B ID as HRSA spells it and HRSA's name, which may be blank. */
+export interface WorkbookEntity {
+  entity: Entity;
+  /** HRSA's spelling of the ID when HRSA's list holds it; otherwise the ID as typed in the workbook. */
+  id: string;
+  /** The letters the ID starts with and the name HRSA gives that kind of entity; blank when the ID is not in HRSA's list. */
+  kindCode: string;
+  kindName: string;
+}
+
+export interface WorkbookView {
+  filing: Filing;
+  spec: WorkbookFormSpec;
+  /** The entity the workbook is filed under, then any other IDs it names. */
+  entities: WorkbookEntity[];
+  /** HRSA's name for the first entity, or blank. */
+  name: string;
+  /** The page title: HRSA's name and the ID, or the ID alone. */
+  title: string;
+  /** The 340B ID as the workbook gives it. */
+  idAsGiven: string;
+  rows: LineItem[];
+  /** The row at a schedule and line, if the workbook has one. */
+  cell: (schedule: string, line: string) => LineItem | undefined;
+  path: string;
+}
+
+/** The kind of entity, from the letters at the start of an ID: the longest known code that is followed by a digit. */
+export function kindOfId(spec: WorkbookFormSpec, id: string): { code: string; name: string } {
+  const upper = id.trim().toUpperCase();
+  let best = '';
+  for (const code of Object.keys(spec.kinds)) {
+    if (upper.startsWith(code) && /^\d/.test(upper.slice(code.length)) && code.length > best.length) best = code;
+  }
+  return best === '' ? { code: '', name: '' } : { code: best, name: spec.kinds[best]! };
+}
+
+export function buildWorkbookViews(data: Dataset): WorkbookView[] {
+  const entityById = new Map(data.entities.map((e) => [e.entityId, e]));
+  const rowsByFiling = new Map<string, LineItem[]>();
+  for (const r of data.lineItems) {
+    if (!rowsByFiling.has(r.filingId)) rowsByFiling.set(r.filingId, []);
+    rowsByFiling.get(r.filingId)!.push(r);
+  }
+  const views: WorkbookView[] = [];
+  for (const filing of data.filings) {
+    if (filing.recordKind !== 'filing' || anyFormSpec(filing.form).layout !== 'workbook') continue;
+    const spec = workbookFormSpec(filing.form);
+    const entities = [filing.entityId, ...filing.otherEntityIds].map((id) => {
+      const entity = entityById.get(id);
+      if (!entity) throw new Error(`${filing.filingId}: no entity ${id}`);
+      const spelled = entity.hrsaIdSpelling !== '' ? entity.hrsaIdSpelling : entity.opaisIdsAsFiled;
+      const kind = entity.hrsaIdSpelling !== '' ? kindOfId(spec, entity.hrsaIdSpelling) : { code: '', name: '' };
+      return { entity, id: spelled, kindCode: kind.code, kindName: kind.name };
+    });
+    const first = entities[0]!;
+    const rows = rowsByFiling.get(filing.filingId) ?? [];
+    const byKey = new Map(rows.map((r) => [`${r.schedule}\u0000${r.line}`, r]));
+    const name = first.entity.hrsaName;
+    const ids = entities.map((e) => e.id).join(' and ');
+    const idAsGiven = first.entity.opaisIdsAsFiled !== '' ? first.entity.opaisIdsAsFiled : first.id;
+    views.push({
+      filing,
+      spec,
+      entities,
+      name,
+      title: name !== '' ? `${name} (${ids})` : ids,
+      idAsGiven,
+      rows,
+      cell: (schedule, line) => byKey.get(`${schedule}\u0000${line}`),
+      path: filing.path,
+    });
+  }
+  return views.sort((a, b) => compareNames(a.title, b.title));
+}
+
+/**
+ * A percentage the workbook stores as a fraction of one, as the cell shows it: the decimal point
+ * moves two places and no digit is dropped. "0.25" is "25"; "7.2222E-2" is "7.2222". Null when the text is not a plain number.
+ */
+export function shiftTwoPlaces(text: string): string | null {
+  const m = /^(-?)(\d+)(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/.exec(text.trim());
+  if (!m) return null;
+  let all = `${m[2]}${m[3] ?? ''}`;
+  let point = m[2]!.length + Number(m[4] ?? 0) + 2;
+  if (point <= 0) {
+    all = '0'.repeat(1 - point) + all;
+    point = 1;
+  } else if (point > all.length) all = all + '0'.repeat(point - all.length);
+  const whole = all.slice(0, point).replace(/^0+(?=\d)/, '');
+  const fraction = all.slice(point).replace(/0+$/, '');
+  return `${m[1]}${whole}${fraction === '' ? '' : `.${fraction}`}`;
 }

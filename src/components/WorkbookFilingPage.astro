@@ -1,0 +1,374 @@
+---
+import '../styles/home.css';
+import '../styles/scorecard.css';
+import '../styles/workbook.css';
+import Base from '../layouts/Base.astro';
+import Arrow from './Arrow.astro';
+import DifferencesTable from './DifferencesTable.astro';
+import OnPage from './OnPage.astro';
+import PageHead from './PageHead.astro';
+import Pager from './Pager.astro';
+import { findDifferences, formatDate, getDataset, type LineItem, type WorkbookView } from '../lib/data';
+import { REPOSITORIES } from '../lib/site';
+import { stateName } from '../lib/states';
+import { WITHHELD_SENTENCE, showCell } from '../lib/workbook';
+
+/**
+ * One filer's workbook (Ohio): the figures as the workbook stores them, in the order and words of the
+ * state's template. Everything the page says that depends on the form comes from the form's spec.
+ * Every text the filer typed is printed as text (the template escapes it), and no figure is added,
+ * rounded or ranked.
+ */
+interface Props {
+  view: WorkbookView;
+  prev: { href: string; name: string } | undefined;
+  next: { href: string; name: string } | undefined;
+}
+
+const { view, prev, next } = Astro.props;
+const data = getDataset();
+const { filing, spec } = view;
+const state = stateName(filing.state);
+const stateHref = `/scorecard/${filing.state.toLowerCase()}/`;
+const retrieved = formatDate(filing.retrievedAt);
+const first = view.entities[0]!;
+const kind = first.kindName;
+const listDate = first.entity.hrsaListDate;
+
+const at = (schedule: string, line: string): LineItem | undefined => view.cell(schedule, line);
+const textOf = (r: LineItem | undefined): string => (r ? (r.unit === 'none' ? r.answerAsFiled : r.amountAsFiled) : '');
+const isDash = (t: string): boolean => t.trim() === '' || t.trim() === '-';
+
+// The sections of figures by payer: only the rows the workbook has.
+const sections = spec.sections.map((section) => {
+  const tables = section.tables.map((t) => {
+    const cells = section.columns.map((c) => ({ column: c, shown: showCell(at(t.schedule, c.id), t.unit) }));
+    const example = section.columns.map((c) => at(t.schedule, c.id)).find((r) => r !== undefined);
+    return { table: t, label: example?.labelAsFiled ?? '', cells };
+  });
+  const any = tables.some((t) => t.cells.some((c) => c.shown.kind !== 'none'));
+  return { section, tables, any };
+});
+const withheldWhy = [...new Set(view.rows.filter((r) => r.claimsWithheld !== '').map((r) => r.claimsWithheld))];
+// Notes the dataset keeps on single cells, other than the one that says a percentage is stored as a fraction.
+const cellNotes = view.rows.filter((r) => r.note !== '' && !/fraction of one/.test(r.note));
+const fractionCells = view.rows.some((r) => /fraction of one/.test(r.note));
+
+const costRows = spec.costs.rows.map((c) => ({ ...c, row: at(spec.costs.schedule, c.line), shown: showCell(at(spec.costs.schedule, c.line), 'usd') }));
+const costsAny = costRows.some((c) => c.shown.kind !== 'none');
+const pharmacyCount = showCell(at(spec.pharmacies.schedule, spec.pharmacies.line), 'count');
+const pharmacyWhy = textOf(at(spec.pharmacies.notesSchedule, spec.pharmacies.notesLine));
+
+const useRows = (keys: readonly string[]) =>
+  keys.map((key) => ({ key, description: at(spec.uses.schedule, `${key}_description`), amount: at(spec.uses.schedule, `${key}_amount`) }));
+const programs = useRows(spec.uses.programs);
+const equipment = useRows(spec.uses.equipment);
+const otherUse = useRows([spec.uses.other])[0]!;
+const typedUse = (r: { description: LineItem | undefined; amount: LineItem | undefined }) => !isDash(textOf(r.description)) || !isDash(textOf(r.amount));
+const narrative = textOf(at(spec.uses.schedule, spec.uses.narrative));
+const alternative = textOf(at(spec.uses.schedule, spec.uses.alternativeNarrative));
+const usesAny = [...programs, ...equipment, otherUse].some(typedUse) || !isDash(narrative) || !isDash(alternative);
+
+const npis = view.rows.filter((r) => r.schedule === spec.identity.schedule && r.line.startsWith('npi_')).map((r) => r.answerAsFiled).filter((t) => !isDash(t));
+const period = textOf(at(spec.identity.schedule, spec.identity.period));
+const idCell = at(spec.identity.schedule, spec.identity.id);
+const otherCells = view.rows.filter((r) => r.schedule === spec.otherCells);
+
+const differences = findDifferences(data, filing.filingId);
+const stem = filing.sourceFile.replace(/\.[^.]+$/, '');
+const cellsHref = `${REPOSITORIES.dataset}/blob/main/${spec.cellsFolder}/${stem}.csv`;
+const adjudicated = view.rows.filter((r) => r.verification === 'adjudicated');
+const sizeText = filing.pdfBytes >= 1024 * 1024 ? `${(filing.pdfBytes / (1024 * 1024)).toFixed(1)} MB` : `${Math.max(1, Math.round(filing.pdfBytes / 1024))} KB`;
+
+const items = [
+  ...sections.filter((s) => s.any).map((s) => ({ id: s.section.id, label: s.section.heading })),
+  ...(costsAny ? [{ id: 'costs', label: 'Costs of running the program' }] : []),
+  { id: 'pharmacies', label: 'Contract pharmacies' },
+  ...(usesAny ? [{ id: 'uses', label: 'Uses of 340B funds' }] : []),
+  { id: 'identity', label: 'The filer in the workbook' },
+  ...(otherCells.length > 0 ? [{ id: 'other-cells', label: 'Cells outside the template' }] : []),
+  { id: 'differences', label: 'Differences' },
+  { id: 'source', label: 'Source' },
+];
+---
+
+<Base
+  title={`${view.title}: ${spec.titleSuffix(filing.reportingYear)}`}
+  crumbs={[{ name: 'Scorecard', path: '/scorecard/' }, { name: state, path: stateHref }, { name: view.title, path: Astro.url.pathname }]}
+  description={`The figures in the ${view.title} 340B workbook for ${spec.periodWord} ${filing.reportingYear}, as the workbook stores them, with the differences it contains and its source.`}
+>
+  <PageHead wide title={view.title} trail={[{ label: 'Scorecard', href: '/scorecard/' }, { label: state, href: stateHref }, { label: `${filing.reportingYear} workbook` }]}>
+    <p class="lede">{kind !== '' ? kind : 'Covered entity'}, {state}, {spec.periodWord} {filing.reportingYear}. Everything below is as the {spec.noun} {spec.asWord} it. Each section follows the {spec.agency}'s template, in its order and words.</p>
+    <p class="small muted">
+      {
+        view.name !== ''
+          ? `The name is HRSA's, from its public list of covered entities read on ${formatDate(listDate)}. The workbook prints the 340B ID and no name.`
+          : "HRSA's list of covered entities does not hold this ID, so the page shows the ID as the workbook gives it. The workbook prints no name."
+      }
+    </p>
+  </PageHead>
+
+  <OnPage class="filing-nav" title={view.title} items={items} />
+
+  <div class="prose">
+    <section class="panel" aria-labelledby="about-title">
+      <h2 id="about-title" class="visually-hidden">About this {spec.noun}</h2>
+      <dl class="facts">
+        <dt>{view.entities.length > 1 ? '340B IDs' : '340B ID'}</dt>
+        <dd>
+          <ul class="wb-ids">
+            {
+              view.entities.map((e) => (
+                <li>
+                  <span class="mono">{e.id}</span>
+                  {e.entity.hrsaName !== '' && <> {e.entity.hrsaName}</>}
+                  {e.kindName !== '' && <small class="muted"> ({e.kindName})</small>}
+                </li>
+              ))
+            }
+          </ul>
+        </dd>
+        <dt>Reporting period as typed</dt>
+        <dd>{period !== '' ? period : filing.periodAsFiled}</dd>
+        <dt>Form</dt>
+        <dd>{filing.formRevision}</dd>
+      </dl>
+      <div class="btn-row"><a class="btn" href={filing.sourceUrl}>Open the workbook (Excel) <Arrow /></a></div>
+    </section>
+
+    {
+      sections.map(({ section, tables, any }) => (
+        <>
+          <h2 id={section.id}>{section.heading}</h2>
+          <p>{section.about}</p>
+          {any ? (
+            <div class="table-wrap wide stack wb-grid">
+              <table role="table">
+                <caption><span>{section.heading}, as stored, for {view.title}</span></caption>
+                <thead role="rowgroup">
+                  <tr role="row">
+                    <th role="columnheader" scope="col">Row of the template</th>
+                    {section.columns.map((c) => <th role="columnheader" scope="col" class="num">{c.heading}</th>)}
+                  </tr>
+                </thead>
+                <tbody role="rowgroup">
+                  {tables.map((t) => (
+                    <tr role="row">
+                      <th role="rowheader" scope="row">
+                        {t.table.short}
+                        {t.label !== '' && <span class="sub">{t.label}</span>}
+                      </th>
+                      {t.cells.map(({ column, shown }) => (
+                        <td role="cell" class:list={['num', { blank: shown.kind === 'none', words: shown.kind === 'words' }]} data-label={column.heading}>
+                          {shown.kind === 'withheld' ? (
+                            <>
+                              <span class="withheld">Withheld</span>
+                              <small>{shown.why}</small>
+                            </>
+                          ) : (
+                            shown.text
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p>This workbook has no figures in this section.</p>
+          )}
+        </>
+      ))
+    }
+    {fractionCells && <p class="small muted">Where the workbook formats a cell as a percentage it stores a fraction of one, and the page shows it as the workbook's cell shows it: 0.25 is 25%. The dataset keeps the stored number.</p>}
+    {
+      withheldWhy.length > 0 && (
+        <>
+          <p><strong>Cells marked Withheld.</strong> A count of prescriptions from 1 to 5 is never published, and neither is a figure that would let a reader work one out.</p>
+          <ul class="wb-reasons">
+            {withheldWhy.map((why) => <li>{WITHHELD_SENTENCE[why] ?? why}</li>)}
+          </ul>
+        </>
+      )
+    }
+    {
+      cellNotes.length > 0 && (
+        <ul>
+          {cellNotes.map((r) => <li>Cell {r.sourceCell}: {r.note}</li>)}
+        </ul>
+      )
+    }
+
+    {
+      costsAny && (
+        <>
+          <h2 id="costs">Costs of running the program</h2>
+          <p>Amounts in US dollars, as the workbook stores them.</p>
+          <div class="table-wrap wb-cells stack">
+            <table role="table">
+              <caption><span>Costs, as stored, for {view.title}</span></caption>
+              <thead>
+                <tr>
+                  <th scope="col">Cost</th>
+                  <th scope="col" class="num">Amount</th>
+                  <th scope="col">Cell</th>
+                </tr>
+              </thead>
+              <tbody>
+                {costRows.map((c) => (
+                  <tr>
+                    <th scope="row">{c.label}</th>
+                    <td class:list={['num', { blank: c.shown.kind === 'none' }]} data-label="Amount">{c.shown.text}</td>
+                    <td class="cell" data-label="Cell">{c.row?.sourceCell ?? ''}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )
+    }
+
+    <h2 id="pharmacies">Contract pharmacies</h2>
+    {
+      pharmacyCount.kind === 'none' ? (
+        <p>The workbook gives no number of contract pharmacies.</p>
+      ) : (
+        <dl class="facts panel">
+          <dt>Number of contract pharmacies as typed</dt>
+          <dd>{pharmacyCount.text}</dd>
+        </dl>
+      )
+    }
+    {!isDash(pharmacyWhy) && (
+      <>
+        <p class="wb-narrative-label">Explanation of the Indeterminate column, as typed</p>
+        <div class="wb-narrative">{pharmacyWhy}</div>
+      </>
+    )}
+
+    {
+      usesAny && (
+        <>
+          <h2 id="uses">Uses of 340B funds</h2>
+          <p>What the filer typed under the template's questions about how it uses the money 340B brings in. A dash or an empty cell is left out.</p>
+          <div class="table-wrap wb-cells stack">
+            <table role="table">
+              <caption><span>Uses of 340B funds, as typed, for {view.title}</span></caption>
+              <thead>
+                <tr>
+                  <th scope="col">Kind</th>
+                  <th scope="col">Description</th>
+                  <th scope="col" class="num">Amount</th>
+                  <th scope="col">Cell</th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  [
+                    ...programs.filter(typedUse).map((r) => ({ kind: 'Program or service', ...r })),
+                    ...equipment.filter(typedUse).map((r) => ({ kind: 'Item', ...r })),
+                    ...(typedUse(otherUse) ? [{ kind: 'Other use', ...otherUse }] : []),
+                  ].map((r) => {
+                    const shown = showCell(r.amount, 'usd');
+                    return (
+                      <tr>
+                        <th scope="row">{r.kind}</th>
+                        <td class:list={['text', { blank: isDash(textOf(r.description)) }]} data-label="Description">{isDash(textOf(r.description)) ? '' : textOf(r.description)}</td>
+                        <td class:list={['num', { blank: shown.kind === 'none' || isDash(shown.text) }]} data-label="Amount">{isDash(shown.text) ? '' : shown.text}</td>
+                        <td class="cell" data-label="Cell">{r.description?.sourceCell ?? ''}</td>
+                      </tr>
+                    );
+                  })
+                }
+              </tbody>
+            </table>
+          </div>
+          {!isDash(narrative) && (
+            <>
+              <p class="wb-narrative-label">Narrative, as typed</p>
+              <div class="wb-narrative">{narrative}</div>
+            </>
+          )}
+          {!isDash(alternative) && (
+            <>
+              <p class="wb-narrative-label">Narrative given where the entity cannot detail its uses, as typed</p>
+              <div class="wb-narrative">{alternative}</div>
+            </>
+          )}
+        </>
+      )
+    }
+
+    <h2 id="identity">The filer in the workbook</h2>
+    <dl class="facts panel">
+      <dt>340B ID as typed</dt>
+      <dd>{idCell ? idCell.answerAsFiled : ''}</dd>
+      <dt>NPIs as typed</dt>
+      <dd>
+        {
+          npis.length === 0 ? (
+            'The workbook lists none.'
+          ) : (
+            <ul class="wb-npis">
+              {npis.map((n) => <li>{n}</li>)}
+            </ul>
+          )
+        }
+      </dd>
+    </dl>
+
+    {
+      otherCells.length > 0 && (
+        <>
+          <h2 id="other-cells">Cells outside the template</h2>
+          <p>The filer typed text in cells the template does not ask for. They are listed as found, by cell.</p>
+          <div class="table-wrap wb-cells stack">
+            <table role="table">
+              <caption><span>Cells outside the template, as typed, for {view.title}</span></caption>
+              <thead>
+                <tr>
+                  <th scope="col">Cell</th>
+                  <th scope="col">Text</th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  otherCells.map((r) => (
+                    <tr>
+                      <th scope="row">{r.sourceCell}</th>
+                      <td class="text" data-label="Text">{r.answerAsFiled !== '' ? r.answerAsFiled : r.amountAsFiled !== '' ? r.amountAsFiled : r.claimsAsFiled}</td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </table>
+          </div>
+        </>
+      )
+    }
+
+    <DifferencesTable differences={differences} name={view.title} spec={spec} />
+
+    <h2 id="source">Source</h2>
+    <dl class="facts panel">
+      <dt>Workbook</dt>
+      <dd><a href={filing.sourceUrl}>Open {filing.sourceFile} on the {spec.publisher}</a></dd>
+      <dt>Size</dt>
+      <dd>{sizeText}</dd>
+      <dt>Retrieved</dt>
+      <dd>{retrieved}</dd>
+      <dt>SHA-256</dt>
+      <dd><span class="mono">{filing.pdfSha256}</span></dd>
+      <dt>How it was read</dt>
+      <dd>
+        Two separate programs read each cell of the workbook, and a value is kept when their reads agree.
+        {adjudicated.length > 0 && ' Where they differ, the note on the cell says so and the stored value is kept.'}
+        {' '}The cells of this workbook are listed one by one in <a href={cellsHref}>the dataset repository</a>.
+      </dd>
+    </dl>
+  </div>
+
+  <Pager label={`More ${spec.nounPlural}`} noun={spec.noun} prev={prev} next={next} up={{ href: stateHref, label: `All ${state} ${spec.nounPlural}` }} />
+</Base>

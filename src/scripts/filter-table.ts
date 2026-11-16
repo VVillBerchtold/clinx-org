@@ -1,0 +1,44 @@
+/**
+ * Progressive enhancement: filters the rows of a list of filers by name or ID and by kind.
+ * Without this script the list is whole and the filter is not drawn.
+ *
+ * Markup: an element with `data-filter` (hidden until this script runs) holding an input with
+ * `data-filter-text` and a select with `data-filter-kind`; the rows to filter are the rows of the
+ * table `data-filter-table`, each with `data-search` (lower case text to match) and `data-kind`.
+ */
+
+export {};
+
+function enhance(box: HTMLElement): void {
+  const table = document.querySelector<HTMLTableElement>('table[data-filter-table]');
+  const text = box.querySelector<HTMLInputElement>('[data-filter-text]');
+  const kind = box.querySelector<HTMLSelectElement>('[data-filter-kind]');
+  const count = document.querySelector<HTMLElement>('[data-filter-count]');
+  const none = document.querySelector<HTMLElement>('[data-filter-none]');
+  const body = table?.tBodies[0];
+  if (!table || !text || !kind || !body) return;
+
+  const rows = Array.from(body.rows);
+  const total = rows.length;
+
+  const apply = (): void => {
+    const words = text.value.toLowerCase().split(/\s+/).filter(Boolean);
+    const wanted = kind.value;
+    let shown = 0;
+    for (const row of rows) {
+      const haystack = row.dataset['search'] ?? '';
+      const match = words.every((w) => haystack.includes(w)) && (wanted === '' || row.dataset['kind'] === wanted);
+      row.hidden = !match;
+      if (match) shown += 1;
+    }
+    if (count) count.textContent = shown === total ? `Showing all ${total}.` : `Showing ${shown} of ${total}.`;
+    if (none) none.hidden = shown > 0;
+  };
+
+  text.addEventListener('input', apply);
+  kind.addEventListener('change', apply);
+  box.hidden = false;
+  apply();
+}
+
+document.querySelectorAll<HTMLElement>('[data-filter]').forEach(enhance);

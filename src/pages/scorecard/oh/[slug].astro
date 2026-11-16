@@ -1,0 +1,31 @@
+---
+import WorkbookFilingPage from '../../../components/WorkbookFilingPage.astro';
+import { buildWorkbookViews, getDataset, type WorkbookView } from '../../../lib/data';
+
+/**
+ * One page for each Ohio workbook, at the address the assistants server also uses (the filing id
+ * without its state and year, from worker/mcp/pages.js). It has a route of its own so that these pages
+ * carry their own styles and the Rhode Island and Vermont pages carry none of them.
+ */
+export function getStaticPaths() {
+  const books = buildWorkbookViews(getDataset()).filter((b) => b.filing.state === 'OH');
+  const seen = new Set<string>();
+  return books.map((workbook, at) => {
+    if (seen.has(workbook.filing.slug)) throw new Error(`${workbook.path} is the address of two pages`);
+    seen.add(workbook.filing.slug);
+    if (workbook.filing.slug === 'drugs' || /^\d{4}$/.test(workbook.filing.slug)) throw new Error(`${workbook.path} is also the address of another kind of page`);
+    const step = (v: WorkbookView | undefined) => (v ? { href: v.path, name: v.title } : undefined);
+    return { params: { slug: workbook.filing.slug }, props: { workbook, prev: step(books[at - 1]), next: step(books[at + 1]) } };
+  });
+}
+
+interface Props {
+  workbook: WorkbookView;
+  prev: { href: string; name: string } | undefined;
+  next: { href: string; name: string } | undefined;
+}
+
+const { workbook, prev, next } = Astro.props;
+---
+
+<WorkbookFilingPage view={workbook} prev={prev} next={next} />

@@ -5,9 +5,9 @@
 export const CSV_HEADERS = {
   'attachments.csv': ['filing_id', 'first_page', 'last_page', 'kind', 'title_as_filed', 'note', 'document_file', 'document_url', 'document_cover_page_url', 'document_sha256', 'document_bytes'],
   'discrepancies.csv': ['filing_id', 'rule', 'basis', 'description', 'expected', 'filed', 'difference', 'unit', 'note'],
-  'entities.csv': ['entity_id', 'state', 'entity_type', 'name_as_filed', 'opais_ids_as_filed', 'entity_type_as_filed', 'city_as_filed'],
-  'filings.csv': ['filing_id', 'entity_id', 'state', 'reporting_year', 'form_revision', 'reporting_basis_as_filed', 'recertification_date_as_filed', 'corporate_address_as_filed', 'source_url', 'source_file', 'retrieved_at', 'pdf_sha256', 'pdf_bytes', 'page_count', 'scanned', 'form', 'status_as_filed', 'status_notice_as_filed', 'period_as_filed', 'submission_as_filed', 'cover_page_url', 'record_kind'],
-  'line_items.csv': ['filing_id', 'schedule', 'line', 'row_kind', 'label_as_filed', 'name_as_filed', 'normalized_vendor', 'category', 'description_as_filed', 'ndc_as_filed', 'amount_as_filed', 'amount', 'unit', 'claims_as_filed', 'claims', 'claims_withheld', 'answer_as_filed', 'page', 'verification', 'note'],
+  'entities.csv': ['entity_id', 'state', 'entity_type', 'name_as_filed', 'opais_ids_as_filed', 'entity_type_as_filed', 'city_as_filed', 'hrsa_name', 'hrsa_id_spelling', 'hrsa_list_date', 'hrsa_match'],
+  'filings.csv': ['filing_id', 'entity_id', 'state', 'reporting_year', 'form_revision', 'reporting_basis_as_filed', 'recertification_date_as_filed', 'corporate_address_as_filed', 'source_url', 'source_file', 'retrieved_at', 'pdf_sha256', 'pdf_bytes', 'page_count', 'scanned', 'form', 'status_as_filed', 'status_notice_as_filed', 'period_as_filed', 'submission_as_filed', 'cover_page_url', 'record_kind', 'other_entity_ids'],
+  'line_items.csv': ['filing_id', 'schedule', 'line', 'row_kind', 'label_as_filed', 'name_as_filed', 'normalized_vendor', 'category', 'description_as_filed', 'ndc_as_filed', 'amount_as_filed', 'amount', 'unit', 'claims_as_filed', 'claims', 'claims_withheld', 'answer_as_filed', 'page', 'verification', 'note', 'source_cell'],
   'measures.csv': ['filing_id', 'measure', 'formula', 'value'],
   'state-laws-not-listed.csv': ['state', 'name', 'reason', 'source_url'],
   'state-laws.csv': ['law_id', 'state', 'kinds', 'title', 'citation', 'bill', 'session_year', 'act', 'signed_date', 'effective_date', 'binds', 'summary', 'limits', 'enforcement', 'quote', 'source_url', 'source_form', 'source_text', 'source_sha256', 'more_url', 'more_text', 'more_sha256', 'source_note', 'retrieved'],
@@ -21,19 +21,23 @@ export const DATA_FILES = [...Object.keys(CSV_HEADERS), '340b-state-filings.json
 export const KNOWN_LAW_KINDS = ['contract-pharmacy', 'payer-nondiscrimination', 'reporting', 'medicaid', 'use-of-savings', 'study', 'other'];
 
 /** The forms this site can show. Must match FORMS in src/lib/forms.ts. */
-export const KNOWN_FORMS = ['ri-oag-340b', 'vt-gmcb-340b-financial', 'mn-mdh-340b-report', 'id-sco-340b-report', 'me-mhdo-340b-report'];
+export const KNOWN_FORMS = ['ri-oag-340b', 'vt-gmcb-340b-financial', 'mn-mdh-340b-report', 'id-sco-340b-report', 'me-mhdo-340b-report', 'oh-odh-340b-report'];
 
 /** The kinds of record a filing may be (filings.csv `record_kind`). Must match RECORD_KINDS in src/lib/forms.ts. */
 export const KNOWN_RECORD_KINDS = ['filing', 'state_report_row', 'state_report_totals'];
 
 /** The entity types a row of entities.csv may have. Must match ENTITY_TYPES in src/lib/forms.ts. */
-export const KNOWN_ENTITY_TYPES = ['health_center', 'hospital', 'other', 'state_total'];
+// `not_stated` is Ohio's: a workbook prints a 340B ID and no name or type of entity.
+export const KNOWN_ENTITY_TYPES = ['health_center', 'hospital', 'other', 'state_total', 'not_stated'];
 
 /** Units a row may have. */
 export const KNOWN_UNITS = ['usd', 'percent', 'count', 'none'];
 
 /** Why a row's claim count is left out (line_items.csv `claims_withheld`); empty when it is published. */
-export const KNOWN_WITHHELD = ['', 'fewer_than_6', 'beside_small'];
+export const KNOWN_WITHHELD = ['', 'fewer_than_6', 'beside_small', 'reveals_small'];
+
+/** How a row was checked (line_items.csv `verification`). two_file_reads is a workbook cell read by two programs that agree. */
+export const KNOWN_VERIFICATION = ['text_and_image', 'two_image_reads', 'two_file_reads', 'adjudicated'];
 
 /** The small-number rule: a claim count from 1 up to this is never published. */
 export const SMALL_CLAIMS_HIGHEST = 5;
@@ -194,6 +198,10 @@ export function valueProblems(files) {
   // (maskSmallClaimCounts), so this only speaks if a copy was changed by hand afterwards.
   for (const r of records('line_items.csv')) {
     const where = `line_items.csv: ${r.filing_id} schedule ${r.schedule} line ${r.line}`;
+    // (A file with no such column is caught by the column check; only a value this site does not know is reported here.)
+    if (r.verification !== undefined && !KNOWN_VERIFICATION.includes(r.verification)) problems.push(`${where} has the verification "${r.verification}", which this site does not know`);
+    // A workbook form carries a count or a percentage in the amount, not in a claims column: a row marked withheld must carry no figure there.
+    if (r.claims_withheld !== '' && (r.unit === 'count' || r.unit === 'percent') && (r.amount !== '' || r.amount_as_filed !== '')) problems.push(`${where} is marked ${r.claims_withheld} but still carries a figure`);
     if (!KNOWN_WITHHELD.includes(r.claims_withheld)) problems.push(`${where} has claims_withheld "${r.claims_withheld}", which this site does not know`);
     if (isSmallClaimCount(r.claims) || isSmallClaimCount(r.claims_as_filed)) problems.push(`${where} carries a claim count of 1 to ${SMALL_CLAIMS_HIGHEST}. Run: npm run sync (it leaves the count out and keeps the row)`);
   }

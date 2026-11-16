@@ -120,7 +120,7 @@ describe('a form or record kind the site does not know', () => {
 
   it('stops when a kind of record is not one its form allows', () => {
     const files = rawFiles();
-    files['filings.csv'] = files['filings.csv']!.replace(/^(mn-2024-abbott-northwestern,.*),state_report_row$/m, '$1,filing');
+    files['filings.csv'] = files['filings.csv']!.replace(/^(mn-2024-abbott-northwestern,.*),state_report_row(,[^,]*)$/m, '$1,filing$2');
     expect(() => buildDataset({ files })).toThrow(/does not allow a record of kind/);
   });
 

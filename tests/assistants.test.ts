@@ -2,6 +2,8 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { ASSISTANTS_PAGE, COUNT_COLUMNS, WAIT_SECONDS, forgetTables, handleAssistants, type AssistantsEnv } from '../worker/assistants';
 import worker, { type SiteEnv } from '../worker/index';
 import config from '../wrangler.jsonc?raw';
+import { split } from '../worker/mcp/split.js';
+import { FILES, reportFile } from '../worker/mcp/tables.js';
 
 /**
  * The door for assistants, checked against the tables this site was built from (public/data).
@@ -9,7 +11,14 @@ import config from '../wrangler.jsonc?raw';
  */
 const SITE = 'https://clinx.org';
 const TABLES = import.meta.glob('../public/data/340b-*.json', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
-const tableText = (name: string): string | undefined => TABLES[`../public/data/${name}`];
+// The site also writes an index of the filed reports and one file for each report at build time (src/pages/data), cut by the server's own `split`: the made-up host hands them out the same way.
+const CUT = split(JSON.parse(TABLES['../public/data/340b-state-filings.json']!));
+const tableText = (name: string): string | undefined => {
+  if (name === FILES.filingsIndex) return JSON.stringify(CUT.index);
+  const id = Object.keys(CUT.reports).find((k) => reportFile(k) === name);
+  if (id !== undefined) return JSON.stringify(CUT.reports[id]);
+  return TABLES[`../public/data/${name}`];
+};
 
 interface Point {
   indexes: string[];
@@ -64,10 +73,23 @@ describe('the door for assistants: answers', () => {
     const built = JSON.parse(tableText('340b-notices.json')!) as { notices: unknown[] };
     expect(about.counts.notices).toBe(built.notices.length);
     expect(about.counts.bills).toBeGreaterThan(200);
-    expect([...asked].sort()).toEqual(['/data/340b-bills.json', '/data/340b-events.json', '/data/340b-notices.json', '/data/340b-reporting-states.json', '/data/340b-state-filings.json', '/data/340b-state-laws.json']);
+    expect([...asked].sort()).toEqual(['/data/340b-bills.json', '/data/340b-events.json', '/data/340b-filings-index.json', '/data/340b-notices.json', '/data/340b-reporting-states.json', '/data/340b-state-laws.json']);
 
     await handleAssistants(ask(call('find_bills', { state: 'RI' })), env);
     expect(asked).toHaveLength(6);
+  });
+
+  it('answers one Ohio workbook from the index and that workbook\'s own file, without reading the whole filed reports file', async () => {
+    const { env, asked } = makeEnv();
+    const out = ((await (await handleAssistants(ask(call('get_filing', { filing_id: 'oh-2025-dsh360059' })), env)).json()) as Reply).result.structuredContent;
+    expect(out.filing.filing_id).toBe('oh-2025-dsh360059');
+    expect(out.lines.length).toBeGreaterThan(100);
+    expect(out.official_file.url).toMatch(/\.xlsx/);
+    expect(asked).toContain('/data/340b-filings-index.json');
+    expect(asked).toContain('/data/filings/oh-2025-dsh360059.json');
+    expect(asked).not.toContain('/data/340b-state-filings.json');
+    // A count of 1 to 5 is never in the answer.
+    for (const line of out.lines as Record<string, string>[]) if (line.claims_withheld) expect(line.claims).toBeUndefined();
   });
 
   it('answers the rebate pilot notice with its page on this site', async () => {

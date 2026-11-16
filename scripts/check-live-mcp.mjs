@@ -2,7 +2,7 @@
 // Usage: node scripts/check-live-mcp.mjs [site address]     (default https://clinx.org)
 //
 // In plain words: the tests in tests/ prove the program on a developer's computer. This proves
-// the published one. It downloads the four open tables as any reader can, asks clinx.org/mcp the
+// the published one. It downloads the open tables as any reader can (the filed reports as their index, which is how the server reads them), asks clinx.org/mcp the
 // same things through each of its twelve tools, and fails if an answer and a table disagree. It
 // also sends a few mistaken and oversized requests and checks each is turned away politely.
 // It only reads, it sends about forty-five requests, and it is run by hand after a publish.
@@ -17,7 +17,7 @@ async function rpc(method, params, extra = {}) {
 const call = async (name, args = {}) => { const { body } = await rpc('tools/call', { name, arguments: args }); return body?.result; };
 const table = async (name) => (await fetch(`${SITE}/data/${name}`, { headers: { 'User-Agent': 'clinx-check' } })).json();
 
-const [laws, bills, notices, events, filed] = await Promise.all(['340b-state-laws.json', '340b-bills.json', '340b-notices.json', '340b-events.json', '340b-state-filings.json'].map(table));
+const [laws, bills, notices, events, filed] = await Promise.all(['340b-state-laws.json', '340b-bills.json', '340b-notices.json', '340b-events.json', '340b-filings-index.json'].map(table));
 const init = await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'clinx-check', version: '1' } });
 ok('initialize (older handshake)', init.status === 200 && init.body?.result?.serverInfo?.name === 'clinx-340b');
 const disc = await rpc('server/discover', {}, { 'MCP-Protocol-Version': '2026-07-28' });
@@ -70,6 +70,10 @@ for (const state of filedStates) {
 const firstFiling = filed.filings[0];
 const one = (await call('get_filing', { filing_id: firstFiling.filing_id })).structuredContent;
 ok('get_filing returns the record asked for', one.filing?.filing_id === firstFiling.filing_id && one.lines_total > 0 && one.official_file?.sha256 === firstFiling.pdf_sha256, `${firstFiling.filing_id}: ${one.lines_total} lines`);
+// An Ohio record is an Excel workbook: its lines come from that record's own file, and its official file is the workbook.
+const workbook = filed.filings.find((f) => /\.xlsx$/i.test(f.source_file ?? ''));
+const wb = (await call('get_filing', { filing_id: workbook.filing_id })).structuredContent;
+ok('get_filing for an Ohio record answers with lines and a workbook file', wb.filing?.filing_id === workbook.filing_id && wb.lines_total > 0 && wb.lines?.length > 0 && /\.xlsx/i.test(wb.official_file?.url ?? '') && wb.official_file?.sha256 === workbook.pdf_sha256, `${workbook.filing_id}: ${wb.lines_total} lines`);
 const mn = (await call('state_overview', { state: 'MN' })).structuredContent;
 ok('state_overview MN matches the laws file', mn.laws.count === laws.laws.filter((l) => l.state === 'MN').length, `${mn.laws.count} laws`);
 const fed = (await call('state_overview', { state: 'FED' })).structuredContent;

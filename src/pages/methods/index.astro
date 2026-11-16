@@ -3,7 +3,7 @@ import '../../styles/pages.css';
 import Base from '../../layouts/Base.astro';
 import OnPage from '../../components/OnPage.astro';
 import PageHead from '../../components/PageHead.astro';
-import { buildViews, comparabilityFollowOns, comparabilityParagraph, compareNames, formatFigure, getDataset } from '../../lib/data';
+import { buildViews, buildWorkbookViews, comparabilityFollowOns, comparabilityParagraph, compareNames, formatFigure, getDataset } from '../../lib/data';
 import { anyFormSpec } from '../../lib/forms';
 import { renderInline, renderSections } from '../../lib/markdown';
 import { drawFiguresInText } from '../../lib/money';
@@ -12,12 +12,16 @@ import { stateName } from '../../lib/states';
 const data = getDataset();
 const views = buildViews(data);
 const byFiling = new Map(views.map((v) => [v.filing.filingId, v]));
+// A workbook's differences are on that workbook's own page, under HRSA's name.
+const workbooks = new Map(buildWorkbookViews(data).map((b) => [b.filing.filingId, b]));
 // A difference in a state's report belongs to a row of that report: it is named by the entity and links to the state's page.
 const filingById = new Map(data.filings.map((f) => [f.filingId, f]));
 const entityById = new Map(data.entities.map((e) => [e.entityId, e]));
 const whose = (filingId: string): { name: string; href: string } | null => {
   const v = byFiling.get(filingId);
   if (v) return { name: v.entity.nameAsFiled, href: `${v.entity.path}#differences` };
+  const book = workbooks.get(filingId);
+  if (book) return { name: book.title, href: `${book.path}#differences` };
   const f = filingById.get(filingId);
   const e = f && entityById.get(f.entityId);
   if (!f || !e) return null;

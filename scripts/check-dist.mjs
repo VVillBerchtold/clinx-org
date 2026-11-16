@@ -113,6 +113,22 @@ const PRINTED_NOTICE_WORDS = existsSync(noticesFile)
       .flatMap((words) => [words, escapeHtml(words)])
       .sort((a, b) => b.length - a.length)
   : [];
+// A workbook filer's own words (what it typed in a cell of its Excel workbook) are shown as typed on that filer's page.
+// Where one of them holds a word this check bans ("the highest quality care"), exactly that text is let through on the
+// Ohio pages; our own words on those pages are still checked.
+const filedPath = join(root, 'src', 'data', 'dataset', '340b-state-filings.json');
+const PRINTED_WORKBOOK_WORDS = existsSync(filedPath)
+  ? [
+      ...new Set(
+        JSON.parse(readFileSync(filedPath, 'utf8'))
+          .line_items.filter((r) => String(r.filing_id).startsWith('oh-'))
+          .flatMap((r) => [r.answer_as_filed, r.description_as_filed, r.label_as_filed, r.name_as_filed, r.note])
+          .filter((words) => typeof words === 'string' && BANNED_WORDS.test(words)),
+      ),
+    ]
+      .flatMap((words) => [words, escapeHtml(words)])
+      .sort((a, b) => b.length - a.length)
+  : [];
 // The site's own way back to the start of a page. It is a navigation label on every page, never a word about a filer.
 const NAV_LABELS = ['Back to top'];
 const EMAIL = /[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}/g;
@@ -287,6 +303,9 @@ for (const file of htmlFiles) {
   if (page.startsWith('/bills/') || page.startsWith('/calendar/')) {
     for (const words of PRINTED_BILL_WORDS) checked = checked.replaceAll(words, ' ');
   }
+  if (page.startsWith('/scorecard/oh/')) {
+    for (const words of PRINTED_WORKBOOK_WORDS) checked = checked.replaceAll(words, ' ');
+  }
   if (page.startsWith('/calendar/')) {
     for (const words of PRINTED_EVENT_WORDS) checked = checked.replaceAll(words, ' ');
   }
@@ -445,6 +464,77 @@ else {
         else if (current.length !== 1) fail(page, 'the year switch must mark exactly one year with aria-current');
         else if (expectYear !== null && current[0][3] !== expectYear) fail(page, `the year switch marks ${current[0][3]}, expected ${expectYear}`);
         else if (expectYear === null && current[0][1] !== `/scorecard/${state}/`) fail(page, 'the state address must show the latest year');
+      }
+    }
+  }
+}
+
+// The assistants server reads the filed reports as an index and one small file for each record, written at build time
+// (src/pages/data). Every record of the whole file must be in the index, every record must have its file, and no file of
+// the build may be too big for the host to serve (25 MiB).
+const MAX_FILE_BYTES = 25 * 1024 * 1024;
+for (const f of files) if (statSync(f).size > MAX_FILE_BYTES) fail(urlOf(f), `is ${(statSync(f).size / 1048576).toFixed(1)} MiB, over the 25 MiB the host allows for one file`);
+{
+  const where = 'data/340b-filings-index.json';
+  const indexPath = join(dist, 'data', '340b-filings-index.json');
+  const wholePath = join(dist, 'data', '340b-state-filings.json');
+  if (!existsSync(indexPath)) fail(where, 'missing from the build');
+  else if (!existsSync(wholePath)) fail('data/340b-state-filings.json', 'missing from the build (it stays as a download)');
+  else {
+    let index;
+    let whole;
+    try {
+      index = JSON.parse(readFileSync(indexPath, 'utf8'));
+      whole = JSON.parse(readFileSync(wholePath, 'utf8'));
+    } catch {
+      fail(where, 'the index or the whole file is not valid JSON');
+    }
+    if (index && whole) {
+      const listed = new Set(index.filings.map((f) => f.filing_id));
+      const wanted = whole.filings.map((f) => f.filing_id);
+      if (listed.size !== index.filings.length) fail(where, 'lists a record twice');
+      for (const wantedId of wanted) if (!listed.has(wantedId)) fail(where, `does not list ${wantedId}`);
+      if (index.filings.length !== wanted.length) fail(where, `lists ${index.filings.length} records, the whole file holds ${wanted.length}`);
+      if (index.dataset_version !== whole.dataset_version) fail(where, 'is not of the same dataset version as the whole file');
+      const reportFiles = files.filter((f) => urlOf(f).startsWith('/data/filings/') && f.endsWith('.json'));
+      if (reportFiles.length !== wanted.length) fail('data/filings', `holds ${reportFiles.length} files, expected one for each of ${wanted.length} records`);
+      for (const record of index.filings) {
+        const file = join(dist, 'data', 'filings', `${record.filing_id.toLowerCase()}.json`);
+        if (!existsSync(file)) {
+          fail(`data/filings/${record.filing_id.toLowerCase()}.json`, 'missing from the build');
+          continue;
+        }
+        try {
+          const report = JSON.parse(readFileSync(file, 'utf8'));
+          if (report.filing_id !== record.filing_id) fail(urlOf(file), 'is the file of another record');
+          else if (!Array.isArray(report.lines) || report.lines.length !== record.line_count) fail(urlOf(file), `holds ${report.lines?.length} lines, the index says ${record.line_count}`);
+          else if ((report.discrepancies ?? []).length !== record.discrepancy_count) fail(urlOf(file), 'holds a different number of differences from the index');
+          // A count of 1 to 5 never leaves the build, in any file.
+          for (const line of report.lines) if (/^\s*[1-5]\s*$/.test(String(line.claims ?? '')) || /^\s*[1-5]\s*$/.test(String(line.claims_as_filed ?? ''))) fail(urlOf(file), 'carries a claim count of 1 to 5');
+        } catch {
+          fail(urlOf(file), 'is not valid JSON');
+        }
+      }
+      // A workbook record has a page of its own, at the address the server also gives, and that page ships no more script or style than a Rhode Island filer's.
+      const workbookRecords = index.filings.filter((f) => /\.xlsx?$/i.test(f.source_file ?? ''));
+      const weight = (html) => {
+        const sum = (pattern) => [...new Set([...html.matchAll(pattern)].map((m) => m[1]))].reduce((n, href) => n + (existsSync(join(dist, href)) ? statSync(join(dist, href)).size : 0), 0);
+        return { css: sum(/href="(\/_astro\/[^"]+\.css)"/g), js: sum(/(?:src|href)="(\/_astro\/[^"]+\.js)"/g) };
+      };
+      const riPage = join(dist, 'scorecard', 'ri', 'landmark', 'index.html');
+      const riWeight = existsSync(riPage) ? weight(readFileSync(riPage, 'utf8')) : null;
+      for (const record of workbookRecords) {
+        const state = String(record.state).toLowerCase();
+        const slug = record.filing_id.replace(new RegExp(`^${state}-\\d{4}-`), '');
+        const page = join(dist, 'scorecard', state, slug, 'index.html');
+        if (!existsSync(page)) {
+          fail(`/scorecard/${state}/${slug}/`, `the page of workbook ${record.filing_id} is not built`);
+          continue;
+        }
+        if (riWeight) {
+          const w = weight(readFileSync(page, 'utf8'));
+          if (w.css > riWeight.css || w.js > riWeight.js) fail(`/scorecard/${state}/${slug}/`, `ships ${w.css} bytes of style and ${w.js} of script, more than a Rhode Island filer's ${riWeight.css} and ${riWeight.js}`);
+        }
       }
     }
   }

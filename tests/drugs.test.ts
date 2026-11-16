@@ -36,9 +36,13 @@ function rawFiles(): Record<string, string> {
 }
 
 /** Schedule G rows read straight from the CSV text, without the site's loader. */
+// Read once: the file holds every state's rows, and reading it again for each filing is slow.
+let scheduleGRows: Record<string, string>[] | undefined;
 function scheduleG(): Record<string, string>[] {
+  if (scheduleGRows) return scheduleGRows;
   const [header, ...rows] = readCsv(rawFiles()['line_items.csv']!) as string[][];
-  return rows.map((r) => Object.fromEntries(header!.map((h, i) => [h, r[i] ?? '']))).filter((r) => r['schedule'] === 'G');
+  scheduleGRows = rows.map((r) => Object.fromEntries(header!.map((h, i) => [h, r[i] ?? '']))).filter((r) => r['schedule'] === 'G');
+  return scheduleGRows;
 }
 
 describe('the drug schedule is part of the form', () => {

@@ -221,11 +221,13 @@ export const STATE_REGISTRY: Readonly<Record<string, StateEntry>> = {
     ],
   },
   OH: {
-    status: 'law',
+    status: 'live',
     group: 'own-reports',
+    href: '/scorecard/oh/',
+    summary: 'Calendar year 2025 · 241 workbooks',
     visibility: 'posted',
     publicNow:
-      'Since October 1, 2026 the Department of Health has posted each covered entity\'s report: 241 workbooks for calendar year 2025, on the department\'s template. ClinX does not show them yet.',
+      "Since October 1, 2026 the Department of Health has posted each covered entity's report: 241 Excel workbooks for calendar year 2025, on the department's template. A workbook prints a 340B ID and no name, so ClinX names each filer as HRSA does.",
     stands: 'Covered entities report to the Department of Health by July 1 each year, starting in 2026. The law tells the department to post what is reported on its website, and it has.',
     sources: [
       { label: 'Ohio Revised Code 3701.88', href: 'https://codes.ohio.gov/ohio-revised-code/section-3701.88' },

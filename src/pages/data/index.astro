@@ -12,6 +12,8 @@ import { renderSections } from '../../lib/markdown';
 import { datasetNode } from '../../lib/structured-data';
 
 const data = getDataset();
+// A file's size, the way a person reads it: the larger files are in the megabytes, and nothing is rounded to zero.
+const sizeOf = (bytes: number): string => (bytes >= 1048576 ? `${(bytes / 1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} KB`);
 // Files this site makes from the dataset: each state's drug rows, all filers in one file.
 const sha256Hex = async (text: string): Promise<string> =>
   Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text))), (b) => b.toString(16).padStart(2, '0')).join('');
@@ -85,6 +87,7 @@ const describe: Record<string, string> = {
               <div>
                 <strong>{name}</strong>
                 <p>{describe[name] ?? ''}</p>
+                <p class="small muted">{sizeOf(data.sizes[name]!)}</p>
               </div>
               <a class="btn ghost" href={`/data/${name}`} download aria-label={`Download ${name}`}>Download</a>
               <span class="hash"><span class="visually-hidden">SHA-256: </span>{data.hashes[name]}</span>
@@ -126,7 +129,7 @@ const describe: Record<string, string> = {
           ))
         }
       </ul>
-      <p class="small muted">The line under each file is its SHA-256, so you can confirm your copy matches.</p>
+      <p class="small muted">Each file of the dataset shows its size under its description. The line under each file is its SHA-256, so you can confirm your copy matches.</p>
     </div>
   </section>
 

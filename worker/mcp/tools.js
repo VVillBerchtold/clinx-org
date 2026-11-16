@@ -3,6 +3,8 @@
 // Every tool only reads. Every answer names the official page it came from and the day the table
 // was last brought up to date, so whoever asks can check it at the source.
 
+import { filingPath, latestYears } from './pages.js';
+
 const SITE = 'https://clinx.org';
 const STATE = { type: 'string', description: 'Two-letter state code such as RI or TX. Use US for Congress.', pattern: '^[A-Za-z]{2}$' };
 // Federal agencies write rules and notices, not bills: they are a place on the calendar, with the code FED.
@@ -170,17 +172,21 @@ const needReporting = (t) => {
 };
 
 // Why a claim count is not given. A reason this code has not seen is still passed on, with the rule.
+export const REPORT_UNREAD = 'The lines of this report could not be read just now, so this question cannot be answered. The other tools still work. Try again in a minute.';
+
 const WITHHELD_WHY = {
   fewer_than_6: 'The count of claims on this row is 1 to 5. Counts that small are never published, so it is not given. The official file prints it on the page named on the row.',
   beside_small: 'The count on this row is not given, because next to the printed total it would let a reader work out a small count on another row.',
+  reveals_small: 'This row is a percentage that would let a reader work out a count of 1 to 5 on another row, so it is not given. The official file prints it in the cell named on the row.',
 };
 const withheldWhy = (reason) => WITHHELD_WHY[reason] ?? `The count on this row is withheld (${reason}). Counts of 1 to 5 are never published.`;
 
 // How a row was checked, in the dataset's own terms.
 const CHECKED_WHAT = {
   text_and_image: 'The figure matches the text of the official file and a separate read of the page image.',
+  two_file_reads: 'The figure is a cell of the official Excel workbook. Two separate programs read the cell and they agree. A workbook has no page image, so none was used.',
   two_image_reads: 'The page has no usable text, so two separate reads of the page image were compared and they agree.',
-  adjudicated: 'The two reads differed and a further look at the page image settled it. The note on the row says what was seen.',
+  adjudicated: 'The two reads differed and a further look settled it, at the page image for a PDF. The note on the row says what was seen.',
   unreadable: 'The page could not be read with confidence, so the value is left blank.',
 };
 const BASIS_WHAT = {
@@ -188,7 +194,7 @@ const BASIS_WHAT = {
   comparison: 'The form does not say the figures agree. They are shown together.',
 };
 
-const PAGE_LINE_COLUMNS = ['schedule', 'line', 'row_kind', 'label_as_filed', 'name_as_filed', 'description_as_filed', 'ndc_as_filed', 'normalized_vendor', 'category', 'amount_as_filed', 'amount', 'unit', 'claims_as_filed', 'claims', 'claims_withheld', 'answer_as_filed', 'page', 'verification', 'note'];
+const PAGE_LINE_COLUMNS = ['schedule', 'line', 'row_kind', 'label_as_filed', 'name_as_filed', 'description_as_filed', 'ndc_as_filed', 'normalized_vendor', 'category', 'amount_as_filed', 'amount', 'unit', 'claims_as_filed', 'claims', 'claims_withheld', 'answer_as_filed', 'page', 'source_cell', 'verification', 'note'];
 
 /** A state's two letters for the filings tools: a state, never US or FED. */
 function filingState(args) {
@@ -210,32 +216,43 @@ function yearOf(args) {
   return String(year);
 }
 
-// A report's lines are held as text (see src/tables.js) and read back only for the one report asked for.
-const linesOf = (filing) => JSON.parse(filing.lines_json);
+// A report's lines are not held with the index: they are read when that one report is asked for (see src/tables.js).
 
+// The name the filer printed. A workbook prints a 340B ID and no name, so for Ohio this is empty:
+// the name then comes from HRSA's list and is given as HRSA's (see hrsaOf).
 const nameOf = (filing) => filing.entity.name_as_filed ?? '';
+// A name to sort and to look for by: the filer's own, else HRSA's, else the ID.
+const sortName = (filing) => nameOf(filing) || filing.entity.hrsa_name || filing.entity_id;
+// HRSA's name for the entity, labelled as HRSA's and never as the filer's own words.
+const hrsaOf = (filing) => (filing.entity.hrsa_name
+  ? { hrsa_name: filing.entity.hrsa_name, hrsa_list_date: filing.entity.hrsa_list_date, name_source: `The name is HRSA's, from its public list of covered entities read on ${filing.entity.hrsa_list_date || 'a day the table does not give'}. The official file prints the 340B ID and no name.` }
+  : {});
+// An official file that is an Excel workbook (a form the state publishes as a spreadsheet, not a PDF).
+const isWorkbook = (filing) => /\.xlsx?$/i.test(String(filing.source_file ?? '')) || /\.xlsx?(\?|$)/i.test(String(filing.source_url ?? ''));
 const kindsOf = (filings, key) => [...new Set(filings.map((f) => key(f)).filter(Boolean))].sort();
 
 // A report has a page of its own on the site only when it is an entity's own filing. A row a state
-// printed about an entity, or a state's totals, is shown on the page of the state's reports.
-function filingPage(filing) {
-  const state = String(filing.state).toLowerCase();
-  if (filing.record_kind !== 'filing') return `${SITE}/scorecard/${state}/`;
-  const id = String(filing.entity_id);
-  return `${SITE}/scorecard/${state}/${id.startsWith(`${state}-`) ? id.slice(state.length + 1) : id}/`;
+// printed about an entity, or a state's totals, is shown on the page of the state's reports, and a
+// state's earlier year on its own page. The rule is src/pages.js, which the site builds its pages from.
+const latestOf = new WeakMap();
+function filingPage(filing, held) {
+  if (!latestOf.has(held)) latestOf.set(held, latestYears(held.filings));
+  return `${SITE}${filingPath(filing, latestOf.get(held))}`;
 }
 
-const briefFiling = (filing) => said({
+const briefFiling = (filing, held) => said({
   filing_id: filing.filing_id,
   entity: nameOf(filing),
+  ...hrsaOf(filing),
   entity_id: filing.entity_id,
+  ...(filing.other_entity_ids ? { other_entity_ids: filing.other_entity_ids } : {}),
   entity_type: filing.entity.entity_type,
   state: filing.state,
   year: filing.reporting_year,
   form: filing.form,
   form_revision: filing.form_revision,
   record_kind: filing.record_kind,
-  clinx_page: filingPage(filing),
+  clinx_page: filingPage(filing, held),
   official_source: filing.source_url,
 });
 
@@ -487,7 +504,7 @@ export const TOOLS = [
       properties: {
         state: STATE,
         year: { type: 'integer', minimum: 1990, maximum: 2100, description: 'The reporting year, such as 2025.' },
-        entity: { type: 'string', description: 'Words in the entity\'s name as filed or its city, or a 340B ID such as DSH410009.' },
+        entity: { type: 'string', description: 'Words in the entity\'s name as filed or in HRSA\'s name for it (Ohio\'s workbooks print an ID and no name), or its city, or a 340B ID such as DSH410009.' },
         entity_type: { type: 'string', description: 'For example hospital, health_center or state_total. about_the_data lists the types held.' },
         record_kind: { type: 'string', description: 'For example filing (an entity\'s own report), state_report_row (a row a state printed about an entity) or state_report_totals. about_the_data lists the kinds held.' },
         form: { type: 'string', description: 'The form\'s id, as listed by about_the_data.' },
@@ -505,21 +522,21 @@ export const TOOLS = [
       const form = freeText(args, 'form');
       const found = held.filings
         .filter((f) => (!state || f.state === state) && (!year || f.reporting_year === year) && (!type || text(f.entity.entity_type) === type) && (!kind || text(f.record_kind) === kind) && (!form || text(f.form) === form))
-        .filter((f) => holds(text(`${f.entity.name_as_filed ?? ''} ${f.entity.city_as_filed ?? ''} ${f.entity.opais_ids_as_filed ?? ''} ${f.entity_id} ${f.filing_id}`), needles))
-        .sort((a, b) => a.state.localeCompare(b.state) || String(b.reporting_year).localeCompare(String(a.reporting_year)) || (nameOf(a) || a.entity_id).localeCompare(nameOf(b) || b.entity_id));
+        .filter((f) => holds(text(`${f.entity.name_as_filed ?? ''} ${f.entity.hrsa_name ?? ''} ${f.entity.city_as_filed ?? ''} ${f.entity.opais_ids_as_filed ?? ''} ${f.entity.hrsa_id_spelling ?? ''} ${f.other_entity_ids ?? ''} ${f.entity_id} ${f.filing_id}`), needles))
+        .sort((a, b) => a.state.localeCompare(b.state) || String(b.reporting_year).localeCompare(String(a.reporting_year)) || sortName(a).localeCompare(sortName(b)));
       const shown = clip(found, args.limit);
       const notes = [FILINGS_CAUTION];
       if (shown.length < found.length) notes.unshift(`Showing ${shown.length} of ${found.length}. The list is cut short: narrow it with state, year or entity, or ask for more with limit (up to 100).`);
       for (const [name, value, known] of [['entity_type', type, kindsOf(held.filings, (f) => f.entity.entity_type)], ['record_kind', kind, kindsOf(held.filings, (f) => f.record_kind)], ['form', form, kindsOf(held.filings, (f) => f.form)]]) {
         if (value && !known.some((k) => text(k) === value)) notes.unshift(`No report has a ${name} of ${value}. The ${name} values held are: ${known.join(', ')}.`);
       }
-      return { matched: found.length, shown: shown.length, filings: shown.map(briefFiling), retrieved: held.retrieved, note: notes.join(' ') };
+      return { matched: found.length, shown: shown.length, filings: shown.map((f) => briefFiling(f, held)), retrieved: held.retrieved, note: notes.join(' ') };
     },
   },
   {
     name: 'get_filing',
     title: 'One filed 340B report in full',
-    description: 'One filed report by its filing_id from find_filings: every line as filed with its label, unit and amount; which claim counts are withheld and why (counts of 1 to 5 are never given); how each figure was checked; any discrepancies recorded between figures the report prints; the official file\'s address, size and SHA-256; and the ClinX page. A very long report is given in parts: use schedule, offset and limit.',
+    description: 'One filed report by its filing_id from find_filings: every line as filed with its label, unit and amount; which claim counts are withheld and why (counts of 1 to 5 are never given); how each figure was checked; any discrepancies recorded between figures the report prints; the official file\'s address, size and SHA-256; and the ClinX page. For a workbook, the cell each figure was read from. A very long report is given in parts: use schedule, offset and limit.',
     inputSchema: {
       type: 'object',
       additionalProperties: false,
@@ -531,7 +548,7 @@ export const TOOLS = [
         limit: { type: 'integer', minimum: 1, maximum: 500, description: 'How many lines to return (default 250).' },
       },
     },
-    run(t, args) {
+    async run(t, args) {
       const held = needFilings(t);
       if (typeof args.filing_id !== 'string' || !args.filing_id.trim()) throw new InputError('filing_id is required; find_filings returns it');
       const filing = held.byId.get(args.filing_id.trim().toLowerCase());
@@ -544,7 +561,14 @@ export const TOOLS = [
       const offset = wholeNumber('offset', 0, 1e9, 0);
       const limit = wholeNumber('limit', 1, 500, 250);
       const schedule = args.schedule === undefined || args.schedule === '' ? undefined : String(args.schedule);
-      const allLines = linesOf(filing);
+      // The lines are read now, from this one report's file (or from the copy held, in the fallback).
+      let report;
+      try {
+        report = await held.report(filing.filing_id);
+      } catch {
+        throw new InputError(REPORT_UNREAD);
+      }
+      const allLines = report.lines;
       const schedules = tally(allLines, (l) => l.schedule ?? '');
       if (schedule !== undefined && !(schedule in schedules)) throw new InputError(`this report has no lines in the schedule ${schedule}; its schedules are: ${Object.keys(schedules).join(', ') || 'none'}`);
       const chosen = schedule === undefined ? allLines : allLines.filter((l) => (l.schedule ?? '') === schedule);
@@ -553,28 +577,31 @@ export const TOOLS = [
       const withheld = tally(allLines, (l) => l.claims_withheld);
       const checked = tally(allLines, (l) => l.verification ?? 'not recorded');
       const { entity } = filing;
-      const { entity: _e, lines_json: _j, line_count: _c, discrepancies: _d, measures: _m, attachments: _a, ...record } = filing;
+      const { entity: _e, line_count: _c, discrepancy_count: _n, measures: _m, attachments: _a, ...record } = filing;
       const fileFields = ['source_url', 'source_file', 'pdf_bytes', 'pdf_sha256', 'page_count', 'cover_page_url', 'retrieved_at'];
+      const workbook = isWorkbook(filing);
+      const differences = report.discrepancies;
       const cut = (obj, names) => Object.fromEntries(Object.entries(obj).filter(([k]) => !names.includes(k)));
       return {
-        filing: { ...cut(record, fileFields), entity, clinx_page: filingPage(filing) },
+        filing: { ...cut(record, fileFields), entity, ...hrsaOf(filing), clinx_page: filingPage(filing, held) },
         official_file: said({
+          ...(workbook ? { kind: 'An Excel workbook (.xlsx) on the State\'s own website. ClinX does not republish it, because the workbook names a member of staff as its contact. The address below is the State\'s. The sha256 and bytes are the workbook\'s own fingerprint and size.' } : {}),
           url: filing.source_url,
           file_name: filing.source_file,
           bytes: fileSize(filing.pdf_bytes),
           sha256: filing.pdf_sha256,
-          pages: fileSize(filing.page_count),
+          ...(workbook ? {} : { pages: fileSize(filing.page_count) }),
           cover_page_url: filing.cover_page_url,
           read_on: filing.retrieved_at,
         }),
-        clinx_page: filingPage(filing),
+        clinx_page: filingPage(filing, held),
         lines: returned,
         lines_total: chosen.length,
         lines_returned: returned.length,
         offset,
         ...(offset + returned.length < chosen.length ? { more: `${chosen.length - offset - returned.length} more lines: ask again with offset ${offset + returned.length}, or with schedule to take one schedule at a time.` } : {}),
         schedules,
-        how_to_read_lines: 'Columns ending _as_filed are the official file\'s own words and amounts. amount and claims give the same figure as a number, written as text exactly as the table holds it. unit says what the amount is: usd, percent, count, or none when the row carries no figure. normalized_vendor and category are ClinX\'s own labels, not the filer\'s words. page is the page of the official file.',
+        how_to_read_lines: 'Columns ending _as_filed are the official file\'s own words and amounts. amount and claims give the same figure as a number, written as text exactly as the table holds it. unit says what the amount is: usd, percent, count, or none when the row carries no figure. normalized_vendor and category are ClinX\'s own labels, not the filer\'s words. page is the page of the official file; for an Excel workbook it is always 1 and source_cell is the cell the figure was read from. A cell that held words where a figure belongs has the words in amount_as_filed (or answer_as_filed) and no amount.',
         withheld: {
           rows: Object.values(withheld).reduce((a, b) => a + b, 0),
           by_reason: withheld,
@@ -585,13 +612,15 @@ export const TOOLS = [
           lines: allLines.length,
           by_verification: checked,
           meaning: Object.fromEntries(Object.keys(checked).map((v) => [v, CHECKED_WHAT[v] ?? `Recorded as ${v} in the table.`])),
-          how: 'As the dataset describes it, each figure was transcribed from the official file and compared with that file\'s text and with a separate read of the page image. Both reads were made by software, each as a separate job.',
+          how: workbook
+            ? 'Each figure is a cell of the official Excel workbook. Two separate programs read every cell, and a figure is given where they agree. A workbook has no page image. Where a program recalculated a formula, the stored value is kept and the note on the row says so.'
+            : 'As the dataset describes it, each figure was transcribed from the official file and compared with that file\'s text and with a separate read of the page image. Both reads were made by software, each as a separate job.',
           ...(filing.scanned === 'true' ? { scanned: 'The official file is a scan, so it has no text to compare with: two separate reads of the page images were compared.' } : {}),
         },
         discrepancies: {
-          count: filing.discrepancies.length,
-          rows: filing.discrepancies.map((d) => ({ ...d, ...(BASIS_WHAT[d.basis] ? { basis_means: BASIS_WHAT[d.basis] } : {}) })),
-          meaning: filing.discrepancies.length
+          count: differences.length,
+          rows: differences.map((d) => ({ ...d, ...(BASIS_WHAT[d.basis] ? { basis_means: BASIS_WHAT[d.basis] } : {}) })),
+          meaning: differences.length
             ? 'A discrepancy is a place where figures the report prints do not agree with each other. Both are given exactly as filed. ClinX corrects neither.'
             : 'No discrepancy is recorded for this report.',
         },

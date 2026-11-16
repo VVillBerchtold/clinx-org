@@ -11,8 +11,17 @@
 // states with a reporting law) are read on their own: if either cannot be read, the other tools
 // go on answering and the tools that need it say so plainly.
 //
+// The filed reports are too big to read as one file (24 MB). The site publishes a small index of
+// them (340b-filings-index.json) and one small file for each report (filings/<filing id>.json).
+// The server reads the index once an hour and a report's file only when that report is asked for,
+// keeping a few recent ones for an hour. The whole file (340b-state-filings.json) stays on the
+// site as a download, and is read, and cut with the same function (src/split.js), only when the
+// index cannot be read.
+//
 // This file uses nothing that only one kind of computer has, so it runs the same under Node and
 // on an edge host.
+
+import { readReport, split } from './split.js';
 
 export const DATA_URL = 'https://clinx.org/data/';
 export const FILES = {
@@ -21,8 +30,13 @@ export const FILES = {
   notices: '340b-notices.json',
   events: '340b-events.json',
   filings: '340b-state-filings.json',
+  filingsIndex: '340b-filings-index.json',
   reporting: '340b-reporting-states.json',
 };
+/** The name of the file that holds one report's lines, from its filing id. The site writes the files under these names. */
+export const reportFile = (filingId) => `filings/${String(filingId).toLowerCase()}.json`;
+// How many reports are kept in memory after they are read. A report is read again after an hour.
+const KEEP_REPORTS = 8;
 const KEEP_MS = 60 * 60 * 1000;
 // A file that could not be read at all is tried again after this long, not on every question.
 const RETRY_MS = 60 * 1000;
@@ -76,7 +90,33 @@ export function makeTables({ source = DATA_URL, fetcher, reader, now = () => Dat
     const [laws, bills, notices, events] = await Promise.all([read(FILES.laws), read(FILES.bills), read(FILES.notices), read(FILES.events)]);
     return shape({ laws, bills, notices, events });
   }, { required: true });
-  const filings = keeper(async () => shapeFilings(await read(FILES.filings)), { required: false });
+  // The index is read first. Only if it cannot be read is the whole file read and cut (the fallback).
+  const filings = keeper(async () => {
+    let index;
+    try {
+      index = await read(FILES.filingsIndex);
+      // A file that is not the index at all counts as unreadable, so the fallback is tried.
+      shapeIndex(index, null);
+    } catch {
+      return shapeFilings(await read(FILES.filings));
+    }
+    return shapeIndex(index, reports.read);
+  }, { required: false });
+
+  // Reports read one at a time from the site, a few kept for an hour. A report that cannot be read is an error for that question only.
+  const recent = new Map();
+  const reports = {
+    async read(filingId) {
+      const name = reportFile(filingId);
+      const held = recent.get(name);
+      if (held && now() - held.at < KEEP_MS) return held.report;
+      const report = readReport(await read(name));
+      recent.delete(name);
+      recent.set(name, { at: now(), report });
+      while (recent.size > KEEP_REPORTS) recent.delete(recent.keys().next().value);
+      return report;
+    },
+  };
   const reporting = keeper(async () => shapeReportingStates(await read(FILES.reporting)), { required: false });
 
   /**
@@ -120,88 +160,44 @@ export function shape({ laws, bills, notices, events }) {
   };
 }
 
-// A cell in the filings file is text. A cell with nothing in it is left out of the held copy: the
-// file has about twenty columns on every line and most are empty on most lines, so leaving them
-// out keeps what the server holds much smaller. Nothing else about a cell is changed.
-const filled = (row, leave = []) => {
-  const kept = {};
-  for (const [key, value] of Object.entries(row)) {
-    if (leave.includes(key) || value === '' || value === undefined || value === null) continue;
-    kept[key] = value;
-  }
-  return kept;
-};
-
-/** The claim counts that the published files leave out are 1 to 5. A whole number in that range is never held. */
-const isSmallCount = (value) => /^\s*[1-5]\s*$/.test(String(value ?? '').replace(/,/g, ''));
-
-/** Lines grouped by report. A claim count of 1 to 5 never gets past this point, whatever the file says. */
-function keepLine(row) {
-  const line = filled(row, ['filing_id']);
-  const small = line.claims !== undefined && isSmallCount(line.claims);
-  if (line.claims_withheld !== undefined || small) {
-    delete line.claims;
-    delete line.claims_as_filed;
-    line.claims_withheld ??= 'fewer_than_6';
-  } else if (line.claims_as_filed !== undefined && isSmallCount(line.claims_as_filed)) {
-    delete line.claims;
-    delete line.claims_as_filed;
-    line.claims_withheld = 'fewer_than_6';
-  }
-  return line;
-}
-
-const groupBy = (rows, key, keep) => {
-  const groups = new Map();
-  for (const row of rows) {
-    const id = row[key];
-    if (!groups.has(id)) groups.set(id, []);
-    groups.get(id).push(keep(row));
-  }
-  return groups;
-};
-
 /**
- * The filed reports, shaped for lookup: each report with its filer, its lines (as text, in the order the
- * file has them: see `lines_json`), its recorded discrepancies, its calculated measures and its attached documents.
- * Nothing is general to today's states or forms: whatever forms, record kinds and entity types
- * the file holds are kept as they are. Throws when the file is not the filings file at all.
+ * The filed reports, shaped for lookup, from the index (see src/split.js): each report with its
+ * filer, the number of its lines and discrepancies, its calculated measures and its attached
+ * documents, and no lines. `report` reads one report's lines and discrepancies when they are asked
+ * for. Nothing is general to today's states or forms: whatever forms, record kinds and entity
+ * types the file holds are kept as they are. Throws when the file is not the index at all.
  */
-export function shapeFilings(file) {
-  if (file === null || typeof file !== 'object' || !Array.isArray(file.filings) || !Array.isArray(file.entities) || !Array.isArray(file.line_items)) {
-    throw new Error('the filed reports file is not in the shape expected');
+export function shapeIndex(index, report) {
+  if (index === null || typeof index !== 'object' || !Array.isArray(index.filings) || index.filings.some((f) => f === null || typeof f !== 'object' || typeof f.filing_id !== 'string' || typeof f.entity !== 'object' || f.entity === null)) {
+    throw new Error('the index of filed reports is not in the shape expected');
   }
-  const entities = new Map(file.entities.map((entity) => [entity.entity_id, filled(entity)]));
-  // A report's lines are the bulk of the file. They are held as one line of text for each report
-  // and read back into rows only when that one report is asked for, which keeps what the server
-  // holds to about the size of the file itself.
-  const lines = groupBy(file.line_items, 'filing_id', keepLine);
-  const discrepancies = groupBy(file.discrepancies ?? [], 'filing_id', (row) => filled(row, ['filing_id']));
-  const measures = groupBy(file.measures ?? [], 'filing_id', (row) => filled(row, ['filing_id']));
-  const attachments = groupBy(file.attachments ?? [], 'filing_id', (row) => filled(row, ['filing_id']));
-  const filings = file.filings.map((row) => {
-    const filing = filled(row);
-    const entity = entities.get(row.entity_id) ?? { entity_id: row.entity_id, state: row.state };
-    const own = lines.get(row.filing_id) ?? [];
-    return {
-      ...filing,
-      entity,
-      line_count: own.length,
-      lines_json: JSON.stringify(own),
-      discrepancies: discrepancies.get(row.filing_id) ?? [],
-      measures: measures.get(row.filing_id) ?? [],
-      attachments: attachments.get(row.filing_id) ?? [],
-    };
-  });
+  const filings = index.filings.map((f) => ({ ...f, discrepancy_count: f.discrepancy_count ?? 0, measures: f.measures ?? [], attachments: f.attachments ?? [] }));
   const days = filings.map((f) => String(f.retrieved_at ?? '').slice(0, 10)).filter(Boolean).sort();
   const byId = new Map(filings.map((f) => [String(f.filing_id).toLowerCase(), f]));
   return {
     filings,
     byId,
-    version: file.dataset_version ?? '',
-    licence: file.license ?? 'CC-BY-4.0',
+    report,
+    version: index.dataset_version ?? '',
+    licence: index.license ?? 'CC-BY-4.0',
     retrieved: days[days.length - 1] ?? '',
   };
+}
+
+/**
+ * The filed reports from the whole file, cut with the same function the site uses to write the
+ * index and the report files. This is the fallback for a host that cannot read the index (the
+ * program on a person's own computer, and an older host): every report is then held in memory,
+ * as text, and read back only when that one report is asked for.
+ */
+export function shapeFilings(file) {
+  const { index, reports } = split(file);
+  const held = new Map(Object.entries(reports).map(([id, doc]) => [id.toLowerCase(), JSON.stringify(doc)]));
+  return shapeIndex(index, async (filingId) => {
+    const text = held.get(String(filingId).toLowerCase());
+    if (text === undefined) throw new Error(`no report ${filingId}`);
+    return readReport(JSON.parse(text));
+  });
 }
 
 /** The states with a 340B reporting law, in groups by what the public can see. */

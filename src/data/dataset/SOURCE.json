@@ -1,23 +1,23 @@
 {
-  "dataset_version": "0.7.0",
-  "dataset_commit": "a0efcc8f9e337604870d635a8a3f528480049e7e",
+  "dataset_version": "0.8.0",
+  "dataset_commit": "89251ec83605ff8edb542d7755b7155300b97590",
   "dataset_commit_had_uncommitted_changes": false,
   "small_claim_counts_left_out_by_this_site": 0,
   "files": {
-    "340b-state-filings.json": "f9c06ccfb76bf5be551a1cb8887dab1b3199a6e6d28dc15ac8631608e0ba59d2",
-    "340b-state-laws.json": "76e70ac7e1c465dcf91818b516fefab0900458b93d7ddde1cc78c8db785d8d44",
+    "340b-state-filings.json": "34d728222d9f62f8e9bcea01569c0cd4186c881e9885db20d30017f9855a3782",
+    "340b-state-laws.json": "7ccf95b849134b8647dca3d7759c51370d9ba93dfaa66ac73ac327565caf6ec6",
     "attachments.csv": "941c8480df3edc5f79d0d23895bcee423b5b0e18a82efb597c9d8cdb77aae96a",
-    "discrepancies.csv": "07cbc519c1999d44b3ce3f51a531c8ffe2f76552e24bfab338f5b04243ee63e0",
-    "entities.csv": "a319e4dc3a2a7141323e186bc65be5cf523f2fb281673c06a4afb2c8852e8d49",
+    "discrepancies.csv": "cfd05a157c463991d9d720a66dcb6d33aa0074422bbe8dff3ac5a1c4d0a1f1af",
+    "entities.csv": "eb12cd314f0553e4600eb138242874c5be5858fe792450f93df61982470969d2",
     "external-share-dark.svg": "71d93a040ea4742c4d883e7c82b280f81a9d6af60f125001b85bd1c9bb1c866d",
     "external-share-light.svg": "07bbb9e93b818afd8cdb19ef639cad3d2e5f2e9c70b5d88d60dababf69cb0a37",
-    "filings.csv": "4f05e340287b3de83163f0a3583a65e68f4c4ab8c9344fb15dc4ded93876d49b",
-    "line_items.csv": "d87afc54514103bbff4054dd6890ba4c4994818bcacabf12c128418ce6d0d0ab",
+    "filings.csv": "5cb6f8e28b1498deb73b0e913c76c33c26887181b520bc343894e6e83325224b",
+    "line_items.csv": "9783b59bd0991a3f5e6edc65f3f5868593c539454918a70c988d8b27b23f7271",
     "measures.csv": "6ec83e2c1d78a48b1e02df907cb3161f2b86fb9149c5da4254211ba9b5491843",
-    "state-laws-not-listed.csv": "d518c92ee8da362652ef5eb603ed74cc9d1ed6e36dc3dc946d344852c02a3f26",
-    "state-laws.csv": "9801d91f19c06082787aa0dc5d2fc6ebec5f65da3b2925e6d6501587e6940e52",
+    "state-laws-not-listed.csv": "24715f3e217e4347f3479f1b86f3630102a3ffa30de897eda1572457bf328f46",
+    "state-laws.csv": "02a184e86cc0f9c489f1d9d471359e9f42e6f7a0541e7cc34a27882185f49043",
     "vendors.csv": "390ff9979310f94f5754d6544f905a27704fd964e3bae027cb0529303861e768",
-    "METHODS.md": "6b86730d92d0d6cf00b5b30ad67d82089180e5ea5bfc8a4ede44cf59da9c5f56",
-    "DATA_DICTIONARY.md": "1c740c622b42211fca60bc50710c80514228c4be19351b31d7ace738b32620d1"
+    "METHODS.md": "9690ace476b5ef763726cf11da1aa4fc21e29e73b558ea75284376c28d7d2812",
+    "DATA_DICTIONARY.md": "703a5d8a0a180753f646b34f4e463dc211abfcb15f6d1220956e707384ddce59"
   }
 }

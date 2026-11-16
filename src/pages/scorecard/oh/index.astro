@@ -1,0 +1,12 @@
+---
+import WorkbookStatePage from '../../../components/WorkbookStatePage.astro';
+
+/**
+ * Ohio's page: the list of the workbooks. It has a route of its own so that the styles and the filter
+ * script of the workbook pages are sent to these pages and to no other state's. The page itself is
+ * the same for any state of workbooks; only this file's place in the folder names the state.
+ */
+const code = 'OH';
+---
+
+<WorkbookStatePage code={code} />

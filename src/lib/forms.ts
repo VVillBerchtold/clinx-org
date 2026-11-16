@@ -18,7 +18,7 @@ export const RECORD_KINDS = ['filing', 'state_report_row', 'state_report_totals'
 export type RecordKind = (typeof RECORD_KINDS)[number];
 
 /** The entity types of entities.csv. scripts/dataset-shape.mjs holds the same list. */
-export const ENTITY_TYPES = ['health_center', 'hospital', 'other', 'state_total'] as const;
+export const ENTITY_TYPES = ['health_center', 'hospital', 'other', 'state_total', 'not_stated'] as const;
 export type EntityType = (typeof ENTITY_TYPES)[number];
 
 export function recordKind(text: string): RecordKind {
@@ -45,7 +45,7 @@ export interface RowKey {
 export interface FormBase {
   id: string;
   /** 'schedules': a cover page and lettered schedules. 'one-page': a single page of figures. 'state-report': tables in a state's own report, one row per entity. 'state-totals': a state's own report that prints statewide totals only. 'state-drug-lists': a state's own report that prints statewide totals and lists of drugs, no row naming a filer. */
-  layout: 'schedules' | 'one-page' | 'state-report' | 'state-totals' | 'state-drug-lists';
+  layout: 'schedules' | 'one-page' | 'state-report' | 'state-totals' | 'state-drug-lists' | 'workbook';
   /** The kinds of record a filing of this form may be. */
   recordKinds: readonly RecordKind[];
   /** One filing of this form, and the word for the period it covers. */
@@ -284,7 +284,63 @@ export interface DrugListsFormSpec extends FormBase {
   notes: { schedule: string };
 }
 
-export type AnyFormSpec = FormSpec | ReportFormSpec | TotalsFormSpec | DrugListsFormSpec;
+/** A column of a workbook's tables: the key the dataset gives it and the heading the template prints. */
+export interface WorkbookColumn {
+  /** The `line` of the rows in this column. */
+  id: string;
+  heading: string;
+}
+
+/** One table of a workbook: a row of the template for each payer column. */
+export interface WorkbookTable {
+  /** The `schedule` of its rows in line_items.csv. */
+  schedule: string;
+  /** What the row is, in a few words; the label the template prints is on the data and is used as the row's title. */
+  short: string;
+  unit: 'usd' | 'count' | 'percent';
+}
+
+/** A section of the template's first sheet that is a grid of figures by payer. */
+export interface WorkbookSection {
+  id: string;
+  /** The words the template uses for the section. */
+  heading: string;
+  /** A plain sentence about what the section holds. */
+  about: string;
+  tables: readonly WorkbookTable[];
+  /** The payer columns, left to right. */
+  columns: readonly WorkbookColumn[];
+}
+
+/** A kind of covered entity, by the letters its 340B ID starts with, and HRSA's name for it. One map, so it can be corrected in one place. */
+export type WorkbookKinds = Readonly<Record<string, string>>;
+
+/**
+ * A form that is an Excel workbook on the state's own template, one workbook for each filer (Ohio's).
+ * The workbook prints a 340B ID and no name. Everything the page says that depends on the form is here.
+ */
+export interface WorkbookFormSpec extends FormBase {
+  layout: 'workbook';
+  /** The state body that collects and posts the workbooks. */
+  agency: string;
+  /** What the template is called. */
+  templateName: string;
+  /** The sections of figures by payer, in the order the template prints them. */
+  sections: readonly WorkbookSection[];
+  /** The `schedule` and `line` of the template's single figures and texts. */
+  costs: { schedule: string; rows: readonly { line: string; label: string }[] };
+  pharmacies: { schedule: string; line: string; notesSchedule: string; notesLine: string };
+  uses: { schedule: string; programs: readonly string[]; equipment: readonly string[]; other: string; narrative: string; alternativeNarrative: string };
+  /** The schedule of the cells outside the template, and the schedule of the identity cells. */
+  otherCells: string;
+  identity: { schedule: string; period: string; id: string; prefix: string; number: string };
+  /** Kinds of entity by the letters at the start of the 340B ID, with the name HRSA gives each. */
+  kinds: WorkbookKinds;
+  /** The page where the cells of every workbook are listed in the dataset repository, from the workbook's file name. */
+  cellsFolder: string;
+}
+
+export type AnyFormSpec = FormSpec | ReportFormSpec | TotalsFormSpec | DrugListsFormSpec | WorkbookFormSpec;
 
 const A = (line: string): RowKey => ({ schedule: 'A', line, kind: 'detail' });
 
@@ -578,7 +634,126 @@ const ME: DrugListsFormSpec = {
   titleSuffix: (year) => `340B report, fiscal ${year}`,
 };
 
-export const FORMS: Readonly<Record<string, AnyFormSpec>> = { [RI.id]: RI, [VT.id]: VT, [MN.id]: MN, [ID.id]: ID, [ME.id]: ME };
+
+const OH_PAYERS: readonly WorkbookColumn[] = [
+  { id: 'commercial', heading: 'Commercial Insurance/Private Insurance' },
+  { id: 'medicare', heading: 'Medicare' },
+  { id: 'medicaid', heading: 'Medicaid (all states)' },
+  { id: 'other_third_party', heading: 'Other Third-Party Payor' },
+  { id: 'uninsured', heading: 'Uninsured/Self-Pay' },
+];
+const OH_TOTAL: WorkbookColumn = { id: 'total', heading: 'Total' };
+const OH_INDETERMINATE: WorkbookColumn = { id: 'indeterminate', heading: 'Indeterminate (Explain)' };
+const ohTable = (schedule: string, short: string, unit: WorkbookTable['unit']): WorkbookTable => ({ schedule, short, unit });
+
+// The letters at the start of HRSA's spelling of a 340B ID, and the name each has. HRSA's own page is the authority: correct a name here and every page follows.
+const OH_KINDS: WorkbookKinds = {
+  CAH: 'Critical access hospital',
+  DSH: 'Disproportionate share hospital',
+  RRC: 'Rural referral center',
+  SCH: 'Sole community hospital',
+  PED: "Children's hospital",
+  CH: 'Community health center',
+  // HRSA types an ID that starts CHC as a CH, and an ID that starts RW as an RW4 (checked against HRSA's list of 2026-11-11).
+  CHC: 'Community health center',
+  FQHCLA: 'Health center look-alike',
+  FP: 'Title X family planning clinic',
+  STD: 'Sexually transmitted disease clinic',
+  TB: 'Tuberculosis clinic',
+  HM: 'Hemophilia treatment center',
+  HV: 'Ryan White HIV/AIDS program grantee',
+  RW: 'Ryan White HIV/AIDS program grantee',
+  RWI: 'Ryan White HIV/AIDS program grantee',
+  RWII: 'Ryan White HIV/AIDS program grantee',
+  RW4: 'Ryan White HIV/AIDS program grantee',
+};
+
+const OH: WorkbookFormSpec = {
+  id: 'oh-odh-340b-report',
+  layout: 'workbook',
+  recordKinds: ['filing'],
+  agency: 'Ohio Department of Health',
+  templateName: 'ORC 3701.88 340B Covered Entity Reporting Template',
+  noun: 'workbook',
+  nounPlural: 'workbooks',
+  periodWord: 'calendar year',
+  asWord: 'stored',
+  publisher: "Ohio Department of Health's website",
+  shownSchedules: [],
+  withheldSchedules: [],
+  sections: [
+    {
+      id: 'in-house',
+      heading: 'Drugs dispensed in house',
+      about: 'Drugs the covered entity dispensed through its own pharmacies.',
+      columns: [...OH_PAYERS, OH_TOTAL],
+      tables: [
+        ohTable('in_house_acquisition_cost', 'Acquisition cost', 'usd'),
+        ohTable('in_house_payments_received', 'Payments received', 'usd'),
+        ohTable('in_house_rx_all', 'All prescriptions', 'count'),
+        ohTable('in_house_rx_340b', '340B prescriptions', 'count'),
+        ohTable('in_house_rx_pct', 'Percentage that were 340B', 'percent'),
+      ],
+    },
+    {
+      id: 'contract',
+      heading: 'Drugs dispensed through contract pharmacies',
+      about: 'Drugs contract pharmacies dispensed on behalf of the covered entity.',
+      columns: [...OH_PAYERS, OH_INDETERMINATE, OH_TOTAL],
+      tables: [
+        ohTable('contract_acquisition_cost', 'Acquisition cost', 'usd'),
+        ohTable('contract_payments_received', 'Payments received', 'usd'),
+        ohTable('contract_rx_all', 'All prescriptions', 'count'),
+        ohTable('contract_rx_340b', '340B prescriptions', 'count'),
+        ohTable('contract_rx_pct', 'Percentage that were 340B', 'percent'),
+      ],
+    },
+    {
+      id: 'administered',
+      heading: 'Drugs administered',
+      about: 'Drugs the covered entity administered, for example by infusion or injection.',
+      columns: [...OH_PAYERS, OH_TOTAL],
+      tables: [
+        ohTable('administered_acquisition_cost', 'Acquisition cost', 'usd'),
+        ohTable('administered_payments_actual', 'Actual payments', 'usd'),
+        ohTable('administered_payments_estimated', 'Estimated payments', 'usd'),
+        ohTable('administered_payments_total', 'Total payments', 'usd'),
+        ohTable('administered_rx_all', 'All prescriptions', 'count'),
+        ohTable('administered_rx_340b', '340B prescriptions', 'count'),
+        ohTable('administered_rx_pct', 'Percentage that were 340B', 'percent'),
+      ],
+    },
+  ],
+  costs: {
+    schedule: 'costs',
+    rows: [
+      { line: 'contract_pharmacies', label: 'Contract pharmacies' },
+      { line: 'third_party_administrators', label: 'Third-party administrators' },
+      { line: 'consultants', label: 'Consultants' },
+      { line: 'software_it', label: 'Software and IT' },
+      { line: 'other_external', label: 'Other outside costs' },
+      { line: 'staffing', label: 'Staffing' },
+      { line: 'internal_it', label: 'Internal IT' },
+      { line: 'other_internal', label: 'Other internal costs' },
+    ],
+  },
+  pharmacies: { schedule: 'contract_pharmacies', line: 'count', notesSchedule: 'contract_pharmacy_notes', notesLine: 'indeterminate_explanation' },
+  uses: {
+    schedule: 'uses',
+    programs: ['program_1', 'program_2', 'program_3', 'program_4', 'program_5'],
+    equipment: ['equipment_1', 'equipment_2', 'equipment_3', 'equipment_4', 'equipment_5'],
+    other: 'other_uses',
+    narrative: 'narrative',
+    alternativeNarrative: 'alternative_narrative',
+  },
+  otherCells: 'other_cells',
+  identity: { schedule: 'identity', period: 'reporting_period', id: 'hrsa_id', prefix: 'id_prefix', number: 'id_number' },
+  kinds: OH_KINDS,
+  cellsFolder: 'sources/oh/2025/cells',
+  titleSuffix: (year) => `340B report, calendar year ${year}`,
+};
+
+export const FORMS: Readonly<Record<string, AnyFormSpec>> = { [RI.id]: RI, [VT.id]: VT, [MN.id]: MN, [ID.id]: ID, [ME.id]: ME, [OH.id]: OH };
 
 /** Any form the site knows; an unknown id stops the build. */
 export function anyFormSpec(id: string): AnyFormSpec {
@@ -590,7 +765,7 @@ export function anyFormSpec(id: string): AnyFormSpec {
 /** A form on which entities file their own figures (the three measures exist). */
 export function formSpec(id: string): FormSpec {
   const spec = anyFormSpec(id);
-  if (spec.layout === 'state-report' || spec.layout === 'state-totals' || spec.layout === 'state-drug-lists') throw new Error(`The form "${id}" is a state's report about entities, not a filing`);
+  if (spec.layout === 'state-report' || spec.layout === 'state-totals' || spec.layout === 'state-drug-lists' || spec.layout === 'workbook') throw new Error(`The form "${id}" is a state's report about entities, not a filing`);
   return spec;
 }
 
@@ -613,4 +788,24 @@ export function drugListsFormSpec(id: string): DrugListsFormSpec {
   const spec = anyFormSpec(id);
   if (spec.layout !== 'state-drug-lists') throw new Error(`The form "${id}" is not a state's report of statewide figures and lists of drugs`);
   return spec;
+}
+
+/** A form that is an Excel workbook for each filer. */
+export function workbookFormSpec(id: string): WorkbookFormSpec {
+  const spec = anyFormSpec(id);
+  if (spec.layout !== 'workbook') throw new Error(`The form "${id}" is not an Excel workbook for each filer`);
+  return spec;
+}
+
+/** Every schedule a workbook's rows may be on: the sections' tables, the costs, the pharmacies, the uses, the identity cells and the cells outside the template. */
+export function workbookSchedules(spec: WorkbookFormSpec): Set<string> {
+  return new Set([
+    ...spec.sections.flatMap((s) => s.tables.map((t) => t.schedule)),
+    spec.costs.schedule,
+    spec.pharmacies.schedule,
+    spec.pharmacies.notesSchedule,
+    spec.uses.schedule,
+    spec.identity.schedule,
+    spec.otherCells,
+  ]);
 }

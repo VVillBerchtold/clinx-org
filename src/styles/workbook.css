@@ -1,0 +1,108 @@
+/* Pages for a state whose filers each send an Excel workbook (Ohio). Used by WorkbookFilingPage and WorkbookStatePage only. */
+
+/* The list of filers on the state page */
+.filer-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  align-items: end;
+  margin: 0 0 1rem;
+}
+.filer-filter[hidden] { display: none; }
+.filer-filter label {
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.filer-filter input,
+.filer-filter select {
+  font: inherit;
+  font-weight: 400;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line-strong, var(--line));
+  border-radius: 8px;
+  padding: 0.55rem 0.7rem;
+  min-height: 44px;
+  max-width: 100%;
+}
+.filer-filter input { min-width: min(100%, 18rem); }
+.filer-filter select {
+  appearance: none;
+  padding-right: 2.25rem;
+  min-width: min(100%, 16rem);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none'%3E%3Cpath d='M3 5.25 7 9.25l4-4' stroke='%23777' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+}
+.filer-count { margin: 0 0 0.75rem; font-size: 0.9375rem; }
+.filer-list td.kind { font-size: 0.875rem; }
+.filer-list .id { font-family: var(--mono, ui-monospace, monospace); font-size: 0.8125rem; overflow-wrap: anywhere; }
+.filer-list th[scope='row'] { font-size: 0.9375rem; }
+.filer-list th[scope='row'] a { font-weight: 600; }
+.filer-list thead th { white-space: normal; vertical-align: bottom; }
+.filer-list tr[hidden] { display: none; }
+
+/* The grids of figures by payer on a filer's page */
+.wb-grid table { min-width: 100%; }
+.wb-grid thead th { white-space: normal; vertical-align: bottom; line-height: 1.25; }
+.wb-grid th[scope='row'] { min-width: 11rem; font-weight: 600; }
+.wb-grid th[scope='row'] .sub { display: block; font-weight: 400; font-size: 0.8125rem; color: var(--muted); }
+.wb-grid td { white-space: nowrap; }
+.table-wrap + .btn-row, .panel .btn-row { margin-top: 1rem; }
+.wb-grid td.num { font-variant-numeric: tabular-nums; }
+.wb-grid td.words { font-style: italic; }
+.wb-grid .withheld,
+.wb-cells .withheld {
+  display: inline-block;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: 0.01em;
+  padding: 0.1rem 0.45rem;
+  border: 1px dashed var(--muted);
+  border-radius: 6px;
+  color: var(--ink);
+}
+.wb-grid .withheld + small { display: block; font-size: 0.75rem; color: var(--muted); margin-top: 0.15rem; white-space: normal; }
+
+/* A list of typed values (identity cells, uses of funds, cells outside the template) */
+.wb-cells td, .wb-cells th { vertical-align: top; }
+.wb-cells td.cell { font-family: var(--mono, ui-monospace, monospace); font-size: 0.8125rem; white-space: nowrap; }
+.wb-cells td.text { overflow-wrap: anywhere; white-space: pre-wrap; }
+
+/* Text the filer typed, kept with its line breaks */
+.wb-narrative {
+  margin: 0 0 1rem;
+  padding: 0.9rem 1.1rem;
+  border-left: 3px solid var(--line-strong, var(--line));
+  background: var(--surface);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-width: 70ch;
+}
+.wb-narrative-label { margin: 1rem 0 0.35rem; font-weight: 600; }
+.wb-npis { display: flex; flex-wrap: wrap; gap: 0.35rem 1rem; list-style: none; padding: 0; margin: 0 0 1rem; font-family: var(--mono, ui-monospace, monospace); font-size: 0.875rem; }
+.wb-ids { list-style: none; padding: 0; margin: 0; }
+.wb-ids li + li { margin-top: 0.4rem; }
+.wb-reasons { margin: 0.5rem 0 1rem; padding-left: 1.25rem; }
+.wb-reasons li + li { margin-top: 0.3rem; }
+
+@media (max-width: 600px) {
+  .wb-grid td.num { text-align: left; }
+  .wb-grid th[scope='row'] { min-width: 0; }
+  .wb-cells td.cell { white-space: normal; }
+  .filer-filter label, .filer-filter input, .filer-filter select { width: 100%; }
+}
+
+/* At desktop widths the six columns share the card without a sideways scroll. */
+@media (min-width: 761px) {
+  .filer-list table { table-layout: fixed; width: 100%; }
+  .filer-list th, .filer-list td { padding-left: 0.6rem; padding-right: 0.6rem; }
+  .filer-list th:nth-child(1) { width: 26%; }
+  .filer-list th:nth-child(2) { width: 13%; }
+  .filer-list th:nth-child(3) { width: 16%; }
+  .filer-list th:nth-child(4), .filer-list th:nth-child(5) { width: 16%; }
+  .filer-list th:nth-child(6) { width: 12%; }
+  .filer-list td, .filer-list th[scope='row'] { overflow-wrap: anywhere; }
+}

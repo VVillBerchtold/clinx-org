@@ -119,7 +119,7 @@ async function call(tool, args, tables) {
     return said(UNREACHABLE);
   }
   try {
-    const result = tool.run(held, args);
+    const result = await tool.run(held, args);
     return { content: [{ type: 'text', text: JSON.stringify(result) }], structuredContent: result, isError: false };
   } catch (error) {
     if (error instanceof InputError) return said(error.message);

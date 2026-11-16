@@ -22,8 +22,8 @@ describe('states', () => {
       }
     }
   });
-  it('has Idaho, Maine, Minnesota, Rhode Island and Vermont live, and keeps Vermont\'s law and Board links', () => {
-    expect(statesWith('live').map((s) => s.code)).toEqual(['ID', 'ME', 'MN', 'RI', 'VT']);
+  it('has Idaho, Maine, Minnesota, Ohio, Rhode Island and Vermont live, and keeps Vermont\'s law and Board links', () => {
+    expect(statesWith('live').map((s) => s.code)).toEqual(['ID', 'ME', 'MN', 'OH', 'RI', 'VT']);
     const vt = STATE_REGISTRY['VT']!;
     expect(vt.href).toBe('/scorecard/vt/');
     expect(vt.summary).toBe('Fiscal year 2025 · marked draft by the state');
@@ -50,6 +50,7 @@ describe('states', () => {
     expect(svg).toContain('href="/scorecard/ri/"');
     expect(svg).toContain('href="/scorecard/vt/"');
     expect(svg).toContain('href="/scorecard/id/"');
+    expect(svg).toContain('href="/scorecard/oh/"');
     expect(svg).not.toMatch(/\sstyle=/);
   });
 });
@@ -68,7 +69,7 @@ describe('kinds of reporting', () => {
 
   it('says what is public today for every state, and never claims a report that is not there', () => {
     for (const e of Object.values(STATE_REGISTRY)) expect(e.publicNow).toMatch(/\.$/);
-    expect(STATE_REGISTRY['OH']!.publicNow).toContain('241 workbooks');
+    expect(STATE_REGISTRY['OH']!.publicNow).toContain('241 Excel workbooks');
     expect(STATE_REGISTRY['ME']!.stands).toContain('summary report');
     expect(STATE_REGISTRY['ME']!.stands).not.toMatch(/post each report/);
     expect(STATE_REGISTRY['IN']!.stands).not.toMatch(/public report/);
@@ -91,7 +92,7 @@ describe('kinds of reporting', () => {
       expect(st.sources.length).toBeGreaterThan(0);
       for (const src of st.sources) expect(src.url).toMatch(/^https:\/\//);
     }
-    expect(file.states.filter((s) => s.on_clinx).map((s) => s.state).sort()).toEqual(['ID', 'ME', 'MN', 'RI', 'VT']);
+    expect(file.states.filter((s) => s.on_clinx).map((s) => s.state).sort()).toEqual(['ID', 'ME', 'MN', 'OH', 'RI', 'VT']);
     expect(statesFileText('https://clinx.org').endsWith('\n')).toBe(true);
     // No person's name, address or number goes in the file.
     expect(statesFileText('https://clinx.org')).not.toMatch(/@[a-z0-9-]+\.|\b\d{3}[-. ]\d{3}[-. ]\d{4}\b/i);
