@@ -26,10 +26,35 @@ export function yesNo(args, name) {
   return args[name];
 }
 
+// A value the asker typed is said back in a refusal so the asker can see what was wrong with it.
+// A very long one is cut, so the refusal stays a sentence and not a page.
+const ECHO_MOST = 80;
+/** What the asker typed, for a refusal: as it is up to 80 characters, else its first 80 and an ellipsis. */
+export function echo(value) {
+  const letters = Array.from(String(value));
+  return letters.length > ECHO_MOST ? `${letters.slice(0, ECHO_MOST).join('')}…` : letters.join('');
+}
+
+/** True when year-month-day names a day that exists: 2026-02-30 and 2026-13-45 do not. */
+function onTheCalendar(day) {
+  const [year, month, date] = day.split('-').map(Number);
+  const made = new Date(0);
+  made.setUTCFullYear(year, month - 1, date);
+  return made.getUTCFullYear() === year && made.getUTCMonth() === month - 1 && made.getUTCDate() === date;
+}
+
 export function dayOf(args, name) {
   if (args[name] === undefined || args[name] === '') return undefined;
   if (typeof args[name] !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(args[name])) throw new InputError(`${name} must be a date written year-month-day, such as 2027-01-15`);
+  if (!onTheCalendar(args[name])) throw new InputError(`${name} must be a day that exists: there is no ${args[name]} on the calendar. Write a date year-month-day, such as 2027-01-15`);
   return args[name];
+}
+
+/** An id the asker may give to narrow a list: text, or nothing. Anything that is not text is refused. */
+export function idOf(args, name, example) {
+  if (args[name] === undefined || args[name] === '') return undefined;
+  if (typeof args[name] !== 'string') throw new InputError(`${name} must be text, such as ${example}`);
+  return args[name].trim().toLowerCase() || undefined;
 }
 
 export function oneOf(args, name, allowed) {

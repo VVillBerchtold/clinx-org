@@ -202,15 +202,22 @@ describe('the door for assistants: answers', () => {
 
   it('answers one Ohio workbook from the index and that workbook\'s own file, without reading the whole filed reports file', async () => {
     const { env, asked } = makeEnv();
-    const out = ((await (await handleAssistants(ask(call('get_filing', { filing_id: 'oh-2025-dsh360059' })), env)).json()) as Reply).result.structuredContent;
+    const part = async (args: Record<string, unknown>) => ((await (await handleAssistants(ask(call('get_filing', { filing_id: 'oh-2025-dsh360059', ...args })), env)).json()) as Reply).result.structuredContent;
+    const out = await part({});
     expect(out.filing.filing_id).toBe('oh-2025-dsh360059');
-    expect(out.lines.length).toBeGreaterThan(100);
+    // One answer holds 100 lines. A longer report says how many are left and how to ask for them.
+    expect(out.lines_total).toBe(168);
+    expect(out.lines.length).toBe(100);
+    expect(out.more).toMatch(/^68 more lines: ask again with offset 100 /);
+    const rest = await part({ offset: 100 });
+    expect(rest.lines.length).toBe(68);
+    expect(rest.more).toBeUndefined();
     expect(out.official_file.url).toMatch(/\.xlsx/);
     expect(asked).toContain('/data/340b-filings-index.json');
     expect(asked).toContain('/data/filings/oh-2025-dsh360059.json');
     expect(asked).not.toContain('/data/340b-state-filings.json');
     // A count of 1 to 5 is never in the answer.
-    for (const line of out.lines as Record<string, string>[]) if (line.claims_withheld) expect(line.claims).toBeUndefined();
+    for (const line of [...out.lines, ...rest.lines] as Record<string, string>[]) if (line.claims_withheld) expect(line.claims).toBeUndefined();
   });
 
   it('answers the rebate pilot notice with its page on this site', async () => {

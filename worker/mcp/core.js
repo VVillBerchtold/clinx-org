@@ -13,11 +13,12 @@
 // is answered the newer way; everything else is answered the older way.
 
 import { TOOLS, InputError } from './tools.js';
+import { echo } from './inputs.js';
 
 export const SERVER = {
   name: 'clinx-340b',
   title: 'ClinX open data: 340B and health centers',
-  version: '0.3.0',
+  version: '0.3.1',
   description: 'ClinX\'s open data for clinics, in two groups. 340B: state laws on the books, bills in Congress and the state legislatures, federal rules and notices, the reports covered entities and states have filed, the states whose law requires reports, and a calendar of their dates. Health centers: what each health center reported to HRSA, HRSA\'s funding opportunities and their dates, and shortage designations and health center sites by state.',
   websiteUrl: 'https://clinx.org',
 };
@@ -97,7 +98,7 @@ export async function handle(message, tables) {
 
     case 'tools/call': {
       const tool = typeof params.name === 'string' ? TOOLS.find((t) => t.name === params.name) : undefined;
-      if (!tool) return fail(id, CODE.params, `Unknown tool: ${String(params.name)}`);
+      if (!tool) return fail(id, CODE.params, `Unknown tool: ${echo(params.name)}`);
       const args = params.arguments ?? {};
       if (typeof args !== 'object' || Array.isArray(args)) return fail(id, CODE.params, 'arguments must be an object');
       return done(await call(tool, args, tables));
@@ -113,7 +114,7 @@ async function call(tool, args, tables) {
   const said = (text) => ({ content: [{ type: 'text', text }], isError: true });
   const known = Object.keys(tool.inputSchema.properties ?? {});
   const extra = Object.keys(args).filter((key) => !known.includes(key));
-  if (extra.length) return said(`${tool.name} does not take ${extra.join(', ')}. It takes: ${known.join(', ') || 'nothing'}.`);
+  if (extra.length) return said(`${tool.name} does not take ${extra.map(echo).join(', ')}. It takes: ${known.join(', ') || 'nothing'}.`);
   let held;
   try {
     held = await tables();

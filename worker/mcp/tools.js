@@ -8,7 +8,7 @@
 // with the rest below.
 
 import { filingPath, latestYears } from './pages.js';
-import { InputError, LIMIT, SITE, clip, dayOf, freeText, holds, oneOf, said, tally, text, words, yearOf, yesNo } from './inputs.js';
+import { InputError, LIMIT, SITE, clip, dayOf, echo, freeText, holds, idOf, oneOf, said, tally, text, wholeNumber, words, yearOf, yesNo } from './inputs.js';
 import { HEALTH_CENTER_TOOLS, aboutHealthCenters } from './health-center-tools.js';
 
 // The helpers that check an input live in src/inputs.js; the class is passed on from here for the files that take it from this one.
@@ -214,6 +214,10 @@ const briefFiling = (filing, held) => said({
   official_source: filing.source_url,
 });
 
+// How many lines of a report one answer of get_filing holds. A line is a few hundred characters, so
+// the largest answer stays well under 100,000 characters; a longer report is read part by part.
+export const FILING_LINES = { usual: 100, most: 150 };
+
 const fileSize = (value) => (/^\d+$/.test(String(value ?? '')) ? Number(value) : undefined);
 
 function fullLine(line) {
@@ -270,7 +274,7 @@ export const TOOLS = [
     run(t, args) {
       if (typeof args.bill_id !== 'string' || !args.bill_id) throw new InputError('bill_id is required; find_bills returns it');
       const bill = t.bills.find((b) => b.bill_id === args.bill_id.toLowerCase());
-      if (!bill) throw new InputError(`no bill with the id ${args.bill_id}; use find_bills to look one up`);
+      if (!bill) throw new InputError(`no bill with the id ${echo(args.bill_id)}; use find_bills to look one up`);
       const steps = t.events.filter((e) => e.bill_id === bill.bill_id).map(briefEvent);
       return { bill: { ...bill, clinx_page: `${SITE}/bills/${place(bill.jurisdiction)}/` }, dated_steps: steps, retrieved: t.billsRetrieved, note: CAUTION };
     },
@@ -309,7 +313,7 @@ export const TOOLS = [
     run(t, args) {
       if (typeof args.law_id !== 'string' || !args.law_id) throw new InputError('law_id is required; find_laws returns it');
       const law = t.laws.find((l) => text(l.law_id) === text(args.law_id));
-      if (!law) throw new InputError(`no law with the id ${args.law_id}; use find_laws to look one up`);
+      if (!law) throw new InputError(`no law with the id ${echo(args.law_id)}; use find_laws to look one up`);
       const { source_text: _a, more_text: _b, source_sha256: _c, more_sha256: _d, ...rest } = law;
       return { law: { ...rest, clinx_page: `${SITE}/laws/${law.state.toLowerCase()}/` }, dataset_version: t.lawsVersion, note: CAUTION };
     },
@@ -355,7 +359,7 @@ export const TOOLS = [
       if (typeof args.notice_id !== 'string' || !args.notice_id.trim()) throw new InputError('notice_id is required; find_notices returns it');
       const asked = text(args.notice_id).trim().replace(/\s+/g, ' ');
       const notice = t.notices.find((n) => n.notice_id === asked || text(n.document_number) === asked || text(n.citation) === asked);
-      if (!notice) throw new InputError(`no rule or notice with the id ${args.notice_id}; use find_notices to look one up`);
+      if (!notice) throw new InputError(`no rule or notice with the id ${echo(args.notice_id)}; use find_notices to look one up`);
       const days = t.events.filter((e) => e.notice_id === notice.notice_id).sort((a, b) => a.day.localeCompare(b.day)).map(briefEvent);
       return {
         notice: {
@@ -393,9 +397,9 @@ export const TOOLS = [
       const state = stateOf(args, { agencies: true });
       const kind = oneOf(args, 'kind', EVENT_KINDS);
       const to = dayOf(args, 'to');
-      const idOf = (name) => (typeof args[name] === 'string' && args[name] ? args[name].trim().toLowerCase() : undefined);
-      const billId = idOf('bill_id');
-      const noticeId = idOf('notice_id');
+      // An id that is not text is refused. It is not passed over, which would answer with the whole calendar.
+      const billId = idOf(args, 'bill_id', 'ri-2025-h5634; find_bills returns it');
+      const noticeId = idOf(args, 'notice_id', 'fr-2026-15633; find_notices returns it');
       // One bill's or one notice's dates are given from the start; anything else starts today.
       const from = dayOf(args, 'from') ?? (to || billId || noticeId ? undefined : t.today);
       if (from && to && from > to) throw new InputError('from must not be after to');
@@ -484,7 +488,7 @@ export const TOOLS = [
       const notes = [FILINGS_CAUTION];
       if (shown.length < found.length) notes.unshift(`Showing ${shown.length} of ${found.length}. The list is cut short: narrow it with state, year or entity, or ask for more with limit (up to 100).`);
       for (const [name, value, known] of [['entity_type', type, kindsOf(held.filings, (f) => f.entity.entity_type)], ['record_kind', kind, kindsOf(held.filings, (f) => f.record_kind)], ['form', form, kindsOf(held.filings, (f) => f.form)]]) {
-        if (value && !known.some((k) => text(k) === value)) notes.unshift(`No report has a ${name} of ${value}. The ${name} values held are: ${known.join(', ')}.`);
+        if (value && !known.some((k) => text(k) === value)) notes.unshift(`No report has a ${name} of ${echo(value)}. The ${name} values held are: ${known.join(', ')}.`);
       }
       return { matched: found.length, shown: shown.length, filings: shown.map((f) => briefFiling(f, held)), retrieved: held.retrieved, note: notes.join(' ') };
     },
@@ -492,7 +496,7 @@ export const TOOLS = [
   {
     name: 'get_filing',
     title: 'One filed 340B report in full',
-    description: 'One filed report by its filing_id from find_filings: every line as filed with its label, unit and amount; which claim counts are withheld and why (counts of 1 to 5 are never given); how each figure was checked; any discrepancies recorded between figures the report prints; the official file\'s address, size and SHA-256; and the ClinX page. For a workbook, the cell each figure was read from. A very long report is given in parts: use schedule, offset and limit.',
+    description: `One filed report by its filing_id from find_filings: every line as filed with its label, unit and amount; which claim counts are withheld and why (counts of 1 to 5 are never given); how each figure was checked; any discrepancies recorded between figures the report prints; the official file's address, size and SHA-256; and the ClinX page. For a workbook, the cell each figure was read from. One answer holds ${FILING_LINES.usual} lines, or up to ${FILING_LINES.most} with limit. A longer report is given in parts: the answer says how many lines are left and how to ask for the next part with offset, or for one schedule.`,
     inputSchema: {
       type: 'object',
       additionalProperties: false,
@@ -500,23 +504,19 @@ export const TOOLS = [
       properties: {
         filing_id: { type: 'string', description: 'For example ri-2025-east-bay-cap.' },
         schedule: { type: 'string', description: 'Only the lines of this schedule, as the line list names it (for example G). The answer lists the schedules the report has.' },
-        offset: { type: 'integer', minimum: 0, description: 'How many lines to skip, for the next part of a long report (default 0).' },
-        limit: { type: 'integer', minimum: 1, maximum: 500, description: 'How many lines to return (default 250).' },
+        offset: { type: 'integer', minimum: 0, description: 'How many lines to skip, for the next part of a long report (default 0). The answer names the offset of the next part.' },
+        limit: { type: 'integer', minimum: 1, maximum: FILING_LINES.most, description: `How many lines to return (default ${FILING_LINES.usual}, at most ${FILING_LINES.most}).` },
       },
     },
     async run(t, args) {
       const held = needFilings(t);
       if (typeof args.filing_id !== 'string' || !args.filing_id.trim()) throw new InputError('filing_id is required; find_filings returns it');
       const filing = held.byId.get(args.filing_id.trim().toLowerCase());
-      if (!filing) throw new InputError(`no filed report with the id ${args.filing_id}; use find_filings to look one up`);
-      const wholeNumber = (name, low, high, fallback) => {
-        if (args[name] === undefined) return fallback;
-        if (!Number.isInteger(args[name]) || args[name] < low || args[name] > high) throw new InputError(`${name} must be a whole number from ${low} to ${high}`);
-        return args[name];
-      };
-      const offset = wholeNumber('offset', 0, 1e9, 0);
-      const limit = wholeNumber('limit', 1, 500, 250);
-      const schedule = args.schedule === undefined || args.schedule === '' ? undefined : String(args.schedule);
+      if (!filing) throw new InputError(`no filed report with the id ${echo(args.filing_id)}; use find_filings to look one up`);
+      const offset = wholeNumber(args, 'offset', 0, 1e9, 0);
+      const limit = wholeNumber(args, 'limit', 1, FILING_LINES.most, FILING_LINES.usual);
+      if (args.schedule !== undefined && typeof args.schedule !== 'string') throw new InputError('schedule must be text, such as G; the answer without a schedule lists the schedules the report has');
+      const schedule = args.schedule === undefined || args.schedule === '' ? undefined : args.schedule;
       // The lines are read now, from this one report's file (or from the copy held, in the fallback).
       let report;
       try {
@@ -526,7 +526,7 @@ export const TOOLS = [
       }
       const allLines = report.lines;
       const schedules = tally(allLines, (l) => l.schedule ?? '');
-      if (schedule !== undefined && !(schedule in schedules)) throw new InputError(`this report has no lines in the schedule ${schedule}; its schedules are: ${Object.keys(schedules).join(', ') || 'none'}`);
+      if (schedule !== undefined && !Object.hasOwn(schedules, schedule)) throw new InputError(`this report has no lines in the schedule ${echo(schedule)}; its schedules are: ${Object.keys(schedules).join(', ') || 'none'}`);
       const chosen = schedule === undefined ? allLines : allLines.filter((l) => (l.schedule ?? '') === schedule);
       const returned = chosen.slice(offset, offset + limit).map(fullLine);
 
@@ -551,11 +551,12 @@ export const TOOLS = [
           read_on: filing.retrieved_at,
         }),
         clinx_page: filingPage(filing, held),
-        lines: returned,
+        // How much of the report this answer holds is said before the lines, so it is read first.
         lines_total: chosen.length,
         lines_returned: returned.length,
         offset,
-        ...(offset + returned.length < chosen.length ? { more: `${chosen.length - offset - returned.length} more lines: ask again with offset ${offset + returned.length}, or with schedule to take one schedule at a time.` } : {}),
+        ...(offset + returned.length < chosen.length ? { more: `${chosen.length - offset - returned.length} more lines: ask again with offset ${offset + returned.length} for the next part, or with schedule to take one schedule at a time. One answer holds up to ${FILING_LINES.most} lines.` } : {}),
+        lines: returned,
         schedules,
         how_to_read_lines: 'Columns ending _as_filed are the official file\'s own words and amounts. amount and claims give the same figure as a number, written as text exactly as the table holds it. unit says what the amount is: usd, percent, count, or none when the row carries no figure. normalized_vendor and category are ClinX\'s own labels, not the filer\'s words. page is the page of the official file; for an Excel workbook it is always 1 and source_cell is the cell the figure was read from. A cell that held words where a figure belongs has the words in amount_as_filed (or answer_as_filed) and no amount.',
         withheld: {

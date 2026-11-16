@@ -1,12 +1,12 @@
 {
-  "server_version": "0.3.0",
-  "source_commit": "1259e5755409b22dbf3acc6fee70310a37e87af7",
+  "server_version": "0.3.1",
+  "source_commit": "a80250842e5ab514423bf73346d1bf549de0796c",
   "source_commit_had_uncommitted_changes": false,
   "files": {
-    "core.js": "6211fb3ee1095b8fee11f0bb6c3d8724916502e3280aee0d3deaf15e7ba8a231",
-    "inputs.js": "0d05f3bdd5293592015decccad9b02e946bc77ca40febb62fd4e573624a92c07",
-    "tools.js": "710d6a5fc06b6fd4dfc5d82779cc44fb8e6cc1ac10990a79d47d2f461bf7afa3",
-    "health-center-tools.js": "55c0b7aafc9c00003be1d4824ccf756a1df0879903a24527174f8b9b1592b7d0",
+    "core.js": "8ed3c87b2fa33e42872d283001de1073efb64628d875ed5f9eceaaf564413135",
+    "inputs.js": "7af9f964eec8fd1ff011bd8bffed546dc6fcecb0c0ea6215ca05b9fa660ebeef",
+    "tools.js": "8809ca463cc09b41936a2ca16992acc336592724467bdb804adc4bd1a2c51ef4",
+    "health-center-tools.js": "439ff01277bf269c27a4ad358018bf10a37fc6e72a617573e395ee8daa68a1a3",
     "tables.js": "39d74b7e86dc0af248b1ea8cec38e37664fb841d80a60dad245ffd2eb57e6e47",
     "health-centers.js": "3f33c777a59e9134463656b2ce32e99e381c4605339c1b2931b8cf2384237648",
     "tables.d.ts": "3d023fc250aff8d016c4c35321eed3da1af91b55f3f5d03996cbbff6da899bc6",

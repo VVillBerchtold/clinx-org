@@ -8,7 +8,7 @@
 //
 // The files and their shapes are in src/health-centers.js.
 
-import { InputError, LIMIT, SITE, clip, dayOf, holds, oneOf, said, tally, text, wholeNumber, words, yearOf, yesNo } from './inputs.js';
+import { InputError, LIMIT, SITE, clip, dayOf, echo, holds, oneOf, said, tally, text, wholeNumber, words, yearOf, yesNo } from './inputs.js';
 
 const unread = (what) => `${what} could not be read just now, so this question cannot be answered. The other tools still work. Try again in a minute.`;
 /** What a health center tool says when a file it needs cannot be read. */
@@ -217,7 +217,7 @@ const getHealthCenterReport = {
 
     const records = await need(t.hc?.records, HC_UNREAD.records);
     const center = records.byKey.get(asked) ?? records.byGrant.get(asked);
-    if (!center) throw new InputError(`no health center with the key or grant number ${args.health_center}; use find_health_centers to look one up`);
+    if (!center) throw new InputError(`no health center with the key or grant number ${echo(args.health_center)}; use find_health_centers to look one up`);
     const years = center.years.map(String);
     const chosen = year ?? years[years.length - 1];
     if (!years.includes(chosen)) throw new InputError(`no ${chosen} report is held for this health center; its years are: ${years.join(', ')}`);
@@ -304,11 +304,11 @@ const getHealthCenterReport = {
     }
 
     const match = [...tables.keys()].find((name) => tableKey(name) === wantedTable);
-    if (!match) throw new InputError(`the ${chosen} report has no table ${args.table}; its tables are: ${[...tables.keys()].join(', ')}`);
+    if (!match) throw new InputError(`the ${chosen} report has no table ${echo(args.table)}; its tables are: ${[...tables.keys()].join(', ')}`);
     const tableLines = tables.get(match);
     const status = statusOf(tableLines, report.tables);
     const picked = tableLines.filter((l) => (wantedLine === undefined || lineKey(l.line) === wantedLine) && holds(text(l.lineTitle), needles));
-    if (wantedLine !== undefined && picked.length === 0) throw new InputError(`${match} has no line ${args.line}${needles.length ? ' with those words in its title' : ''}; its lines are: ${[...new Set(tableLines.map((l) => l.line))].join(', ')}`);
+    if (wantedLine !== undefined && picked.length === 0) throw new InputError(`${match} has no line ${echo(args.line)}${needles.length ? ' with those words in its title' : ''}; its lines are: ${[...new Set(tableLines.map((l) => l.line))].join(', ')}`);
 
     // One title for a column across the lines asked for is said once; a column whose title differs from line to line carries it on each cell.
     const titles = new Map();
@@ -456,7 +456,7 @@ const findFundingOpportunities = {
     if (args.opportunity !== undefined && args.opportunity.trim() !== '') {
       const wanted = text(args.opportunity).trim();
       const o = opportunities.find((x) => text(x.id) === wanted || text(x.number) === wanted);
-      if (!o) throw new InputError(`no funding opportunity with the number or id ${args.opportunity}; use find_funding_opportunities without it to look one up`);
+      if (!o) throw new InputError(`no funding opportunity with the number or id ${echo(args.opportunity)}; use find_funding_opportunities without it to look one up`);
       const due = dueOf(o);
       return {
         opportunity: {
