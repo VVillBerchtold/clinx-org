@@ -87,12 +87,12 @@ The form sends through the host's mail service, which clinx.org is set up for. I
 
 ## The door for assistants
 
-`https://clinx.org/mcp` lets an AI assistant look things up in the open tables: state laws, bills, federal notices and the calendar. It speaks the Model Context Protocol (MCP), which is how assistants are given outside sources to read. It only reads.
+`https://clinx.org/mcp` lets an AI assistant look things up in the open data: the 340B tables (filed reports, state laws, bills, federal notices and the calendar) and the health centers files (the records, the funding calendar and the shortage areas). It speaks the Model Context Protocol (MCP), which is how assistants are given outside sources to read. It only reads.
 
 What happens to a question:
 
 1. The assistant posts a small request to `/mcp`, for example "find the bills in Rhode Island".
-2. `worker/assistants.ts` hands it to the program in `worker/mcp/`, which reads the tables from the site's own files in `/data/`, the same ones anyone can download. Nothing is fetched from anywhere else.
+2. `worker/assistants.ts` hands it to the program in `worker/mcp/`, which reads the tables from the site's own files in `/data/`, the same ones anyone can download. Nothing is fetched from anywhere else. A health centers file is read only when a health center question is asked; if one cannot be read, that question is answered with a plain sentence saying so and every other question is answered as usual.
 3. The rows go back to the assistant, each with its official link.
 
 What the program will not do:
@@ -174,7 +174,7 @@ It prints short tables: requests a day, which tools were used and how each went,
 
 ## Checking the published door
 
-After a publish, one command asks the live address real questions through each of its tools and compares every answer with the published tables:
+After a publish, one command asks the live address real questions through each of its tools and compares every answer with the published tables and health centers files:
 
 ```bash
 npm run check:live

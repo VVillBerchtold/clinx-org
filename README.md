@@ -25,7 +25,7 @@ And it lists the bills in Congress and the state legislatures that name 340B: wh
 
 It lists the federal rules and notices that name 340B too: what each one does about 340B in a sentence, the day comments close and the day it takes effect, all on the same calendar. One page sets out the 340B rebate pilot, from the federal notice that opened it.
 
-An AI assistant can read the laws, bills, notices and calendar as well, at `clinx.org/mcp`. It only reads, and the site keeps no question it is asked.
+An AI assistant can read the laws, bills, notices and calendar as well, and the health centers files, at `clinx.org/mcp`. It only reads, and the site keeps no question it is asked.
 
 Six states are in the scorecard today: Rhode Island, Vermont, Minnesota (two years of its report), Idaho, Maine and Ohio (241 Excel workbooks, one for each covered entity). Each state has its own form, so the site never adds two states together or sets them side by side as if they were alike.
 

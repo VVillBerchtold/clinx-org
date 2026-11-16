@@ -7,7 +7,8 @@ export declare function reportFile(filingId: string): string;
 /**
  * Make a loader: from a web address with `fetcher`, or through `reader`, which is given a file's name.
  * The filed reports and the reporting states are read on their own: when either cannot be read, the
- * tables it feeds are `null` and the other tools carry on.
+ * tables it feeds are `null` and the other tools carry on. The health center files (see
+ * health-centers.js) are read only when a health center tool asks for one.
  */
 export declare function makeTables(options?: {
   source?: string;

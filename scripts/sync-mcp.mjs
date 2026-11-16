@@ -2,8 +2,8 @@
 // Usage: node scripts/sync-mcp.mjs [path-to-the-server-folder]
 // Default source: the sibling folder ../clinx-mcp
 //
-// In plain words: the program that answers assistants' questions about the 340B tables is written
-// and tested in its own folder. The site only hosts it, at clinx.org/mcp. This copies the files
+// In plain words: the program that answers assistants' questions about ClinX's open data (340B and
+// health centers) is written and tested in its own folder. The site only hosts it, at clinx.org/mcp. This copies the files
 // the host needs into worker/mcp/ and writes down each file's fingerprint and the commit it came
 // from, so a later change to a copy is caught (scripts/check-data.mjs).
 import { createHash } from 'node:crypto';
@@ -12,8 +12,8 @@ import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSyn
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-/** The files a web host needs: the server, its tools, the table reader, the web door, the counter, the cut of the filed reports file and the page-address rule. */
-export const MCP_FILES = ['core.js', 'tools.js', 'tables.js', 'tables.d.ts', 'http.js', 'http.d.ts', 'usage.js', 'usage.d.ts', 'index.d.ts', 'split.js', 'split.d.ts', 'pages.js', 'pages.d.ts'];
+/** The files a web host needs: the server, its tools (the shared input helpers, the 340B tools, the health center tools), the table reader, the health center files, the web door, the counter, the cut of the filed reports file and the page-address rule. */
+export const MCP_FILES = ['core.js', 'inputs.js', 'tools.js', 'health-center-tools.js', 'tables.js', 'health-centers.js', 'tables.d.ts', 'http.js', 'http.d.ts', 'usage.js', 'usage.d.ts', 'index.d.ts', 'split.js', 'split.d.ts', 'pages.js', 'pages.d.ts'];
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export const MCP_DIR = join(root, 'worker', 'mcp');

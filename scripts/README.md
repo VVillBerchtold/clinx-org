@@ -11,7 +11,7 @@ None of these ship to a reader's browser. They run when the site is built, check
 | `bills-shape.mjs` | Used by `sync-bills.mjs` and `check-data.mjs` | The columns, roles, steps and links the site expects of the bills table, and the columns, kinds and links it expects of the calendar table |
 | `sync-mcp.mjs` | `npm run sync:mcp` | Copies the program that answers AI assistants in from the `clinx-mcp` folder and records a fingerprint of each file. Refuses a file a web host could not run |
 | `usage/mcp-usage.mjs` | `npm run usage:mcp` | Prints how the door for assistants is being used: counts by kind, read from the host with a read-only token. No words typed and no addresses are in them |
-| `check-live-mcp.mjs` | `npm run check:live`, by hand after a publish | Asks the published door for assistants real questions through each of its tools and fails if an answer disagrees with the published tables |
+| `check-live-mcp.mjs` | `npm run check:live`, by hand after a publish | Asks the published door for assistants real questions through each of its tools and fails if an answer disagrees with the published tables or health centers files |
 | `sitemap.mjs` | After every build | Writes the list of pages search engines may read. Writes none while the site is a private preview |
 | `check-dist.mjs` | `npm run check:dist` | Reads the built site and fails if a page breaks one of the site's promises |
 | `check-drug-pages.mjs` | `npm run check:dist` | The same, for the drug pages: no small claim count, rows match the download |

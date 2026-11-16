@@ -1,6 +1,6 @@
 # The one program that runs on the host
 
-Every page of the site is a plain file. This folder is the single exception: one small program with two jobs. It sends the contact form's message on as an email, and it answers AI assistants that look things up in the open tables.
+Every page of the site is a plain file. This folder is the single exception: one small program with two jobs. It sends the contact form's message on as an email, and it answers AI assistants that look things up in the open data (the 340B tables and the health centers files).
 
 | File | What it does |
 |---|---|

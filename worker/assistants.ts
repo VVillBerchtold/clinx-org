@@ -1,8 +1,9 @@
 /**
  * The door for assistants, at /mcp.
  *
- * In plain words: an AI assistant can look things up in the site's open 340B tables (laws, bills,
- * federal notices, calendar) by sending a small question here and getting rows back. The program
+ * In plain words: an AI assistant can look things up in the site's open data (the 340B tables of
+ * filed reports, laws, bills, federal notices and the calendar, and the health centers files) by
+ * sending a small question here and getting rows back. The program
  * that answers is written and tested in its own folder and copied into worker/mcp/ by
  * scripts/sync-mcp.mjs. This file is only the host's side of it:
  *

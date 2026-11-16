@@ -2,31 +2,29 @@
 //
 // Every tool only reads. Every answer names the official page it came from and the day the table
 // was last brought up to date, so whoever asks can check it at the source.
+//
+// The tools are in groups by subject. This file holds the 340B tools, the overview of one state
+// and about_the_data. The health center tools are in src/health-center-tools.js and are listed
+// with the rest below.
 
 import { filingPath, latestYears } from './pages.js';
+import { InputError, LIMIT, SITE, clip, dayOf, freeText, holds, oneOf, said, tally, text, words, yearOf, yesNo } from './inputs.js';
+import { HEALTH_CENTER_TOOLS, aboutHealthCenters } from './health-center-tools.js';
 
-const SITE = 'https://clinx.org';
+// The helpers that check an input live in src/inputs.js; the class is passed on from here for the files that take it from this one.
+export { InputError };
+
 const STATE = { type: 'string', description: 'Two-letter state code such as RI or TX. Use US for Congress.', pattern: '^[A-Za-z]{2}$' };
 // Federal agencies write rules and notices, not bills: they are a place on the calendar, with the code FED.
 const AGENCIES = 'FED';
 const PLACE = { type: 'string', description: 'Two-letter state code such as RI or TX, US for Congress, or FED for federal agencies (rules and notices in the Federal Register).', pattern: '^[A-Za-z]{2,3}$' };
 // The notice that opened the rebate pilot of 2027 has a page of its own on the site.
 const PILOT_NOTICE = 'fr-2026-15633';
-const LIMIT = { type: 'integer', minimum: 1, maximum: 100, description: 'How many to return (default 20).' };
 const READ_ONLY = { readOnlyHint: true, idempotentHint: true, openWorldHint: false };
 const CAUTION = 'Plain-word summaries are a reading aid; the official text at the link governs. Not legal advice.';
 const NOTICE_CAUTION = 'The sentence on each document is written by a person who read it and covers only what it does about 340B. Titles, agencies and dates are the Federal Register\'s own, and the Federal Register governs. Not legal advice.';
 
-/** A problem with what was asked for, said back to the asker as the tool's answer. */
-export class InputError extends Error {}
-
-const text = (value) => String(value ?? '').toLowerCase();
 const place = (code) => (code === 'US' ? 'congress' : code === AGENCIES ? 'agencies' : code.toLowerCase());
-
-function clip(rows, limit) {
-  if (limit !== undefined && !(Number.isInteger(limit) && limit >= 1 && limit <= 100)) throw new InputError('limit must be a whole number from 1 to 100');
-  return rows.slice(0, limit ?? 20);
-}
 
 const PLACES = new Set('AK AL AR AZ CA CO CT DE FL GA HI IA ID IL IN KS KY LA MA MD ME MI MN MO MS MT NC ND NE NH NJ NM NV NY OH OK OR PA RI SC SD TN TX UT VA VT WA WI WV WY US'.split(' '));
 
@@ -44,33 +42,6 @@ function stateOf(args, { agencies = false } = {}) {
   if (!PLACES.has(code)) throw new InputError(`state must be the two-letter code of one of the fifty states, such as RI, or US for Congress${agencies ? ', or FED for federal agencies' : ''}`);
   return code;
 }
-
-function yesNo(args, name) {
-  if (args[name] === undefined) return undefined;
-  if (typeof args[name] !== 'boolean') throw new InputError(`${name} must be true or false`);
-  return args[name];
-}
-
-function dayOf(args, name) {
-  if (args[name] === undefined || args[name] === '') return undefined;
-  if (typeof args[name] !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(args[name])) throw new InputError(`${name} must be a date written year-month-day, such as 2027-01-15`);
-  return args[name];
-}
-
-function oneOf(args, name, allowed) {
-  if (args[name] === undefined || args[name] === '') return undefined;
-  if (!allowed.includes(args[name])) throw new InputError(`${name} must be one of: ${allowed.join(', ')}`);
-  return args[name];
-}
-
-function words(args) {
-  if (args.text !== undefined && typeof args.text !== 'string') throw new InputError('text must be words to look for');
-  return text(args.text).split(/\s+/).filter(Boolean);
-}
-const holds = (haystack, needles) => needles.every((needle) => haystack.includes(needle));
-
-// Short rows for lists. Empty fields are left out, so an answer carries only what there is to say.
-const said = (row) => Object.fromEntries(Object.entries(row).filter(([, value]) => value !== '' && value !== undefined && value !== null));
 
 const briefBill = (bill) => said({
   bill_id: bill.bill_id,
@@ -203,19 +174,6 @@ function filingState(args) {
   return code;
 }
 
-function freeText(args, name) {
-  if (args[name] === undefined || args[name] === '') return undefined;
-  if (typeof args[name] !== 'string') throw new InputError(`${name} must be text`);
-  return args[name].trim().toLowerCase();
-}
-
-function yearOf(args) {
-  if (args.year === undefined || args.year === '') return undefined;
-  const year = typeof args.year === 'string' && /^\d{4}$/.test(args.year.trim()) ? Number(args.year) : args.year;
-  if (!Number.isInteger(year) || year < 1990 || year > 2100) throw new InputError('year must be a four-digit year, such as 2025');
-  return String(year);
-}
-
 // A report's lines are not held with the index: they are read when that one report is asked for (see src/tables.js).
 
 // The name the filer printed. A workbook prints a 340B ID and no name, so for Ohio this is empty:
@@ -264,8 +222,6 @@ function fullLine(line) {
   for (const key of Object.keys(line)) if (ordered[key] === undefined) ordered[key] = line[key];
   return ordered;
 }
-
-const tally = (rows, key) => rows.reduce((all, row) => { const k = key(row); if (k !== undefined && k !== '') all[k] = (all[k] ?? 0) + 1; return all; }, {});
 
 // Which group of reporting states a state is in, with the group's own words.
 function reportingOf(t, state) {
@@ -696,6 +652,7 @@ export const TOOLS = [
             },
         }),
         coming_up: coming.slice(0, 5).map(briefEvent),
+        ...(state === 'US' ? {} : { health_centers: `For health centers in ${state} use find_health_centers and shortage_area_changes with state ${state}. They are separate sets, read from HRSA's files.` }),
         pages: {
           ...(laws.length ? { laws: `${SITE}/laws/${place(state)}/` } : {}),
           ...(bills.length ? { bills: `${SITE}/bills/${place(state)}/` } : {}),
@@ -709,14 +666,15 @@ export const TOOLS = [
       };
     },
   },
+  ...HEALTH_CENTER_TOOLS,
   {
     name: 'about_the_data',
-    title: 'About these tables',
-    description: 'What the tables hold, where each comes from, when each was last brought up to date, the licence, and where to download them whole.',
+    title: 'About the data',
+    description: 'What ClinX\'s open data holds (the 340B tables and the health center sets), where each part comes from, when each was last brought up to date or read, what the marks in a health center report mean, the licence, and where to download the files whole.',
     inputSchema: { type: 'object', additionalProperties: false },
-    run(t) {
+    async run(t) {
       return {
-        what: 'Open tables about the federal 340B drug pricing program, from ClinX (clinx.org): state laws on the books that name 340B, bills in Congress and the state legislatures that name it, rules and notices federal agencies have published in the Federal Register that name it, a calendar of the bills\' dated steps, session days, report due days and the notices\' dates, the reports that covered entities and states have filed about 340B, and the list of states whose law requires 340B reports.',
+        what: 'Open data from ClinX (clinx.org), a platform of tools for clinics, in two groups. The 340B tables: state laws on the books that name the federal 340B drug pricing program, bills in Congress and the state legislatures that name it, rules and notices federal agencies have published in the Federal Register that name it, a calendar of the bills\' dated steps, session days, report due days and the notices\' dates, the reports that covered entities and states have filed about 340B, and the list of states whose law requires 340B reports. The health center sets (see health_centers below): what each health center reported to HRSA, HRSA\'s funding opportunities and their dates, and HRSA\'s shortage designations and health center sites.',
         counts: { laws: t.laws.length, bills: t.bills.length, notices: t.notices.length, calendar_dates: t.events.length },
         up_to_date_as_of: {
           laws: `dataset version ${t.lawsVersion}`,
@@ -748,6 +706,7 @@ export const TOOLS = [
             groups: t.reporting.groups.map((g) => ({ id: g.id, label: g.label, states: t.reporting.states.filter((s) => s.group === g.id).length })),
           }
           : { unavailable: REPORTING_UNREAD },
+        health_centers: await aboutHealthCenters(t),
         today: t.today,
         sources: 'Laws: each state\'s own code or session laws. Bills in Congress: the Government Publishing Office\'s bulk files. State bills: each legislature\'s record as gathered by Open States, with the text read on the legislature\'s own site. Federal rules and notices: the Federal Register\'s own data service. Filed reports: each state\'s own report files; every report names its official file, with the file\'s size and SHA-256. The list of reporting states: each state\'s law and the agency\'s own pages. Every row links to its official page.',
         places: 'A two-letter code for a state, US for Congress, FED for federal agencies.',

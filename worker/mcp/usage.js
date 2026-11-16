@@ -17,6 +17,7 @@
 
 import { MODERN, LEGACY, UNREACHABLE } from './core.js';
 import { TOOLS, isPlace, FILINGS_UNREAD, REPORTING_UNREAD } from './tools.js';
+import { HC_UNREAD } from './health-center-tools.js';
 
 const METHODS = ['server/discover', 'initialize', 'ping', 'tools/list', 'tools/call'];
 const CLIENT_KEY = 'io.modelcontextprotocol/clientInfo';
@@ -47,7 +48,7 @@ function filtersOf(tool, args) {
 function outcomeOf(reply) {
   if (reply === null || reply === undefined) return 'no answer';
   if (reply.error) return 'refused';
-  if (reply.result?.isError) return [UNREACHABLE, FILINGS_UNREAD, REPORTING_UNREAD].includes(reply.result.content?.[0]?.text) ? 'tables unreachable' : 'mistake';
+  if (reply.result?.isError) return [UNREACHABLE, FILINGS_UNREAD, REPORTING_UNREAD, ...Object.values(HC_UNREAD)].includes(reply.result.content?.[0]?.text) ? 'tables unreachable' : 'mistake';
   return 'answered';
 }
 

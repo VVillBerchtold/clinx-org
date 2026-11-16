@@ -3,9 +3,10 @@
 //
 // In plain words: the tests in tests/ prove the program on a developer's computer. This proves
 // the published one. It downloads the open tables as any reader can (the filed reports as their index, which is how the server reads them), asks clinx.org/mcp the
-// same things through each of its twelve tools, and fails if an answer and a table disagree. It
+// same things through each of its seventeen tools, and fails if an answer and a table disagree. It
 // also sends a few mistaken and oversized requests and checks each is turned away politely.
-// It only reads, it sends about forty-five requests, and it is run by hand after a publish.
+// The health center questions pass only once the health center files are published too.
+// It only reads, it sends about sixty-five requests, and it is run by hand after a publish.
 const SITE = (process.argv[2] ?? 'https://clinx.org').replace(/\/$/, '');
 const headers = { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream', 'MCP-Protocol-Version': '2025-06-18', 'User-Agent': 'clinx-check' };
 let id = 0; const results = [];
@@ -24,7 +25,7 @@ const disc = await rpc('server/discover', {}, { 'MCP-Protocol-Version': '2026-07
 ok('server/discover (newer protocol)', disc.status === 200 && !!disc.body?.result, JSON.stringify(disc.body?.result ?? disc.body).slice(0, 110));
 const list = await rpc('tools/list', {});
 const names = list.body?.result?.tools?.map((t) => t.name) ?? [];
-ok('tools/list has twelve tools', names.length === 12, names.join(', '));
+ok('tools/list has seventeen tools', names.length === 17, names.join(', '));
 
 const about = (await call('about_the_data')).structuredContent;
 ok('about_the_data counts match the published files', about.counts.laws === laws.laws.length && about.counts.bills === bills.bills.length && about.counts.notices === notices.notices.length && about.counts.calendar_dates === events.events.length, JSON.stringify(about.counts));
@@ -79,7 +80,36 @@ ok('state_overview MN matches the laws file', mn.laws.count === laws.laws.filter
 const fed = (await call('state_overview', { state: 'FED' })).structuredContent;
 ok('state_overview FED counts the notices', fed.notices?.count === notices.notices.length || fed.notices === notices.notices.length, JSON.stringify(fed.notices?.count ?? fed.notices));
 
-for (const [name, args] of [['find_laws', { state: 'ZZ' }], ['get_bill', { bill_id: 'no-such-bill' }], ['calendar', { from: 'next week' }], ['find_bills', { state: 'FED' }], ['no_such_tool', {}]]) {
+// The health center tools, against the health center files as any reader can download them.
+const [hcSets, hcIndex, hcOpps, hcDates, hcAreas] = await Promise.all(['health-centers/index.json', 'health-centers/records/index.json', 'health-centers/funding/opportunities.json', 'health-centers/funding/deadlines.json', 'health-centers/areas/states.json'].map(table));
+ok('about_the_data describes the three health center sets', about.health_centers?.records?.health_centers === hcIndex.health_centers.length && about.health_centers?.funding?.read_on === hcSets.funding.read_on && about.health_centers?.shortage_areas?.read_on === hcSets.areas.read_on, JSON.stringify(about.health_centers?.unavailable ?? about.health_centers?.records?.health_centers));
+const hcState = hcIndex.states[0];
+const hcFound = (await call('find_health_centers', { state: hcState, limit: 100 })).structuredContent;
+ok(`find_health_centers ${hcState} matches the list of health centers`, hcFound.matched === hcIndex.health_centers.filter((c) => c.state === hcState).length, `${hcFound.matched} health centers`);
+const hcOne = hcIndex.health_centers[0];
+const hcFile = await table(hcOne.file.replace(/^\/data\//, ''));
+const hcReport = (await call('get_health_center_report', { health_center: hcOne.key, year: hcOne.years.at(-1) })).structuredContent;
+ok('get_health_center_report lists the tables of the health center\'s latest year', hcReport.year === hcOne.years.at(-1) && hcReport.tables.length > 0 && hcReport.health_center.name === hcOne.name, `${hcOne.key}: ${hcReport.tables.length} tables for ${hcReport.year}`);
+const hcTableName = hcReport.tables.find((t) => t.status === 'present').table;
+const hcTable = (await call('get_health_center_report', { health_center: hcOne.key, year: hcOne.years.at(-1), table: hcTableName, limit: 200 })).structuredContent;
+const hcPublished = new Set(Object.values(hcFile.years[String(hcReport.year)].values));
+const hcCells = hcTable.lines.flatMap((l) => l.cells ?? []);
+ok('get_health_center_report gives each value and each mark as the health center\'s file holds it', hcCells.length > 0 && hcCells.every((c) => (c.value !== undefined ? hcPublished.has(c.value) : c.mark !== undefined ? hcPublished.has(c.mark) && !!c.means : !!c.no_value)), `${hcTableName}: ${hcCells.length} cells`);
+const hcFunding = (await call('find_funding_opportunities', { limit: 100 })).structuredContent;
+ok('find_funding_opportunities matches the opportunities file', hcFunding.matched === hcOpps.length && hcFunding.read_on === hcSets.funding.read_on, `${hcFunding.matched} vs ${hcOpps.length}`);
+const hcOpp = (await call('find_funding_opportunities', { opportunity: hcOpps[0].id })).structuredContent.opportunity;
+ok('find_funding_opportunities gives one in full, without the agency\'s contact line', hcOpp.id === hcOpps[0].id && hcOpp.title === hcOpps[0].title && hcOpp.more_information_text === undefined && hcOpp.more_information_url === undefined);
+const hcCal = (await call('health_center_calendar', { from: '2000-01-01', limit: 100 })).structuredContent;
+ok('health_center_calendar matches the file of dated lines', hcCal.matched === hcDates.length, `${hcCal.matched} vs ${hcDates.length}`);
+const hcNation = (await call('shortage_area_changes')).structuredContent;
+ok('shortage_area_changes with no state gives the national counts as published', JSON.stringify(hcNation.national_counts) === JSON.stringify(hcSets.areas.national_counts) && hcNation.states_and_territories.length === Object.keys(hcAreas.states).length, `${hcNation.states_and_territories.length} states and territories`);
+const hcRi = (await call('shortage_area_changes', { state: 'RI' })).structuredContent;
+ok('shortage_area_changes for a state gives that state\'s counts as published', JSON.stringify(hcRi.counts) === JSON.stringify(hcAreas.states.RI));
+const hcRiFile = await table('health-centers/areas/states/ri.json');
+const hcProposed = (await call('shortage_area_changes', { state: 'RI', show: 'proposed', limit: 100 })).structuredContent;
+ok('shortage_area_changes lists the designations proposed for withdrawal', hcProposed.matched === hcRiFile.proposed.length, `${hcProposed.matched} vs ${hcRiFile.proposed.length}`);
+
+for (const [name, args] of [['find_laws', { state: 'ZZ' }], ['get_health_center_report', { health_center: 'no-such-key' }], ['shortage_area_changes', { state: 'ZZ' }], ['get_bill', { bill_id: 'no-such-bill' }], ['calendar', { from: 'next week' }], ['find_bills', { state: 'FED' }], ['no_such_tool', {}]]) {
   const r = await rpc('tools/call', { name, arguments: args });
   const said = r.body?.result?.isError ? r.body.result.content[0].text : r.body?.error?.message;
   ok(`mistake is explained: ${name} ${JSON.stringify(args)}`, !!said, (said ?? '').slice(0, 90));

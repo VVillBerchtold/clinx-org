@@ -16,9 +16,9 @@ import { TOOLS, InputError } from './tools.js';
 
 export const SERVER = {
   name: 'clinx-340b',
-  title: 'ClinX: 340B laws, bills, federal notices, filed reports and calendar',
-  version: '0.2.0',
-  description: 'Open tables about the federal 340B drug pricing program: state laws on the books, bills in Congress and the state legislatures, federal rules and notices, the reports covered entities and states have filed, the states whose law requires reports, and a calendar of their dates.',
+  title: 'ClinX open data: 340B and health centers',
+  version: '0.3.0',
+  description: 'ClinX\'s open data for clinics, in two groups. 340B: state laws on the books, bills in Congress and the state legislatures, federal rules and notices, the reports covered entities and states have filed, the states whose law requires reports, and a calendar of their dates. Health centers: what each health center reported to HRSA, HRSA\'s funding opportunities and their dates, and shortage designations and health center sites by state.',
   websiteUrl: 'https://clinx.org',
 };
 
@@ -31,9 +31,11 @@ const SERVER_KEY = 'io.modelcontextprotocol/serverInfo';
 const HOUR_MS = 60 * 60 * 1000;
 
 export const INSTRUCTIONS = [
-  'Read-only lookups over ClinX\'s open tables on the federal 340B drug pricing program.',
+  'Read-only lookups over ClinX\'s open data for clinics, in two groups: the federal 340B drug pricing program, and federally funded health centers.',
   'find_laws and get_law cover state laws already on the books; find_bills and get_bill cover bills in Congress (state "US") and the state legislatures; find_notices and get_notice cover the rules, proposed rules and notices federal agencies publish in the Federal Register (place "FED"), with comment deadlines and effective dates; calendar gives dated steps, hearings, session days and federal dates; reporting_states lists the states whose law requires 340B reports, grouped by what the public can see; find_filings and get_filing cover the reports covered entities and states have filed, with every figure exactly as filed; state_overview gives one state, Congress or the federal agencies at a glance; about_the_data says where the tables come from and when each was last brought up to date.',
+  'The health center tools: find_health_centers lists the health centers whose yearly reports to HRSA (the Uniform Data System) are held; get_health_center_report gives one health center\'s report for a year, table by table, with every value exactly as HRSA published it; find_funding_opportunities covers HRSA\'s funding opportunities on Grants.gov, forecasts and posted notices; health_center_calendar gives their dated lines and the Federal Register\'s; shortage_area_changes gives HRSA\'s shortage designations and health center sites for a state or territory, with what changed in the last 365 days.',
   'Every row carries a link to the official page: cite it. Summaries are a reading aid written by a person from the official text, not legal advice, and a bill\'s summary can trail a newer version of its text. A bill at the stage Did not pass is finished. For a federal rule or notice the Federal Register governs. A filed report is given exactly as the official file prints it, a claim count of 1 to 5 is never given, and ClinX ranks no filer. Dates on the calendar can move.',
+  'In a health center report a cell HRSA marked is given as the mark and its meaning, never as a number, and a withheld value is never worked out. ClinX ranks no health center and compares none with another. A forecast date is HRSA\'s estimate and can move.',
 ].join(' ');
 
 /** What a tool says when the tables cannot be fetched. */
