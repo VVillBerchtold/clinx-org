@@ -1,0 +1,45 @@
+---
+/**
+ * Counts of designations by kind of area and by status, as HRSA's files hold them on the day:
+ * the number of designations, and under it the number of rows HRSA publishes for them.
+ * Nothing is added across kinds or statuses.
+ */
+import { num, SERIES, SERIES_INFO, STATUSES, type Series, type Status, type StatusCounts } from '../../lib/hc-areas';
+
+interface Props {
+  counts: Record<Series, StatusCounts>;
+  caption: string;
+}
+const { counts, caption } = Astro.props;
+const label: Record<Status, string> = { Designated: 'Designated', 'Proposed For Withdrawal': 'Proposed For Withdrawal', Withdrawn: 'Withdrawn' };
+---
+
+<div class="table-wrap wide stack hc-counts hc-list">
+  <table>
+    <caption><span>{caption}</span></caption>
+    <thead role="rowgroup">
+      <tr role="row">
+        <th role="columnheader" scope="col">Kind of area</th>
+        {STATUSES.map((s) => <th role="columnheader" scope="col" class="num">{label[s]}</th>)}
+      </tr>
+    </thead>
+    <tbody role="rowgroup">
+      {
+        SERIES.map((series) => (
+          <tr role="row">
+            <th role="rowheader" scope="row">{SERIES_INFO[series].label}</th>
+            {STATUSES.map((status) => {
+              const cell = counts[series][status];
+              return (
+                <td role="cell" class:list={['num', { zero: cell.designations === 0 }]} data-label={`${label[status]}, designations`}>
+                  {num(cell.designations)}
+                  <small>{num(cell.file_rows)} {cell.file_rows === 1 ? 'row' : 'rows'}</small>
+                </td>
+              );
+            })}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
