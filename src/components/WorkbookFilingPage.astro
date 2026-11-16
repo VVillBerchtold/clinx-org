@@ -8,16 +8,17 @@ import DifferencesTable from './DifferencesTable.astro';
 import OnPage from './OnPage.astro';
 import PageHead from './PageHead.astro';
 import Pager from './Pager.astro';
-import { findDifferences, formatDate, getDataset, type LineItem, type WorkbookView } from '../lib/data';
+import { buildWorkbookViews, findDifferences, formatDate, getDataset, type LineItem, type WorkbookView } from '../lib/data';
 import { REPOSITORIES } from '../lib/site';
 import { stateName } from '../lib/states';
-import { WITHHELD_SENTENCE, isShortened, showCell } from '../lib/workbook';
+import { WITHHELD_SENTENCE, showCell } from '../lib/workbook';
+import { chooseWorkbooks } from '../lib/workbook-totals';
 
 /**
  * One filer's workbook (Ohio): the figures as the workbook stores them, in the order and words of the
  * state's template. Everything the page says that depends on the form comes from the form's spec.
- * Every text the filer typed is printed as text (the template escapes it), and no figure is added,
- * rounded or ranked.
+ * Every text the filer typed is printed as text (the template escapes it). Figures are shown to the
+ * cent, nothing on the page is added to another figure, and nothing is ranked.
  */
 interface Props {
   view: WorkbookView;
@@ -53,8 +54,10 @@ const withheldWhy = [...new Set(view.rows.filter((r) => r.claimsWithheld !== '')
 // Notes the dataset keeps on single cells, other than the one that says a percentage is stored as a fraction.
 const cellNotes = view.rows.filter((r) => r.note !== '' && !/fraction of one/.test(r.note));
 const fractionCells = view.rows.some((r) => /fraction of one/.test(r.note));
-// A figure the file writes with more digits than Excel keeps is printed to the 15 digits Excel keeps.
-const shortened = view.rows.find((r) => r.unit !== 'none' && isShortened(r));
+// A filer with a second workbook on the state's site: say so, and link to the other one.
+const chosen = chooseWorkbooks(buildWorkbookViews(data).filter((v) => v.filing.state === filing.state)).find((c) => c.group.views.some((v) => v.filing.filingId === filing.filingId));
+const others = chosen ? chosen.group.views.filter((v) => v.filing.filingId !== filing.filingId) : [];
+const usedInTotals = chosen ? chosen.used.filing.filingId === filing.filingId : true;
 
 const costRows = spec.costs.rows.map((c) => ({ ...c, row: at(spec.costs.schedule, c.line), shown: showCell(at(spec.costs.schedule, c.line), 'usd') }));
 const costsAny = costRows.some((c) => c.shown.kind !== 'none');
@@ -101,7 +104,7 @@ const items = [
   description={`The figures in the ${view.title} 340B workbook for ${spec.periodWord} ${filing.reportingYear}, as the workbook stores them, with the differences it contains and its source.`}
 >
   <PageHead wide title={view.title} trail={[{ label: 'Scorecard', href: '/scorecard/' }, { label: state, href: stateHref }, { label: `${filing.reportingYear} workbook` }]}>
-    <p class="lede">{kind !== '' ? kind : 'Covered entity'}, {state}, {spec.periodWord} {filing.reportingYear}. Everything below is as the {spec.noun} {spec.asWord} it. Each section follows the {spec.agency}'s template, in its order and words.</p>
+    <p class="lede">{kind !== '' ? kind : 'Covered entity'}, {state}, {spec.periodWord} {filing.reportingYear}. Everything below is as the {spec.noun} {spec.asWord} it, with figures shown to the cent. Each section follows the {spec.agency}'s template, in its order and words.</p>
     <p class="small muted">
       {
         view.name !== ''
@@ -110,6 +113,22 @@ const items = [
       }
     </p>
   </PageHead>
+
+  {
+    others.length > 0 && (
+      <section class="section wb-twin" aria-labelledby="twin-title">
+        <div class="note">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="2"></circle><path d="M10 9v5M10 6v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+          <div>
+            <p>
+              <strong id="twin-title">This filer has {others.length === 1 ? 'another workbook' : 'other workbooks'} on the state's site.</strong> This is file {filing.sourceFile}. The {others.length === 1 ? 'other is' : 'others are'}{' '}
+{others.map((o, i) => <>{i > 0 && (i === others.length - 1 ? ' and ' : ', ')}<a href={o.path}>file {o.filing.sourceFile}</a></>)}. ClinX lists each workbook as posted and cannot say which one the filer means. The totals on the <a href={stateHref}>{state} page</a> add {usedInTotals ? 'this workbook' : 'the other'}.
+            </p>
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   <OnPage class="filing-nav" title={view.title} items={items} />
 
@@ -185,7 +204,7 @@ const items = [
       ))
     }
     {fractionCells && <p class="small muted">Where the workbook formats a cell as a percentage it stores a fraction of one, and the page shows it as the workbook's cell shows it: 0.25 is 25%. The dataset keeps the stored number.</p>}
-    {shortened && <p class="small muted">Excel keeps 15 digits of a number, and its file can write 17. Cell {shortened.sourceCell} of this workbook is written as {shortened.amountAsFiled.trim()}. The page prints the 15 digits Excel keeps, and the cell file has the text as written.</p>}
+    <p class="small muted">Figures are shown to the cent. The downloads keep each figure exactly as it is written in the file, and the cell file lists the workbook cell each one was read from.</p>
     {
       withheldWhy.length > 0 && (
         <>

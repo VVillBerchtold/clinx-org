@@ -107,3 +107,25 @@
   .filer-list th:nth-child(6) { width: 12%; }
   .filer-list td, .filer-list th[scope='row'] { overflow-wrap: anywhere; }
 }
+
+/* The file name under a filer's name, where one filer has two workbooks */
+.filer-list th[scope='row'] .file-name { display: block; margin-top: 0.15rem; font-weight: 400; font-size: 0.75rem; color: var(--muted); }
+
+/* Totals and bars on a state's page */
+.wb-totals td.num, .wb-bars td.share, .wb-kinds td.num { font-variant-numeric: tabular-nums; }
+.wb-totals td strong { display: block; font-size: 1.125rem; }
+.wb-totals td small, .wb-bars td.cells, .wb-bars th .sub { font-size: 0.8125rem; line-height: 1.4; color: var(--muted); }
+.wb-totals td small { display: block; margin-top: 0.2rem; white-space: normal; font-variant-numeric: normal; font-weight: 400; }
+.wb-bars th[scope='row'] .sub { display: block; font-weight: 400; margin-top: 0.15rem; }
+.wb-bars td.share { --fig: 9.5rem; width: 40%; min-width: 17rem; }
+.wb-bars td.share .rail-track { min-width: 5rem; }
+.wb-bars .bar-figure { white-space: nowrap; font-weight: 600; }
+.wb-bars td.cells { white-space: normal; min-width: 12rem; }
+.wb-bars { margin-top: var(--s4, 1.5rem); }
+.wb-twin .note a { overflow-wrap: anywhere; }
+
+@media (max-width: 760px) {
+  .wb-bars td.share { width: auto; min-width: 0; }
+  .wb-bars td.cells { min-width: 0; }
+  .wb-totals td.num { white-space: normal; }
+}
