@@ -16,13 +16,13 @@ const when = day(getIndex().snapshot_day);
     <div>
       <p><strong id="read-with-care">Read with care.</strong> Every figure, status, score and date is HRSA’s, from its files of {when}, and is printed as HRSA published it. ClinX has not changed, rounded, added up or estimated a value. The counts are counts of rows in those files.</p>
       <p>{COUNT_COLUMNS}</p>
-      <p>A designation belongs to the state HRSA gives as its primary state. Its counties can lie in other states, and its row names them. A cell HRSA leaves empty is shown as Blank in HRSA’s file. Where HRSA writes NA or Not Applicable in a cell, the page prints it as HRSA wrote it. They are HRSA’s own marks for a value that does not apply or is not given.</p>
+      <p>A designation belongs to the state HRSA gives as its primary state. Its counties can lie in other states, and its row names them. A cell HRSA leaves empty is shown as Blank in HRSA’s file. Where HRSA writes NA or Not Applicable in a cell, the page prints it as HRSA wrote it.</p>
       {
         state && (
           <p>Proposed For Withdrawal is a status HRSA gives a designation in its file. The page states the status and says nothing about what follows from it. The files do not say why a designation was designated, withdrawn or updated, and the page does not say why either. A date in the last 365 days is when HRSA says the event happened. The day of the copy is when ClinX saw it, so HRSA may have entered a change earlier than the day a copy shows it.</p>
         )
       }
-      <p>No state is ranked or compared with another here. States and territories are listed A to Z. HRSA’s files still hold withdrawn designations from many years ago, so a count of Withdrawn is a count of rows HRSA still publishes. <a href="/methods/">Methods</a> describes how ClinX copies and checks public files.</p>
+      <p>No state is ranked or compared with another here. States and territories are listed A to Z. HRSA’s files still hold withdrawn designations from many years ago, so a count of Withdrawn is a count of rows HRSA still publishes. <a href="/methods/#health-centers">Methods</a> describes how ClinX copies and checks public files.</p>
     </div>
   </div>
 </section>

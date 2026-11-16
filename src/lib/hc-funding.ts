@@ -355,14 +355,15 @@ export const BLOCKED_WORDS = /\b(?:highest|lowest|worst|best)\b|\btop\s/i;
 
 /**
  * True when a paragraph of the agency's text holds a word that scripts/check-dist.mjs refuses on any page.
- * Such a paragraph is left out of the page and the page says so, until the check lets the agency's own
- * words through the way it does for bills, notices and workbooks (see the result file of this part).
+ * The check lets exactly those paragraphs through on the funding pages, as the agency's own words, the way it
+ * does for bills, notices and workbooks (scripts/hc/printed-words.mjs). With PRINT_BLOCKED_PARAGRAPHS false
+ * such a paragraph would be left out of the page and the page would say so.
  */
 export function isHeldBack(paragraph: string): boolean {
   return !PRINT_BLOCKED_PARAGRAPHS && BLOCKED_WORDS.test(paragraph);
 }
 /** Set to true when check-dist lets the funding pages print the agency's words that hold a blocked word. */
-export const PRINT_BLOCKED_PARAGRAPHS = false;
+export const PRINT_BLOCKED_PARAGRAPHS = true;
 
 /** True for a web address the page may link to. */
 export function isWebAddress(value: string): boolean {

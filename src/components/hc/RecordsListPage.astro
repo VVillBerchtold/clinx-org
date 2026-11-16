@@ -6,7 +6,7 @@ import Base from '../../layouts/Base.astro';
 import OnPage from '../OnPage.astro';
 import PageHead from '../PageHead.astro';
 import { DOWNLOADS, RECORDS_PATH, centerPath, formatDay, listOfYears, listRows, megabytes, recordsSource, refreshDay } from '../../lib/hc-records';
-import { numberWord } from '../../lib/site';
+import { HC_HOME, HC_NAME, numberWord } from '../../lib/site';
 
 /**
  * The list of the health centers whose Uniform Data System reports ClinX shows: each as HRSA's latest file
@@ -34,15 +34,15 @@ const items = [
 
 <Base
   title="Health center records"
-  crumbs={[{ name: 'Health center records', path: RECORDS_PATH }]}
+  crumbs={[{ name: HC_NAME, path: HC_HOME }, { name: 'Health center records', path: RECORDS_PATH }]}
   description={`What ${total} federally funded health centers in ${stateList} reported to HRSA in the Uniform Data System, ${first} to ${latest}, table by table in HRSA's own words, with every value's address in HRSA's workbook.`}
 >
-  <PageHead wide title="Health center records" trail={[{ label: 'Health centers' }, { label: 'Records' }]}>
+  <PageHead wide title="Health center records" trail={[{ label: HC_NAME, href: HC_HOME }, { label: 'Records' }]}>
     <p class="lede">
       Every federally funded health center reports to HRSA each year in the Uniform Data System: who its patients are, what services it gave, its staff, costs and revenue. HRSA publishes the reports as one large workbook a year. Here each health center has one page for each year, line by line in HRSA's own words, and every value has the address of its cell.
     </p>
     <p class="small muted">
-      This first set covers {stateList}: {total} health centers, {first} to {latest}. More states follow.
+      This page covers {stateList}: {total} health centers, {first} to {latest}.
     </p>
     <OnPage title="Health center records" items={items} />
   </PageHead>

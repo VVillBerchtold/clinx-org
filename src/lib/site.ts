@@ -36,9 +36,11 @@ export interface NavLink {
 export interface NavGroup {
   label: string;
   items: readonly NavLink[];
+  /** A page of the group that is not one of its items (a section's front page): the group shows as the current one there too. */
+  home?: string;
 }
 
-/** The main menu. 340B is a group: the Scorecard, the state laws, the bills, the federal notices, the calendar and the rebate pilot sit side by side under it. */
+/** The main menu. 340B is a group: the Scorecard, the state laws, the bills, the federal notices, the calendar and the rebate pilot sit side by side under it. Health centers is the second group: the records, the funding calendar and the shortage areas. */
 export const NAV: readonly (NavLink | NavGroup)[] = [
   {
     label: '340B',
@@ -51,6 +53,15 @@ export const NAV: readonly (NavLink | NavGroup)[] = [
       { href: '/rebate-pilot/', label: 'Rebate pilot', note: 'What the federal rebate pilot changes' },
     ],
   },
+  {
+    label: 'Health centers',
+    home: '/health-centers/',
+    items: [
+      { href: '/health-centers/records/', label: 'Records', note: 'What each health center reported to HRSA' },
+      { href: '/health-centers/funding/', label: 'Funding', note: 'HRSA opportunities and Federal Register dates' },
+      { href: '/health-centers/shortage-areas/', label: 'Shortage areas', note: 'What HRSA designates, proposes to withdraw and changes' },
+    ],
+  },
   { href: '/data/', label: 'Data' },
   { href: '/methods/', label: 'Methods' },
   { href: '/tools/', label: 'Tools' },
@@ -59,6 +70,10 @@ export const NAV: readonly (NavLink | NavGroup)[] = [
   { href: '/products/', label: 'Products' },
   { href: '/contact/', label: 'Contact' },
 ];
+
+/** The health centers section: its name and its front page, which the trail of every page in it links to. */
+export const HC_NAME = 'Health centers';
+export const HC_HOME = '/health-centers/';
 
 const WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
 

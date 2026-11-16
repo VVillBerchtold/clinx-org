@@ -7,9 +7,10 @@ import PageHead from '../../components/PageHead.astro';
 import { buildStateDrugViews, formatDate, getDataset, stateDrugCsv } from '../../lib/data';
 import { getBillsRecord } from '../../lib/bills';
 import { stateName, statesFileText } from '../../lib/states';
-import { PREVIEW, REPOSITORIES, SITE_URL } from '../../lib/site';
+import { HC_HOME, PREVIEW, REPOSITORIES, SITE_URL } from '../../lib/site';
 import { renderSections } from '../../lib/markdown';
 import { datasetNode } from '../../lib/structured-data';
+import { fileGroups, partDays } from '../../lib/hc-hub';
 
 const data = getDataset();
 // A file's size, the way a person reads it: the larger files are in the megabytes, and nothing is rounded to zero.
@@ -38,6 +39,9 @@ const billFiles = [
 ];
 // The states with a reporting law, grouped by what each state makes public: written by this site from its own registry.
 const statesFileHash = await sha256Hex(statesFileText(SITE_URL));
+// The health centers files, grouped by part, each with the SHA-256 of the file as this site serves it.
+const hcDays = partDays();
+const hcGroups = await Promise.all(fileGroups().map(async (g) => ({ ...g, files: await Promise.all(g.files.map(async (f) => ({ ...f, sha256: await sha256Hex(f.text) }))) })));
 const dictionary = renderSections(data.dictionaryMarkdown);
 const intro = dictionary.find((s) => s.title === '');
 const fileSections = dictionary.filter((s) => s.title !== '');
@@ -64,11 +68,12 @@ const describe: Record<string, string> = {
   about={[datasetNode(data, drugFiles.map(({ view, sha256 }) => ({ name: view.csvName, path: view.csvPath, sha256 })))]}
 >
   <PageHead title="Data" trail={[{ label: '340B Scorecard' }]}>
-    <p class="lede">Every figure on this site, as files you can download. Each one is kept as filed or printed and cites the page of the PDF it was read from.</p>
+    <p class="lede">Every figure on this site, as files you can download. A 340B figure is kept as filed or printed and cites the page of the PDF it was read from. The health centers files are kept as the agencies published them.</p>
     <OnPage
       title="Data"
       items={[
         { id: 'downloads', label: 'Downloads' },
+        { id: 'health-centers', label: 'Health centers' },
         { id: 'assistants', label: 'AI assistants' },
         { id: 'version', label: 'Version' },
         { id: 'repositories', label: 'Code' },
@@ -133,6 +138,37 @@ const describe: Record<string, string> = {
     </div>
   </section>
 
+  <section class="split" aria-labelledby="health-centers">
+    <h2 id="health-centers">Health centers</h2>
+    <div class="split-body">
+      <p>
+        The files behind the <a href={HC_HOME}>health centers pages</a>, one group for each part. Each file holds what the agency published, in the agency's own words and marks. The line under each file is its SHA-256, so you can confirm your copy matches.
+      </p>
+      {
+        hcGroups.map((g) => (
+          <>
+            <h3 id={`health-centers-${g.id}`}><a href={g.page}>{g.title}</a></h3>
+            <p class="small muted">{g.day}.</p>
+            <ul class="files">
+              {g.files.map((f) => (
+                <li>
+                  <div>
+                    <strong>{f.name}</strong>
+                    <p>{f.what}</p>
+                    <p class="small muted">{sizeOf(new TextEncoder().encode(f.text).length)}</p>
+                  </div>
+                  <a class="btn ghost" href={f.href} download aria-label={`Download ${f.name}`}>Download</a>
+                  <span class="hash"><span class="visually-hidden">SHA-256: </span>{f.sha256}</span>
+                </li>
+              ))}
+            </ul>
+            <p class="small muted">{g.note}</p>
+          </>
+        ))
+      }
+    </div>
+  </section>
+
   <section class="split" aria-labelledby="assistants">
     <h2 id="assistants">Ask through an AI assistant</h2>
     <div class="split-body">
@@ -168,6 +204,8 @@ const describe: Record<string, string> = {
         <dd>{formatDate(data.dataDate)}</dd>
         <dt>Bills and federal notices retrieved</dt>
         <dd>{formatDate(billsRecord.retrieved)} ({billsRecord.bills} bills, {billsRecord.notices} federal notices, {billsRecord.events.toLocaleString('en-US')} calendar dates)</dd>
+        <dt>Health centers files</dt>
+        <dd>Records: HRSA refreshed its latest file on {hcDays.records}. Funding: files of {hcDays.funding}. Shortage areas: files of {hcDays.areas}.</dd>
         <dt>Licence</dt>
         <dd>Data: Creative Commons Attribution 4.0 (CC BY 4.0). Code: MIT.</dd>
       </dl>

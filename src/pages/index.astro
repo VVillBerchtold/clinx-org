@@ -5,7 +5,8 @@ import { founderNode, siteNode } from '../lib/structured-data';
 import Arrow from '../components/Arrow.astro';
 import Draft from '../components/Draft.astro';
 import { getBills } from '../lib/bills';
-import { CLEANER_COPY, FILE_CHECK, REFERRALFINDERX_URL, numberWord, numberWordCap } from '../lib/site';
+import { CLEANER_COPY, FILE_CHECK, HC_HOME, HC_NAME, REFERRALFINDERX_URL, numberWord, numberWordCap } from '../lib/site';
+import { partDays } from '../lib/hc-hub';
 import { REPORTING_GROUPS, statesInGroup, statesWith, tileMapSvg } from '../lib/states';
 
 const live = statesWith('live');
@@ -13,6 +14,7 @@ const law = statesWith('law');
 const kinds = REPORTING_GROUPS.map((g) => ({ ...g, states: statesInGroup(g.id) }));
 const bills = getBills().bills.length;
 const n = (x: number): string => x.toLocaleString('en-US');
+const hcDays = partDays();
 /** The tools, counted from their pages, so the figure moves when one is added. */
 const tools = Object.keys(import.meta.glob('./tools/*/index.astro')).length;
 
@@ -49,7 +51,7 @@ const ways = [
   bleed
   title="ClinX: open healthcare data and tools for clinics"
   about={[siteNode(), founderNode()]}
-  description="ClinX publishes open healthcare data and builds small tools a clinic of any size can use: the 340B Scorecard, state laws and bills, and tools that keep your file on your computer."
+  description="ClinX publishes open healthcare data and builds small tools a clinic of any size can use: the 340B Scorecard, state laws and bills, health center records, funding dates and shortage areas, and tools that keep your file on your computer."
 >
   <section class="wrap hero hero-mission" aria-labelledby="hero-title">
     <div class="hero-say">
@@ -76,7 +78,7 @@ const ways = [
     <div class="wrap">
       <div class="band-head split-head">
         <h2 id="work-title">What ClinX does.</h2>
-        <p class="lede">So far the data covers the federal 340B drug program, and the tools work on the reports a clinic already has. Everything is free to use.</p>
+        <p class="lede">So far the data covers the federal 340B drug program and the federally funded health centers, and the tools work on the reports a clinic already has. Everything is free to use.</p>
       </div>
       <div class="work band-body">
         <article class="work-row" aria-labelledby="work-data">
@@ -111,6 +113,43 @@ const ways = [
                   </li>
                 ))
               }
+            </ul>
+          </div>
+        </article>
+
+        <article class="work-row" aria-labelledby="work-hc">
+          <div class="work-say">
+            <p class="label">{HC_NAME}</p>
+            <h3 id="work-hc">Public information about federally funded health centers.</h3>
+            <p>
+              HRSA publishes what each health center reports every year and its files of shortage areas. HRSA and the Federal Register publish the funding dates. ClinX packages these files as pages and open files, and every page links to the file it came from.
+            </p>
+            <p>The records, the funding calendar and the shortage areas each have their own pages, and the files are free to download.</p>
+            <div class="btn-row">
+              <a class="btn" href={HC_HOME}>Open health centers <Arrow /></a>
+              <a class="btn ghost" href="/data/#health-centers">Get the data</a>
+            </div>
+          </div>
+          <div class="work-show">
+            <ul class="work-tools alone">
+              <li>
+                <a href="/health-centers/records/">
+                  <span><strong>Records</strong>What each health center reported to HRSA, year by year. HRSA refreshed its latest file on {hcDays.records}.</span>
+                  <Arrow />
+                </a>
+              </li>
+              <li>
+                <a href="/health-centers/funding/">
+                  <span><strong>Funding</strong>HRSA opportunities and Federal Register dates on one calendar, from the files of {hcDays.funding}.</span>
+                  <Arrow />
+                </a>
+              </li>
+              <li>
+                <a href="/health-centers/shortage-areas/">
+                  <span><strong>Shortage areas</strong>What HRSA designates and proposes to withdraw, state by state, from the files of {hcDays.areas}.</span>
+                  <Arrow />
+                </a>
+              </li>
             </ul>
           </div>
         </article>

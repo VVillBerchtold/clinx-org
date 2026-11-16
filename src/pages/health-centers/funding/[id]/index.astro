@@ -13,8 +13,9 @@ import OnPage from '../../../../components/OnPage.astro';
 import PageHead from '../../../../components/PageHead.astro';
 import Pager from '../../../../components/Pager.astro';
 import Base from '../../../../layouts/Base.astro';
+import { HC_HOME, HC_NAME } from '../../../../lib/site';
 import {
-  FUNDING_HOME, countText, dayText, getFunding, isHeldBack, isWebAddress, moneyText, opportunityDates, opportunityPath, paragraphs, programListingNumbers, statusLabel,
+  FUNDING_HOME, countText, dayText, getFunding, isWebAddress, moneyText, opportunityDates, opportunityPath, paragraphs, programListingNumbers, statusLabel,
   type Opportunity,
 } from '../../../../lib/hc-funding';
 
@@ -40,7 +41,6 @@ const forecast = o.status === 'forecasted';
 const dates = opportunityDates(o);
 const descriptionParagraphs = paragraphs(o.description);
 const eligibilityParagraphs = paragraphs(o.eligibility);
-const heldBack = [...descriptionParagraphs, ...eligibilityParagraphs].filter(isHeldBack).length;
 const money: [string, string][] = [
   ['Estimated funding', moneyText(o.estimatedFunding)],
   ['Award ceiling', moneyText(o.awardCeiling)],
@@ -60,10 +60,10 @@ const items = [
 
 <Base
   title={`${o.title} (${o.number})`}
-  crumbs={[{ name: 'Health center funding calendar', path: FUNDING_HOME }, { name: o.title, path: opportunityPath(o.id) }]}
+  crumbs={[{ name: HC_NAME, path: HC_HOME }, { name: 'Health center funding calendar', path: FUNDING_HOME }, { name: o.title, path: opportunityPath(o.id) }]}
   description={`${statusLabel(o.status)} HRSA opportunity ${o.number} on Grants.gov: its dates, amounts, eligibility and description as HRSA published them in the file of ${day}, with a link to its Grants.gov page.`}
 >
-  <PageHead title={o.title} trail={[{ label: 'Health centers' }, { label: 'Funding', href: FUNDING_HOME }, { label: o.number }]}>
+  <PageHead title={o.title} trail={[{ label: HC_NAME, href: HC_HOME }, { label: 'Funding', href: FUNDING_HOME }, { label: o.number }]}>
     <p class="lede">
       {statusLabel(o.status)} opportunity {o.number} of the {o.agencyName}, on Grants.gov. {forecast ? 'HRSA expects to post it, and its dates are estimates that can move.' : 'Applications are open on Grants.gov.'} Everything below is as HRSA published it in the file of {day}.
     </p>
@@ -173,8 +173,8 @@ const items = [
     {
       eligibilityParagraphs.length > 0 && (
         <div class="fund-text">
-          <p><strong>Additional information on eligibility, as published.</strong></p>
-          {eligibilityParagraphs.map((p) => (isHeldBack(p) ? <p class="held">This paragraph holds a word that the pages of this site do not print. It is in the opportunity on Grants.gov and in opportunities.json.</p> : <p>{p}</p>))}
+          <p><strong>Additional information on eligibility, in HRSA's own words.</strong></p>
+          {eligibilityParagraphs.map((p) => <p>{p}</p>)}
         </div>
       )
     }
@@ -184,9 +184,9 @@ const items = [
     <h2 id="description-heading">Description</h2>
     <div class="fund-text">
       {descriptionParagraphs.length === 0 && <p>HRSA gives no description.</p>}
-      {descriptionParagraphs.map((p) => (isHeldBack(p) ? <p class="held">This paragraph holds a word that the pages of this site do not print. It is in the opportunity on Grants.gov and in opportunities.json.</p> : <p>{p}</p>))}
+      {descriptionParagraphs.map((p) => <p>{p}</p>)}
     </div>
-    <p class="fund-small">The description is HRSA's text with its markup removed.{heldBack > 0 ? ' A paragraph that is not printed is marked where it belongs.' : ''}</p>
+    <p class="fund-small">The description is HRSA's own text, printed as HRSA published it with its markup removed.</p>
     {
       o.moreInformationUrl !== '' && isWebAddress(o.moreInformationUrl) && (
         <p><a href={o.moreInformationUrl}>{o.moreInformationText !== '' ? o.moreInformationText : 'More information attached by HRSA'}</a> (a link HRSA attached to this opportunity)</p>

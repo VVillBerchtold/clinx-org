@@ -31,7 +31,9 @@ const data = getDataset();
 const path = Astro.url.pathname;
 /** True for the menu link of the section this page is in. */
 const here = (link: { href: string }): boolean => path.startsWith(link.href);
-// The footer follows the main menu: the 340B group, then the data and the tools, then the rest of the site.
+/** True for the menu group the page is in: one of its pages, or the group's own front page. */
+const groupOn = (group: { items: readonly { href: string }[]; home?: string }): boolean => group.items.some(here) || (group.home !== undefined && path === group.home);
+// The footer follows the main menu: the groups (340B, health centers), then the data and the tools, then the rest of the site.
 const footGroups = NAV.flatMap((item) => ('items' in item ? [item] : []));
 const footLinks = NAV.flatMap((item) => ('href' in item ? [item] : []));
 const WORK = ['/data/', '/methods/', '/tools/', '/writing/'];
@@ -89,7 +91,7 @@ const labels: Node[] = unlisted ? [] : [...about, ...(crumbs.length > 0 ? [trail
               NAV.map((item) =>
                 'items' in item ? (
                   <li>
-                    <details class:list={['nav-drop', { on: item.items.some(here) }]}>
+                    <details class:list={['nav-drop', { on: groupOn(item) }]}>
                       <summary>
                         {item.label}
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -128,7 +130,7 @@ const labels: Node[] = unlisted ? [] : [...about, ...(crumbs.length > 0 ? [trail
                 NAV.map((item) =>
                   'items' in item ? (
                     <li>
-                      <details class:list={['nav-fold', { on: item.items.some(here) }]} open={item.items.some(here)}>
+                      <details class:list={['nav-fold', { on: groupOn(item) }]} open={groupOn(item)}>
                         <summary>
                           {item.label}
                           <svg width="14" height="14" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -178,7 +180,7 @@ const labels: Node[] = unlisted ? [] : [...about, ...(crumbs.length > 0 ? [trail
           </div>
           {
             footGroups.map((group) => (
-              <nav class="foot-wide" aria-label={group.label}>
+              <nav class:list={{ 'foot-wide': group.items.length > 3 }} aria-label={group.label}>
                 <h2>{group.label}</h2>
                 <ul>
                   {group.items.map((link) => (

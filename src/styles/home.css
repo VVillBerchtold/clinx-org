@@ -433,6 +433,13 @@
 .work-tools li:last-child a {
   padding-bottom: 0;
 }
+/* A list with nothing above it: no rule over the first line */
+.work-tools.alone li:first-child {
+  border-top: 0;
+}
+.work-tools.alone li:first-child a {
+  padding-top: 0;
+}
 .work-tools strong {
   display: block;
   margin-bottom: 0.125rem;

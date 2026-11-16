@@ -3,6 +3,7 @@ import '../../styles/home.css';
 import '../../styles/scorecard.css';
 import '../../styles/hc-areas.css';
 import Base from '../../layouts/Base.astro';
+import { HC_HOME, HC_NAME } from '../../lib/site';
 import OnPage from '../OnPage.astro';
 import PageHead from '../PageHead.astro';
 import AreasCare from './AreasCare.astro';
@@ -60,10 +61,10 @@ const places = noState ? 'the rows of HRSA’s files that give no state' : name;
 
 <Base
   title={`${title}: shortage areas and health center sites`}
-  crumbs={[{ name: 'Shortage areas', path: AREAS_PATH }, { name: title, path: areaPath(code) }]}
+  crumbs={[{ name: HC_NAME, path: HC_HOME }, { name: 'Shortage areas', path: AREAS_PATH }, { name: title, path: areaPath(code) }]}
   description={`${noState ? 'Rows with no state' : name} in HRSA’s files of ${when}: designated shortage areas and underserved areas, those HRSA proposes to withdraw, what HRSA’s own dates say happened in the 365 days before, and health center sites added.`}
 >
-  <PageHead title={title} trail={[{ label: 'Health centers' }, { label: 'Shortage areas', href: AREAS_PATH }, { label: title }]}>
+  <PageHead title={title} trail={[{ label: HC_NAME, href: HC_HOME }, { label: 'Shortage areas', href: AREAS_PATH }, { label: title }]}>
     <p class="lede">
       What HRSA’s files of {when} show for {places}: the designated shortage areas and underserved areas, the designations HRSA marks Proposed For Withdrawal, what HRSA’s own dates say happened from {from} to {when}, and the health center sites HRSA added to scope in the same 365 days.
     </p>

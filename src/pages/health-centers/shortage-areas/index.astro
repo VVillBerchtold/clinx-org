@@ -3,6 +3,7 @@ import '../../../styles/home.css';
 import '../../../styles/scorecard.css';
 import '../../../styles/hc-areas.css';
 import Base from '../../../layouts/Base.astro';
+import { HC_HOME, HC_NAME } from '../../../lib/site';
 import OnPage from '../../../components/OnPage.astro';
 import PageHead from '../../../components/PageHead.astro';
 import AreasCare from '../../../components/hc/AreasCare.astro';
@@ -24,10 +25,10 @@ const national = index.national_counts;
 
 <Base
   title="Shortage areas and health center sites"
-  crumbs={[{ name: 'Shortage areas', path: AREAS_PATH }]}
+  crumbs={[{ name: HC_NAME, path: HC_HOME }, { name: 'Shortage areas', path: AREAS_PATH }]}
   description={`HRSA’s shortage area designations, underserved areas and health center sites by state, as of its files of ${when}, with the designations HRSA proposes to withdraw and what its own dates say happened in the last 365 days.`}
 >
-  <PageHead title="Shortage areas and health center sites" trail={[{ label: 'Health centers' }, { label: 'Shortage areas' }]}>
+  <PageHead title="Shortage areas and health center sites" trail={[{ label: HC_NAME, href: HC_HOME }, { label: 'Shortage areas' }]}>
     <p class="lede">
       HRSA designates areas as short of primary care, dental health or mental health providers and areas and populations as medically underserved, and lists every health center service site. ClinX keeps a dated copy of those files and shows, state by state, what is designated, what HRSA marks Proposed For Withdrawal and what HRSA’s own dates say happened in the last 365 days.
     </p>

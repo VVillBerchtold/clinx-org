@@ -8,6 +8,10 @@ import { anyFormSpec } from '../../lib/forms';
 import { renderInline, renderSections } from '../../lib/markdown';
 import { drawFiguresInText } from '../../lib/money';
 import { stateName } from '../../lib/states';
+import { HC_HOME } from '../../lib/site';
+import { recordsSource } from '../../lib/hc-records';
+import { FUNDING_HOME } from '../../lib/hc-funding';
+import { AREAS_PATH } from '../../lib/hc-areas';
 
 const data = getDataset();
 const views = buildViews(data);
@@ -46,6 +50,9 @@ const differences = [...data.discrepancies].sort((a, b) => {
   const nameB = whose(b.filingId)?.name ?? b.filingId;
   return compareNames(nameA, nameB) || a.rule.localeCompare(b.rule);
 });
+const records = recordsSource();
+const recordYears = `${records.years[0]} to ${records.latest_year}`;
+const readTwice = Object.values(records.workbooks).every((w) => w.reads === 'two_reads');
 const formCount = differences.filter((d) => d.basis === 'form').length;
 const comparisonCount = differences.length - formCount;
 ---
@@ -53,11 +60,11 @@ const comparisonCount = differences.length - formCount;
 <Base
   title="Methods: how the 340B figures are sourced and checked"
   crumbs={[{ name: 'Methods', path: '/methods/' }]}
-  description="Where the figures come from, how they were checked, how each measure is calculated, and every difference found between the figures of one filing or report."
+  description="Where the figures come from, how they were checked, how each measure is calculated, every difference found between the figures of one filing or report, and how the health centers pages are made."
 >
   <PageHead title="Methods" trail={[{ label: '340B Scorecard' }]}>
     <p class="lede">Where the figures come from, how they were checked, and how each measure is calculated.</p>
-    <OnPage title="Methods" items={[...numbered.map((s) => ({ id: s.id, label: s.title.replace(/^\d+\.\s*/, '') })), { id: 'fetching', label: 'How ClinX fetches public files' }]} />
+    <OnPage title="Methods" items={[...numbered.map((s) => ({ id: s.id, label: s.title.replace(/^\d+\.\s*/, '') })), { id: 'health-centers', label: 'Health centers' }, { id: 'fetching', label: 'How ClinX fetches public files' }]} />
   </PageHead>
 
   <div class="prose doc-page">
@@ -120,6 +127,35 @@ const comparisonCount = differences.length - formCount;
       </>
     ))
   }
+
+  <h2 id="health-centers">Health centers</h2>
+  <p>
+    The <a href={HC_HOME}>health centers pages</a> are built from files that federal agencies offer for download. A separate program saves each file unchanged, keeps only the fields on a written list for each part, and writes plain tables from what it kept. A field that is not on the list is dropped when the file is read, so nothing that names a person is kept. Each part has a check that rebuilds its tables from the kept files and compares them with the tables on file.
+  </p>
+  <p>
+    A published value is printed as the agency published it. If ClinX calculates a number, the page says it was calculated by ClinX. Every page states the day of the file it shows and links to the agency's own file or page. A count is a count of rows in the agency's file on that day. No health center, area or state is ranked or compared with another.
+  </p>
+  <h3 id="health-centers-records">The records</h3>
+  <p>
+    The <a href={`${HC_HOME}records/`}>records</a> come from HRSA's yearly Uniform Data System workbooks for {recordYears}. ClinX keeps the rows of the listed health centers and the columns it knows. A value is the text HRSA published. HRSA's three marks are kept and shown in words: no entry, withheld because the number is small, and withheld to protect confidentiality. Text a health center typed into an "other" or "specify" column is not kept.
+  </p>
+  <p>
+    ClinX has one rule of its own. In a column that counts patients, a published whole number from 1 to 15 is withheld, and the page says "Withheld by ClinX".{readTwice ? ' Each workbook is read a second time after LibreOffice converts it to a CSV file, and the two reads are compared cell by cell. They agree on every cell.' : ''}
+  </p>
+  <h3 id="health-centers-funding">The funding calendar</h3>
+  <p>
+    The <a href={FUNDING_HOME}>funding calendar</a> reads two public services. Grants.gov gives a record for each HRSA opportunity that is forecast or posted. The Federal Register gives the documents of the last twelve months that answer two questions: documents from HRSA that contain the phrase "health center", and documents from any agency that contain the phrase "federally qualified health center".
+  </p>
+  <p>
+    A date is kept as the agency wrote it, and the day it names is stored without converting a time zone. A date that HRSA labels as estimated is marked Estimated everywhere. The name, phone number and email address of the agency contact on a Grants.gov record are not kept, and email addresses and phone numbers inside a free text are removed by pattern.
+  </p>
+  <h3 id="health-centers-areas">The shortage areas</h3>
+  <p>
+    The <a href={AREAS_PATH}>shortage areas</a> come from five files that HRSA publishes at data.hrsa.gov and refreshes daily: shortage areas for primary care, dental health and mental health, medically underserved areas and populations, and health center sites. ClinX saves each file with its address, the time it was retrieved and its SHA-256. HRSA publishes one row for each county, county subdivision or census tract of a designation. ClinX counts those rows and does not copy them.
+  </p>
+  <p>
+    The telephone number, web address and billing numbers of a site, and the members of Congress named in the file, are dropped when the file is read. Each new copy is compared with the one before, and the differences are added to a table of changes. A date in HRSA's file may be earlier than the day a copy first shows the change. The files do not say why a designation changed.
+  </p>
 
   <h2 id="fetching">How ClinX fetches public files</h2>
   <p>

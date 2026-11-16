@@ -222,26 +222,26 @@ describe('the agency\'s text', () => {
     }
   });
 
-  it('holds back only the paragraphs a page check would refuse, and the others hold no blocked word', () => {
-    expect(PRINT_BLOCKED_PARAGRAPHS).toBe(false);
-    let held = 0;
+  it('prints the agency\'s paragraphs that hold a blocked word, and no other text holds one', () => {
+    expect(PRINT_BLOCKED_PARAGRAPHS).toBe(true);
+    let blocked = 0;
     for (const o of data.opportunities) {
       for (const p of [...paragraphs(o.description), ...paragraphs(o.eligibility), o.title, o.applicationDueNote, o.changeComment, o.recordChangeComment]) {
         if (BLOCKED_WORDS.test(p)) {
-          held += 1;
-          expect(isHeldBack(p)).toBe(true);
-        } else expect(isHeldBack(p)).toBe(false);
+          blocked += 1;
+        }
+        expect(isHeldBack(p)).toBe(false);
       }
     }
     for (const o of data.opportunities) {
-      // Only a description or an eligibility paragraph is held back; every other printed text is free of the words.
+      // Only a description or an eligibility paragraph may hold a blocked word; every other printed text is free of the words.
       for (const text of [o.title, o.number, ...o.applicantTypes, ...o.fundingInstruments, ...o.fundingCategories, ...o.listings.map((l) => l.programTitle), o.moreInformationText, o.applicationDueNote, o.changeComment, o.recordChangeComment]) {
         expect(BLOCKED_WORDS.test(text), `${o.id}: ${text}`).toBe(false);
       }
     }
     for (const e of data.events) expect(BLOCKED_WORDS.test(e.title + e.note), e.sourceId).toBe(false);
     for (const r of data.register) expect(BLOCKED_WORDS.test(r.title + r.agencyNames.join(' ')), r.documentNumber).toBe(false);
-    expect(held).toBeGreaterThan(0);
+    expect(blocked).toBeGreaterThan(0);
   });
 
   it('carries no email address and no phone number in any file, in any text a page prints or in the calendar file', () => {

@@ -4,6 +4,7 @@
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { printedHcWords, withoutPrintedHcWords } from './hc/printed-words.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = resolve(process.argv[2] ?? join(root, 'dist'));
@@ -129,6 +130,10 @@ const PRINTED_WORKBOOK_WORDS = existsSync(filedPath)
       .flatMap((words) => [words, escapeHtml(words)])
       .sort((a, b) => b.length - a.length)
   : [];
+// The health centers pages print two of HRSA's own line titles and the agency's own description paragraphs as published.
+// Where one holds a word this check bans, exactly that text is let through on the records pages and the funding pages
+// (see scripts/hc/printed-words.mjs); the site's own sentences on those pages are still checked.
+const PRINTED_HC_WORDS = printedHcWords(root);
 // The site's own way back to the start of a page. It is a navigation label on every page, never a word about a filer.
 const NAV_LABELS = ['Back to top'];
 const EMAIL = /[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}/g;
@@ -312,6 +317,7 @@ for (const file of htmlFiles) {
   if (page.startsWith('/notices/') || page.startsWith('/calendar/') || page.startsWith('/rebate-pilot/')) {
     for (const words of PRINTED_NOTICE_WORDS) checked = checked.replaceAll(words, ' ');
   }
+  checked = withoutPrintedHcWords(page, checked, PRINTED_HC_WORDS);
   for (const label of NAV_LABELS) checked = checked.replaceAll(label, ' ');
   const word = BANNED_WORDS.exec(checked);
   if (word) fail(page, `page text contains "${word[0].trim()}" near: ...${checked.slice(Math.max(0, word.index - 40), word.index + 40).replace(/\s+/g, ' ')}...`);

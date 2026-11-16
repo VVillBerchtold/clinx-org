@@ -3,6 +3,7 @@ import '../../styles/home.css';
 import '../../styles/scorecard.css';
 import '../../styles/hc-records.css';
 import Base from '../../layouts/Base.astro';
+import { HC_HOME, HC_NAME } from '../../lib/site';
 import OnPage from '../OnPage.astro';
 import PageHead from '../PageHead.astro';
 import Pager from '../Pager.astro';
@@ -69,12 +70,13 @@ const items = [
 <Base
   title={`${header.name}, ${year} report`}
   crumbs={[
+    { name: HC_NAME, path: HC_HOME },
     { name: 'Health center records', path: RECORDS_PATH },
     { name: `${header.name}, ${year}`, path: Astro.url.pathname },
   ]}
   description={`What ${header.name} (${place}) reported to HRSA for ${year} in the Uniform Data System, table by table in HRSA's words, with each value's address in HRSA's workbook, its sites and its source.`}
 >
-  <PageHead wide title={header.name} trail={[{ label: 'Health center records', href: RECORDS_PATH }, { label: `${year} report` }]}>
+  <PageHead wide title={header.name} trail={[{ label: HC_NAME, href: HC_HOME }, { label: 'Records', href: RECORDS_PATH }, { label: `${year} report` }]}>
     <p class="lede">
       {place}. The Uniform Data System report that this health center filed with HRSA for {year}, as HRSA published it. Each value is in HRSA's words and has the address of its cell in HRSA's workbook.
     </p>

@@ -1,0 +1,99 @@
+---
+/**
+ * The front page of the health centers section: what the section is, three even cards for its three parts,
+ * how it is made, and its downloads. Every number comes from the copies of the three parts (src/lib/hc-hub.ts).
+ */
+import '../../styles/scorecard.css';
+import '../../styles/tools.css';
+import '../../styles/hc-hub.css';
+import Arrow from '../../components/Arrow.astro';
+import PageHead from '../../components/PageHead.astro';
+import Base from '../../layouts/Base.astro';
+import { fileGroups, partCards, partDays, sizeOf } from '../../lib/hc-hub';
+import { HC_HOME, HC_NAME } from '../../lib/site';
+
+const cards = partCards();
+const days = partDays();
+const groups = fileGroups();
+---
+
+<Base
+  title={HC_NAME}
+  crumbs={[{ name: HC_NAME, path: HC_HOME }]}
+  description="Public information about federally funded health centers, packaged from the agencies' own files: what each health center reported to HRSA, HRSA's funding opportunities and Federal Register dates on one calendar, and the shortage areas HRSA designates. Every page links to the file it came from."
+>
+  <PageHead title={HC_NAME} trail={[{ label: 'ClinX' }]}>
+    <p class="lede">Public information about federally funded health centers, packaged from the files that federal agencies publish. Each page links to the file it came from.</p>
+    <ul class="hub-day" aria-label="The day of each part's files">
+      <li><strong>Records</strong> HRSA refreshed its latest file on {days.records}</li>
+      <li><strong>Funding</strong> files of {days.funding}</li>
+      <li><strong>Shortage areas</strong> files of {days.areas}</li>
+    </ul>
+  </PageHead>
+
+  <ul class="hub-cards" aria-label="The three parts of this section">
+    {
+      cards.map((c) => (
+        <li>
+          <a class="card" href={c.href}>
+            <div class="hub-head">
+              <span class="label">{c.label}</span>
+              <h2>{c.title}</h2>
+            </div>
+            <p class="hub-say">{c.say}</p>
+            <dl class="hub-facts">
+              {c.facts.map((f) => <div><dt>{f.label}</dt><dd>{f.value}</dd></div>)}
+            </dl>
+            <span class="tool-go">{c.go} <Arrow /></span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+  <p class="small muted">Each count is a count of rows in the agencies' files on the day shown above.</p>
+
+  <section class="section" aria-labelledby="made-heading">
+    <div class="section-head">
+      <h2 id="made-heading">How this is made</h2>
+    </div>
+    <ul class="hub-how">
+      <li>
+        <strong>Agency files</strong>
+        <p>Each part starts from files an agency publishes: HRSA's yearly workbooks and daily files, the opportunity records on Grants.gov and the documents of the Federal Register. A value is printed as the agency published it.</p>
+      </li>
+      <li>
+        <strong>Dated copies</strong>
+        <p>ClinX keeps a copy of each file. Every page says the day of the file it shows.</p>
+      </li>
+      <li>
+        <strong>A link to the source</strong>
+        <p>Every page links to the agency's own file or page.</p>
+      </li>
+      <li>
+        <strong>No personal names</strong>
+        <p>The copies hold no name, phone number or email address of a person. They hold the names and addresses of organizations and their sites, which are public.</p>
+      </li>
+    </ul>
+    <div class="btn-row"><a class="btn ghost" href="/methods/#health-centers">How each part is made <Arrow /></a></div>
+  </section>
+
+  <section class="section" aria-labelledby="files-heading">
+    <div class="section-head">
+      <h2 id="files-heading">Downloads</h2>
+      <p>The files behind these pages, free to download and reuse. The <a href="/data/#health-centers">Data page</a> describes each one.</p>
+    </div>
+    <div class="hub-files">
+      {
+        groups.map((g) => (
+          <section aria-labelledby={`files-${g.id}`}>
+            <h3 id={`files-${g.id}`}>{g.title}</h3>
+            <p class="hub-files-day">{g.day}</p>
+            <ul>
+              {g.files.map((f) => <li><a href={f.href} download>{f.name}</a><span>{sizeOf(f.text)}</span></li>)}
+            </ul>
+          </section>
+        ))
+      }
+    </div>
+  </section>
+</Base>

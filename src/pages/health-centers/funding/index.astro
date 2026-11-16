@@ -17,7 +17,7 @@ import {
   DOWNLOADS, FUNDING_FEED, FUNDING_HOME, KINDS, KIND_NOTES, ahead, byMonth, dayText, downloadPath, estimatedBeforeDay, flagLabels, foundByText, fundingFile, kindLabel, getFunding,
   opportunityPath, passed, programListingNumbers, registerNewestFirst, statusLabel,
 } from '../../../lib/hc-funding';
-import { SITE_URL } from '../../../lib/site';
+import { HC_HOME, HC_NAME, SITE_URL } from '../../../lib/site';
 
 const data = getFunding();
 const day = dayText(data.day);
@@ -38,10 +38,10 @@ const dueOf = (o: (typeof data.opportunities)[number]) => (o.dates['application_
 
 <Base
   title="Health center funding calendar: HRSA opportunities and Federal Register dates"
-  crumbs={[{ name: 'Health center funding calendar', path: FUNDING_HOME }]}
+  crumbs={[{ name: HC_NAME, path: HC_HOME }, { name: 'Health center funding calendar', path: FUNDING_HOME }]}
   description={`The dates of ${data.opportunities.length} HRSA funding opportunities on Grants.gov and of ${data.register.length} Federal Register documents that name health centers, in one list in date order. Each estimated date is marked, and each date links to the agency's own page.`}
 >
-  <PageHead title="Funding and deadline calendar" trail={[{ label: 'Health centers' }, { label: 'Funding' }]}>
+  <PageHead title="Funding and deadline calendar" trail={[{ label: HC_NAME, href: HC_HOME }, { label: 'Funding' }]}>
     <p class="lede">
       This calendar lists, in date order, the dates of the funding opportunities HRSA has forecast or posted on Grants.gov and of the Federal Register documents that name health centers. Each row links to the agency's own page, and each date HRSA estimates is marked Estimated.
     </p>
@@ -53,7 +53,7 @@ const dueOf = (o: (typeof data.opportunities)[number]) => (o.dates['application_
         { id: 'passed-heading', label: 'Dates before the files' },
         { id: 'opportunities-heading', label: 'The opportunities' },
         { id: 'register-heading', label: 'Federal Register documents' },
-        { id: 'read-with-care', label: 'Read it with care' },
+        { id: 'read-with-care', label: 'Read with care' },
         { id: 'source', label: 'Source' },
         { id: 'downloads-heading', label: 'Downloads' },
       ]}
@@ -219,7 +219,7 @@ const dueOf = (o: (typeof data.opportunities)[number]) => (o.dates['application_
     <div class="note">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="2"></circle><path d="M10 9v5M10 6v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
       <div>
-        <p><strong id="read-with-care">Read it with care.</strong> The list covers the opportunities HRSA has forecast or posted on Grants.gov and the Federal Register documents that the two questions found. It leaves out opportunities of other agencies, notices that closed or were archived before the first download, and documents that do not use the two phrases. Foundations, states and other sources of money a health center has are not covered.</p>
+        <p><strong id="read-with-care">Read with care.</strong> The list covers the opportunities HRSA has forecast or posted on Grants.gov and the Federal Register documents that the two questions found. It leaves out opportunities of other agencies, notices that closed or were archived before the first download, and documents that do not use the two phrases. Foundations, states and other sources of money a health center has are not covered.</p>
         <p>A date is printed as the agency wrote it. No time zone is applied and the time of day is not kept. Amounts on an opportunity's page are as published, and ClinX adds none of them together. The two flags sort and filter the list by the words of a text and by a listing number. They say nothing about who may apply. Nothing on these pages is ranked, and no health center, area or state is compared with another. The contact details HRSA attaches to an opportunity are not kept, and email addresses and phone numbers inside a text were removed by pattern.</p>
         <p>The agencies change their records. {staleEstimates} of the estimated dates fall before {day}, which means HRSA had not moved them in the file of that day. The calendar file below and the downloads are from the same day as this page.</p>
       </div>
@@ -240,7 +240,7 @@ const dueOf = (o: (typeof data.opportunities)[number]) => (o.dates['application_
       <dt>What the counts are</dt>
       <dd>Counts of rows in the agencies' files on that day: {data.opportunities.length} opportunities, {data.register.length} documents and {data.events.length} dated events.</dd>
       <dt>How it was read</dt>
-      <dd>The records were saved as the agencies serve them and read into the tables below by a program that keeps only listed fields. <a href="/methods/">Methods</a> sets out how ClinX reads public files.</dd>
+      <dd>The records were saved as the agencies serve them and read into the tables below by a program that keeps only listed fields. <a href="/methods/#health-centers">Methods</a> sets out how ClinX reads public files.</dd>
     </dl>
   </section>
 
