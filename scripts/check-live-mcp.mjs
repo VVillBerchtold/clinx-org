@@ -3,9 +3,9 @@
 //
 // In plain words: the tests in tests/ prove the program on a developer's computer. This proves
 // the published one. It downloads the four open tables as any reader can, asks clinx.org/mcp the
-// same things through each of its nine tools, and fails if an answer and a table disagree. It
+// same things through each of its twelve tools, and fails if an answer and a table disagree. It
 // also sends a few mistaken and oversized requests and checks each is turned away politely.
-// It only reads, it sends about forty requests, and it is run by hand after a publish.
+// It only reads, it sends about forty-five requests, and it is run by hand after a publish.
 const SITE = (process.argv[2] ?? 'https://clinx.org').replace(/\/$/, '');
 const headers = { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream', 'MCP-Protocol-Version': '2025-06-18', 'User-Agent': 'clinx-check' };
 let id = 0; const results = [];
@@ -17,14 +17,14 @@ async function rpc(method, params, extra = {}) {
 const call = async (name, args = {}) => { const { body } = await rpc('tools/call', { name, arguments: args }); return body?.result; };
 const table = async (name) => (await fetch(`${SITE}/data/${name}`, { headers: { 'User-Agent': 'clinx-check' } })).json();
 
-const [laws, bills, notices, events] = await Promise.all(['340b-state-laws.json', '340b-bills.json', '340b-notices.json', '340b-events.json'].map(table));
+const [laws, bills, notices, events, filed] = await Promise.all(['340b-state-laws.json', '340b-bills.json', '340b-notices.json', '340b-events.json', '340b-state-filings.json'].map(table));
 const init = await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'clinx-check', version: '1' } });
 ok('initialize (older handshake)', init.status === 200 && init.body?.result?.serverInfo?.name === 'clinx-340b');
 const disc = await rpc('server/discover', {}, { 'MCP-Protocol-Version': '2026-07-28' });
 ok('server/discover (newer protocol)', disc.status === 200 && !!disc.body?.result, JSON.stringify(disc.body?.result ?? disc.body).slice(0, 110));
 const list = await rpc('tools/list', {});
 const names = list.body?.result?.tools?.map((t) => t.name) ?? [];
-ok('tools/list has nine tools', names.length === 9, names.join(', '));
+ok('tools/list has twelve tools', names.length === 12, names.join(', '));
 
 const about = (await call('about_the_data')).structuredContent;
 ok('about_the_data counts match the published files', about.counts.laws === laws.laws.length && about.counts.bills === bills.bills.length && about.counts.notices === notices.notices.length && about.counts.calendar_dates === events.events.length, JSON.stringify(about.counts));
@@ -57,6 +57,19 @@ const calWant = events.events.filter((e) => e.jurisdiction === 'MN' && e.day >= 
 ok('calendar for Minnesota in January matches the calendar file', cal.matched === calWant, `${cal.matched} vs ${calWant}`);
 const next = (await call('calendar', { limit: 5 })).structuredContent;
 ok('calendar with no dates starts from today', next.from === about.today && next.events.every((e) => e.day >= about.today), `from ${next.from}`);
+// The filings: the states the server says are on ClinX are the states the open file holds records for,
+// a state's count of records matches the file, and one record comes back with every line it has.
+const filedStates = [...new Set(filed.filings.map((f) => f.state))].sort();
+const groups = (await call('reporting_states')).structuredContent;
+const onClinx = groups.groups.flatMap((g) => g.states).filter((s) => s.on_clinx).map((s) => s.state).sort();
+ok('reporting_states marks the states the filings file holds', onClinx.join() === filedStates.join(), `${onClinx.join(', ')} against ${filedStates.join(', ')}`);
+for (const state of filedStates) {
+  const found = (await call('find_filings', { state })).structuredContent;
+  ok(`find_filings ${state} matches the filings file`, found.matched === filed.filings.filter((f) => f.state === state).length, `${found.matched} records`);
+}
+const firstFiling = filed.filings[0];
+const one = (await call('get_filing', { filing_id: firstFiling.filing_id })).structuredContent;
+ok('get_filing returns the record asked for', one.filing?.filing_id === firstFiling.filing_id && one.lines_total > 0 && one.official_file?.sha256 === firstFiling.pdf_sha256, `${firstFiling.filing_id}: ${one.lines_total} lines`);
 const mn = (await call('state_overview', { state: 'MN' })).structuredContent;
 ok('state_overview MN matches the laws file', mn.laws.count === laws.laws.filter((l) => l.state === 'MN').length, `${mn.laws.count} laws`);
 const fed = (await call('state_overview', { state: 'FED' })).structuredContent;
