@@ -80,6 +80,10 @@
   font-size: var(--text-xs);
   font-weight: 450;
 }
+.hc-counts td.share { --fig: 4.5rem; min-width: 10rem; width: auto; }
+.hc-counts td.share .bar-figure { font-weight: 600; white-space: nowrap; }
+.hc-counts td.share small { text-align: right; margin-top: 0.3rem; }
+.hc-counts-note { margin-top: var(--s2, 0.75rem); }
 .hc-states th[scope='row'] a { font-weight: 650; }
 .hc-states thead th { white-space: normal; vertical-align: bottom; line-height: 1.25; }
 .hc-states td.zero,
@@ -188,5 +192,7 @@
   .hc-list th[scope='row'] { min-width: 0; }
   .hc-list td.hc-counties, .hc-list td.hc-type { min-width: 0; }
   .hc-list td.num { text-align: left; }
+  .hc-counts td.share { min-width: 0; }
+  .hc-counts td.share small { text-align: left; }
   .hc-day { border-radius: var(--r-md); }
 }
