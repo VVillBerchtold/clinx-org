@@ -1,6 +1,6 @@
 /**
- * The menus are <details> and work without this file: the phone menu, and the 340B list in the
- * header. This only adds ways to close them: the Escape key, a tap anywhere outside, and, for
+ * The menus are <details> and work without this file: the phone menu, the 340B row inside it, and
+ * the 340B list in the header. This only adds ways to close them: the Escape key, a tap anywhere outside, and, for
  * the list in the header, moving on with the keyboard.
  */
 const menus = [...document.querySelectorAll<HTMLDetailsElement>('.nav-menu, .nav-drop')];

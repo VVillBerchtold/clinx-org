@@ -1,64 +1,85 @@
 ---
 import '../../styles/article.css';
 import Base from '../../layouts/Base.astro';
+import Arrow from '../../components/Arrow.astro';
 import Draft from '../../components/Draft.astro';
 import PageHead from '../../components/PageHead.astro';
 import { ARTICLE_TITLE, CHECKING_ARTICLE_TITLE, CLEANER_COPY, CLEANER_COPY_ARTICLE_TITLE, WORKBOOK_ARTICLE_TITLE } from '../../lib/site';
+
+/** What a piece of writing ends with: the tool or demo its last button opens. */
+const cleanerCopy = { href: '/tools/cleaner-copy/', kind: 'Tool', name: CLEANER_COPY };
+const totalsDemo = { href: '/writing/no-phi/demo/', kind: 'Demo', name: 'Totals from a file' };
+
+/** Every piece, newest first. Each one is drawn as the same card. */
+const pieces = [
+  {
+    href: '/writing/cleaner-copy/',
+    kind: 'Article',
+    minutes: 5,
+    title: CLEANER_COPY_ARTICLE_TITLE,
+    say: 'A copy of your workbook with the same shape and randomized values, so an assistant can help with the script and never see a patient.',
+    goesWith: cleanerCopy,
+  },
+  {
+    href: '/writing/inside-a-workbook/',
+    kind: 'Article',
+    minutes: 4,
+    title: WORKBOOK_ARTICLE_TITLE,
+    say: 'Pivot tables, saved formula answers, links, filters and hidden sheets can hold data that is no longer on the screen.',
+    goesWith: cleanerCopy,
+  },
+  {
+    href: '/writing/check-a-page/',
+    kind: 'Guide',
+    minutes: 3,
+    title: CHECKING_ARTICLE_TITLE,
+    say: "Three checks anyone can run on a web tool: turn the network off, watch the requests, and read the page's own rule.",
+    goesWith: cleanerCopy,
+  },
+  {
+    href: '/writing/no-phi/',
+    kind: 'Article',
+    minutes: 4,
+    title: ARTICLE_TITLE,
+    say: 'A way to build tools that need totals from a sensitive file, and never the file itself.',
+    goesWith: totalsDemo,
+  },
+];
 ---
 
-<Base title="Writing" crumbs={[{ name: 'Writing', path: '/writing/' }]} description="Articles and working demos from ClinX: how its tools are built, with examples you can check for yourself.">
+<Base title="Writing" crumbs={[{ name: 'Writing', path: '/writing/' }]} description="Articles and guides from ClinX: how its tools are built, with ways to check each one for yourself.">
   <PageHead title="Writing" trail={[{ label: 'ClinX' }]}>
-    <p class="lede">How the tools here are built, with working examples you can check for yourself.</p>
+    <p class="lede">How the tools here are built, and how to check each one for yourself.</p>
   </PageHead>
 
-  <div class="pieces">
-    <a class="card" href="/writing/cleaner-copy/">
-      <span class="piece-top"><span class="label">Article · 5 minute read</span><Draft /></span>
-      <span class="piece-flow" aria-hidden="true"><span>Pick a report</span><i></i><span>Choose the columns</span><i></i><span>Get a randomized copy</span></span>
-      <span>
-        <strong>{CLEANER_COPY_ARTICLE_TITLE}</strong>
-        <p>A copy of your workbook with the same shape and randomized values, so an assistant can help with the script and never see a patient.</p>
-      </span>
-    </a>
-    <a class="card" href="/tools/cleaner-copy/">
-      <span class="label">Working tool</span>
-      <span class="piece-steps" aria-hidden="true"><b>1</b><i></i><b>2</b><i></i><b>3</b><i></i><b>4</b></span>
-      <span>
-        <strong>{CLEANER_COPY}</strong>
-        <p>Four steps from a report to a randomized copy, in your browser.</p>
-      </span>
-    </a>
-    <div class="pieces-pair">
-      <a class="card" href="/writing/inside-a-workbook/">
-        <span class="piece-top"><span class="label">Article · 4 minute read</span><Draft /></span>
-        <span>
-          <strong>{WORKBOOK_ARTICLE_TITLE}</strong>
-          <p>Pivot tables, saved formula answers, links, filters and hidden sheets can hold data that is no longer on the screen.</p>
-        </span>
-      </a>
-      <a class="card" href="/writing/check-a-page/">
-        <span class="piece-top"><span class="label">Guide · 3 minute read</span><Draft /></span>
-        <span>
-          <strong>{CHECKING_ARTICLE_TITLE}</strong>
-          <p>Three checks anyone can run on a web tool: turn the network off, watch the requests, and read the page's own rule.</p>
-        </span>
-      </a>
-    </div>
-    <a class="card" href="/writing/no-phi/">
-      <span class="piece-top"><span class="label">Article · 4 minute read</span><Draft /></span>
-      <span class="piece-flow" aria-hidden="true"><span>You pick a file</span><i></i><span>Your browser reads it</span><i></i><span>Only totals appear</span></span>
-      <span>
-        <strong>{ARTICLE_TITLE}</strong>
-        <p>A way to build tools that need totals from a sensitive file, and never the file itself.</p>
-      </span>
-    </a>
-    <a class="card" href="/writing/no-phi/demo/">
-      <span class="label">Working demo</span>
-      <span class="piece-zero" aria-hidden="true">0</span>
-      <span>
-        <strong>Requests sent while it reads your file</strong>
-        <p>Totals from a sample claims file, worked out in your browser.</p>
-      </span>
-    </a>
-  </div>
+  <ul class="pieces">
+    {
+      pieces.map((piece) => (
+        <li class="card piece">
+          <span class="piece-top">
+            <span class="label">
+              {piece.kind} · {piece.minutes} minute read
+            </span>
+            <Draft />
+          </span>
+          <span class="piece-say">
+            <a class="piece-link" href={piece.href}>
+              <strong>{piece.title}</strong>
+            </a>
+            <p>{piece.say}</p>
+          </span>
+          <span class="piece-foot">
+            <span class="piece-go" aria-hidden="true">
+              Read the {piece.kind.toLowerCase()} <Arrow />
+            </span>
+            <a class="piece-with" href={piece.goesWith.href}>
+              <span>{piece.goesWith.kind}</span>
+              {piece.goesWith.name}
+            </a>
+          </span>
+        </li>
+      ))
+    }
+  </ul>
+  <p class="pieces-note">Each piece ends at the tool or the demo it describes. All of the tools are on the <a href="/tools/">Tools</a> page.</p>
 </Base>

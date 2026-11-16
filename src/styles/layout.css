@@ -326,7 +326,7 @@ code {
 .nav-menu {
   display: none;
 }
-.nav-menu summary {
+.nav-menu > summary {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -341,14 +341,14 @@ code {
   list-style: none;
   user-select: none;
 }
-.nav-menu summary::-webkit-details-marker {
+.nav-menu > summary::-webkit-details-marker {
   display: none;
 }
-.nav-menu summary path {
+.nav-menu > summary path {
   transform-origin: 9px 9px;
   transition: transform 0.25s var(--ease);
 }
-.nav-menu[open] summary {
+.nav-menu[open] > summary {
   background: var(--cta);
   border-color: var(--cta);
   color: var(--cta-ink);
@@ -389,14 +389,56 @@ code {
   font: 700 var(--text-lg) / 1.2 var(--display);
   text-decoration: none;
 }
-.nav-sub-head {
-  display: block;
-  padding: 0.875rem var(--s4) 0.125rem;
+/* A section with pages of its own (340B) is one row that opens. It stays shut until it is tapped,
+   unless the page on screen is one of its own. It is a <details> too, so it needs no script. */
+.nav-fold summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 3rem;
+  padding: 0 var(--s4);
+  border-radius: var(--r-md);
+  font: 700 var(--text-lg) / 1.2 var(--display);
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+.nav-fold summary::-webkit-details-marker {
+  display: none;
+}
+.nav-fold summary svg {
   color: var(--muted);
-  font-weight: 600;
-  font-size: var(--text-xs);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  transition: transform 0.25s var(--ease);
+}
+.nav-fold[open] summary svg {
+  transform: rotate(180deg);
+}
+.nav-fold.on summary {
+  color: var(--accent);
+}
+.nav-fold ul {
+  margin: 0 var(--s2) var(--s3);
+  padding: var(--s1);
+  border-radius: var(--r-md);
+  background: var(--accent-wash);
+}
+.nav-fold[open] ul {
+  animation: nav-fold-in 0.22s var(--ease);
+}
+.nav-fold li + li {
+  border-top: 0;
+}
+.nav-fold ul a {
+  min-height: 2.75rem;
+  padding: 0 var(--s3);
+  border-radius: 10px;
+  font: 600 var(--text-base) / 1.2 var(--body);
+}
+@keyframes nav-fold-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
 }
 .nav-menu a[aria-current='page'] {
   color: var(--accent);
