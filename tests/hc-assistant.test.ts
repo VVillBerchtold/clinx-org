@@ -39,7 +39,8 @@ describe('the three files for the server that answers assistants', () => {
     const allowed = ['key', 'grant_number', 'name', 'earlier_names', 'city', 'state', 'years', 'funding_types', 'urban_rural', 'sites', 'page', 'file'];
     for (const center of index.health_centers) expect(Object.keys(center).filter((k) => !allowed.includes(k))).toEqual([]);
     expect(JSON.stringify(index).includes('@')).toBe(false);
-    expect(JSON.stringify(index).length).toBeLessThan(60_000);
+    // About 380 characters for each health center: 258 of them make about 100,000.
+    expect(JSON.stringify(index).length).toBeLessThan(150_000);
   });
 
   it('writes the dictionary of lines so that every row can be read back as lines.csv has it', () => {

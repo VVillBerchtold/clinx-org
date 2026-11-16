@@ -30,7 +30,21 @@
 .hcr-filter input { min-width: min(100%, 20rem); }
 .hcr-filter select { min-width: min(100%, 14rem); }
 .hcr-count { margin: 0 0 0.75rem; font-size: var(--text-sm); color: var(--muted); }
-.hcr-list tr[hidden] { display: none; }
+.hcr-list tr[hidden], .hcr-list tbody[hidden] { display: none; }
+/* The heading of a state's group in the list. */
+.hcr-list .hcr-group th {
+  padding-block: 1.125rem 0.5rem;
+  background: var(--bg);
+  border-bottom: 2px solid var(--line);
+  font: 700 1.125rem/1.25 var(--display);
+  letter-spacing: -0.01em;
+  text-align: left;
+  color: var(--ink);
+}
+.hcr-list .hcr-group-count { margin-left: 0.5rem; font: 500 var(--text-sm) / 1.25 var(--body); letter-spacing: 0; color: var(--muted); }
+.hcr-list .hcr-group-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.25rem 1rem; }
+.hcr-list .hcr-group-back { font: 600 var(--text-xs) / 1.25 var(--body); letter-spacing: 0; }
+.hcr-places { margin-bottom: 1.25rem; }
 .hcr-list th[scope='row'] { font-size: var(--text-sm); }
 .hcr-list th[scope='row'] a { font-weight: 650; }
 .hcr-list thead th { white-space: normal; }
@@ -316,6 +330,19 @@
 .hcr-links li { margin: 0; padding: 0; max-width: none; }
 
 @media (max-width: 600px) {
+  /* In the stacked list a state's heading is a band across the list. */
+  .table-wrap.stack.hcr-list tbody tr.hcr-group {
+    display: block;
+    padding: 1.25rem 0.875rem 0.625rem;
+    background: var(--bg);
+    border-top: 0;
+  }
+  .table-wrap.stack.hcr-list tbody tr.hcr-group th {
+    display: block;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
   .hcr-table > summary { padding: 0.875rem 1rem; }
   .hcr-legend dl { grid-template-columns: minmax(0, 1fr); }
   .hcr-card > h3 { padding-inline: 1rem; }

@@ -5,8 +5,10 @@
 // checks that they are what the pages were written for, and copies them. `problems` makes the same
 // checks again on the copy, so a changed or half-copied file is caught before a build.
 //
-// Files copied: health-centers.csv, lines.csv, notes.csv and one centers/<key>.json for each health
-// center. Not copied: values.csv (the same cells as the center files, 15.6 MB), sites.csv and zips.csv
+// Files copied: health-centers.csv, lines.csv, notes.csv, coverage.csv (how many health centers HRSA
+// lists in each state each year, and whether these records cover the state) and one centers/<key>.json
+// for each health center. A health center has a row and a report only for the years HRSA's file lists
+// it. Not copied: values.csv (the same cells as the center files, about 90 MB), sites.csv and zips.csv
 // (the same rows as the center files; their counts are checked against the center files when copying),
 // index.json, differences.csv, sum_rules.csv and line_comparison.csv (checks of the folder, not shown).
 import { existsSync, readFileSync } from 'node:fs';
@@ -17,12 +19,13 @@ export const PART = 'records';
 export const FROM = 'data/records';
 
 export const YEARS = [2021, 2022, 2023, 2024, 2025];
-export const STATES = ['MA', 'RI'];
+export const STATES = ['CT', 'DC', 'DE', 'MA', 'MD', 'ME', 'NH', 'NJ', 'NY', 'PA', 'RI', 'VT'];
 export const HEALTH_CENTER_COLUMNS = [
   'health_center', 'grant_number', 'year', 'sheet_row', 'name_as_published', 'street', 'address_line_2', 'city', 'state', 'zip',
   'funding_chc', 'funding_mhc', 'funding_ho', 'funding_ph', 'funding_msaw', 'funding_hp', 'funding_rph', 'urban_rural', 'sites',
 ];
 export const LINE_COLUMNS = ['year', 'uiid', 'table_name', 'sheet', 'sheet_column', 'line', 'line_title', 'column', 'column_title', 'kind', 'kind_rule'];
+export const COVERAGE_COLUMNS = ['year', 'state', 'health_centers', 'covered', 'verification'];
 export const NOTE_COLUMNS = ['year', 'health_center', 'uiid', 'note', 'value_as_published', 'explanation'];
 export const KINDS = ['patients', 'visits', 'fte', 'dollars', 'percent', 'count', 'text', 'other'];
 export const SITE_COLUMNS = [
@@ -35,7 +38,7 @@ export const ZIP_COLUMNS = [
 ];
 export const STATUSES = ['row_present', 'row_withheld_unnamed', 'row_absent'];
 
-const FIXED_FILES = ['health-centers.csv', 'lines.csv', 'notes.csv'];
+const FIXED_FILES = ['health-centers.csv', 'lines.csv', 'notes.csv', 'coverage.csv'];
 
 /** Reads CSV text (quoted fields, doubled quotes) into records keyed by the header row. */
 export function parseCsv(text) {
@@ -76,7 +79,7 @@ const sameList = (a, b) => a.length === b.length && a.every((x, i) => x === b[i]
 
 /**
  * What is wrong with the tables, as plain sentences. `files` maps a name (health-centers.csv, lines.csv,
- * notes.csv, centers/<key>.json) to its text.
+ * notes.csv, coverage.csv, centers/<key>.json) to its text.
  */
 export function shapeProblems(files) {
   const problems = [];
@@ -90,6 +93,8 @@ export function shapeProblems(files) {
   if (!sameList(linesTable.header, LINE_COLUMNS)) say('lines.csv does not have the columns the pages read');
   const notesTable = parseCsv(files['notes.csv']);
   if (!sameList(notesTable.header, NOTE_COLUMNS)) say('notes.csv does not have the columns the pages read');
+  const coverageTable = parseCsv(files['coverage.csv']);
+  if (!sameList(coverageTable.header, COVERAGE_COLUMNS)) say('coverage.csv does not have the columns the pages read');
   if (problems.length > 0) return problems;
 
   const keys = [...new Set(centersTable.records.map((r) => r.health_center))];
@@ -97,7 +102,9 @@ export function shapeProblems(files) {
   if (!sameList(yearsSeen, YEARS)) say(`health-centers.csv covers the years ${yearsSeen.join(', ')}, the pages expect ${YEARS.join(', ')}`);
   const pairs = new Set(centersTable.records.map((r) => `${r.health_center}/${r.year}`));
   if (pairs.size !== centersTable.records.length) say('health-centers.csv lists a health center twice in one year');
-  if (pairs.size !== keys.length * YEARS.length) say('health-centers.csv does not have a row for every health center in every year');
+  /** The years HRSA's files list each health center, from health-centers.csv. */
+  const yearsByKey = new Map(keys.map((k) => [k, []]));
+  for (const r of centersTable.records) yearsByKey.get(r.health_center).push(String(r.year));
   for (const r of centersTable.records) {
     if (!/^[0-9A-Z]+$/.test(r.health_center)) say(`health-centers.csv: "${r.health_center}" is not a key of letters and digits`);
     if (!STATES.includes(r.state)) say(`health-centers.csv: ${r.health_center} ${r.year} is in state "${r.state}"`);
@@ -132,7 +139,8 @@ export function shapeProblems(files) {
       continue;
     }
     if (doc.key !== key) say(`centers/${key}.json says its key is "${doc.key}"`);
-    if (!sameList(Object.keys(doc.years ?? {}).sort(), YEARS.map(String))) say(`centers/${key}.json does not hold the years ${YEARS.join(', ')}`);
+    const listed = [...yearsByKey.get(key)].sort();
+    if (!sameList(Object.keys(doc.years ?? {}).sort(), listed)) say(`centers/${key}.json does not hold the years health-centers.csv lists for it (${listed.join(', ')})`);
     for (const year of YEARS) {
       const y = doc.years?.[String(year)];
       if (!y) continue;
@@ -158,6 +166,27 @@ export function shapeProblems(files) {
       totals.zips += (y.zip_codes?.rows ?? []).length;
     }
   }
+  // The count of health centers in every state: one row for each state and year, a whole number, and for
+  // a state these records cover, the same number as health-centers.csv holds.
+  const coveredSeen = new Set();
+  const coveragePairs = new Set();
+  for (const c of coverageTable.records) {
+    const id = `${c.year}/${c.state}`;
+    if (coveragePairs.has(id)) say(`coverage.csv: ${id} appears twice`);
+    coveragePairs.add(id);
+    if (!YEARS.includes(Number(c.year))) say(`coverage.csv: ${c.state} is in the year "${c.year}"`);
+    if (!/^[A-Z]{2}$/.test(c.state)) say(`coverage.csv: "${c.state}" is not a two-letter code`);
+    if (!/^[0-9]+$/.test(c.health_centers)) say(`coverage.csv: ${id} has the count "${c.health_centers}"`);
+    if (c.covered !== 'yes' && c.covered !== 'no') say(`coverage.csv: ${id} says covered is "${c.covered}"`);
+    if ((c.covered === 'yes') !== STATES.includes(c.state)) say(`coverage.csv: ${id} says covered is "${c.covered}", and the pages ${STATES.includes(c.state) ? 'cover' : 'do not cover'} ${c.state}`);
+    if (c.covered === 'yes') {
+      coveredSeen.add(c.state);
+      const held = centersTable.records.filter((r) => r.state === c.state && String(r.year) === String(c.year)).length;
+      if (held !== Number(c.health_centers)) say(`coverage.csv: ${id} counts ${c.health_centers} health centers, health-centers.csv holds ${held}`);
+    }
+  }
+  for (const state of STATES) if (!coveredSeen.has(state)) say(`coverage.csv has no row for ${state}`);
+
   // Nothing in a copied file may look like an email address or a telephone number.
   const EMAIL = /[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\.[A-Za-z]{2,}/;
   const PHONE = /(?<![0-9])\(?[0-9]{3}\)?[-. ][0-9]{3}[-. ][0-9]{4}(?![0-9])/;
@@ -173,13 +202,16 @@ export function shapeProblems(files) {
 function workbookFacts(engineRoot, centerFiles) {
   const manifest = parseCsv(readFileSync(join(engineRoot, 'sources', 'manifest.csv'), 'utf8')).records.filter((r) => r.group === 'uds');
   const facts = {};
+  const docs = centerFiles.map((text) => JSON.parse(text));
   for (const year of YEARS) {
     const m = manifest.find((r) => r.file === `H80-${year}.xlsx`);
     if (!m) throw new Error(`sources/manifest.csv has no row for H80-${year}.xlsx`);
     const refreshed = new Set();
     const reads = new Set();
-    for (const text of centerFiles) {
-      const y = JSON.parse(text).years[String(year)];
+    for (const doc of docs) {
+      const y = doc.years[String(year)];
+      // A health center that HRSA's file for this year does not list has no report for it.
+      if (!y) continue;
       refreshed.add(y.source.report_last_refreshed);
       reads.add(y.reads);
     }

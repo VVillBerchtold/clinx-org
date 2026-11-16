@@ -26,6 +26,9 @@ import {
   megabytes,
   nameSentence,
   refreshDay,
+  statePath,
+  yearsMissing,
+  yearsOf,
   type RCell,
 } from '../../lib/hc-records';
 
@@ -48,7 +51,11 @@ const retrieved = formatDay(workbook.retrieved_utc.slice(0, 10));
 const refreshed = refreshDay(workbook.report_last_refreshed);
 const list = listRows();
 const at = list.findIndex((r) => r.key === centerKey);
-const stepOf = (r: (typeof list)[number] | undefined) => (r ? { href: centerPath(r.key, year), name: r.name } : undefined);
+// The step to a neighbour opens its report for the same year, or its latest where it has none for this year.
+const stepOf = (r: (typeof list)[number] | undefined) => (r ? { href: centerPath(r.key, yearsOf(r.key).includes(year) ? year : r.lastYear), name: r.name } : undefined);
+const here = list[at]!;
+const missing = yearsMissing(centerKey);
+const notListed = missing.length === 0 ? '' : `HRSA's ${missing.length === 1 ? 'file' : 'files'} for ${listOfYears(missing)} ${missing.length === 1 ? 'does' : 'do'} not list this health center's ID. Its reports here are for ${listOfYears(view.years)}.`;
 const prev = stepOf(list[at - 1]);
 const next = stepOf(list[at + 1]);
 const plain = (t: string): string => (t === '-' ? 'No entry' : t);
@@ -102,6 +109,7 @@ const items = [
       {place}. The Uniform Data System report that this health center filed with HRSA for {year}, as HRSA published it. Each value is in HRSA's words and has the address of its cell in HRSA's workbook.
     </p>
     {renamed !== '' && <p class="small muted">{renamed}</p>}
+    {notListed !== '' && <p class="small muted">{notListed}</p>}
     <dl class="facts hcr-facts">
       <dt>Funding types</dt>
       <dd>
@@ -365,5 +373,5 @@ const items = [
     <p class="small muted">The report covers {listOfYears(view.years)}. This page shows {year}.</p>
   </section>
 
-  <Pager label="More health centers" noun="health center" prev={prev} next={next} up={{ href: RECORDS_PATH, label: 'All health centers' }} />
+  <Pager label="More health centers" noun="health center" prev={prev} next={next} up={{ href: statePath(here.state), label: `Health centers in ${here.stateName}` }} />
 </Base>

@@ -1,13 +1,12 @@
 ---
 import RecordsCenterPage from '../../../../../components/hc/RecordsCenterPage.astro';
-import { centerKeys, recordsSource, slugOf, yearsOf } from '../../../../../lib/hc-records';
+import { centerKeys, lastYearOf, slugOf, yearsOf } from '../../../../../lib/hc-records';
 
-/** A health center's earlier reports (2021 to 2024): /health-centers/records/<key>/<year>/. */
+/** A health center's earlier reports: /health-centers/records/<key>/<year>/. */
 export function getStaticPaths() {
-  const latest = recordsSource().latest_year;
   return centerKeys().flatMap((key) =>
     yearsOf(key)
-      .filter((year) => year !== latest)
+      .filter((year) => year !== lastYearOf(key))
       .map((year) => ({ params: { key: slugOf(key), year: String(year) }, props: { centerKey: key, year } })),
   );
 }

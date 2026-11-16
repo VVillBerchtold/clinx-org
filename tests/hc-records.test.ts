@@ -14,11 +14,17 @@ import {
   shortColumn,
   splitBySection,
   glanceScale,
+  coverageRows,
   headerRows,
+  lastYearOf,
   linesOf,
+  listByState,
   listRows,
   nameSentence,
+  placesWords,
   rawFile,
+  stateAnchor,
+  yearsMissing,
   recordsSource,
   refreshDay,
   formatDay,
@@ -26,6 +32,7 @@ import {
   slugOf,
   yearsOf,
 } from '../src/lib/hc-records';
+import { MAP_PLACES } from '../src/lib/state-map';
 import { problems, shapeProblems, parseCsv as nodeParseCsv } from '../scripts/hc/records.mjs';
 import centerPage from '../src/components/hc/RecordsCenterPage.astro?raw';
 import listPage from '../src/components/hc/RecordsListPage.astro?raw';
@@ -76,12 +83,40 @@ describe('the copied tables', () => {
     expect(problems({ siteRoot: root })).toEqual([]);
   });
 
-  it('hold 45 health centers in Massachusetts and Rhode Island for 2021 to 2025', () => {
-    expect(keys).toHaveLength(45);
+  const PLACES = ['CT', 'DC', 'DE', 'MA', 'MD', 'ME', 'NH', 'NJ', 'NY', 'PA', 'RI', 'VT'];
+
+  it('hold 258 health centers in twelve places from the District of Columbia to Maine for 2021 to 2025', () => {
+    expect(keys).toHaveLength(258);
     expect(source.years).toEqual([2021, 2022, 2023, 2024, 2025]);
-    expect(source.states).toEqual(['MA', 'RI']);
-    expect(headerRows()).toHaveLength(225);
-    expect(new Set(headerRows().map((h) => h.state))).toEqual(new Set(['MA', 'RI']));
+    expect(source.states).toEqual(PLACES);
+    // One row for each health center and year HRSA's file lists it: 256, 255, 255, 254 and 253.
+    expect(headerRows()).toHaveLength(1273);
+    expect(source.years.map((y) => headerRows().filter((h) => h.year === y).length)).toEqual([256, 255, 255, 254, 253]);
+    expect(new Set(headerRows().map((h) => h.state))).toEqual(new Set(PLACES));
+  });
+
+  it('give a health center a report only for the years HRSA lists it: seven are not in all five files', () => {
+    const partial = keys.filter((k) => yearsOf(k).length < source.years.length);
+    expect(partial).toHaveLength(7);
+    for (const k of keys) {
+      const years = yearsOf(k);
+      // No gap: the years a health center is listed are next to one another.
+      expect(years[years.length - 1]! - years[0]!).toBe(years.length - 1);
+      expect(lastYearOf(k)).toBe(years[years.length - 1]);
+      expect([...yearsOf(k), ...yearsMissing(k)].sort()).toEqual(source.years);
+      expect(Object.keys(JSON.parse(rawFile(`centers/${k}.json`)).years).map(Number).sort()).toEqual(years);
+    }
+  });
+
+  it('count the health centers HRSA lists in every state and territory, and agree with the list where the records cover a state', () => {
+    const rows = coverageRows();
+    expect(rows).toHaveLength(59 * 5);
+    const latestRows = rows.filter((c) => c.year === latest);
+    expect(latestRows.reduce((n, c) => n + c.healthCenters, 0)).toBe(1356);
+    expect(latestRows.filter((c) => c.covered).map((c) => c.state)).toEqual(PLACES);
+    for (const c of rows.filter((x) => x.covered)) expect(headerRows().filter((h) => h.state === c.state && h.year === c.year), `${c.state} ${c.year}`).toHaveLength(c.healthCenters);
+    // Every code in the file has a tile on the map.
+    for (const c of latestRows) expect(MAP_PLACES.some((p) => p.code === c.state), c.state).toBe(true);
   });
 
   it('say where each workbook came from, with a SHA-256 and a day', () => {
@@ -97,7 +132,7 @@ describe('the copied tables', () => {
   it('never carry something shaped like an email address or a telephone number', () => {
     const email = /[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\.[A-Za-z]{2,}/;
     const phone = /(?<![0-9])\(?[0-9]{3}\)?[-. ][0-9]{3}[-. ][0-9]{4}(?![0-9])/;
-    const names = ['health-centers.csv', 'lines.csv', 'notes.csv', 'SOURCE.json', ...keys.map((k) => `centers/${k}.json`)];
+    const names = ['health-centers.csv', 'lines.csv', 'notes.csv', 'coverage.csv', 'SOURCE.json', ...keys.map((k) => `centers/${k}.json`)];
     for (const name of names) {
       const text = copy(name);
       expect(email.test(text), name).toBe(false);
@@ -112,7 +147,7 @@ describe('the copied tables', () => {
   });
 
   it('are refused by the checks when a file is changed', () => {
-    const files: Record<string, string> = { 'health-centers.csv': copy('health-centers.csv'), 'lines.csv': copy('lines.csv'), 'notes.csv': copy('notes.csv') };
+    const files: Record<string, string> = { 'health-centers.csv': copy('health-centers.csv'), 'lines.csv': copy('lines.csv'), 'notes.csv': copy('notes.csv'), 'coverage.csv': copy('coverage.csv') };
     for (const k of keys) files[`centers/${k}.json`] = copy(`centers/${k}.json`);
     expect(shapeProblems({ ...files })).toEqual([]);
     expect(shapeProblems({ ...files, 'lines.csv': files['lines.csv']!.replace('year,uiid', 'year,id') }).length).toBeGreaterThan(0);
@@ -121,6 +156,11 @@ describe('the copied tables', () => {
     const missing = { ...files };
     delete missing['centers/010030.json'];
     expect(shapeProblems(missing).some((p) => /010030/.test(p))).toBe(true);
+    // A count that differs from the list, and a state marked covered that the pages do not cover.
+    const miscounted = { ...files, 'coverage.csv': files['coverage.csv']!.replace('2025,RI,8,yes', '2025,RI,9,yes') };
+    expect(shapeProblems(miscounted).some((p) => /2025\/RI counts 9/.test(p))).toBe(true);
+    const overclaimed = { ...files, 'coverage.csv': files['coverage.csv']!.replace('2025,AK,27,no', '2025,AK,27,yes') };
+    expect(shapeProblems(overclaimed).some((p) => /2025\/AK/.test(p))).toBe(true);
   }, 60_000);
 
   it('read the same with the sync script and the site', () => {
@@ -132,17 +172,18 @@ describe('the addresses', () => {
   const paths = views.map((v) => v.path);
 
   it('are one for each health center and year, each unique, lower case and ending with a slash', () => {
-    expect(views).toHaveLength(225);
+    expect(views).toHaveLength(1273);
     expect(new Set(paths).size).toBe(paths.length);
     for (const p of paths) expect(p).toMatch(/^\/health-centers\/records\/[0-9a-z]+\/(20(2[1-4])\/)?$/);
     for (const k of keys) {
-      expect(centerPath(k, latest)).toBe(`/health-centers/records/${slugOf(k)}/`);
-      expect(centerPath(k, 2022)).toBe(`/health-centers/records/${slugOf(k)}/2022/`);
+      // The short address is the latest report HRSA's files hold for the health center.
+      expect(centerPath(k, lastYearOf(k))).toBe(`/health-centers/records/${slugOf(k)}/`);
+      for (const y of yearsOf(k).filter((x) => x !== lastYearOf(k))) expect(centerPath(k, y)).toBe(`/health-centers/records/${slugOf(k)}/${y}/`);
     }
   });
 
   it('give the latest year no year in the address, and every other year its own', () => {
-    expect(paths.filter((p) => !/\/20\d\d\/$/.test(p))).toHaveLength(45);
+    expect(paths.filter((p) => !/\/20\d\d\/$/.test(p))).toHaveLength(258);
     expect(paths.filter((p) => /\/2025\/$/.test(p))).toHaveLength(0);
   });
 });
@@ -150,22 +191,33 @@ describe('the addresses', () => {
 describe('the list', () => {
   const list = listRows();
 
-  it('has the 45 health centers, A to Z by the name of the latest year', () => {
-    expect(list).toHaveLength(45);
-    const names = list.map((r) => r.name);
-    expect([...names].sort((a, b) => a.localeCompare(b, 'en'))).toEqual(names);
+  it('has the 258 health centers, by state A to Z and by name A to Z within a state', () => {
+    expect(list).toHaveLength(258);
+    const order = (a: (typeof list)[number], b: (typeof list)[number]) => a.stateName.localeCompare(b.stateName, 'en') || a.name.localeCompare(b.name, 'en') || a.key.localeCompare(b.key, 'en');
+    expect([...list].sort(order).map((r) => r.key)).toEqual(list.map((r) => r.key));
     for (const r of list) {
-      const h = headerRows().find((x) => x.key === r.key && x.year === latest)!;
+      // The name and city are those of the latest file that lists the health center.
+      const h = headerRows().find((x) => x.key === r.key && x.year === lastYearOf(r.key))!;
       expect(r.name).toBe(h.name);
       expect(r.city).toBe(h.city);
-      expect(r.years).toEqual([2021, 2022, 2023, 2024, 2025]);
+      expect(r.lastYear).toBe(h.year);
+      expect(r.years).toEqual(yearsOf(r.key));
+      expect(r.path).toBe(centerPath(r.key, r.lastYear));
     }
   });
 
-  it('counts the states from the rows of the file', () => {
-    const rows = headerRows().filter((h) => h.year === latest);
-    expect(list.filter((r) => r.state === 'MA')).toHaveLength(rows.filter((h) => h.state === 'MA').length);
-    expect(list.filter((r) => r.state === 'RI')).toHaveLength(rows.filter((h) => h.state === 'RI').length);
+  it('groups the list by state, one group for each place, with every health center in one group', () => {
+    const groups = listByState();
+    expect(groups.map((g) => g.name)).toEqual([...groups.map((g) => g.name)].sort((a, b) => a.localeCompare(b, 'en')));
+    expect(groups).toHaveLength(12);
+    expect(groups.reduce((n, g) => n + g.rows.length, 0)).toBe(list.length);
+    for (const g of groups) {
+      expect(g.rows.every((r) => r.state === g.code)).toBe(true);
+      expect(g.rows).toHaveLength(new Set(headerRows().filter((h) => h.state === g.code).map((h) => h.key)).size);
+      expect(stateAnchor(g.code)).toBe(`in-${g.code.toLowerCase()}`);
+    }
+    expect(placesWords(groups.map((g) => g.code))).toBe('eleven states and the District of Columbia');
+    expect(placesWords(['MA', 'RI'])).toBe('two states');
   });
 });
 
@@ -190,16 +242,16 @@ describe('a page: counts', () => {
     }
   });
 
-  it('withholds by ClinX the 40 cells the data says it withheld, and no others', () => {
+  it('withholds by ClinX the 188 cells the data says it withheld, and no others', () => {
     const total = views.reduce((n, v) => n + v.clinxWithheld, 0);
-    expect(total).toBe(40);
+    expect(total).toBe(188);
     expect(views.filter((v) => v.clinxWithheld > 0).every((v) => v.year === 2021 || v.year === 2022)).toBe(true);
   });
 
   it('says an unnamed row in one sentence for each table of a year that has them', () => {
     const v2021 = views.filter((v) => v.year === 2021);
-    // HRSA's 2021 file has a named row for four health centers and none for the other 41 (table_status.csv).
-    for (const name of ['Table 5', 'Table 8A', 'Table 9D']) expect(v2021.filter((v) => v.tables.find((t) => t.name === name)!.status === 'unnamed'), name).toHaveLength(41);
+    // HRSA's 2021 file has a named row for 16 of the 256 health centers and none for the other 240 (table_status.csv).
+    for (const name of ['Table 5', 'Table 8A', 'Table 9D']) expect(v2021.filter((v) => v.tables.find((t) => t.name === name)!.status === 'unnamed'), name).toHaveLength(240);
     const v2025 = views.filter((v) => v.year === 2025);
     expect(v2025.every((v) => v.tables.every((t) => t.status === 'present'))).toBe(true);
     // A table where every cell is one mark is one sentence, not a grid of marks.
@@ -245,11 +297,11 @@ describe('a page: published values', () => {
         }
       }
     }
-    // Every cell of the files is on a page: a value, a mark or a cell ClinX withheld (322,282 cells in all, 128,523 of them marks).
+    // Every cell of the files is on a page: a value, a mark or a cell ClinX withheld (1,847,014 cells in all, 682,666 of them marks).
     expect(checked + marks + withheld).toBe(held);
-    expect(held).toBe(322282);
-    expect(marks).toBe(83067 + 32838 + 12618);
-    expect(withheld).toBe(40);
+    expect(held).toBe(1847014);
+    expect(marks).toBe(457734 + 176038 + 48894);
+    expect(withheld).toBe(188);
   });
 
   it('matches the values of the engine file for a sample of cells', () => {
@@ -339,11 +391,16 @@ describe('marks', () => {
 describe('the head of a page', () => {
   it('says in one sentence where a name differs between years', () => {
     const renamed = keys.filter((k) => nameSentence(k) !== '');
-    expect(renamed).toHaveLength(2);
+    expect(renamed).toHaveLength(10);
     for (const k of renamed) {
       const sentence = nameSentence(k);
-      for (const h of headerRows().filter((x) => x.key === k)) expect(sentence).toContain(h.name);
-      expect(sentence.split('. ').length).toBe(1);
+      let rest = sentence;
+      for (const h of headerRows().filter((x) => x.key === k)) {
+        expect(sentence).toContain(h.name);
+        rest = rest.replaceAll(h.name, '');
+      }
+      // One sentence. A name can hold a full stop of its own (ST. ..., INC.), so the names are taken out first.
+      expect(rest.split('. ').length).toBe(1);
     }
     expect(nameSentence('010030')).toBe('');
   });
@@ -410,9 +467,9 @@ describe('the built pages', () => {
     return out;
   };
 
-  it.runIf(built)('are 226, none over 1.5 MB, with no email or telephone shape and no em dash', () => {
+  it.runIf(built)('are 1,274, none over 1.5 MB, with no email or telephone shape and no em dash', () => {
     const all = pages();
-    expect(all).toHaveLength(226);
+    expect(all).toHaveLength(1274);
     const email = /[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\.[A-Za-z]{2,}/;
     const phone = /(?<![0-9])\(?[0-9]{3}\)?[-. ][0-9]{3}[-. ][0-9]{4}(?![0-9])/;
     for (const p of all) {
@@ -433,7 +490,12 @@ describe('the built pages', () => {
     expect(html).toContain(`HRSA's file lists ${v.zips.length} ZIP code rows`);
     expect(html).toContain('<h1>HOLYOKE HEALTH CENTER, INC.</h1>');
     const list = readFileSync(join(dist, 'index.html'), 'utf8');
-    expect((list.match(/<tr role="row" data-search=/g) ?? []).length).toBe(45);
+    expect((list.match(/<tr role="row" data-search=/g) ?? []).length).toBe(258);
+    // Each state's group has its anchor, and each filled tile of the map leads to one.
+    for (const g of listByState()) {
+      expect(list).toContain(`id="${stateAnchor(g.code)}"`);
+      expect(list).toContain(`href="#${stateAnchor(g.code)}"`);
+    }
   });
 
   const dash = /—/;

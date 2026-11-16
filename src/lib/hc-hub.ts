@@ -5,7 +5,7 @@
  */
 import { AREAS_PATH, AREAS_DOWNLOADS, day as areasDay, getIndex, num, rawFile as areasFile, stateCodes, SERIES, SERIES_INFO } from './hc-areas';
 import { FUNDING_FEED, FUNDING_HOME, DOWNLOADS as FUNDING_DOWNLOADS, ahead, dayText, downloadPath, fundingFile, getFunding } from './hc-funding';
-import { DATA_PATH, DOWNLOADS as RECORDS_DOWNLOADS, RECORDS_PATH, headerRows, listRows, rawFile as recordsFile, recordsSource, refreshDay } from './hc-records';
+import { DATA_PATH, DOWNLOADS as RECORDS_DOWNLOADS, RECORDS_PATH, headerRows, listRows, placesWords, rawFile as recordsFile, recordsSource, refreshDay } from './hc-records';
 import { stateName } from './states';
 
 export { HC_HOME, HC_NAME } from './site';
@@ -59,7 +59,7 @@ export function partCards(): PartCard[] {
       title: 'What each health center reported',
       say: 'Each health center’s yearly report to HRSA, line by line in HRSA’s own words: patients, services, staff, costs and revenue.',
       facts: [
-        { label: `Health centers, ${byState.join(' and ')}`, value: num(rows.length) },
+        { label: `Health centers, ${placesWords(byState)}`, value: num(rows.length) },
         { label: 'Report years', value: `${source.years[0]} to ${source.latest_year}` },
         { label: 'HRSA refreshed the latest file', value: refreshDay(source.workbooks[String(source.latest_year)]!.report_last_refreshed) },
       ],
@@ -118,6 +118,7 @@ export function fileGroups(): HcFileGroup[] {
       day: `HRSA’s latest file was refreshed on ${refreshDay(recordsSource().workbooks[String(recordsSource().latest_year)]!.report_last_refreshed)}`,
       files: [
         { name: 'health-centers.csv', href: RECORDS_DOWNLOADS.centers, what: 'One row for each health center and year: name, address, funding flags and the number of sites, as HRSA published them', text: recordsFile('health-centers.csv') },
+        { name: 'coverage.csv', href: RECORDS_DOWNLOADS.coverage, what: 'One row for each state or territory and year: the number of health centers HRSA’s file lists there, and whether their reports are on ClinX', text: recordsFile('coverage.csv') },
         { name: 'lines.csv', href: RECORDS_DOWNLOADS.lines, what: 'The lines and columns of the reports: HRSA’s table, line and column titles, and the kind of value each holds', text: recordsFile('lines.csv') },
       ],
       note: `One file for each health center, with all its years and every cell address, is linked from that health center’s pages. There are ${num(new Set(headerRows().map((h) => h.key)).size)}, at ${DATA_PATH}centers/ followed by the center’s number and .json.`,

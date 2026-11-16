@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it, vi } from 'vitest';
-import { BANNED, RECORDS_TITLES, fundingParagraphs, printedHcWords, withoutPrintedHcWords } from '../scripts/hc/printed-words.mjs';
+import { BANNED, RECORDS_TITLES, fundingParagraphs, namesWithBannedWord, printedHcWords, recordsNames, withoutPrintedHcWords } from '../scripts/hc/printed-words.mjs';
 import { AREAS_PATH, getIndex, stateCodes } from '../src/lib/hc-areas';
 import { FUNDING_HOME, ahead, getFunding, paragraphs } from '../src/lib/hc-funding';
 import { fileGroups, partCards, partDays } from '../src/lib/hc-hub';
@@ -63,7 +63,7 @@ describe('the front page numbers', () => {
   it('list every download with its address and its text, and the addresses are unique and lower case', () => {
     const hrefs = fileGroups().flatMap((g) => g.files.map((f) => f.href));
     expect(new Set(hrefs).size).toBe(hrefs.length);
-    expect(hrefs.length).toBe(2 + 6 + 5);
+    expect(hrefs.length).toBe(3 + 6 + 5);
     for (const h of hrefs) expect(h).toMatch(/^\/data\/health-centers\/[a-z]+\/[a-z-]+\.(csv|json)$/);
     for (const g of fileGroups()) for (const f of g.files) expect(f.text.length).toBeGreaterThan(10);
   });
@@ -175,6 +175,20 @@ describe('the allowance in check-dist for the agencies\' own words', () => {
       expect(BANNED.test(withoutPrintedHcWords('/health-centers/funding/index.html', title, words))).toBe(true);
       expect(BANNED.test(withoutPrintedHcWords('/scorecard/ri/index.html', title, words))).toBe(true);
       expect(BANNED.test(withoutPrintedHcWords('/health-centers/index.html', title, words))).toBe(true);
+    }
+  });
+
+  it('lets a name or place HRSA prints for a health center or a site through on the records pages, and nowhere else', () => {
+    const csv = 'health_center,name_as_published,street,address_line_2,city\n1,BROAD TOP AREA MEDICAL CENTER,1 Main St,-,Broad Top\n2,PLAIN HEALTH CENTER,2 Top St,-,Plainville\n';
+    const docs = [{ years: { '2025': { sites: { columns: ['site_name', 'city'], rows: [['BEST Health Center', 'Hempstead'], ['A Plain Site', 'Plainville']] } } } }];
+    expect(namesWithBannedWord(csv, docs).sort()).toEqual(['2 Top St', 'BEST Health Center', 'BROAD TOP AREA MEDICAL CENTER', 'Broad Top']);
+    const names = recordsNames(root);
+    expect(names.length).toBeGreaterThan(0);
+    expect(names.length).toBeLessThan(40);
+    for (const name of names) {
+      expect(BANNED.test(`${name} `), name).toBe(true);
+      expect(BANNED.test(withoutPrintedHcWords(recordsPage, `Previous health center ${name} Next`, words)), name).toBe(false);
+      expect(BANNED.test(withoutPrintedHcWords('/health-centers/index.html', `${name} `, words)), name).toBe(true);
     }
   });
 

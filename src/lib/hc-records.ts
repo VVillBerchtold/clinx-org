@@ -6,6 +6,7 @@
  * Nothing here adds one value to another, ranks a health center or compares two of them.
  */
 import { parseCsv } from './csv';
+import { numberWord } from './site';
 import { stateName } from './states';
 
 const csvTexts = import.meta.glob('../data/health-centers/records/*.csv', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
@@ -201,17 +202,51 @@ function centerDoc(key: string): CenterDoc {
 /** The address segment of a health center: its key in lower case. */
 export const slugOf = (key: string): string => key.toLowerCase();
 
+/** The address of one report. A health center's short address shows the latest report HRSA's files hold for it. */
 export function centerPath(key: string, year: number): string {
-  return year === recordsSource().latest_year ? `${RECORDS_PATH}${slugOf(key)}/` : `${RECORDS_PATH}${slugOf(key)}/${year}/`;
+  return year === lastYearOf(key) ? `${RECORDS_PATH}${slugOf(key)}/` : `${RECORDS_PATH}${slugOf(key)}/${year}/`;
 }
+/** The places the records cover, in words: "eleven states and the District of Columbia". */
+export function placesWords(codes: readonly string[]): string {
+  const withDc = codes.includes('DC');
+  const n = codes.length - (withDc ? 1 : 0);
+  const states = `${numberWord(n)} ${n === 1 ? 'state' : 'states'}`;
+  return withDc ? `${states} and the District of Columbia` : states;
+}
+/** The anchor of a state's part of the list of health centers. */
+export const stateAnchor = (code: string): string => `in-${code.toLowerCase()}`;
+/** The address of a state's part of the list. */
+export const statePath = (code: string): string => `${RECORDS_PATH}#${stateAnchor(code)}`;
 export const centerDownload = (key: string): string => `${DATA_PATH}centers/${slugOf(key)}.json`;
 export const DOWNLOADS = {
   centers: `${DATA_PATH}health-centers.csv`,
   lines: `${DATA_PATH}lines.csv`,
+  coverage: `${DATA_PATH}coverage.csv`,
 };
 
 export function centerKeys(): string[] {
   return [...new Set(headerRows().map((h) => h.key))];
+}
+
+let yearsCache: Map<string, number[]> | undefined;
+/** The years HRSA's files list a health center, earliest first. */
+export function yearsOf(key: string): number[] {
+  if (!yearsCache) {
+    yearsCache = new Map();
+    for (const h of headerRows()) yearsCache.set(h.key, [...(yearsCache.get(h.key) ?? []), h.year]);
+    for (const years of yearsCache.values()) years.sort((a, b) => a - b);
+  }
+  return yearsCache.get(key) ?? [];
+}
+/** The latest year HRSA's files list a health center. */
+export function lastYearOf(key: string): number {
+  const years = yearsOf(key);
+  return years[years.length - 1] ?? recordsSource().latest_year;
+}
+/** The years of the records in which HRSA's files do not list a health center. */
+export function yearsMissing(key: string): number[] {
+  const has = new Set(yearsOf(key));
+  return recordsSource().years.filter((y) => !has.has(y));
 }
 
 export interface ListRow {
@@ -221,24 +256,66 @@ export interface ListRow {
   state: string;
   stateName: string;
   years: number[];
+  /** The latest year HRSA's files list this health center: the year its name, city and short address come from. */
+  lastYear: number;
   path: string;
 }
 
-/** The list: each health center as HRSA's latest file names it, A to Z by that name. */
+let listCache: ListRow[] | undefined;
+/**
+ * The list: each health center as the latest file that lists it names it. The order is by state, A to Z,
+ * then by name, A to Z. It is the order of the list on the page and of the steps at the foot of each report.
+ */
 export function listRows(): ListRow[] {
-  const latest = recordsSource().latest_year;
-  return headerRows()
-    .filter((h) => h.year === latest)
+  listCache ??= headerRows()
+    .filter((h) => h.year === lastYearOf(h.key))
     .map((h) => ({
       key: h.key,
       name: h.name,
       city: h.city,
       state: h.state,
       stateName: stateName(h.state),
-      years: headerRows().filter((x) => x.key === h.key).map((x) => x.year).sort((a, b) => a - b),
-      path: centerPath(h.key, latest),
+      years: yearsOf(h.key),
+      lastYear: h.year,
+      path: centerPath(h.key, h.year),
     }))
-    .sort((a, b) => a.name.localeCompare(b.name, 'en') || a.key.localeCompare(b.key, 'en'));
+    .sort((a, b) => a.stateName.localeCompare(b.stateName, 'en') || a.name.localeCompare(b.name, 'en') || a.key.localeCompare(b.key, 'en'));
+  return listCache;
+}
+
+export interface StateGroup {
+  code: string;
+  name: string;
+  rows: ListRow[];
+}
+/** The list in its groups: one for each state the records cover, A to Z by the state's name. */
+export function listByState(): StateGroup[] {
+  const groups: StateGroup[] = [];
+  for (const row of listRows()) {
+    const last = groups[groups.length - 1];
+    if (last && last.code === row.state) last.rows.push(row);
+    else groups.push({ code: row.state, name: row.stateName, rows: [row] });
+  }
+  return groups;
+}
+
+export interface CoverageRow {
+  year: number;
+  state: string;
+  /** The number of health centers HRSA's file for the year lists in the state. */
+  healthCenters: number;
+  covered: boolean;
+}
+let coverageCache: CoverageRow[] | undefined;
+/** How many health centers HRSA lists in each state and territory each year, and whether the records cover the state. */
+export function coverageRows(): CoverageRow[] {
+  coverageCache ??= parseCsv(text('coverage.csv')).map((r) => ({
+    year: Number(r['year']),
+    state: r['state']!,
+    healthCenters: Number(r['health_centers']),
+    covered: r['covered'] === 'yes',
+  }));
+  return coverageCache;
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -443,10 +520,6 @@ export function glanceBar(c: RCell, scale: number): number {
   const n = Number(c.raw);
   if (c.kind !== 'value' || c.raw === '' || !Number.isFinite(n) || n <= 0 || scale <= 0) return 0;
   return Math.min(100, Math.max(1, Math.round((n / scale) * 1000) / 10));
-}
-
-export function yearsOf(key: string): number[] {
-  return headerRows().filter((h) => h.key === key).map((h) => h.year).sort((a, b) => a - b);
 }
 
 /** A table with this many value columns or more is laid out as a dense table: short headings, and a key with HRSA's titles. */
