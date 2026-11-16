@@ -1,0 +1,156 @@
+---
+import '../../styles/home.css';
+import '../../styles/scorecard.css';
+import '../../styles/hc-records.css';
+import Base from '../../layouts/Base.astro';
+import OnPage from '../OnPage.astro';
+import PageHead from '../PageHead.astro';
+import { DOWNLOADS, RECORDS_PATH, centerPath, formatDay, listOfYears, listRows, megabytes, recordsSource, refreshDay } from '../../lib/hc-records';
+import { numberWord } from '../../lib/site';
+
+/**
+ * The list of the health centers whose Uniform Data System reports ClinX shows: each as HRSA's latest file
+ * names it, with its city and state and a link to each year's report. A filter by name, city or state works
+ * over a plain list. Nothing is ranked: the order is A to Z by name.
+ */
+const source = recordsSource();
+const rows = listRows();
+const years = source.years;
+const latest = source.latest_year;
+const states = [...new Set(rows.map((r) => r.state))].sort();
+const stateRows = states.map((code) => ({ code, name: rows.find((r) => r.state === code)!.stateName, count: rows.filter((r) => r.state === code).length }));
+const stateNames = stateRows.map((s) => s.name).sort((a, b) => a.localeCompare(b, 'en'));
+const stateList = stateNames.length > 1 ? `${stateNames.slice(0, -1).join(', ')} and ${stateNames[stateNames.length - 1]}` : (stateNames[0] ?? '');
+const first = years[0]!;
+const workbooks = years.map((y) => ({ year: y, w: source.workbooks[String(y)]! }));
+const total = numberWord(rows.length);
+const intro = `${rows.length} health centers, A to Z by the name HRSA's ${latest} file gives. ${stateRows.map((s) => `${s.name} has ${s.count}.`).join(' ')} Select a year to open that year's report.`;
+const items = [
+  { id: 'list', label: 'The health centers' },
+  { id: 'what', label: 'What each page shows' },
+  { id: 'source', label: 'Source' },
+];
+---
+
+<Base
+  title="Health center records"
+  crumbs={[{ name: 'Health center records', path: RECORDS_PATH }]}
+  description={`What ${total} federally funded health centers in ${stateList} reported to HRSA in the Uniform Data System, ${first} to ${latest}, table by table in HRSA's own words, with every value's address in HRSA's workbook.`}
+>
+  <PageHead wide title="Health center records" trail={[{ label: 'Health centers' }, { label: 'Records' }]}>
+    <p class="lede">
+      Every federally funded health center reports to HRSA each year in the Uniform Data System: who its patients are, what services it gave, its staff, costs and revenue. HRSA publishes the reports as one large workbook a year. Here each health center has one page for each year, line by line in HRSA's own words, and every value has the address of its cell.
+    </p>
+    <p class="small muted">
+      This first set covers {stateList}: {total} health centers, {first} to {latest}. More states follow.
+    </p>
+    <OnPage title="Health center records" items={items} />
+  </PageHead>
+
+  <section class="hcr-section" aria-labelledby="list">
+    <h2 id="list">The health centers</h2>
+    <p>{intro}</p>
+
+    <div class="hcr-filter" data-filter hidden>
+      <label>
+        Name or city
+        <input type="search" data-filter-text autocomplete="off" spellcheck="false" />
+      </label>
+      <label>
+        State
+        <select data-filter-kind>
+          <option value="">All states</option>
+          {stateRows.map((s) => <option value={s.code}>{s.name}</option>)}
+        </select>
+      </label>
+    </div>
+    <p class="hcr-count" data-filter-count aria-live="polite"></p>
+
+    <div class="table-wrap wide stack hcr-list">
+      <table data-sortable data-filter-table role="table">
+        <caption><span>The {total} health centers with a report for {listOfYears(years)}</span></caption>
+        <thead role="rowgroup">
+          <tr role="row">
+            <th role="columnheader" scope="col" data-sort="text">Health center</th>
+            <th role="columnheader" scope="col" data-sort="text">City</th>
+            <th role="columnheader" scope="col" data-sort="text">State</th>
+            <th role="columnheader" scope="col">Reports</th>
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          {
+            rows.map((r) => (
+              <tr role="row" data-search={`${r.name} ${r.city} ${r.stateName} ${r.state}`.toLowerCase()} data-kind={r.state}>
+                <th role="rowheader" scope="row" data-value={r.name}><a href={r.path}>{r.name}</a></th>
+                <td role="cell" data-label="City" data-value={r.city}>{r.city}</td>
+                <td role="cell" data-label="State" data-value={r.stateName}>{r.stateName}</td>
+                <td role="cell" data-label="Reports">
+                  <ul class="hcr-years">
+                    {[...r.years].sort((a, b) => b - a).map((y) => <li><a href={centerPath(r.key, y)}>{y}</a></li>)}
+                  </ul>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="small muted" data-filter-none hidden>No health center matches. Clear the filter to see all of them.</p>
+  </section>
+
+  <section class="hcr-section" aria-labelledby="what">
+    <h2 id="what">What each page shows</h2>
+    <p>
+      A page is one health center's report for one year. It opens with a few cells that HRSA publishes as one cell, each with its table and line. Then come the tables of the report in HRSA's order, with HRSA's line and column titles, then the health center's sites and its patients by ZIP code. A year switch at the head of each page opens the other years.
+    </p>
+    <p>
+      A value is printed as HRSA published it. Where HRSA withholds a cell, the cell says so in words, with the reason HRSA gives. For many health centers HRSA withholds whole tables of staffing, cost and revenue, and the page says that in one sentence where the table is. No health center is ranked or compared with another.
+    </p>
+  </section>
+
+  <section class="hcr-section hcr-source" aria-labelledby="source">
+    <h2 id="source">Source</h2>
+    <p>
+      The reports are HRSA's Uniform Data System workbooks. Counts here are counts of rows in those files on the day each was retrieved. {total} health centers are listed in the {latest} file for {stateList}. HRSA last refreshed that file on {refreshDay(source.workbooks[String(latest)]!.report_last_refreshed)}.
+    </p>
+    <div class="table-wrap wide stack hcr-plain">
+      <table role="table">
+        <caption><span>The five workbooks, with the day each was retrieved</span></caption>
+        <thead role="rowgroup">
+          <tr role="row">
+            <th role="columnheader" scope="col">Report year</th>
+            <th role="columnheader" scope="col">Workbook on data.hrsa.gov</th>
+            <th role="columnheader" scope="col" class="num">Size</th>
+            <th role="columnheader" scope="col">Retrieved</th>
+            <th role="columnheader" scope="col">SHA-256</th>
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          {
+            [...workbooks].reverse().map(({ year, w }) => (
+              <tr role="row">
+                <th role="rowheader" scope="row">{year}</th>
+                <td role="cell" class="hcr-text" data-label="Workbook"><a href={w.url}>{w.file}</a></td>
+                <td role="cell" class="num" data-label="Size">{megabytes(w.bytes)}</td>
+                <td role="cell" data-label="Retrieved">{formatDay(w.retrieved_utc.slice(0, 10))}</td>
+                <td role="cell" class="hcr-text" data-label="SHA-256"><span class="mono">{w.sha256}</span></td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p>
+      {source.workbooks[String(latest)]!.reads === 'two_reads' ? 'Two separate programs read every cell of each workbook, and they agreed on every cell.' : 'The workbooks were read by one program.'}
+    </p>
+    <ul class="hcr-links">
+      <li><a class="btn ghost" href={DOWNLOADS.centers}>Health centers listed (CSV)</a></li>
+      <li><a class="btn ghost" href={DOWNLOADS.lines}>Lines and columns of the reports (CSV)</a></li>
+    </ul>
+    <p class="small muted">Each health center's page links to that health center's file with all its years (JSON).</p>
+  </section>
+</Base>
+
+<script>
+  import '../../scripts/filter-table';
+</script>

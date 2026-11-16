@@ -1,0 +1,31 @@
+---
+import { centerPath } from '../../lib/hc-records';
+
+/**
+ * The switch between the years of one health center's reports: one link for each year, styled as a
+ * segmented control, the page being read marked with aria-current. Under it, one sentence about what a
+ * year is. It shows no change from one year to another.
+ */
+interface Props {
+  centerKey: string;
+  years: readonly number[];
+  current: number;
+}
+const { centerKey, years, current } = Astro.props;
+const ordered = [...years].sort((a, b) => b - a);
+---
+
+<div class="year-switch-block">
+  <nav class="year-switch" aria-label="Year of the report">
+    <ul>
+      {
+        ordered.map((y) => (
+          <li>
+            <a href={centerPath(centerKey, y)} aria-current={y === current ? 'page' : undefined}>{y}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+  <p class="year-switch-note">Each year is a separate report that the health center filed. The wording of a line can change between years, and ClinX shows no change from one year to the next.</p>
+</div>
