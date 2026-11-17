@@ -2,7 +2,8 @@
 // project carries no Node type package.
 declare module 'node:fs' {
   export function existsSync(path: string): boolean;
-  export function readFileSync(path: string, encoding: 'utf8'): string;
+  /** 'hex' gives a file's bytes as hex digits, two for each byte: enough to read the size a PNG states (tests/assistant-icon.test.ts). */
+  export function readFileSync(path: string, encoding: 'utf8' | 'hex'): string;
   export function readdirSync(path: string): string[];
   export function statSync(path: string): { isDirectory(): boolean; size: number };
 }

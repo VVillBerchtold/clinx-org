@@ -20,7 +20,10 @@ const AGENCIES = 'FED';
 const PLACE = { type: 'string', description: 'Two-letter state code such as RI or TX, US for Congress, or FED for federal agencies (rules and notices in the Federal Register).', pattern: '^[A-Za-z]{2,3}$' };
 // The notice that opened the rebate pilot of 2027 has a page of its own on the site.
 const PILOT_NOTICE = 'fr-2026-15633';
-const READ_ONLY = { readOnlyHint: true, idempotentHint: true, openWorldHint: false };
+// What every tool says about itself to a client: it only reads, it changes and removes nothing, asking
+// twice gives the same answer, and it reaches nothing beyond ClinX's own files. `destructiveHint` is
+// said out loud because the protocol takes a hint that is left out to mean "may remove things".
+const READ_ONLY = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
 const CAUTION = 'Plain-word summaries are a reading aid; the official text at the link governs. Not legal advice.';
 const NOTICE_CAUTION = 'The sentence on each document is written by a person who read it and covers only what it does about 340B. Titles, agencies and dates are the Federal Register\'s own, and the Federal Register governs. Not legal advice.';
 

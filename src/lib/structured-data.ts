@@ -12,7 +12,7 @@
 import type { Dataset } from './data';
 import { shareCard } from './share-cards';
 import { stateName } from './states';
-import { ARTICLE_PUBLISHED, ARTICLE_TITLE, GITHUB_URL, LINKEDIN_URL, REFERRALFINDERX_FOUNDER_URL, REFERRALFINDERX_URL, REPOSITORIES, SITE_NAME, SITE_URL, X_URL } from './site';
+import { ARTICLE_PUBLISHED, ARTICLE_TITLE, GITHUB_URL, LINKEDIN_URL, MAKER_NAME, REFERRALFINDERX_FOUNDER_URL, REFERRALFINDERX_URL, REPOSITORIES, SITE_NAME, SITE_URL, X_URL } from './site';
 
 export type Node = Record<string, unknown>;
 
@@ -45,7 +45,7 @@ export function founderNode(): Node {
   return {
     '@type': 'Person',
     '@id': FOUNDER_ID,
-    name: 'Will Berchtold',
+    name: MAKER_NAME,
     givenName: 'Will',
     familyName: 'Berchtold',
     alternateName: 'Will B.',
@@ -57,6 +57,14 @@ export function founderNode(): Node {
     worksFor: { '@type': 'Organization', '@id': `${REFERRALFINDERX_URL}/#org`, name: 'ReferralFinderX', url: `${REFERRALFINDERX_URL}/` },
     sameAs: [REFERRALFINDERX_FOUNDER_URL, LINKEDIN_URL, X_URL, GITHUB_URL],
   };
+}
+
+/**
+ * Who made a dataset: the same person as above, by name, with the About page as his address. The Data
+ * page does not carry the whole description of him, so a reader of that page alone still gets a name.
+ */
+export function creatorNode(): Node {
+  return { '@type': 'Person', '@id': FOUNDER_ID, name: MAKER_NAME, url: `${SITE_URL}/about/` };
 }
 
 /** The About page. */
@@ -126,7 +134,7 @@ export function datasetNode(data: Dataset, extraFiles: readonly ExtraFile[] = []
     license: DATA_LICENCE,
     isAccessibleForFree: true,
     inLanguage: 'en-US',
-    creator: { '@id': FOUNDER_ID },
+    creator: creatorNode(),
     publisher: { '@id': FOUNDER_ID },
     isPartOf: { '@id': SITE_ID },
     keywords: [
@@ -213,7 +221,7 @@ export function healthCenterDatasetNodes(groups: readonly HcDatasetGroup[], reco
       license: DATA_LICENCE,
       isAccessibleForFree: true,
       inLanguage: 'en-US',
-      creator: { '@id': FOUNDER_ID },
+      creator: creatorNode(),
       publisher: { '@id': FOUNDER_ID },
       isPartOf: { '@id': SITE_ID },
       keywords: about.keywords,

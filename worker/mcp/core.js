@@ -15,12 +15,21 @@
 import { TOOLS, InputError } from './tools.js';
 import { echo } from './inputs.js';
 
+// The picture a client may show beside the server's name: the ClinX mark, a purple dot on a pale
+// square, as clinx.org serves it. The PNG is first because every client that shows icons reads PNG;
+// the second is the same mark as a drawing that stays sharp at any size.
+const ICONS = [
+  { src: 'https://clinx.org/brand/clinx-mark-square-1024.png', mimeType: 'image/png', sizes: ['1024x1024'] },
+  { src: 'https://clinx.org/brand/clinx-mark-square.svg', mimeType: 'image/svg+xml', sizes: ['any'] },
+];
+
 export const SERVER = {
   name: 'clinx-340b',
   title: 'ClinX open data: 340B and health centers',
-  version: '0.3.2',
+  version: '0.3.3',
   description: 'ClinX\'s open data for clinics, in two groups. 340B: state laws on the books, bills in Congress and the state legislatures, federal rules and notices, the reports covered entities and states have filed, the states whose law requires reports, and a calendar of their dates. Health centers: what each health center reported to HRSA, HRSA\'s funding opportunities and their dates, and shortage designations and health center sites by state.',
   websiteUrl: 'https://clinx.org',
+  icons: ICONS,
 };
 
 export const MODERN = ['2026-07-28'];
@@ -90,10 +99,14 @@ export async function handle(message, tables) {
 
     case 'initialize': {
       const asked = params.protocolVersion;
+      const agreed = LEGACY.includes(asked) ? asked : LEGACY[0];
+      // The website and the icon became part of what a server may say about itself in the
+      // 2025-11-25 revision. A client that agreed an earlier one is told what it was told before.
+      const more = agreed === '2025-11-25' ? { websiteUrl: SERVER.websiteUrl, icons: SERVER.icons } : {};
       return done({
-        protocolVersion: LEGACY.includes(asked) ? asked : LEGACY[0],
+        protocolVersion: agreed,
         capabilities: { tools: { listChanged: false } },
-        serverInfo: { name: SERVER.name, title: SERVER.title, version: SERVER.version },
+        serverInfo: { name: SERVER.name, title: SERVER.title, version: SERVER.version, ...more },
         instructions: INSTRUCTIONS,
       });
     }

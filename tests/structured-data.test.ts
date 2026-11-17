@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { getDataset } from '../src/lib/data';
 import { REPOSITORIES, SITE_URL } from '../src/lib/site';
-import { DATASET_ID, FOUNDER_ID, SITE_ID, aboutPageNode, articleNode, datasetNode, founderNode, hcDatasetId, healthCenterDatasetNodes, siteNode, toBlock, trailNode } from '../src/lib/structured-data';
+import { DATASET_ID, FOUNDER_ID, SITE_ID, aboutPageNode, articleNode, creatorNode, datasetNode, founderNode, hcDatasetId, healthCenterDatasetNodes, siteNode, toBlock, trailNode } from '../src/lib/structured-data';
 import { fileGroups } from '../src/lib/hc-hub';
 import { rawFile as recordsFile, recordsSource } from '../src/lib/hc-records';
 import dataPage from '../src/pages/data/index.astro?raw';
@@ -125,7 +125,9 @@ describe('the health centers files, as dataset search engines read them', () => 
       expect(node.license).toBe('https://creativecommons.org/licenses/by/4.0/');
       expect(node.license).toBe(first.license);
       expect(node.creator).toEqual(first.creator);
-      expect(node.creator).toEqual({ '@id': FOUNDER_ID });
+      // A person by name, with the About page as his address, and the same thing the About page describes in full.
+      expect(node.creator).toEqual({ '@type': 'Person', '@id': FOUNDER_ID, name: 'Will Berchtold', url: `${SITE_URL}/about/` });
+      expect(node.creator).toEqual(creatorNode());
       expect(node.isPartOf).toEqual({ '@id': SITE_ID });
       expect(node.isAccessibleForFree).toBe(true);
     }

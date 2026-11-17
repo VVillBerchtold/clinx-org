@@ -8,7 +8,7 @@ import PageHead from '../../components/PageHead.astro';
 import { buildStateDrugViews, formatDate, getDataset, stateDrugCsv } from '../../lib/data';
 import { getBillsRecord } from '../../lib/bills';
 import { stateName, statesFileText } from '../../lib/states';
-import { HC_HOME, PREVIEW, REPOSITORIES, SITE_URL } from '../../lib/site';
+import { CITE_DATA, HC_HOME, MAKER_NAME, PREVIEW, REPOSITORIES, SITE_URL, citeLine } from '../../lib/site';
 import { renderSections } from '../../lib/markdown';
 import { datasetNode, healthCenterDatasetNodes } from '../../lib/structured-data';
 import { fileGroups, partDays } from '../../lib/hc-hub';
@@ -82,6 +82,7 @@ const describe: Record<string, string> = {
         { id: 'health-centers', label: 'Health centers' },
         { id: 'assistants', label: 'AI assistants' },
         { id: 'version', label: 'Version' },
+        { id: 'cite', label: 'How to cite' },
         { id: 'repositories', label: 'Code' },
         { id: 'data-dictionary', label: 'Data dictionary' },
       ]}
@@ -213,6 +214,17 @@ const describe: Record<string, string> = {
         <dt>Licence</dt>
         <dd>Data: Creative Commons Attribution 4.0 (CC BY 4.0). Code: MIT.</dd>
       </dl>
+    </div>
+  </section>
+
+  <section class="split" aria-labelledby="cite">
+    <h2 id="cite">How to cite</h2>
+    <div class="split-body">
+      <p class="head-tag">
+        <span>The data on this page is put together and maintained by <a href="/about/#founder-name">{MAKER_NAME}</a>, who builds ClinX. It is under Creative Commons Attribution 4.0 (CC BY 4.0): free to use and to share, with credit to the source. This line gives that credit. Put in the day you read the data.</span>
+        <Draft />
+      </p>
+      <p class="panel">{citeLine(CITE_DATA, '/data/')}</p>
     </div>
   </section>
 

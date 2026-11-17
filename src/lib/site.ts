@@ -26,6 +26,22 @@ export const CSP_FORM_META = CSP_FORM.replace("; frame-ancestors 'none'", '');
 /** Where the contact form's mail goes, and the address shown beside it. */
 export const CONTACT_EMAIL = 'will@clinx.org';
 
+/** Who builds and maintains ClinX, as the pages name him, and as the first words of a citation. */
+export const MAKER_NAME = 'Will Berchtold';
+export const MAKER_CITED_AS = 'Berchtold, W.';
+
+/**
+ * One line a reader can copy to cite a page of this site. `what` is what is cited (the site, or its
+ * open data) and `path` is that page's address on the site. The day is left for the reader to put in.
+ * The address comes last with no full stop after it, so a copied address still opens.
+ */
+export function citeLine(what: string, path: string): string {
+  return `${MAKER_CITED_AS} ${what}. clinx.org. Read [day month year]. ${SITE_URL}${path}`;
+}
+/** What the two citations name: the site as a whole, and the open data on the Data page. */
+export const CITE_SITE = 'ClinX: open healthcare data and tools for clinics';
+export const CITE_DATA = 'ClinX open data: 340B and health centers';
+
 export interface NavLink {
   href: string;
   label: string;

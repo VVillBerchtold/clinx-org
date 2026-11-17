@@ -41,6 +41,10 @@
 - An About page that does not link every page in the main menu and every tool. The About page builds its list from the menu, so this fails only if someone breaks that link.
 - A page whose canonical address is not its own, or a missing link-preview picture.
 
+**A stale place to report a security problem**
+- `/.well-known/security.txt` tells a person who finds a security problem whom to write to. The scan fails if the file is missing, names no contact, has no end date (its `Expires` line), or has one fewer than 30 days away. The message says which file to open and gives a line to write. The rule is in `scripts/security-txt.mjs`.
+- The same file not served as plain text, or naming a page of this site that the build did not produce.
+
 ## The drug pages get their own scan
 
 `scripts/check-drug-pages.mjs` reads every built drug page. It fails if a page shows a claim count of 1 to 5, if its rows do not match its download, or if the search tools are not hidden for readers without scripts.

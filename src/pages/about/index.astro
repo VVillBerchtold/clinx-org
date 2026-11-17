@@ -4,7 +4,7 @@ import Base from '../../layouts/Base.astro';
 import Arrow from '../../components/Arrow.astro';
 import Draft from '../../components/Draft.astro';
 import PageHead from '../../components/PageHead.astro';
-import { LINKEDIN_URL, NAV, REPOSITORIES, TOOL_LINKS, X_URL, type NavGroup } from '../../lib/site';
+import { CITE_SITE, LINKEDIN_URL, MAKER_NAME, NAV, REPOSITORIES, TOOL_LINKS, X_URL, citeLine, type NavGroup } from '../../lib/site';
 import { aboutPageNode, founderNode } from '../../lib/structured-data';
 
 /**
@@ -173,6 +173,15 @@ if (toolPages !== TOOL_LINKS.length) throw new Error(`The site has ${toolPages} 
         The code is under the MIT licence. The data is under Creative Commons Attribution 4.0 (CC BY 4.0). The filings and files themselves are public records of the state or federal agency that published them.
       </p>
       <p>The names ClinX and ReferralFinderX and their logos are not covered by those licences.</p>
+    </div>
+  </section>
+
+  <section class="split" aria-labelledby="cite">
+    <h2 id="cite">How to cite</h2>
+    <div class="split-body">
+      <p class="head-tag"><span>ClinX is built and maintained by {MAKER_NAME}. To cite the site, copy this line and put in the day you read it.</span> <Draft /></p>
+      <p class="panel">{citeLine(CITE_SITE, '/')}</p>
+      <p>To cite the data, use <a href="/data/#cite">the line on the Data page</a>.</p>
     </div>
   </section>
 </Base>

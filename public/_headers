@@ -14,3 +14,7 @@
 # The proof that clinx.org owns its name in the official MCP Registry: a public key, read as plain text.
 /.well-known/mcp-registry-auth
   Content-Type: text/plain; charset=utf-8
+
+# Where to report a security problem with the site (RFC 9116), read as plain text.
+/.well-known/security.txt
+  Content-Type: text/plain; charset=utf-8

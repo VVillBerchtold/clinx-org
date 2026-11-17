@@ -8,7 +8,7 @@
 |---|---|---|
 | Home | This is the site ClinX, built by Will Berchtold | So a search for the site's name shows the right name and the right person |
 | About | This is the page about ClinX, and here is the person who builds it, with his other public pages | So a search engine knows the Will Berchtold here is the same person as on those pages |
-| Data | These are datasets: the 340B state filings with its name, version, licence, the states and years it covers, and every file; and one for each part of the health centers files (the records, the funding calendar, the shortage areas) with its name, licence and files | So each dataset can be listed by dataset search engines, such as Google's Dataset Search |
+| Data | These are datasets: the 340B state filings with its name, version, licence, the states and years it covers, and every file; and one for each part of the health centers files (the records, the funding calendar, the shortage areas) with its name, licence and files. Each names who made it: Will Berchtold, with the About page as his address | So each dataset can be listed by dataset search engines, such as Google's Dataset Search |
 | The article | This is an article, with its title, author and date | So it can be shown as an article |
 | Every page but the home page | The trail from the home page to this page (ClinX, Scorecard, Rhode Island, …) | So a search result can show the trail in place of a bare address |
 

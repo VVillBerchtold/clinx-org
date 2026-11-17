@@ -5,6 +5,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { printedHcWords, withoutPrintedHcWords } from './hc/printed-words.mjs';
+import { SECURITY_TXT_PATH, securityTxtProblems, securityTxtSiteLinks } from './security-txt.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = resolve(process.argv[2] ?? join(root, 'dist'));
@@ -554,6 +555,22 @@ for (const f of files) if (statSync(f).size > MAX_FILE_BYTES) fail(urlOf(f), `is
         }
       }
     }
+  }
+}
+
+// The file that says where to report a security problem (see scripts/security-txt.mjs). It must be in the build, name a
+// contact, carry an end date that is still at least 30 days away, and be served as plain text. The pages of this site
+// that it names are added to the links checked below.
+{
+  const where = SECURITY_TXT_PATH.slice(1);
+  const file = join(dist, where);
+  const text = existsSync(file) ? readFileSync(file, 'utf8') : null;
+  for (const problem of securityTxtProblems(text, SITE)) fail(where, problem);
+  if (text !== null) {
+    for (const target of securityTxtSiteLinks(text, SITE)) links.push({ page: SECURITY_TXT_PATH, target });
+    const headers = existsSync(headersPath) ? readFileSync(headersPath, 'utf8') : '';
+    const rule = new RegExp(`^${SECURITY_TXT_PATH.replaceAll('.', '\\.')}\\n((?:[ \\t]+.*\\n?)+)`, 'm').exec(headers);
+    if (!rule || !/^\s*Content-Type:\s*text\/plain; charset=utf-8\s*$/m.test(rule[1])) fail('_headers', `no rule serves ${SECURITY_TXT_PATH} as plain text. Add these two lines to public/_headers: "${SECURITY_TXT_PATH}" and, under it and indented, "Content-Type: text/plain; charset=utf-8".`);
   }
 }
 
