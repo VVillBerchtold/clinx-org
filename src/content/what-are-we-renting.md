@@ -22,7 +22,7 @@ The browser can do most of the work. Internet browsers on every computer (Edge, 
 
 Opening the web page is the install. A page that works this way does not need anything installed or added to the computer. It is opened, used, and then closed.
 
-Most of what clinics look up is public record. Program rules, filings and federal reports are published by government agencies. Once they are public, any person or AI assistant can read them directly, and provide a link to the source behind every figure.
+Much of what clinics look up is public record. Program rules, filings and federal reports are published by government agencies. Once they are public, any person or AI assistant can read them directly, and provide a link to the source behind every figure.
 
 ## The tool goes to the file
 
@@ -36,13 +36,13 @@ This premise does not cover every process. It covers processes that start with a
 
 ## Anyone can check it
 
-Clinics have no visibility into the processes in vendor infrastructure, so the contract governs the relationship. Pages that work in the browser can be tested on each computer they are used on. Turn the Wi-Fi or network off and see whether the tool still functions. Open the browser's list of requests to verify it stays empty while the file is read. None of these checks needs an engineer, and they only take a few minutes. My guide "How to check that a page sends nothing" walks through them.
+Clinics have no visibility into the processes in vendor infrastructure, so the contract governs the relationship. Pages that work in the browser can be tested on each computer they are used on. Turn the Wi-Fi or network off and see whether the tool still functions. Open the browser's list of requests to verify it stays empty while the file is read. None of these checks needs an engineer, and they only take a few minutes. The guide "How to check that a page sends nothing" walks through them.
 
 These checks will show where a file went, but they will not show that the totals are correct. That requires a test, which comes below.
 
 A check also counts only for the version being examined. Pages that refresh with every visit can change. Tools kept as one fixed file can be checked once, by a human, and everyone else then uses the same copy.
 
-That changes who has access to tools. People who do the work can run a tool on files that do not matter and show the result to the leader who makes the decision. Someone still has to verify and decide. Each clinic's policy will decide who can run new tools and who signs off on them, and for most clinics this change is as large as the technical one.
+That changes who has access to tools. People who do the work can run a tool on files that do not matter and show the result to the leader who makes the decision. Someone still has to verify and decide. Each clinic's policy will decide who can run new tools and who signs off on them, and for many clinics this change is as large as the technical one.
 
 ## What is still worth paying for
 
