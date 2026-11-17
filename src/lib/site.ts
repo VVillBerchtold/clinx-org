@@ -42,6 +42,9 @@ export function citeLine(what: string, path: string): string {
 export const CITE_SITE = 'ClinX: open healthcare data and tools for clinics';
 export const CITE_DATA = 'ClinX open data: 340B and health centers';
 
+/** The day the wording of the Terms of use page (/terms/) last changed. Move it on with every change to that page's text. */
+export const TERMS_CHANGED = '2026-11-16';
+
 export interface NavLink {
   href: string;
   label: string;

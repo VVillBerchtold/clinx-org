@@ -38,7 +38,7 @@ const footGroups = NAV.flatMap((item) => ('items' in item ? [item] : []));
 const footLinks = NAV.flatMap((item) => ('href' in item ? [item] : []));
 const WORK = ['/data/', '/methods/', '/tools/', '/writing/'];
 const footWork = footLinks.filter((link) => WORK.includes(link.href));
-const footSite = [...footLinks.filter((link) => !WORK.includes(link.href)), { href: '/privacy/', label: 'Privacy and security' }];
+const footSite = [...footLinks.filter((link) => !WORK.includes(link.href)), { href: '/privacy/', label: 'Privacy and security' }, { href: '/terms/', label: 'Terms of use' }];
 const refreshFiles = import.meta.glob<{ last_refresh: string }>('../../refresh/last-refresh.json', { eager: true, import: 'default' });
 const lastRefresh = Object.values(refreshFiles)[0]?.last_refresh;
 const fullTitle = path === '/' ? title : `${title} | ${SITE_NAME}`;
