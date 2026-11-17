@@ -2,6 +2,7 @@
 // the worker beside it to read the file. It stores nothing in the browser and makes no request.
 import type { CheckReport, Finding, RuleId, SheetSummary } from './engine/index.js';
 import type { CheckedFile, FromWorker, ToWorker, WorkerReady } from './protocol';
+import { SAMPLE_ANSWER, answerOf } from './selftest';
 
 type Child = Node | string | null | undefined | false;
 type Attrs = Record<string, string | boolean | undefined>;
@@ -143,6 +144,40 @@ function ask(question: Question, transfer: Transferable[] = []): Promise<FromWor
     waiting.set(id, resolve);
     worker.postMessage({ ...question, id }, transfer);
   });
+}
+
+// ---------- The tool's test of itself ----------
+
+type SelfTest = 'passed' | 'failed' | 'none';
+
+const SELF_TEST_FAILED = 'This copy of the tool did not give the expected answer for its built-in sample, so it will not read a file. Reload the page, or get a fresh copy from clinx.org.';
+
+/** 'none' means the browser could not start the worker. The first step says so when a file is chosen. */
+let selfTest: Promise<SelfTest> = Promise.resolve('none');
+
+/** The worker checks the sample report built into the tool, and the answer is held to the one written in selftest.ts. */
+async function testItself(): Promise<SelfTest> {
+  await workerReady;
+  if (!worker) return 'none';
+  const late = new Promise<SelfTest>((resolve) => setTimeout(() => resolve('failed'), 15000));
+  const run = ask({ type: 'sample' }).then((answer): SelfTest => (answer.ok && answerOf(answer.file.report) === SAMPLE_ANSWER ? 'passed' : 'failed'));
+  return Promise.race([run, late]);
+}
+
+function showSelfTest(result: SelfTest): void {
+  const line = byId('fc-selftest');
+  if (result === 'none') {
+    line.hidden = true;
+    return;
+  }
+  byId('fc-selftest-say').textContent = result === 'passed' ? 'Passed its own test on the built-in sample' : 'Did not pass its own test';
+  line.classList.add('is-counting');
+  line.classList.toggle('is-warn', result === 'failed');
+  if (result === 'failed') {
+    byId<HTMLInputElement>('cc-file').disabled = true;
+    byId<HTMLButtonElement>('cc-sample').disabled = true;
+    showProblem(SELF_TEST_FAILED);
+  }
 }
 
 // ---------- The count of requests ----------
@@ -316,6 +351,14 @@ async function take(name: string, read: () => Promise<Uint8Array | null>): Promi
   drop.setAttribute('aria-busy', 'true');
   renderFrame();
   await workerReady;
+  if ((await selfTest) === 'failed') {
+    state.busy = false;
+    drop.classList.remove('is-busy');
+    drop.removeAttribute('aria-busy');
+    showProblem(SELF_TEST_FAILED);
+    renderFrame();
+    return;
+  }
   chosenAt = performance.now();
   requestsSince = 0;
   showWire();
@@ -584,6 +627,8 @@ function start(): void {
   startWorker();
   watchRequests();
   showWire();
+  selfTest = testItself();
+  void selfTest.then(showSelfTest);
 
   for (const button of document.querySelectorAll<HTMLButtonElement>('#cc-steps [data-go]')) {
     button.addEventListener('click', () => go(Number(button.dataset['go'])));

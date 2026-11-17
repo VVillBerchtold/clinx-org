@@ -20,7 +20,7 @@ const read = (f: string): string => {
 
 describe('File Check: source scan of the page', () => {
   it('finds the page scripts', () => {
-    expect(scripts.sort()).toEqual(['src/scripts/file-check/main.ts', 'src/scripts/file-check/protocol.ts', 'src/scripts/file-check/sample.ts', 'src/scripts/file-check/worker.ts']);
+    expect(scripts.sort()).toEqual(['src/scripts/file-check/main.ts', 'src/scripts/file-check/protocol.ts', 'src/scripts/file-check/sample.ts', 'src/scripts/file-check/selftest.ts', 'src/scripts/file-check/worker.ts']);
   });
 
   for (const word of ['fetch' + '(', 'XMLHttpRequest', 'WebSocket', 'sendBeacon', 'EventSource', 'importScripts', 'import(', 'localStorage', 'sessionStorage', 'indexedDB', 'document.cookie', 'innerHTML', 'eval(']) {

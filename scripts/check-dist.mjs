@@ -1,6 +1,7 @@
 // Scans the built site (dist/) for things this site must never contain.
 // No dependency: a careful tag scanner is enough for the HTML Astro writes.
 // Usage: node scripts/check-dist.mjs [dist-folder]
+import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -620,6 +621,27 @@ for (const { page, target } of links) {
     if (inMenu.length < 10) fail('/about/', `the main menu was read as ${inMenu.length} links, too few to be right`);
     const said = hrefs(main);
     for (const want of [...inMenu, ...toolPages]) if (!said.has(want)) fail('/about/', `the About page does not link ${want}, which the site has`);
+  }
+}
+
+// A saved copy of a tool is one file that holds the whole tool. The built site must carry the very
+// file that is on record, and the tool's page must print that file's fingerprint.
+{
+  const recordPath = join(root, 'src', 'lib', 'saved-copies.json');
+  const record = existsSync(recordPath) ? JSON.parse(readFileSync(recordPath, 'utf8')) : {};
+  for (const [key, copy] of Object.entries(record)) {
+    const file = join(dist, copy.file);
+    const pagePath = join(dist, 'tools', key, 'index.html');
+    if (!existsSync(file)) fail(copy.file, 'the saved copy is on record and missing from the build');
+    else {
+      const data = readFileSync(file);
+      const print = createHash('sha256').update(data).digest('hex');
+      if (print !== copy.sha256) fail(copy.file, `the saved copy is not the file on record (its SHA-256 is ${print})`);
+      if (data.length !== copy.bytes) fail(copy.file, `the saved copy is ${data.length} bytes, and the record says ${copy.bytes}`);
+    }
+    const html = existsSync(pagePath) ? readFileSync(pagePath, 'utf8') : '';
+    if (!html.includes(copy.sha256)) fail(`/tools/${key}/`, 'the page does not print the fingerprint of its saved copy');
+    if (!html.includes(`href="${copy.file}" download="${copy.savedAs}"`)) fail(`/tools/${key}/`, 'the page does not offer its saved copy under the name on record');
   }
 }
 

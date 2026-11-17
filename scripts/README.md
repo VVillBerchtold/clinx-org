@@ -14,6 +14,7 @@ None of these ship to a reader's browser. They run when the site is built, check
 | `check-live-mcp.mjs` | `npm run check:live`, by hand after a publish | Asks the published door for assistants real questions through each of its tools and fails if an answer disagrees with the published tables or health centers files |
 | `sitemap.mjs` | After every build | Writes the list of pages search engines may read. Writes none while the site is a private preview |
 | `check-dist.mjs` | `npm run check:dist` | Reads the built site and fails if a page breaks one of the site's promises |
+| `single-file.mjs` | By hand, after a build: `node scripts/single-file.mjs file-check` | Packs a tool page into one file that holds the whole tool and can open no connection. With `--version`, `--made` and `--write` it makes the saved copy in `public/` and records its fingerprint in `src/lib/saved-copies.json`. Without them it says whether the copy on record is what the build gives now. The copy is not remade by a build, so it stays the same until someone replaces it on purpose |
 | `security-txt.mjs` | Used by `check-dist.mjs` | The rule for the file that says where to report a security problem: it is there, names a contact, and its end date is at least 30 days away |
 | `check-drug-pages.mjs` | `npm run check:dist` | The same, for the drug pages: no small claim count, rows match the download |
 | `refresh/` | Once a month | Pulls the federal registry export and the FDA directory, compares, rebuilds |

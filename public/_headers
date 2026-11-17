@@ -18,3 +18,10 @@
 # Where to report a security problem with the site (RFC 9116), read as plain text.
 /.well-known/security.txt
   Content-Type: text/plain; charset=utf-8
+
+# A saved copy of a tool: one file that holds the whole tool. It is sent as a download, byte for
+# byte, under the name a person will keep it by, and search engines are asked not to list it.
+/tools/file-check/clinx-file-check.html.bin
+  Content-Type: application/octet-stream
+  Content-Disposition: attachment; filename="clinx-file-check.html"
+  X-Robots-Tag: noindex

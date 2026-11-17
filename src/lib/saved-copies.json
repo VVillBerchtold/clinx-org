@@ -1,0 +1,11 @@
+{
+  "file-check": {
+    "name": "File Check",
+    "file": "/tools/file-check/clinx-file-check.html.bin",
+    "savedAs": "clinx-file-check.html",
+    "version": "1.0",
+    "made": "2026-11-17",
+    "bytes": 292339,
+    "sha256": "9b9226642a22fb1e2250f9dd003f9baf978af389d8f0380c145959f61effde18"
+  }
+}
