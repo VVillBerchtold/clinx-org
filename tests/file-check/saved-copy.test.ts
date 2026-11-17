@@ -14,7 +14,7 @@ import { SAMPLE_ANSWER } from '../../src/scripts/file-check/selftest';
 const record = savedCopies['file-check'];
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const bytes = readFileSync(join(root, 'public', record.file));
-const text = bytes.toString('utf8');
+const text = new TextDecoder().decode(bytes);
 const sha256 = (data: string | Uint8Array, how: 'hex' | 'base64'): string => createHash('sha256').update(data).digest(how);
 const policy = /<meta http-equiv="Content-Security-Policy" content="([^"]*)">/.exec(text)?.[1] ?? '';
 
