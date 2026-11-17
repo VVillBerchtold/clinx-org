@@ -15,7 +15,7 @@ describe('The essay "What are we renting?"', () => {
     expect(RENTING_ARTICLE_PUBLISHED).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });
 
-  it('has its parts in order, ending with where ClinX fits', () => {
+  it('has its parts in order, ending with one working example', () => {
     expect(renderSections(essay).map((s) => s.title)).toEqual([
       '',
       'Why software became something to rent',
@@ -24,19 +24,26 @@ describe('The essay "What are we renting?"', () => {
       'Anyone can check it',
       'What is still worth paying for',
       'Three things to try this year',
-      'Where ClinX fits',
+      'One working example',
     ]);
   });
 
   it('says what is still worth paying for, and the limits of a tool made on request', () => {
     const part = essay.slice(essay.indexOf('## What is still worth paying for'), essay.indexOf('## Three things to try this year'));
-    for (const said of ['A record that many people share', 'Upkeep.', 'Someone answerable.', 'It has to be tested before anyone relies on it', 'already compromised']) {
+    for (const said of ['A record that many people share', 'Upkeep.', 'Someone answerable.', 'It needs a test file with a known answer', 'It needs an owner by name', 'already compromised', 'what size of file it has been tested with']) {
       expect(part, said).toContain(said);
     }
   });
 
   it('leaves the decision about review with the clinic', () => {
     expect(essay).toContain('What still needs review is a decision for whoever is responsible for that at the clinic.');
+    expect(essay).toContain('Who may run a new tool on a file that holds patients, and who signs off on it, is a matter of policy');
+  });
+
+  it('says which jobs the claim covers, and what the checks do not show', () => {
+    expect(essay).toContain('It covers the ones that start with a file and end with a file');
+    expect(essay).toContain('They do not show that the totals are right.');
+    expect(essay).toContain('A check also counts only for the version that was checked.');
   });
 
   it('promises nothing about a file, and ranks nothing', () => {
