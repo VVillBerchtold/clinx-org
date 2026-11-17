@@ -30,20 +30,20 @@ describe('The essay "What are we renting?"', () => {
 
   it('says what is still worth paying for, and the limits of a tool made on request', () => {
     const part = essay.slice(essay.indexOf('## What is still worth paying for'), essay.indexOf('## Three things to try this year'));
-    for (const said of ['A record that many people share', 'Upkeep.', 'Someone answerable.', 'It needs a test file with a known answer', 'It needs an owner by name', 'already compromised', 'what size of file it has been tested with']) {
+    for (const said of ['Data that many users share and edit at the same time', 'Upkeep.', 'Accountability.', 'Test files with known answers need to be run with each change', 'Owners and maintainers need to be named, by role', 'already compromised', 'the size of a file that has been tested']) {
       expect(part, said).toContain(said);
     }
   });
 
   it('leaves the decision about review with the clinic', () => {
-    expect(essay).toContain('What still needs review is a decision for whoever is responsible for that at the clinic.');
-    expect(essay).toContain('Who may run a new tool on a file that holds patients, and who signs off on it, is a matter of policy');
+    expect(essay).toContain('What still needs review is a decision for whoever is responsible for that data at the clinic');
+    expect(essay).toContain("Each clinic's policy will decide who can run new tools and who signs off on them");
   });
 
   it('says which jobs the claim covers, and what the checks do not show', () => {
-    expect(essay).toContain('It covers the ones that start with a file and end with a file');
-    expect(essay).toContain('They do not show that the totals are right.');
-    expect(essay).toContain('A check also counts only for the version that was checked.');
+    expect(essay).toContain('It covers processes that start with a file and end with a file');
+    expect(essay).toContain('they will not show that the totals are correct');
+    expect(essay).toContain('A check also counts only for the version being examined.');
   });
 
   it('promises nothing about a file, and ranks nothing', () => {
@@ -51,15 +51,15 @@ describe('The essay "What are we renting?"', () => {
     expect(essay).not.toMatch(/\b(best|highest|lowest|worst)\b|\btop /i);
   });
 
-  it('is written in the third person and names no company other than ClinX', () => {
-    // "my" is left out of the search: the essay quotes the question a reader should ask ("does my file leave my computer?").
+  it('keeps to the author\'s own wording about his guide, and names no company other than ClinX', () => {
+    // "My" is left out of the search: the author points to his own guide ("My guide ...").
     expect(essay).not.toMatch(/\b(I|I'm|I've|I'd|I'll)\b/);
     expect(essay).not.toMatch(/\b(Anthropic|OpenAI|Microsoft|Google|Epic|Cerner|Oracle|athena\w*|eClinicalWorks|NextGen|Salesforce)\b/i);
     expect(essay).not.toContain('@');
   });
 
   it('names the guide by the title that guide carries', () => {
-    expect(essay).toContain(`The guide "${CHECKING_ARTICLE_TITLE}" walks through them.`);
+    expect(essay).toContain(`My guide "${CHECKING_ARTICLE_TITLE}" walks through them.`);
     expect(page).toContain('href="/writing/check-a-page/"');
   });
 
