@@ -169,3 +169,6 @@ export const WORKBOOK_ARTICLE_PUBLISHED = '2026-11-16';
 /** The guide to checking that a page sends nothing, and the day it goes public. */
 export const CHECKING_ARTICLE_TITLE = 'How to check that a page sends nothing';
 export const CHECKING_ARTICLE_PUBLISHED = '2026-11-16';
+/** The essay on what a clinic's software subscriptions are for, and the day it goes public. */
+export const RENTING_ARTICLE_TITLE = 'What are we renting?';
+export const RENTING_ARTICLE_PUBLISHED = '2026-11-17';

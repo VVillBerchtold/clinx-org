@@ -4,7 +4,7 @@ import Base from '../../layouts/Base.astro';
 import Arrow from '../../components/Arrow.astro';
 import Draft from '../../components/Draft.astro';
 import PageHead from '../../components/PageHead.astro';
-import { ARTICLE_TITLE, CHECKING_ARTICLE_TITLE, CLEANER_COPY, CLEANER_COPY_ARTICLE_TITLE, WORKBOOK_ARTICLE_TITLE } from '../../lib/site';
+import { ARTICLE_TITLE, CHECKING_ARTICLE_TITLE, CLEANER_COPY, CLEANER_COPY_ARTICLE_TITLE, RENTING_ARTICLE_TITLE, WORKBOOK_ARTICLE_TITLE } from '../../lib/site';
 
 /** What a piece of writing ends with: the tool or demo its last button opens. */
 const cleanerCopy = { href: '/tools/cleaner-copy/', kind: 'Tool', name: CLEANER_COPY };
@@ -12,6 +12,14 @@ const totalsDemo = { href: '/writing/no-phi/demo/', kind: 'Demo', name: 'Totals 
 
 /** Every piece, newest first. Each one is drawn as the same card. */
 const pieces = [
+  {
+    href: '/writing/what-are-we-renting/',
+    kind: 'Essay',
+    minutes: 5,
+    title: RENTING_ARTICLE_TITLE,
+    say: 'Why clinic software became something to rent, what has changed, and what is still worth paying for.',
+    goesWith: cleanerCopy,
+  },
   {
     href: '/writing/cleaner-copy/',
     kind: 'Article',
@@ -47,9 +55,9 @@ const pieces = [
 ];
 ---
 
-<Base title="Writing" crumbs={[{ name: 'Writing', path: '/writing/' }]} description="Articles and guides from ClinX: how its tools are built, with ways to check each one for yourself.">
+<Base title="Writing" crumbs={[{ name: 'Writing', path: '/writing/' }]} description="Articles, guides and an essay from ClinX: why its tools work in the browser, how they are built, and ways to check each one for yourself.">
   <PageHead title="Writing" trail={[{ label: 'ClinX' }]}>
-    <p class="lede">How the tools here are built, and how to check each one for yourself.</p>
+    <p class="lede">Why the tools here work in the browser, how they are built, and how to check each one for yourself.</p>
   </PageHead>
 
   <ul class="pieces">
