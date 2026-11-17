@@ -18,7 +18,7 @@ import { echo } from './inputs.js';
 export const SERVER = {
   name: 'clinx-340b',
   title: 'ClinX open data: 340B and health centers',
-  version: '0.3.1',
+  version: '0.3.2',
   description: 'ClinX\'s open data for clinics, in two groups. 340B: state laws on the books, bills in Congress and the state legislatures, federal rules and notices, the reports covered entities and states have filed, the states whose law requires reports, and a calendar of their dates. Health centers: what each health center reported to HRSA, HRSA\'s funding opportunities and their dates, and shortage designations and health center sites by state.',
   websiteUrl: 'https://clinx.org',
 };
@@ -46,6 +46,14 @@ export const UNREACHABLE = 'The tables at clinx.org could not be reached just no
 export const CODE = { parse: -32700, request: -32600, method: -32601, params: -32602, internal: -32603, headers: -32020, version: -32022 };
 
 const fail = (id, code, message, data) => ({ jsonrpc: '2.0', id: id ?? null, error: data === undefined ? { code, message } : { code, message, data } });
+
+// A tool's answer is sent once, as text. The same answer as an object is remembered here, beside
+// the reply and never inside it, so nothing is added to what is sent. Whoever counts requests by
+// kind (src/usage.js) reads the id of the row that was looked up from it, without reading a long
+// text a second time. It is forgotten as soon as the reply is.
+const answers = new WeakMap();
+/** The answer a reply was written from, as an object. Undefined for a refusal or any other reply. */
+export const answerOf = (reply) => (reply !== null && typeof reply === 'object' ? answers.get(reply) : undefined);
 
 const describe = ({ name, title, description, inputSchema, annotations }) => ({ name, title, description, inputSchema, annotations: { title, ...annotations } });
 
@@ -101,7 +109,10 @@ export async function handle(message, tables) {
       if (!tool) return fail(id, CODE.params, `Unknown tool: ${echo(params.name)}`);
       const args = params.arguments ?? {};
       if (typeof args !== 'object' || Array.isArray(args)) return fail(id, CODE.params, 'arguments must be an object');
-      return done(await call(tool, args, tables));
+      const { said, answered } = await call(tool, args, tables);
+      const reply = done(said);
+      if (answered !== undefined) answers.set(reply, answered);
+      return reply;
     }
 
     default:
@@ -109,9 +120,16 @@ export async function handle(message, tables) {
   }
 }
 
-/** Run one tool. A problem with the inputs, or with reaching the tables, is the tool's answer, marked as an error. */
+/**
+ * Run one tool. A problem with the inputs, or with reaching the tables, is the tool's answer, marked as an error.
+ * Gives back `said`, the result as it is sent, and for an answer `answered`, the same answer as an object.
+ *
+ * The answer is sent once, as JSON in a text block. The protocol also allows a second copy of it as
+ * `structuredContent`, and asks for one only of a tool that declares an output schema, which none
+ * of these do. A second copy doubled every reply, so it is not sent.
+ */
 async function call(tool, args, tables) {
-  const said = (text) => ({ content: [{ type: 'text', text }], isError: true });
+  const said = (text) => ({ said: { content: [{ type: 'text', text }], isError: true } });
   const known = Object.keys(tool.inputSchema.properties ?? {});
   const extra = Object.keys(args).filter((key) => !known.includes(key));
   if (extra.length) return said(`${tool.name} does not take ${extra.map(echo).join(', ')}. It takes: ${known.join(', ') || 'nothing'}.`);
@@ -123,7 +141,7 @@ async function call(tool, args, tables) {
   }
   try {
     const result = await tool.run(held, args);
-    return { content: [{ type: 'text', text: JSON.stringify(result) }], structuredContent: result, isError: false };
+    return { said: { content: [{ type: 'text', text: JSON.stringify(result) }], isError: false }, answered: result };
   } catch (error) {
     if (error instanceof InputError) return said(error.message);
     throw error;

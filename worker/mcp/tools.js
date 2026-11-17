@@ -8,7 +8,7 @@
 // with the rest below.
 
 import { filingPath, latestYears } from './pages.js';
-import { InputError, LIMIT, SITE, clip, dayOf, echo, freeText, holds, idOf, oneOf, said, tally, text, wholeNumber, words, yearOf, yesNo } from './inputs.js';
+import { InputError, LIMIT, SITE, clip, dayOf, echo, fitRows, freeText, holds, idOf, leftOutForSize, oneOf, said, tally, text, wholeNumber, words, yearOf, yesNo } from './inputs.js';
 import { HEALTH_CENTER_TOOLS, aboutHealthCenters } from './health-center-tools.js';
 
 // The helpers that check an input live in src/inputs.js; the class is passed on from here for the files that take it from this one.
@@ -25,6 +25,9 @@ const CAUTION = 'Plain-word summaries are a reading aid; the official text at th
 const NOTICE_CAUTION = 'The sentence on each document is written by a person who read it and covers only what it does about 340B. Titles, agencies and dates are the Federal Register\'s own, and the Federal Register governs. Not legal advice.';
 
 const place = (code) => (code === 'US' ? 'congress' : code === AGENCIES ? 'agencies' : code.toLowerCase());
+
+// A list's note: the sentence about rows left out for size comes first when there is one (see fitRows in src/inputs.js).
+const noted = (leftOut, note) => (leftOut ? `${leftOut} ${note}` : note);
 
 const PLACES = new Set('AK AL AR AZ CA CO CT DE FL GA HI IA ID IL IN KS KY LA MA MD ME MI MN MO MS MT NC ND NE NH NJ NM NV NY OH OK OR PA RI SC SD TN TX UT VA VT WA WI WV WY US'.split(' '));
 
@@ -214,8 +217,9 @@ const briefFiling = (filing, held) => said({
   official_source: filing.source_url,
 });
 
-// How many lines of a report one answer of get_filing holds. A line is a few hundred characters, so
-// the largest answer stays well under 100,000 characters; a longer report is read part by part.
+// How many lines of a report one answer of get_filing holds; a longer report is read part by part.
+// Where the lines are long, an answer holds fewer, so that it stays within the size one answer may
+// have (ANSWER_MOST in src/inputs.js).
 export const FILING_LINES = { usual: 100, most: 150 };
 
 const fileSize = (value) => (/^\d+$/.test(String(value ?? '')) ? Number(value) : undefined);
@@ -263,7 +267,8 @@ export const TOOLS = [
         .filter((b) => (!state || b.jurisdiction === state) && (!stage || stageGroup(b.stage) === stage) && (!role || b.role === role) && (!kind || b.kinds.includes(kind)))
         .filter((b) => holds(text(`${b.bill} ${b.bill.replace(/\s+/g, '')} ${b.title} ${b.official_title} ${b.summary}`), needles))
         .sort((a, b) => (b.latest_action_date || '').localeCompare(a.latest_action_date || ''));
-      return { matched: found.length, bills: clip(found, args.limit).map(briefBill), retrieved: t.billsRetrieved, note: CAUTION };
+      const asked = clip(found, args.limit).map(briefBill);
+      return fitRows(asked, (bills) => ({ matched: found.length, bills, retrieved: t.billsRetrieved, note: noted(leftOutForSize(bills, asked, found.length, 'state, stage, role, kind or text'), CAUTION) }));
     },
   },
   {
@@ -302,7 +307,8 @@ export const TOOLS = [
         .filter((l) => (!state || l.state === state) && (!kind || l.kinds.includes(kind)))
         .filter((l) => holds(text(`${l.citation} ${l.title} ${l.summary} ${l.act} ${l.bill}`), needles))
         .sort((a, b) => a.state.localeCompare(b.state) || (b.effective_date || '').localeCompare(a.effective_date || ''));
-      return { matched: found.length, laws: clip(found, args.limit).map(briefLaw), dataset_version: t.lawsVersion, note: CAUTION };
+      const asked = clip(found, args.limit).map(briefLaw);
+      return fitRows(asked, (laws) => ({ matched: found.length, laws, dataset_version: t.lawsVersion, note: noted(leftOutForSize(laws, asked, found.length, 'state, kind or text'), CAUTION) }));
     },
   },
   {
@@ -347,7 +353,8 @@ export const TOOLS = [
         .filter((n) => (!type || n.type === type) && (!role || n.role === role) && (open === undefined || openOn(n, t.today) === open) && (!from || n.published >= from) && (!to || n.published <= to))
         .filter((n) => holds(text(`${n.citation} ${n.document_number} ${n.notice_id} ${n.title} ${n.action} ${n.agencies.join(' ')} ${n.docket} ${n.summary}`), needles))
         .sort((a, b) => b.published.localeCompare(a.published) || b.notice_id.localeCompare(a.notice_id));
-      return { matched: found.length, notices: clip(found, args.limit).map((n) => briefNotice(n, t.today)), retrieved: t.noticesRetrieved, note: NOTICE_CAUTION };
+      const asked = clip(found, args.limit).map((n) => briefNotice(n, t.today));
+      return fitRows(asked, (notices) => ({ matched: found.length, notices, retrieved: t.noticesRetrieved, note: noted(leftOutForSize(notices, asked, found.length, 'type, role, open_for_comment, from, to or text'), NOTICE_CAUTION) }));
     },
   },
   {
@@ -406,7 +413,8 @@ export const TOOLS = [
       const found = t.events
         .filter((e) => (!state || e.jurisdiction === state) && (!kind || e.kind === kind) && (!billId || e.bill_id === billId) && (!noticeId || e.notice_id === noticeId) && (!from || e.day >= from) && (!to || e.day <= to))
         .sort((a, b) => a.day.localeCompare(b.day));
-      return { matched: found.length, events: clip(found, args.limit).map(briefEvent), ...(from ? { from } : {}), retrieved: t.eventsRetrieved, note: 'Dates can move. Check the official page before planning around one.' };
+      const asked = clip(found, args.limit).map(briefEvent);
+      return fitRows(asked, (events) => ({ matched: found.length, events, ...(from ? { from } : {}), retrieved: t.eventsRetrieved, note: noted(leftOutForSize(events, asked, found.length, 'state, kind, from, to, bill_id or notice_id'), 'Dates can move. Check the official page before planning around one.') }));
     },
   },
   {
@@ -484,19 +492,23 @@ export const TOOLS = [
         .filter((f) => (!state || f.state === state) && (!year || f.reporting_year === year) && (!type || text(f.entity.entity_type) === type) && (!kind || text(f.record_kind) === kind) && (!form || text(f.form) === form))
         .filter((f) => holds(text(`${f.entity.name_as_filed ?? ''} ${f.entity.hrsa_name ?? ''} ${f.entity.city_as_filed ?? ''} ${f.entity.opais_ids_as_filed ?? ''} ${f.entity.hrsa_id_spelling ?? ''} ${f.other_entity_ids ?? ''} ${f.entity_id} ${f.filing_id}`), needles))
         .sort((a, b) => a.state.localeCompare(b.state) || String(b.reporting_year).localeCompare(String(a.reporting_year)) || sortName(a).localeCompare(sortName(b)));
-      const shown = clip(found, args.limit);
-      const notes = [FILINGS_CAUTION];
-      if (shown.length < found.length) notes.unshift(`Showing ${shown.length} of ${found.length}. The list is cut short: narrow it with state, year or entity, or ask for more with limit (up to 100).`);
-      for (const [name, value, known] of [['entity_type', type, kindsOf(held.filings, (f) => f.entity.entity_type)], ['record_kind', kind, kindsOf(held.filings, (f) => f.record_kind)], ['form', form, kindsOf(held.filings, (f) => f.form)]]) {
-        if (value && !known.some((k) => text(k) === value)) notes.unshift(`No report has a ${name} of ${echo(value)}. The ${name} values held are: ${known.join(', ')}.`);
-      }
-      return { matched: found.length, shown: shown.length, filings: shown.map((f) => briefFiling(f, held)), retrieved: held.retrieved, note: notes.join(' ') };
+      const asked = clip(found, args.limit).map((f) => briefFiling(f, held));
+      return fitRows(asked, (shown) => {
+        const notes = [FILINGS_CAUTION];
+        const leftOut = leftOutForSize(shown, asked, found.length, 'state, year or entity');
+        if (leftOut) notes.unshift(leftOut);
+        else if (shown.length < found.length) notes.unshift(`Showing ${shown.length} of ${found.length}. The list is cut short: narrow it with state, year or entity, or ask for more with limit (up to 100).`);
+        for (const [name, value, known] of [['entity_type', type, kindsOf(held.filings, (f) => f.entity.entity_type)], ['record_kind', kind, kindsOf(held.filings, (f) => f.record_kind)], ['form', form, kindsOf(held.filings, (f) => f.form)]]) {
+          if (value && !known.some((k) => text(k) === value)) notes.unshift(`No report has a ${name} of ${echo(value)}. The ${name} values held are: ${known.join(', ')}.`);
+        }
+        return { matched: found.length, shown: shown.length, filings: shown, retrieved: held.retrieved, note: notes.join(' ') };
+      });
     },
   },
   {
     name: 'get_filing',
     title: 'One filed 340B report in full',
-    description: `One filed report by its filing_id from find_filings: every line as filed with its label, unit and amount; which claim counts are withheld and why (counts of 1 to 5 are never given); how each figure was checked; any discrepancies recorded between figures the report prints; the official file's address, size and SHA-256; and the ClinX page. For a workbook, the cell each figure was read from. One answer holds ${FILING_LINES.usual} lines, or up to ${FILING_LINES.most} with limit. A longer report is given in parts: the answer says how many lines are left and how to ask for the next part with offset, or for one schedule.`,
+    description: `One filed report by its filing_id from find_filings: every line as filed with its label, unit and amount; which claim counts are withheld and why (counts of 1 to 5 are never given); how each figure was checked; any discrepancies recorded between figures the report prints; the official file's address, size and SHA-256; and the ClinX page. For a workbook, the cell each figure was read from. One answer holds ${FILING_LINES.usual} lines, or up to ${FILING_LINES.most} with limit, and fewer where the lines are long. A longer report is given in parts: the answer says how many lines are left and how to ask for the next part with offset, or for one schedule.`,
     inputSchema: {
       type: 'object',
       additionalProperties: false,
@@ -528,7 +540,7 @@ export const TOOLS = [
       const schedules = tally(allLines, (l) => l.schedule ?? '');
       if (schedule !== undefined && !Object.hasOwn(schedules, schedule)) throw new InputError(`this report has no lines in the schedule ${echo(schedule)}; its schedules are: ${Object.keys(schedules).join(', ') || 'none'}`);
       const chosen = schedule === undefined ? allLines : allLines.filter((l) => (l.schedule ?? '') === schedule);
-      const returned = chosen.slice(offset, offset + limit).map(fullLine);
+      const asked = chosen.slice(offset, offset + limit).map(fullLine);
 
       const withheld = tally(allLines, (l) => l.claims_withheld);
       const checked = tally(allLines, (l) => l.verification ?? 'not recorded');
@@ -538,7 +550,10 @@ export const TOOLS = [
       const workbook = isWorkbook(filing);
       const differences = report.discrepancies;
       const cut = (obj, names) => Object.fromEntries(Object.entries(obj).filter(([k]) => !names.includes(k)));
-      return {
+      // The lines asked for are kept whole while the answer stays within the size one answer may
+      // have (fitRows in src/inputs.js). The counts and the sentence about what is left are written
+      // from the lines that are returned, so the next part starts at the first line left out.
+      return fitRows(asked, (returned) => ({
         filing: { ...cut(record, fileFields), entity, ...hrsaOf(filing), clinx_page: filingPage(filing, held) },
         official_file: said({
           ...(workbook ? { kind: 'An Excel workbook (.xlsx) on the State\'s own website. ClinX does not republish it, because the workbook names a member of staff as its contact. The address below is the State\'s. The sha256 and bytes are the workbook\'s own fingerprint and size.' } : {}),
@@ -555,7 +570,7 @@ export const TOOLS = [
         lines_total: chosen.length,
         lines_returned: returned.length,
         offset,
-        ...(offset + returned.length < chosen.length ? { more: `${chosen.length - offset - returned.length} more lines: ask again with offset ${offset + returned.length} for the next part, or with schedule to take one schedule at a time. One answer holds up to ${FILING_LINES.most} lines.` } : {}),
+        ...(offset + returned.length < chosen.length ? { more: `${chosen.length - offset - returned.length} more lines: ask again with offset ${offset + returned.length} for the next part, or with schedule to take one schedule at a time. ${returned.length < asked.length ? `This answer holds ${returned.length} lines: that is as many whole lines as fit in one answer.` : `One answer holds up to ${FILING_LINES.most} lines.`}` } : {}),
         lines: returned,
         schedules,
         how_to_read_lines: 'Columns ending _as_filed are the official file\'s own words and amounts. amount and claims give the same figure as a number, written as text exactly as the table holds it. unit says what the amount is: usd, percent, count, or none when the row carries no figure. normalized_vendor and category are ClinX\'s own labels, not the filer\'s words. page is the page of the official file; for an Excel workbook it is always 1 and source_cell is the cell the figure was read from. A cell that held words where a figure belongs has the words in amount_as_filed (or answer_as_filed) and no amount.',
@@ -585,7 +600,7 @@ export const TOOLS = [
         ...(filing.attachments.length ? { attached_documents: filing.attachments } : {}),
         retrieved: held.retrieved,
         note: FILINGS_CAUTION,
-      };
+      }));
     },
   },
   {

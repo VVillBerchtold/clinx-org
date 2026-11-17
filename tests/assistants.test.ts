@@ -84,9 +84,11 @@ const call = (name: string, args: Record<string, unknown> = {}) => ({ jsonrpc: '
 const row = (point: Point) => Object.fromEntries(COUNT_COLUMNS.map((column, i) => [column, point.blobs[i]]));
 
 interface Reply {
-  result: { isError: boolean; structuredContent: Record<string, any>; tools: { name: string }[] };
+  result: { isError: boolean; content: { type: string; text: string }[]; tools: { name: string }[] };
   error?: { code: number; message: string };
 }
+/** A tool's answer as an object. The reply carries it once, as JSON in one block of text. */
+const read = (result: Reply['result']): Record<string, any> => JSON.parse(result.content[0]!.text);
 
 beforeEach(() => forgetTables());
 
@@ -100,7 +102,10 @@ describe('the door for assistants: answers', () => {
     const response = await handleAssistants(ask(call('about_the_data')), env);
     expect(response.status).toBe(200);
     expect(response.headers.get('Cache-Control')).toBe('no-store');
-    const about = ((await response.json()) as Reply).result.structuredContent;
+    const result = ((await response.json()) as Reply).result;
+    // The answer is in the reply once, as text.
+    expect(Object.keys(result)).toEqual(['content', 'isError']);
+    const about = read(result);
     const built = JSON.parse(tableText('340b-notices.json')!) as { notices: unknown[] };
     expect(about.counts.notices).toBe(built.notices.length);
     expect(about.counts.bills).toBeGreaterThan(200);
@@ -119,7 +124,7 @@ describe('the door for assistants: answers', () => {
     const answer = async (name: string, args: Record<string, unknown> = {}) => {
       const reply = ((await (await handleAssistants(ask(call(name, args)), env)).json()) as Reply).result;
       expect(reply.isError, name).toBe(false);
-      return reply.structuredContent;
+      return read(reply);
     };
     // A 340B question reads no health center file.
     await answer('find_bills', { state: 'RI' });
@@ -178,7 +183,7 @@ describe('the door for assistants: answers', () => {
 
   it('goes on answering about 340B when the health center files cannot be read, and says so for a health center question', async () => {
     const { env, points } = makeEnv({ missing: (pathname) => pathname.startsWith('/data/health-centers/') });
-    const reply = async (name: string, args: Record<string, unknown> = {}) => ((await (await handleAssistants(ask(call(name, args)), env)).json()) as Reply & { result: { content: { text: string }[] } }).result;
+    const reply = async (name: string, args: Record<string, unknown> = {}) => ((await (await handleAssistants(ask(call(name, args)), env)).json()) as Reply).result;
     for (const name of ['find_health_centers', 'find_funding_opportunities', 'health_center_calendar', 'shortage_area_changes']) {
       const refused = await reply(name);
       expect(refused.isError, name).toBe(true);
@@ -186,7 +191,7 @@ describe('the door for assistants: answers', () => {
     }
     expect((await reply('find_bills', { state: 'RI' })).isError).toBe(false);
     expect((await reply('get_notice', { notice_id: 'fr-2026-15633' })).isError).toBe(false);
-    const about = (await reply('about_the_data')).structuredContent;
+    const about = read(await reply('about_the_data'));
     expect(about.counts.bills).toBeGreaterThan(200);
     expect(about.health_centers.unavailable).toMatch(/could not be read just now/);
     expect(points.map(row).map((r) => [r.tool, r.outcome])).toEqual([
@@ -202,7 +207,7 @@ describe('the door for assistants: answers', () => {
 
   it('answers one Ohio workbook from the index and that workbook\'s own file, without reading the whole filed reports file', async () => {
     const { env, asked } = makeEnv();
-    const part = async (args: Record<string, unknown>) => ((await (await handleAssistants(ask(call('get_filing', { filing_id: 'oh-2025-dsh360059', ...args })), env)).json()) as Reply).result.structuredContent;
+    const part = async (args: Record<string, unknown>) => read(((await (await handleAssistants(ask(call('get_filing', { filing_id: 'oh-2025-dsh360059', ...args })), env)).json()) as Reply).result);
     const out = await part({});
     expect(out.filing.filing_id).toBe('oh-2025-dsh360059');
     // One answer holds 100 lines. A longer report says how many are left and how to ask for them.
@@ -222,7 +227,7 @@ describe('the door for assistants: answers', () => {
 
   it('answers the rebate pilot notice with its page on this site', async () => {
     const { env } = makeEnv();
-    const out = ((await (await handleAssistants(ask(call('get_notice', { notice_id: 'fr-2026-15633' })), env)).json()) as Reply).result.structuredContent;
+    const out = read(((await (await handleAssistants(ask(call('get_notice', { notice_id: 'fr-2026-15633' })), env)).json()) as Reply).result);
     expect(out.notice.effective).toBe('2027-01-01');
     expect(out.notice.explained_at).toBe('https://clinx.org/rebate-pilot/');
   });

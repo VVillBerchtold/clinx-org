@@ -20,6 +20,60 @@ export function clip(rows, limit) {
   return rows.slice(0, limit ?? 20);
 }
 
+// ---- How much one answer may hold ---------------------------------------------------------------
+//
+// An assistant can take in only so much text at once, and the directories that list servers like
+// this one turn away an answer that is too long. So every tool that gives a list keeps whole rows
+// only while its answer stays within one size, the same size for every tool. A row is never cut in
+// the middle and a value is never shortened: a row is in the answer whole, or it is left out and
+// the answer says so, with how many rows it shows of how many there are and how to get the rest.
+//
+// The size is counted as the answer travels. An answer is written out as JSON and carried as one
+// piece of text inside the reply, where every quotation mark and backslash takes a second
+// character. That is the size counted here, so the whole reply is this and a few hundred more.
+
+/** The most characters one answer may take up inside its reply. */
+export const ANSWER_MOST = 60000;
+
+/** The characters an answer takes up inside its reply. */
+export const sizeOf = (answer) => JSON.stringify(JSON.stringify(answer)).length - 2;
+
+/**
+ * The answer with as many whole rows as fit. `rows` are the rows the tool would give, in their
+ * order. `write` writes the whole answer from the rows that are kept, so that its counts and its
+ * note are true to what is returned. Rows are left out from the end, never from the middle.
+ * The first row is always kept: a list with rows to give never comes back empty, and where a tool
+ * gives a long list in parts, the next part can always be asked for.
+ */
+export function fitRows(rows, write) {
+  const whole = write(rows);
+  if (rows.length < 2 || sizeOf(whole) <= ANSWER_MOST) return whole;
+  // Too long with every row. Look for the largest number of rows that fits, halving the stretch
+  // still in question each time, so a list of 200 rows is settled in about eight tries.
+  let fits = 1;
+  let low = 2;
+  let high = rows.length - 1;
+  while (low <= high) {
+    const middle = Math.floor((low + high) / 2);
+    if (sizeOf(write(rows.slice(0, middle))) <= ANSWER_MOST) {
+      fits = middle;
+      low = middle + 1;
+    } else {
+      high = middle - 1;
+    }
+  }
+  return write(rows.slice(0, fits));
+}
+
+/**
+ * The sentence a list carries when rows were left out for size, or nothing when none were.
+ * `kept` are the rows returned, `asked` the rows the tool would have given, `matched` how many
+ * fit the question in all, and `filters` names the inputs that narrow the list.
+ */
+export const leftOutForSize = (kept, asked, matched, filters) => (kept.length < asked.length
+  ? `Showing ${kept.length} of ${matched}, as many whole rows as fit in one answer: narrow it with ${filters} to see the rest.`
+  : '');
+
 export function yesNo(args, name) {
   if (args[name] === undefined) return undefined;
   if (typeof args[name] !== 'boolean') throw new InputError(`${name} must be true or false`);

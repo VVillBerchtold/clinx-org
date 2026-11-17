@@ -8,7 +8,7 @@
 //
 // The files and their shapes are in src/health-centers.js.
 
-import { InputError, LIMIT, SITE, clip, dayOf, echo, holds, oneOf, said, tally, text, wholeNumber, words, yearOf, yesNo } from './inputs.js';
+import { InputError, LIMIT, SITE, clip, dayOf, echo, fitRows, holds, leftOutForSize, oneOf, said, tally, text, wholeNumber, words, yearOf, yesNo } from './inputs.js';
 
 const unread = (what) => `${what} could not be read just now, so this question cannot be answered. The other tools still work. Try again in a minute.`;
 /** What a health center tool says when a file it needs cannot be read. */
@@ -166,22 +166,26 @@ const findHealthCenters = {
       .filter((c) => (!state || c.state === state) && (!year || c.years.map(String).includes(year)))
       .filter((c) => holds(text(`${c.name} ${(c.earlier_names ?? []).map((n) => n.name).join(' ')} ${c.city} ${c.key} ${c.grant_number}`), needles))
       .sort((a, b) => a.name.localeCompare(b.name, 'en') || a.key.localeCompare(b.key, 'en'));
-    const shown = clip(found, args.limit);
-    const notes = [RECORDS_CAUTION];
-    if (shown.length < found.length) notes.unshift(`Showing ${shown.length} of ${found.length}. The list is cut short: narrow it with state or text, or ask for more with limit (up to 100).`);
-    if (state && !records.states.includes(state)) notes.unshift(`ClinX holds no health center records for ${state} yet. The states held are: ${records.states.join(', ')}.`);
-    if (year && !records.years.map(String).includes(year)) notes.unshift(`No report for ${year} is held. The years held are: ${records.years.join(', ')}.`);
+    const asked = clip(found, args.limit).map(briefCenter);
     const book = records.workbooks[String(records.latestYear)] ?? {};
-    return {
-      matched: found.length,
-      shown: shown.length,
-      health_centers: shown.map(briefCenter),
-      held: { health_centers: records.centers.length, states: records.states, years: records.years, latest_year: records.latestYear },
-      source: 'HRSA (Health Resources and Services Administration), Uniform Data System: the workbook HRSA publishes for each year. The name, city, kinds of funding, urban or rural and number of sites are as the latest year\'s workbook prints them.',
-      ...said({ read_on: book.read_on, hrsa_last_refreshed: book.hrsa_last_refreshed }),
-      clinx_page: RECORDS_HOME,
-      note: notes.join(' '),
-    };
+    return fitRows(asked, (shown) => {
+      const notes = [RECORDS_CAUTION];
+      const leftOut = leftOutForSize(shown, asked, found.length, 'state, text or year');
+      if (leftOut) notes.unshift(leftOut);
+      else if (shown.length < found.length) notes.unshift(`Showing ${shown.length} of ${found.length}. The list is cut short: narrow it with state or text, or ask for more with limit (up to 100).`);
+      if (state && !records.states.includes(state)) notes.unshift(`ClinX holds no health center records for ${state} yet. The states held are: ${records.states.join(', ')}.`);
+      if (year && !records.years.map(String).includes(year)) notes.unshift(`No report for ${year} is held. The years held are: ${records.years.join(', ')}.`);
+      return {
+        matched: found.length,
+        shown: shown.length,
+        health_centers: shown,
+        held: { health_centers: records.centers.length, states: records.states, years: records.years, latest_year: records.latestYear },
+        source: 'HRSA (Health Resources and Services Administration), Uniform Data System: the workbook HRSA publishes for each year. The name, city, kinds of funding, urban or rural and number of sites are as the latest year\'s workbook prints them.',
+        ...said({ read_on: book.read_on, hrsa_last_refreshed: book.hrsa_last_refreshed }),
+        clinx_page: RECORDS_HOME,
+        note: notes.join(' '),
+      };
+    });
   },
 };
 
@@ -327,49 +331,59 @@ const getHealthCenterReport = {
       }
       byRow.get(id).cells.push(l);
     }
-    const kinds = new Set();
-    const returned = rows.slice(offset, offset + limit).map((row) => ({
-      line: row.line,
-      title: row.title,
-      ...(status === 'present'
-        ? {
-          cells: row.cells.filter((l) => sheetPresent(l, report.tables)).map((l) => {
-            const cell = cellOf(l, report.values);
-            kinds.add(cell.kind === 'mark' ? cell.mark : cell.kind);
-            return {
-              column: l.column,
-              ...(shared[l.column] === undefined ? { column_title: l.columnTitle } : {}),
-              ...(cell.kind === 'value'
-                ? { value: cell.value, ...(isExponent(cell.value) ? { exponent: true } : {}) }
-                : cell.kind === 'mark'
-                  ? { mark: cell.mark, means: MARKS[cell.mark].short }
-                  : { no_value: NO_VALUE[cell.kind].short }),
-            };
-          }),
-        }
-        : {}),
-    }));
-    const legend = {};
-    for (const kind of kinds) {
-      if (MARKS[kind]) legend[kind] = MARKS[kind].full;
-      else if (NO_VALUE[kind]) legend[NO_VALUE[kind].short] = NO_VALUE[kind].full;
-    }
-    return {
-      ...common,
-      table: match,
-      ...said({ label: dictionary.labels[match] }),
-      status,
-      status_means: SHEET_STATUS[status],
-      columns: shared,
-      lines: returned,
-      lines_total: rows.length,
-      lines_returned: returned.length,
-      offset,
-      ...(offset + returned.length < rows.length ? { more: `${rows.length - offset - returned.length} more lines: ask again with offset ${offset + returned.length}, or narrow with line or text.` } : {}),
-      ...(Object.keys(legend).length ? { what_the_marks_mean: legend } : {}),
-      how_to_read: 'Each line has one cell for each column. value is the text HRSA published, character for character: it is never rounded and has no thousands separators or dollar sign added. A cell with exponent true is a number HRSA published in that short form (2e+05), given as published. A cell with mark or no_value has no figure, and none is worked out. columns gives each column\'s title once; a cell carries column_title when the title differs from line to line.',
-      ...closing,
-    };
+    // Each line asked for, written out, with the kinds of cell it holds (a mark, or a reason there is no value).
+    const linesAsked = rows.slice(offset, offset + limit).map((row) => {
+      const kinds = new Set();
+      const line = {
+        line: row.line,
+        title: row.title,
+        ...(status === 'present'
+          ? {
+            cells: row.cells.filter((l) => sheetPresent(l, report.tables)).map((l) => {
+              const cell = cellOf(l, report.values);
+              kinds.add(cell.kind === 'mark' ? cell.mark : cell.kind);
+              return {
+                column: l.column,
+                ...(shared[l.column] === undefined ? { column_title: l.columnTitle } : {}),
+                ...(cell.kind === 'value'
+                  ? { value: cell.value, ...(isExponent(cell.value) ? { exponent: true } : {}) }
+                  : cell.kind === 'mark'
+                    ? { mark: cell.mark, means: MARKS[cell.mark].short }
+                    : { no_value: NO_VALUE[cell.kind].short }),
+              };
+            }),
+          }
+          : {}),
+      };
+      return { line, kinds };
+    });
+    // The lines are kept whole while the answer stays within the size one answer may have (fitRows in
+    // src/inputs.js). The counts, the sentence about what is left and the meanings of the marks are
+    // written from the lines that are returned.
+    return fitRows(linesAsked, (kept) => {
+      const returned = kept.map((row) => row.line);
+      const legend = {};
+      for (const kind of new Set(kept.flatMap((row) => [...row.kinds]))) {
+        if (MARKS[kind]) legend[kind] = MARKS[kind].full;
+        else if (NO_VALUE[kind]) legend[NO_VALUE[kind].short] = NO_VALUE[kind].full;
+      }
+      return {
+        ...common,
+        table: match,
+        ...said({ label: dictionary.labels[match] }),
+        status,
+        status_means: SHEET_STATUS[status],
+        columns: shared,
+        lines: returned,
+        lines_total: rows.length,
+        lines_returned: returned.length,
+        offset,
+        ...(offset + returned.length < rows.length ? { more: `${rows.length - offset - returned.length} more lines: ask again with offset ${offset + returned.length}, or narrow with line or text.${kept.length < linesAsked.length ? ` This answer holds ${returned.length} lines: that is as many whole lines as fit in one answer.` : ''}` } : {}),
+        ...(Object.keys(legend).length ? { what_the_marks_mean: legend } : {}),
+        how_to_read: 'Each line has one cell for each column. value is the text HRSA published, character for character: it is never rounded and has no thousands separators or dollar sign added. A cell with exponent true is a number HRSA published in that short form (2e+05), given as published. A cell with mark or no_value has no figure, and none is worked out. columns gives each column\'s title once; a cell carries column_title when the title differs from line to line.',
+        ...closing,
+      };
+    });
   },
 };
 
@@ -482,22 +496,26 @@ const findFundingOpportunities = {
       .filter((o) => (program === undefined || o.health_center_program === program) && (!status || o.status === status) && (!day || openOn(o, day)))
       .filter((o) => holds(text(`${o.title} ${o.number} ${o.id} ${o.description ?? ''} ${(o.listings ?? []).map((l) => `${l.number} ${l.program_title}`).join(' ')}`), needles))
       .sort((a, b) => sortDay(a).localeCompare(sortDay(b)) || String(a.id).localeCompare(String(b.id)));
-    const shown = clip(found, args.limit);
-    const notes = [FUNDING_CAUTION];
-    if (shown.length < found.length) notes.unshift(`Showing ${shown.length} of ${found.length}. The list is cut short: narrow it, or ask for more with limit (up to 100).`);
-    return {
-      matched: found.length,
-      shown: shown.length,
-      opportunities: shown.map(briefOpportunity),
-      status_means: STATUS_MEANS,
-      flags_mean: FLAGS_MEAN,
-      ...(day ? { open_means: `Open on ${day}: the notice is posted, it was posted on or before that day, and applications are due on or after it. A forecast is not open for applications.` } : {}),
-      source: 'Grants.gov, the federal government\'s list of funding opportunities',
-      ...read,
-      ...unknownDay,
-      clinx_page: FUNDING_HOME,
-      note: notes.join(' '),
-    };
+    const asked = clip(found, args.limit).map(briefOpportunity);
+    return fitRows(asked, (shown) => {
+      const notes = [FUNDING_CAUTION];
+      const leftOut = leftOutForSize(shown, asked, found.length, 'text, health_center_program, status or open_on');
+      if (leftOut) notes.unshift(leftOut);
+      else if (shown.length < found.length) notes.unshift(`Showing ${shown.length} of ${found.length}. The list is cut short: narrow it, or ask for more with limit (up to 100).`);
+      return {
+        matched: found.length,
+        shown: shown.length,
+        opportunities: shown,
+        status_means: STATUS_MEANS,
+        flags_mean: FLAGS_MEAN,
+        ...(day ? { open_means: `Open on ${day}: the notice is posted, it was posted on or before that day, and applications are due on or after it. A forecast is not open for applications.` } : {}),
+        source: 'Grants.gov, the federal government\'s list of funding opportunities',
+        ...read,
+        ...unknownDay,
+        clinx_page: FUNDING_HOME,
+        note: notes.join(' '),
+      };
+    });
   },
 };
 
@@ -552,21 +570,25 @@ const healthCenterCalendar = {
       .filter((d) => (!kind || d.kind === kind) && (!source || d.source === source) && (!from || d.date >= from) && (!to || d.date <= to))
       .filter((d) => holds(text(`${d.title} ${d.source_id ?? ''}`), needles))
       .sort((a, b) => a.date.localeCompare(b.date));
-    const shown = clip(found, args.limit);
-    const seen = [...new Set(shown.map((d) => d.kind))];
-    return {
-      matched: found.length,
-      shown: shown.length,
-      dates: shown.map(briefDate),
-      ...(from ? { from } : {}),
-      ...(to ? { to } : {}),
-      kinds_mean: Object.fromEntries(seen.filter((k) => DATE_KIND_MEANS[k]).map((k) => [k, DATE_KIND_MEANS[k]])),
-      sources: 'Grants.gov for funding opportunities and the Federal Register for rules and notices. Each line links to the agency\'s own page.',
-      ...said({ read_on: sets?.funding?.read_on }),
-      ...(sets ? {} : { read_on_unknown: 'The day these files were read could not be read just now.' }),
-      clinx_page: FUNDING_HOME,
-      note: `${shown.length < found.length ? `Showing ${shown.length} of ${found.length}: narrow it, or ask for more with limit (up to 100). ` : ''}A line with estimated true is HRSA's own estimate and can move. Check the official page before planning around a date.`,
-    };
+    const asked = clip(found, args.limit).map(briefDate);
+    return fitRows(asked, (shown) => {
+      const seen = [...new Set(shown.map((d) => d.kind))];
+      const leftOut = leftOutForSize(shown, asked, found.length, 'from, to, kind, source or text');
+      const cutNote = leftOut ? `${leftOut} ` : shown.length < found.length ? `Showing ${shown.length} of ${found.length}: narrow it, or ask for more with limit (up to 100). ` : '';
+      return {
+        matched: found.length,
+        shown: shown.length,
+        dates: shown,
+        ...(from ? { from } : {}),
+        ...(to ? { to } : {}),
+        kinds_mean: Object.fromEntries(seen.filter((k) => DATE_KIND_MEANS[k]).map((k) => [k, DATE_KIND_MEANS[k]])),
+        sources: 'Grants.gov for funding opportunities and the Federal Register for rules and notices. Each line links to the agency\'s own page.',
+        ...said({ read_on: sets?.funding?.read_on }),
+        ...(sets ? {} : { read_on_unknown: 'The day these files were read could not be read just now.' }),
+        clinx_page: FUNDING_HOME,
+        note: `${cutNote}A line with estimated true is HRSA's own estimate and can move. Check the official page before planning around a date.`,
+      };
+    });
   },
 };
 
@@ -657,40 +679,42 @@ const shortageAreaChanges = {
     } catch {
       throw new InputError(HC_UNREAD.area);
     }
-    const cut = (found) => {
-      const shown = clip(found, args.limit);
-      return { matched: found.length, shown: shown.length, rows: shown, cutNote: shown.length < found.length ? `Showing ${shown.length} of ${found.length}: narrow it with kind, event or text, or ask for more with limit (up to 100). ` : '' };
+    // What a list says when it does not show every row: left out for size (see fitRows in src/inputs.js), or cut at the limit.
+    const cutNote = (rows, asked, found, filters) => {
+      const leftOut = leftOutForSize(rows, asked, found.length, filters);
+      if (leftOut) return `${leftOut} `;
+      return rows.length < found.length ? `Showing ${rows.length} of ${found.length}: narrow it with kind, event or text, or ask for more with limit (up to 100). ` : '';
     };
     if (show === 'sites') {
       const found = file.sites_recent.filter((s) => holds(text(`${s.site_name} ${s.health_center_name} ${s.health_center_number} ${s.city} ${s.county} ${s.key}`), needles));
-      const { matched, shown, rows, cutNote } = cut(found);
-      return {
+      const asked = clip(found, args.limit).map((s) => said(s));
+      return fitRows(asked, (rows) => ({
         state,
         show,
-        matched,
-        shown,
-        sites: rows.map((s) => said(s)),
+        matched: found.length,
+        shown: rows.length,
+        sites: rows,
         reasons: 'Each site says why it is listed: it was added to a health center\'s scope in the last 365 days, or its status is not Active.',
         ...closing,
-        note: `${cutNote}Site names and addresses are as HRSA's list of health center sites prints them. ${caution}`,
-      };
+        note: `${cutNote(rows, asked, found, 'text')}Site names and addresses are as HRSA's list of health center sites prints them. ${caution}`,
+      }));
     }
     const source = show === 'recent' ? file.recent : file.proposed;
     const found = source
       .filter((r) => (!kind || kindOfArea(r) === kind) && (!event || r.event === event))
       .filter((r) => holds(text(`${r.name} ${r.counties} ${r.designation_type} ${r.id}`), needles));
     if (show === 'recent') found.sort((a, b) => String(b.event_date_iso ?? '').localeCompare(String(a.event_date_iso ?? '')));
-    const { matched, shown, rows, cutNote } = cut(found);
-    return {
+    const asked = clip(found, args.limit).map((r) => said({ kind: kindOfArea(r), ...without(r, ['file', 'discipline', 'key']) }));
+    return fitRows(asked, (rows) => ({
       state,
       show,
-      matched,
-      shown,
-      designations: rows.map((r) => said({ kind: kindOfArea(r), ...without(r, ['file', 'discipline', 'key']) })),
+      matched: found.length,
+      shown: rows.length,
+      designations: rows,
       ...(show === 'recent' ? { order: 'Newest event first.', updated_means: UPDATED_MEANS } : { proposed_means: 'HRSA\'s status for these designations is Proposed For Withdrawal. HRSA\'s file gives no date for a withdrawal.' }),
       ...closing,
-      note: `${cutNote}${caution}`,
-    };
+      note: `${cutNote(rows, asked, found, show === 'recent' ? 'kind, event or text' : 'kind or text')}${caution}`,
+    }));
   },
 };
 
