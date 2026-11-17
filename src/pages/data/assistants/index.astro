@@ -5,6 +5,7 @@ import Arrow from '../../../components/Arrow.astro';
 import OnPage from '../../../components/OnPage.astro';
 import PageHead from '../../../components/PageHead.astro';
 import { ASSISTANTS_ADDRESS, CLAUDE_ADD_LINK, VSCODE_ADD_LINK, VSCODE_SETTINGS, assistantToolGroups } from '../../../lib/assistant-tools';
+import { EXAMPLE_YEAR, assistantExample, reportLinesNaming340b } from '../../../lib/assistant-example';
 import { PREVIEW, REPOSITORIES } from '../../../lib/site';
 
 // Every lookup the server offers, read from its own definitions. With none read, the build stops.
@@ -31,6 +32,12 @@ const questions: { label: string; items: string[] }[] = [
     ],
   },
 ];
+
+// The worked example: its figures are read from the two records' own files, never typed in here.
+const example = assistantExample();
+const first = example[0]!;
+// The page says HRSA's report has no line that names 340B. If a year's report gains one, the build stops so the sentence is rewritten.
+if (reportLinesNaming340b() !== 0) throw new Error('A line of the HRSA report now names 340B: rewrite the worked example on the page for AI assistants');
 ---
 
 <Base
@@ -52,6 +59,7 @@ const questions: { label: string; items: string[] }[] = [
         { id: 'add', label: 'How to add it' },
         { id: 'answers', label: 'What it can answer' },
         { id: 'questions', label: 'Questions to try' },
+        { id: 'example', label: 'A worked example' },
         { id: 'keep-in-mind', label: 'What to keep in mind' },
         { id: 'privacy', label: 'Privacy' },
         { id: 'problem', label: 'Report a problem' },
@@ -152,6 +160,56 @@ const questions: { label: string; items: string[] }[] = [
           </>
         ))
       }
+    </div>
+  </section>
+
+  <section class="split" aria-labelledby="example">
+    <h2 id="example">A worked example</h2>
+    <div class="split-body">
+      <p>A health center in Ohio files a 340B report with the state. It also sends HRSA a report each year, the Uniform Data System. The two records come from two agencies, and neither one points to the other. An assistant with ClinX added can read both for the same health center. It takes three questions.</p>
+      <ol>
+        <li>What did {first.name} report to Ohio about 340B for {EXAMPLE_YEAR}?</li>
+        <li>What is on Table 9E, line 1g of the same health center's {EXAMPLE_YEAR} report to HRSA?</li>
+        <li>And on Table 8A, line 8b?</li>
+      </ol>
+      <p>The first answer is the filing, with the payments the health center received for 340B drugs. The second is the line for its Health Center Program grant. The third is what it spent on pharmaceuticals. These are the figures the three answers hold for two health centers.</p>
+      {
+        example.map((c) => (
+          <>
+            <h3 class="label here-label">
+              {c.name}, {c.city}
+            </h3>
+            <dl class="facts example-facts">
+              {c.filed.map((f) => (
+                <>
+                  <dt>{f.label}</dt>
+                  <dd>
+                    {f.text}
+                    <span class="example-from">Filed with Ohio, {f.where}</span>
+                  </dd>
+                </>
+              ))}
+              {c.reported.map((f) => (
+                <>
+                  <dt>{f.label}</dt>
+                  <dd>
+                    {f.text}
+                    <span class="example-from">Reported to HRSA, {f.where}</span>
+                  </dd>
+                </>
+              ))}
+            </dl>
+            <p class="example-links">
+              <a href={c.filingPath}>The filing with Ohio</a>
+              <a href={c.reportPath}>The report to HRSA</a>
+            </p>
+          </>
+        ))
+      }
+      <p>HRSA's report has no line that names 340B. The payments a health center received for 340B drugs are in its filing with the state.</p>
+      <p>Payments received are money that came in. The same filing gives what the drugs cost and what the program cost to run, on other lines. A grant is one of several sources of a health center's income. The figures are set side by side so the two records can be read together. ClinX draws no conclusion from them.</p>
+      <p>The assistant knows the two records are about the same place from the 340B ID. For most Ohio health centers the ID holds a number that HRSA's report also uses: the ID {first.id340b} belongs to health center {first.key}. A few do not match this way and need a search by name.</p>
+      <p>For some health centers HRSA withholds the line for pharmaceuticals. The assistant then gives HRSA's mark and what it means, and no figure.</p>
     </div>
   </section>
 

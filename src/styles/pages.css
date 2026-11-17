@@ -161,6 +161,27 @@
   }
 }
 
+/* AI assistants: the worked example. Each figure with the record and the place it was read from. */
+.example-facts {
+  max-width: var(--measure);
+  padding-block: 0.25rem;
+}
+.example-facts dd {
+  font-variant-numeric: tabular-nums;
+}
+.example-from {
+  display: block;
+  color: var(--muted);
+  font-weight: 400;
+  font-size: var(--text-sm);
+}
+.example-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.5rem;
+  font-size: var(--text-sm);
+}
+
 /* Three plain rules, each with its number */
 .rules {
   list-style: none;

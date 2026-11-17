@@ -78,7 +78,7 @@ describe('the assistants page', () => {
 
   it('has its parts in order', () => {
     const ids = [...page.matchAll(/<h2 id="([a-z-]+)"/g)].map((m) => m[1]);
-    expect(ids).toEqual(['address', 'add', 'answers', 'questions', 'keep-in-mind', 'privacy', 'problem', 'code']);
+    expect(ids).toEqual(['address', 'add', 'answers', 'questions', 'example', 'keep-in-mind', 'privacy', 'problem', 'code']);
     expect(page).toContain('href="/privacy/#assistants"');
     expect(page).toContain('href="/contact/"');
     expect(page).toContain('REPOSITORIES.assistants');
