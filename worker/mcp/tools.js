@@ -8,7 +8,7 @@
 // with the rest below.
 
 import { filingPath, latestYears } from './pages.js';
-import { InputError, LIMIT, SITE, clip, dayOf, echo, fitRows, freeText, holds, idOf, leftOutForSize, oneOf, said, tally, text, wholeNumber, words, yearOf, yesNo } from './inputs.js';
+import { InputError, LIMIT, SITE, clip, countOf, dayOf, echo, fitRows, freeText, holds, idOf, leftOutForSize, oneOf, said, tally, text, wholeNumber, words, yearOf, yesNo } from './inputs.js';
 import { HEALTH_CENTER_TOOLS, aboutHealthCenters } from './health-center-tools.js';
 
 // The helpers that check an input live in src/inputs.js; the class is passed on from here for the files that take it from this one.
@@ -570,7 +570,7 @@ export const TOOLS = [
         lines_total: chosen.length,
         lines_returned: returned.length,
         offset,
-        ...(offset + returned.length < chosen.length ? { more: `${chosen.length - offset - returned.length} more lines: ask again with offset ${offset + returned.length} for the next part, or with schedule to take one schedule at a time. ${returned.length < asked.length ? `This answer holds ${returned.length} lines: that is as many whole lines as fit in one answer.` : `One answer holds up to ${FILING_LINES.most} lines.`}` } : {}),
+        ...(offset + returned.length < chosen.length ? { more: `${countOf(chosen.length - offset - returned.length, 'more line', 'more lines')}: ask again with offset ${offset + returned.length} for the next part, or with schedule to take one schedule at a time. ${returned.length < asked.length ? `This answer holds ${countOf(returned.length, 'line', 'lines')}: that is as many whole lines as fit in one answer.` : `One answer holds up to ${FILING_LINES.most} lines.`}` } : {}),
         lines: returned,
         schedules,
         how_to_read_lines: 'Columns ending _as_filed are the official file\'s own words and amounts. amount and claims give the same figure as a number, written as text exactly as the table holds it. unit says what the amount is: usd, percent, count, or none when the row carries no figure. normalized_vendor and category are ClinX\'s own labels, not the filer\'s words. page is the page of the official file; for an Excel workbook it is always 1 and source_cell is the cell the figure was read from. A cell that held words where a figure belongs has the words in amount_as_filed (or answer_as_filed) and no amount.',

@@ -74,6 +74,9 @@ export const leftOutForSize = (kept, asked, matched, filters) => (kept.length < 
   ? `Showing ${kept.length} of ${matched}, as many whole rows as fit in one answer: narrow it with ${filters} to see the rest.`
   : '');
 
+/** A count with its word, so that one of something is never written as a plural: "1 line", "12 lines". */
+export const countOf = (count, one, many) => `${count} ${count === 1 ? one : many}`;
+
 export function yesNo(args, name) {
   if (args[name] === undefined) return undefined;
   if (typeof args[name] !== 'boolean') throw new InputError(`${name} must be true or false`);

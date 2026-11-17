@@ -8,7 +8,7 @@
 //
 // The files and their shapes are in src/health-centers.js.
 
-import { InputError, LIMIT, SITE, clip, dayOf, echo, fitRows, holds, leftOutForSize, oneOf, said, tally, text, wholeNumber, words, yearOf, yesNo } from './inputs.js';
+import { InputError, LIMIT, SITE, clip, countOf, dayOf, echo, fitRows, holds, leftOutForSize, oneOf, said, tally, text, wholeNumber, words, yearOf, yesNo } from './inputs.js';
 
 const unread = (what) => `${what} could not be read just now, so this question cannot be answered. The other tools still work. Try again in a minute.`;
 /** What a health center tool says when a file it needs cannot be read. */
@@ -378,7 +378,7 @@ const getHealthCenterReport = {
         lines_total: rows.length,
         lines_returned: returned.length,
         offset,
-        ...(offset + returned.length < rows.length ? { more: `${rows.length - offset - returned.length} more lines: ask again with offset ${offset + returned.length}, or narrow with line or text.${kept.length < linesAsked.length ? ` This answer holds ${returned.length} lines: that is as many whole lines as fit in one answer.` : ''}` } : {}),
+        ...(offset + returned.length < rows.length ? { more: `${countOf(rows.length - offset - returned.length, 'more line', 'more lines')}: ask again with offset ${offset + returned.length}, or narrow with line or text.${kept.length < linesAsked.length ? ` This answer holds ${countOf(returned.length, 'line', 'lines')}: that is as many whole lines as fit in one answer.` : ''}` } : {}),
         ...(Object.keys(legend).length ? { what_the_marks_mean: legend } : {}),
         how_to_read: 'Each line has one cell for each column. value is the text HRSA published, character for character: it is never rounded and has no thousands separators or dollar sign added. A cell with exponent true is a number HRSA published in that short form (2e+05), given as published. A cell with mark or no_value has no figure, and none is worked out. columns gives each column\'s title once; a cell carries column_title when the title differs from line to line.',
         ...closing,
