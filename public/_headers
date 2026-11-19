@@ -27,6 +27,11 @@
   X-Robots-Tag: noindex
 
 # The Schedule Designer as one file. Its address always downloads, and search engines are asked not to list it.
+# The host answers the address ending in .html by sending the reader to the same address without it,
+# so the rule is written for both.
 /tools/schedule-designer/clinx-schedule-designer.html
+  Content-Disposition: attachment; filename="clinx-schedule-designer.html"
+  X-Robots-Tag: noindex
+/tools/schedule-designer/clinx-schedule-designer
   Content-Disposition: attachment; filename="clinx-schedule-designer.html"
   X-Robots-Tag: noindex
