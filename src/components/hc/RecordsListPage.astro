@@ -1,0 +1,262 @@
+---
+import '../../styles/home.css';
+import '../../styles/scorecard.css';
+import '../../styles/hc-records.css';
+import Base from '../../layouts/Base.astro';
+import OnPage from '../OnPage.astro';
+import PageHead from '../PageHead.astro';
+import StateMap from '../StateMap.astro';
+import {
+  DOWNLOADS,
+  RECORDS_PATH,
+  centersWord,
+  coverageRows,
+  formatDay,
+  listByName,
+  listByState,
+  listRows,
+  listWords,
+  megabytes,
+  nextStates,
+  placesWords,
+  recordsCards,
+  recordsSource,
+  recordsTile,
+  refreshDay,
+  statePath,
+} from '../../lib/hc-records';
+import { HC_HOME, HC_NAME, numberWord, numberWordCap } from '../../lib/site';
+import { MAP_PLACES, stateMapSvg } from '../../lib/state-map';
+
+/**
+ * The list of the health centers whose Uniform Data System reports ClinX shows, and where they are.
+ *
+ * In plain words: a map shows which states and territories have reports here, with the number of health
+ * centers HRSA's latest file lists in each. A tile leads to the page of that place, which lists its health
+ * centers. The same places are under the map as a list, for a reader who would sooner read than point.
+ * Then every health center is listed A to Z by name, closed until it is opened, with a search box that
+ * narrows it. Nothing is ranked.
+ */
+const source = recordsSource();
+const rows = listRows();
+const groups = listByState();
+const byName = listByName();
+const years = source.years;
+const latest = source.latest_year;
+const first = years[0]!;
+const span = `${first} to ${latest}`;
+const num = (n: number): string => n.toLocaleString('en-US');
+const places = placesWords(groups.map((g) => g.code));
+const total = numberWord(rows.length);
+const workbooks = years.map((y) => ({ year: y, w: source.workbooks[String(y)]! }));
+
+// The latest file's count of health centers in every state and territory, and whether its reports are here.
+const inLatest = new Map(coverageRows().filter((c) => c.year === latest).map((c) => [c.state, c]));
+for (const code of inLatest.keys()) if (!MAP_PLACES.some((p) => p.code === code)) throw new Error(`coverage.csv lists ${code}, and the map has no tile for it`);
+const groupOf = new Map(groups.map((g) => [g.code, g]));
+const listedLatest = [...inLatest.values()].reduce((sum, c) => sum + c.healthCenters, 0);
+const shownLatest = [...inLatest.values()].filter((c) => c.covered).reduce((sum, c) => sum + c.healthCenters, 0);
+const earlierOnly = rows.length - shownLatest;
+const reports = rows.reduce((sum, r) => sum + r.years.length, 0);
+// The states being added next: outlined on the map. One whose reports have arrived is no longer "next".
+const next = nextStates();
+const nextNames = MAP_PLACES.filter((p) => next.has(p.code)).map((p) => p.name).sort((a, b) => a.localeCompare(b, 'en'));
+const toCome = inLatest.size - groups.length - next.size;
+// True once every state and territory in HRSA's latest file has its reports here.
+const complete = groups.length === inLatest.size;
+// Health centers that an earlier file lists and the latest file does not.
+const earlierSentence =
+  earlierOnly === 0
+    ? ''
+    : earlierOnly === 1
+      ? ' One more is listed only in the files of earlier years, and has a page for each of those years.'
+      : ` ${numberWordCap(earlierOnly)} more are listed only in the files of earlier years, and each has a page for each of its years.`;
+
+const mapSvg = stateMapSvg({
+  id: 'records-map',
+  title: 'Where the health center reports are',
+  desc: `A map of the states and territories as tiles. ${complete ? 'Every tile is a place whose health centers have their reports on ClinX, and leads to the list of that place.' : `A filled tile is a place whose health centers have their reports on ClinX: ${groups.map((g) => g.name).join(', ')}. A filled tile leads to the list of that place.`}${next.size > 0 ? ` An outlined tile is a state whose reports are coming next: ${nextNames.join(', ')}.` : ''}${toCome > 0 ? ` The reports of the other ${toCome} are still to be added.` : ''} The table under the map gives every count.`,
+  tile: (place) => recordsTile(place),
+  territories: true,
+});
+const rest = {
+  kicker: `HRSA's ${latest} file`,
+  name: 'All states and territories',
+  rows: [
+    { label: 'Health centers HRSA lists', values: [num(listedLatest)] },
+    { label: 'Of them, with reports on ClinX', values: [num(shownLatest)] },
+    { label: 'Places with reports on ClinX', values: [`${groups.length} of ${inLatest.size}`] },
+  ],
+  note: complete
+    ? `Every state and territory in HRSA's ${latest} file has its reports here.`
+    : next.size > 0
+      ? 'ClinX is adding the reports state by state. The filled tiles have them now, and the outlined tiles are coming next.'
+      : 'ClinX is adding the reports state by state. The filled tiles have them now.',
+};
+const allPlaces = [...MAP_PLACES].filter((p) => inLatest.has(p.code)).sort((a, b) => a.name.localeCompare(b.name, 'en'));
+
+const items = [
+  { id: 'where', label: 'By state or territory' },
+  { id: 'by-name', label: 'By name' },
+  { id: 'what', label: 'What each page shows' },
+  { id: 'source', label: 'Source' },
+];
+---
+
+<Base
+  title="Health center records"
+  crumbs={[{ name: HC_NAME, path: HC_HOME }, { name: 'Health center records', path: RECORDS_PATH }]}
+  description={`What ${total} federally funded health centers in ${places} reported to HRSA in the Uniform Data System, ${span}, table by table in HRSA's own words, with every value's address in HRSA's workbook.`}
+>
+  <PageHead wide title="Health center records" trail={[{ label: HC_NAME, href: HC_HOME }, { label: 'Records' }]}>
+    <p class="lede">
+      Every federally funded health center reports to HRSA each year in the Uniform Data System: who its patients are, what services it gave, its staff, costs and revenue. HRSA publishes the reports as one large workbook a year. Here each health center has one page for each year, line by line in HRSA's own words, and every value has the address of its cell.
+    </p>
+    <p class="small muted">
+      The reports here are from {places}: {total} health centers, {span}.{!complete && ' More states are being added.'}
+    </p>
+    <OnPage title="Health center records" items={items} />
+  </PageHead>
+
+  <section class="hcr-section" aria-labelledby="where">
+    <h2 id="where">By state or territory</h2>
+    <p>
+      HRSA's {latest} file lists {num(listedLatest)} health centers in {inLatest.size} states and territories. {complete ? 'ClinX shows the reports of all of them. Select a tile to open the list of that state or territory.' : `ClinX shows the reports of ${num(shownLatest)} of them so far, in ${places}. Select a filled tile to open the list of that state.`}{next.size > 0 && ` Coming next: ${listWords(nextNames)}.`}
+    </p>
+    <StateMap
+      svg={mapSvg}
+      legend={[
+        { tone: 'has' as const, label: 'Reports shown. Select a tile to open its list' },
+        ...(next.size > 0 ? [{ tone: 'next' as const, label: 'Coming next' }] : []),
+        ...(toCome > 0 ? [{ tone: 'none' as const, label: 'To be added' }] : []),
+      ]}
+      rest={rest}
+      cards={recordsCards()}
+    />
+    <details class="hcr-table hcr-places">
+      <summary>
+        <h3 id="places-table">The same as a list</h3>
+        <span class="hcr-sub">{inLatest.size} states and territories, A to Z, each with its count</span>
+      </summary>
+      <div class="table-wrap wide stack hcr-plain">
+        <table role="table">
+          <caption><span>Health centers in HRSA's {latest} file, and where their reports are on ClinX</span></caption>
+          <thead role="rowgroup">
+            <tr role="row">
+              <th role="columnheader" scope="col">State or territory</th>
+              <th role="columnheader" scope="col" class="num">Health centers in HRSA's {latest} file</th>
+              <th role="columnheader" scope="col">Reports on ClinX</th>
+            </tr>
+          </thead>
+          <tbody role="rowgroup">
+            {
+              allPlaces.map((p) => (
+                <tr role="row">
+                  <th role="rowheader" scope="row">{groupOf.has(p.code) ? <a href={statePath(p.code)}>{p.name}</a> : p.name}</th>
+                  <td role="cell" class="num" data-label={`In HRSA's ${latest} file`}>{num(inLatest.get(p.code)!.healthCenters)}</td>
+                  <td role="cell" data-label="Reports on ClinX">
+                    {groupOf.has(p.code) ? `${centersWord(groupOf.get(p.code)!.rows.length)}, ${span}` : next.has(p.code) ? 'Coming next' : 'To be added'}
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </details>
+    <ul class="hcr-links">
+      <li><a class="btn ghost" href={DOWNLOADS.coverage}>Health centers by state and year (CSV)</a></li>
+    </ul>
+  </section>
+
+  <section class="hcr-section" aria-labelledby="by-name">
+    <h2 id="by-name">By name</h2>
+    <p>
+      All {num(rows.length)} health centers in one list, A to Z, each as the latest HRSA file that lists it names it. Type part of a name or a city to narrow the list, or open it and read it whole. A name opens the latest report of that health center.
+    </p>
+
+    <div class="hcr-filter hcr-filter-one" data-find hidden>
+      <label>
+        Name or city
+        <input type="search" data-find-text autocomplete="off" spellcheck="false" />
+      </label>
+    </div>
+    <p class="hcr-count" data-find-count aria-live="polite"></p>
+
+    <details class="hcr-table hcr-names" data-find-list>
+      <summary>
+        <h3 id="names">Every health center, A to Z</h3>
+        <span class="hcr-sub">{centersWord(rows.length)}, each with its city and its state or territory</span>
+      </summary>
+      <ul class="hcr-namelist">
+        {
+          byName.map((r) => (
+            <li data-search={`${r.name} ${r.city} ${r.stateName} ${r.state}`.toLowerCase()}>
+              <a href={r.path}>{r.name}</a>
+              <span>
+                {r.city}, {r.stateName}
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </details>
+    <p class="small muted" data-find-none hidden>No health center matches. Clear the box to start again.</p>
+  </section>
+
+  <section class="hcr-section" aria-labelledby="what">
+    <h2 id="what">What each page shows</h2>
+    <p>
+      A page is one health center's report for one year. It opens with a few cells that HRSA publishes as one cell, each with its table and line. Then come the tables of the report in HRSA's order, with HRSA's line and column titles, then the health center's sites and its patients by ZIP code. A year switch at the head of each page opens the other years.
+    </p>
+    <p>
+      A value is printed as HRSA published it. Where HRSA withholds a cell, the cell says so in words, with the reason HRSA gives. For many health centers HRSA withholds whole tables of staffing, cost and revenue, and the page says that in one sentence where the table is. No health center is ranked or compared with another.
+    </p>
+  </section>
+
+  <section class="hcr-section hcr-source" aria-labelledby="source">
+    <h2 id="source">Source</h2>
+    <p>
+      The reports are HRSA's Uniform Data System workbooks. Counts here are counts of rows in those files on the day each was retrieved. The {latest} file lists {num(shownLatest)} health centers in {places}.{earlierSentence} In all, {num(reports)} reports are shown. HRSA last refreshed the {latest} file on {refreshDay(source.workbooks[String(latest)]!.report_last_refreshed)}.
+    </p>
+    <div class="table-wrap wide stack hcr-plain">
+      <table role="table">
+        <caption><span>The five workbooks, with the day each was retrieved</span></caption>
+        <thead role="rowgroup">
+          <tr role="row">
+            <th role="columnheader" scope="col">Report year</th>
+            <th role="columnheader" scope="col">Workbook on data.hrsa.gov</th>
+            <th role="columnheader" scope="col" class="num">Size</th>
+            <th role="columnheader" scope="col">Retrieved</th>
+            <th role="columnheader" scope="col">SHA-256</th>
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          {
+            [...workbooks].reverse().map(({ year, w }) => (
+              <tr role="row">
+                <th role="rowheader" scope="row">{year}</th>
+                <td role="cell" class="hcr-text" data-label="Workbook"><a href={w.url}>{w.file}</a></td>
+                <td role="cell" class="num" data-label="Size">{megabytes(w.bytes)}</td>
+                <td role="cell" data-label="Retrieved">{formatDay(w.retrieved_utc.slice(0, 10))}</td>
+                <td role="cell" class="hcr-text" data-label="SHA-256"><span class="mono">{w.sha256}</span></td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p>
+      {source.workbooks[String(latest)]!.reads === 'two_reads' ? 'Two separate programs read every cell of each workbook, and they agreed on every cell.' : 'The workbooks were read by one program.'}
+    </p>
+    <ul class="hcr-links">
+      <li><a class="btn ghost" href={DOWNLOADS.centers}>Health centers listed (CSV)</a></li>
+      <li><a class="btn ghost" href={DOWNLOADS.lines}>Lines and columns of the reports (CSV)</a></li>
+    </ul>
+    <p class="small muted">Each health center's page links to that health center's file with all its years (JSON).</p>
+  </section>
+</Base>
+
+<script>
+  import '../../scripts/find-in-list';
+</script>

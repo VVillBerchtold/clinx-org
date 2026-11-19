@@ -1,0 +1,54 @@
+---
+/**
+ * Counts of designations by kind of area and by status, as HRSA's files hold them on the day:
+ * the number of designations, and under it the number of rows HRSA publishes for them.
+ * Nothing is added across kinds or statuses. Each count has a bar, all on one scale.
+ */
+import { num, SERIES, SERIES_INFO, STATUSES, type Series, type Status, type StatusCounts } from '../../lib/hc-areas';
+
+interface Props {
+  counts: Record<Series, StatusCounts>;
+  caption: string;
+}
+const { counts, caption } = Astro.props;
+// One scale for every bar in the table: the full width is the largest count of designations.
+const scale = Math.max(0, ...SERIES.flatMap((series) => STATUSES.map((status) => counts[series][status].designations)));
+const bar = (n: number): number => (scale > 0 ? Math.min(100, Math.max(1, Math.round((n / scale) * 1000) / 10)) : 0);
+const label: Record<Status, string> = { Designated: 'Designated', 'Proposed For Withdrawal': 'Proposed For Withdrawal', Withdrawn: 'Withdrawn' };
+---
+
+<div class="table-wrap wide stack hc-counts hc-list">
+  <table>
+    <caption><span>{caption}</span></caption>
+    <thead role="rowgroup">
+      <tr role="row">
+        <th role="columnheader" scope="col">Kind of area</th>
+        {STATUSES.map((s) => <th role="columnheader" scope="col" class="num">{label[s]}</th>)}
+      </tr>
+    </thead>
+    <tbody role="rowgroup">
+      {
+        SERIES.map((series) => (
+          <tr role="row" class="tone-plain">
+            <th role="rowheader" scope="row">{SERIES_INFO[series].label}</th>
+            {STATUSES.map((status) => {
+              const cell = counts[series][status];
+              return (
+                <td role="cell" class:list={['num', 'share', { zero: cell.designations === 0 }]} data-label={`${label[status]}, designations`}>
+                  <span class="rail">
+                    <span class="rail-track">
+                      {cell.designations > 0 && <svg class="bar" width={`${bar(cell.designations)}%`} height="8" aria-hidden="true" focusable="false" />}
+                    </span>
+                    <span class="bar-figure">{num(cell.designations)}</span>
+                  </span>
+                  <small>{num(cell.file_rows)} {cell.file_rows === 1 ? 'row' : 'rows'}</small>
+                </td>
+              );
+            })}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
+{scale > 0 && <p class="small muted hc-counts-note">The bars in this table share one scale. The full width is the largest count in the table.</p>}

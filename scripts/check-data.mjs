@@ -6,6 +6,8 @@ import { fileURLToPath } from 'node:url';
 import { shapeProblems, valueProblems } from './dataset-shape.mjs';
 import { BILL_FILES, billsProblems } from './bills-shape.mjs';
 import { MCP_DIR, MCP_FILES } from './sync-mcp.mjs';
+import { PARTS, partModule } from './sync-health-centers.mjs';
+import { copyProblems, readRecord } from './hc/shared.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const dir = join(root, 'src', 'data', 'dataset');
@@ -54,6 +56,8 @@ if (BILL_FILES.every((name) => existsSync(join(billsDir, name)))) {
 // Downloads must be byte for byte the same files.
 for (const name of existsSync(publicDir) ? readdirSync(publicDir) : []) {
   if (BILL_FILES.includes(name)) continue;
+  // The health center downloads have their own folder and their own records (scripts/hc/).
+  if (name === 'health-centers') continue;
   if (!(name in record.files)) problems.push(`public/data/${name}: not listed in SOURCE.json`);
   else if (sha256(join(publicDir, name)) !== record.files[name]) problems.push(`public/data/${name}: hash differs from SOURCE.json`);
 }
@@ -86,6 +90,21 @@ for (const name of readdirSync(MCP_DIR)) {
 }
 if (mcpRecord.source_commit === null || mcpRecord.source_commit_had_uncommitted_changes) problems.push('worker/mcp: copied from a folder with changes that were not committed. Commit them there and run: node scripts/sync-mcp.mjs');
 
+// The health center tables: one copy for each part that exists, each with its own record.
+const healthCenterLines = [];
+for (const part of PARTS) {
+  const module = await partModule(part);
+  if (!module) continue;
+  const copy = copyProblems(root, part);
+  problems.push(...copy);
+  if (copy.length === 0) problems.push(...module.problems({ siteRoot: root }));
+  const partRecord = readRecord(root, part);
+  if (partRecord) {
+    if (partRecord.source_commit === null || partRecord.source_commit_had_uncommitted_changes) problems.push(`health-centers/${part}: copied from a folder with changes that were not committed. Commit them there and run: node scripts/sync-health-centers.mjs ${part}`);
+    healthCenterLines.push(`check-data: health centers, ${part}: ${Object.keys(partRecord.files).length} files match their record (${String(partRecord.source_commit).slice(0, 7)}).`);
+  }
+}
+
 if (problems.length > 0) {
   for (const p of problems) console.error(`check-data: ${p}`);
   process.exit(1);
@@ -93,3 +112,4 @@ if (problems.length > 0) {
 console.log(`check-data: the server for assistants matches its record (version ${mcpRecord.server_version}, ${String(mcpRecord.source_commit).slice(0, 7)}).`);
 console.log(`check-data: ${Object.keys(record.files).length} files match SOURCE.json (dataset version ${record.dataset_version}).`);
 console.log(`check-data: the bills table matches its record (${billsRecord.bills} bills, retrieved ${billsRecord.retrieved}).`);
+for (const line of healthCenterLines) console.log(line);

@@ -18,9 +18,14 @@
 // site as a download, and is read, and cut with the same function (src/split.js), only when the
 // index cannot be read.
 //
+// The health center files are a separate group (src/health-centers.js). Each is read only when a
+// health center question is asked, so the 340B tools never wait for one, and each is optional in
+// the same way: when one cannot be read, the tool that needs it says so and the rest carry on.
+//
 // This file uses nothing that only one kind of computer has, so it runs the same under Node and
 // on an edge host.
 
+import { healthCenters } from './health-centers.js';
 import { readReport, split } from './split.js';
 
 export const DATA_URL = 'https://clinx.org/data/';
@@ -118,12 +123,15 @@ export function makeTables({ source = DATA_URL, fetcher, reader, now = () => Dat
     },
   };
   const reporting = keeper(async () => shapeReportingStates(await read(FILES.reporting)), { required: false });
+  // The health center pieces: nothing is read here. Each is read when a tool first asks for it.
+  const hc = healthCenters({ read, keeper, now, keepMs: KEEP_MS });
 
   /**
    * The tables, each fetched at most once an hour. Each answer also carries today's date, so
    * "coming up" and "open for comment" go by the day the question is asked and not by the day the
    * tables were last brought up to date. `filings` and `reporting` are null when that file could
-   * not be read, with the reason in `filingsProblem` and `reportingProblem`.
+   * not be read, with the reason in `filingsProblem` and `reportingProblem`. `hc` holds the health
+   * center pieces, each a function a tool calls when it needs that piece.
    */
   return async function tables() {
     const [c, f, r] = await Promise.all([core(), filings(), reporting()]);
@@ -133,6 +141,7 @@ export function makeTables({ source = DATA_URL, fetcher, reader, now = () => Dat
       filingsProblem: f.problem,
       reporting: r.value,
       reportingProblem: r.problem,
+      hc,
       today: new Date(now()).toISOString().slice(0, 10),
     };
   };

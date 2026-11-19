@@ -1,0 +1,198 @@
+/* The shortage area tracker: its front page, the page of a state and the parts they share.
+   Colours only through the tokens, so light and dark both work. Used by src/components/hc/Areas*.astro. */
+
+/* The first screen: what this is, the day, and the way in */
+.hc-day {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.75rem;
+  margin: var(--s4) 0 0;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: var(--pill);
+  background: var(--surface);
+  font-size: var(--text-sm);
+}
+.hc-day strong { font-weight: 650; }
+.hc-day span { color: var(--muted); }
+
+/* The filter above a list: drawn only once the script has run */
+.hc-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  align-items: end;
+  margin: 0;
+}
+.hc-filter[hidden] { display: none; }
+.hc-filter label {
+  display: grid;
+  gap: 0.25rem;
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+.hc-filter input,
+.hc-filter select {
+  font: inherit;
+  font-weight: 400;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 0.55rem 0.7rem;
+  min-height: 44px;
+  max-width: 100%;
+}
+.hc-filter input { min-width: min(100%, 18rem); }
+.hc-filter input:focus-visible,
+.hc-filter select:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.hc-count {
+  margin: 0;
+  align-self: center;
+  color: var(--muted);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Lists and their cells */
+.hc-list table { font-size: var(--text-sm); }
+.hc-list tr[hidden] { display: none; }
+.hc-list th[scope='row'] { min-width: 12rem; overflow-wrap: anywhere; }
+.hc-list .hc-id {
+  display: block;
+  margin-top: 0.125rem;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: var(--text-xs);
+  font-weight: 450;
+  overflow-wrap: anywhere;
+}
+.hc-list td.hc-counties { min-width: 12rem; overflow-wrap: anywhere; }
+.hc-list td.hc-type { min-width: 8rem; }
+.hc-list td.hc-date { white-space: nowrap; }
+.hc-list td.hc-words { color: var(--muted); }
+.hc-list td.num { font-variant-numeric: tabular-nums; }
+.hc-states td.num small,
+.hc-counts td.num small {
+  display: block;
+  color: var(--muted);
+  font-size: var(--text-xs);
+  font-weight: 450;
+}
+.hc-counts td.share { --fig: 4.5rem; min-width: 10rem; width: auto; }
+.hc-counts td.share .bar-figure { font-weight: 600; white-space: nowrap; }
+.hc-counts td.share small { text-align: right; margin-top: 0.3rem; }
+.hc-counts-note { margin-top: var(--s2, 0.75rem); }
+.hc-states th[scope='row'] a { font-weight: 650; }
+.hc-states thead th { white-space: normal; vertical-align: bottom; line-height: 1.25; }
+.hc-states td.zero,
+.hc-counts td.zero { color: var(--muted); }
+
+/* The words of a mark, a kind and a status: quiet, with no colour that suggests an order */
+.hc-mark {
+  display: inline-block;
+  padding: 0.05rem 0.5rem;
+  border: 1px dashed var(--muted);
+  border-radius: var(--r-sm);
+  color: var(--ink);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+.hc-status {
+  display: inline-block;
+  padding: 0.05rem 0.55rem;
+  border-radius: var(--pill);
+  background: var(--surface-2);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.hc-status.proposed { background: var(--warn-wash); color: var(--warn); }
+
+/* One block of figures: a label, a count, and what the count counts */
+.hc-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: var(--s3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hc-facts li {
+  padding: var(--s4);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+}
+.hc-facts .hc-fact-n {
+  display: block;
+  font: 700 1.75rem/1.1 var(--display);
+  font-variant-numeric: tabular-nums;
+}
+.hc-facts .hc-fact-what { display: block; margin-top: 0.25rem; color: var(--muted); font-size: var(--text-sm); }
+
+/* The legend under a list: every label and mark said once */
+.hc-legend {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.35rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
+  max-width: var(--measure);
+}
+.hc-legend dt { display: inline; font-weight: 650; color: var(--ink); }
+.hc-legend dd { display: inline; margin: 0; }
+.hc-legend div { display: block; }
+
+/* A list that is folded away until opened */
+.hc-fold { border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); }
+.hc-fold > summary {
+  cursor: pointer;
+  padding: 0.9rem 1.1rem;
+  font-weight: 650;
+  min-height: 44px;
+}
+.hc-fold > summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.hc-fold[open] > summary { border-bottom: 1px solid var(--line); }
+.hc-fold .table-wrap { border: 0; border-radius: 0 0 var(--r-md) var(--r-md); }
+
+/* The source block at the foot of a page */
+.hc-source dl { margin: 0; display: grid; gap: var(--s3); }
+.hc-source dt { font-weight: 650; overflow-wrap: anywhere; }
+.hc-source dd { margin: 0.125rem 0 0; color: var(--muted); font-size: var(--text-sm); overflow-wrap: anywhere; }
+.hc-source code {
+  font-family: var(--mono);
+  font-size: var(--text-xs);
+  overflow-wrap: anywhere;
+}
+.hc-source .hc-source-item { padding-top: var(--s3); border-top: 1px solid var(--line); }
+.hc-source .hc-source-item:first-child { padding-top: 0; border-top: 0; }
+
+.hc-downloads { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.hc-downloads + p { margin-top: var(--s3); }
+
+/* On a wide screen the long tables fit their card: tighter cells and a narrower first column. */
+@media (min-width: 761px) {
+  .table-wrap.wide.hc-states th,
+  .table-wrap.wide.hc-states td { padding-inline: 0.5rem; }
+  .table-wrap.wide.hc-states th:first-child { padding-left: 1.25rem; }
+  .table-wrap.wide.hc-states th:last-child,
+  .table-wrap.wide.hc-states td:last-child { padding-right: 1.25rem; }
+  .table-wrap.wide.hc-states tbody th[scope='row'] { min-width: 10.5rem; }
+  .table-wrap.wide.hc-list:not(.hc-states):not(.hc-counts) th,
+  .table-wrap.wide.hc-list:not(.hc-states):not(.hc-counts) td { padding-inline: 0.75rem; }
+  .table-wrap.wide.hc-list:not(.hc-states):not(.hc-counts) th:first-child { padding-left: 1.25rem; }
+  .table-wrap.wide.hc-list:not(.hc-states):not(.hc-counts) tbody th[scope='row'] { min-width: 11rem; }
+}
+
+@media (max-width: 600px) {
+  .hc-filter label, .hc-filter input, .hc-filter select { width: 100%; }
+  .hc-list th[scope='row'] { min-width: 0; }
+  .hc-list td.hc-counties, .hc-list td.hc-type { min-width: 0; }
+  .hc-list td.num { text-align: left; }
+  .hc-counts td.share { min-width: 0; }
+  .hc-counts td.share small { text-align: left; }
+  .hc-day { border-radius: var(--r-md); }
+}

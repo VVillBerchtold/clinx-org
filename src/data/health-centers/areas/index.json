@@ -1,0 +1,283 @@
+{
+  "change_rows_so_far": 0,
+  "file_bytes": {
+    "changes.csv": 60,
+    "proposed.csv": 433480,
+    "proposed.json": 1358743,
+    "recent.csv": 1386524,
+    "recent.json": 4069230,
+    "sites-recent.csv": 383357,
+    "sites-recent.json": 955743,
+    "states.json": 129605,
+    "states/AK.json": 101195,
+    "states/AL.json": 80135,
+    "states/AR.json": 104231,
+    "states/AS.json": 5232,
+    "states/AZ.json": 327129,
+    "states/CA.json": 651470,
+    "states/CO.json": 104093,
+    "states/CT.json": 98405,
+    "states/DC.json": 8411,
+    "states/DE.json": 26516,
+    "states/FL.json": 328591,
+    "states/FM.json": 5726,
+    "states/GA.json": 152320,
+    "states/GU.json": 4366,
+    "states/HI.json": 23944,
+    "states/IA.json": 128316,
+    "states/ID.json": 47988,
+    "states/IL.json": 320210,
+    "states/IN.json": 137358,
+    "states/KS.json": 63494,
+    "states/KY.json": 171681,
+    "states/LA.json": 121398,
+    "states/MA.json": 63949,
+    "states/MD.json": 88197,
+    "states/ME.json": 106392,
+    "states/MH.json": 3843,
+    "states/MI.json": 176440,
+    "states/MN.json": 181838,
+    "states/MO.json": 178146,
+    "states/MP.json": 6240,
+    "states/MS.json": 42901,
+    "states/MT.json": 183622,
+    "states/NC.json": 230300,
+    "states/ND.json": 49680,
+    "states/NE.json": 36098,
+    "states/NH.json": 21363,
+    "states/NJ.json": 16756,
+    "states/NM.json": 73790,
+    "states/NV.json": 67551,
+    "states/NY.json": 131580,
+    "states/OH.json": 179906,
+    "states/OK.json": 109377,
+    "states/OR.json": 120496,
+    "states/PA.json": 153430,
+    "states/PR.json": 24490,
+    "states/PW.json": 5215,
+    "states/RI.json": 21734,
+    "states/SC.json": 115128,
+    "states/SD.json": 41546,
+    "states/TN.json": 105851,
+    "states/TX.json": 407785,
+    "states/UT.json": 33177,
+    "states/VA.json": 218317,
+    "states/VI.json": 4363,
+    "states/VT.json": 19722,
+    "states/WA.json": 156548,
+    "states/WI.json": 146040,
+    "states/WV.json": 40729,
+    "states/WY.json": 27666,
+    "states/XX.json": 11745
+  },
+  "ids_holding_more_than_one_designation": {
+    "BCD_HPSA_FCT_DET_DH.csv": [
+      "620153"
+    ],
+    "BCD_HPSA_FCT_DET_MH.csv": [],
+    "BCD_HPSA_FCT_DET_PC.csv": [
+      "12099920F8"
+    ],
+    "MUA_DET.csv": [
+      "00001",
+      "00002",
+      "00233",
+      "00307",
+      "00518",
+      "00520",
+      "01458",
+      "01489",
+      "01601",
+      "03742"
+    ]
+  },
+  "national_counts": {
+    "designations": {
+      "hpsa-dh": {
+        "Designated": {
+          "designations": 7244,
+          "file_rows": 17082
+        },
+        "Proposed For Withdrawal": {
+          "designations": 804,
+          "file_rows": 7281
+        },
+        "Withdrawn": {
+          "designations": 5379,
+          "file_rows": 23282
+        }
+      },
+      "hpsa-mh": {
+        "Designated": {
+          "designations": 6566,
+          "file_rows": 15313
+        },
+        "Proposed For Withdrawal": {
+          "designations": 620,
+          "file_rows": 8267
+        },
+        "Withdrawn": {
+          "designations": 4403,
+          "file_rows": 18633
+        }
+      },
+      "hpsa-pc": {
+        "Designated": {
+          "designations": 7890,
+          "file_rows": 22217
+        },
+        "Proposed For Withdrawal": {
+          "designations": 1015,
+          "file_rows": 9976
+        },
+        "Withdrawn": {
+          "designations": 9020,
+          "file_rows": 48840
+        }
+      },
+      "mua": {
+        "Designated": {
+          "designations": 4156,
+          "file_rows": 17097
+        },
+        "Proposed For Withdrawal": {
+          "designations": 47,
+          "file_rows": 170
+        },
+        "Withdrawn": {
+          "designations": 727,
+          "file_rows": 2886
+        }
+      }
+    },
+    "recent_events": {
+      "hpsa-dh": {
+        "designated": 900,
+        "updated": 1513,
+        "withdrawn": 133
+      },
+      "hpsa-mh": {
+        "designated": 634,
+        "updated": 1301,
+        "withdrawn": 138
+      },
+      "hpsa-pc": {
+        "designated": 896,
+        "updated": 2701,
+        "withdrawn": 362
+      },
+      "mua": {
+        "designated": 38,
+        "updated": 189,
+        "withdrawn": 51
+      }
+    },
+    "sites": {
+      "Active": 19616
+    }
+  },
+  "notes": {
+    "counts": "Counts of rows in HRSA's files on the snapshot's day. 'designations' counts each designation once; 'file_rows' counts the component rows HRSA publishes for those designations (a county, county subdivision or census tract each).",
+    "state": "A designation is placed in the state HRSA gives as its primary state. Components in other states are shown in the 'states' column of a row.",
+    "updated": "'updated' means only that HRSA's 'last update date' for the designation falls in the window. The file does not say what was updated.",
+    "window": "The window is the 365 days up to and including the snapshot's day, counted from the snapshot's day and never from the clock."
+  },
+  "snapshot_day": "2026-11-16",
+  "snapshot_file_bytes": {
+    "hpsa.csv": 14035206,
+    "mua.csv": 1244838,
+    "sites.csv": 7130438,
+    "snapshot.json": 29022
+  },
+  "sources": [
+    {
+      "file": "BCD_HPSA_FCT_DET_DH.csv",
+      "retrieved_utc": "2026-11-16T14:42:38Z",
+      "sha256": "ea96f0656f97d67bfff88008ebc64032fd7ec9ca170f61a04093bcc7942c8aa4"
+    },
+    {
+      "file": "BCD_HPSA_FCT_DET_MH.csv",
+      "retrieved_utc": "2026-11-16T14:42:40Z",
+      "sha256": "e024aa5d9168a60dabd11be3cc5c9b2b5aa1159f30f1fa6e2238779db8cf568c"
+    },
+    {
+      "file": "BCD_HPSA_FCT_DET_PC.csv",
+      "retrieved_utc": "2026-11-16T14:42:40Z",
+      "sha256": "6b314f265bf4ad4ea4b535b9927e3ac3835242f6fc5ef54a723af50304026000"
+    },
+    {
+      "file": "Health_Center_Service_Delivery_and_LookAlike_Sites.csv",
+      "retrieved_utc": "2026-11-16T14:42:42Z",
+      "sha256": "cc3c2e44a98193cc1c129af215700617150ba3f5dda2fcb758216a5d59aa7fed"
+    },
+    {
+      "file": "MUA_DET.csv",
+      "retrieved_utc": "2026-11-16T14:42:43Z",
+      "sha256": "0f761155695999f9671200daf13ed0298e9f1aea00266c6f82cd869d6e0bd0f6"
+    }
+  ],
+  "states": [
+    "AK",
+    "AL",
+    "AR",
+    "AS",
+    "AZ",
+    "CA",
+    "CO",
+    "CT",
+    "DC",
+    "DE",
+    "FL",
+    "FM",
+    "GA",
+    "GU",
+    "HI",
+    "IA",
+    "ID",
+    "IL",
+    "IN",
+    "KS",
+    "KY",
+    "LA",
+    "MA",
+    "MD",
+    "ME",
+    "MH",
+    "MI",
+    "MN",
+    "MO",
+    "MP",
+    "MS",
+    "MT",
+    "NC",
+    "ND",
+    "NE",
+    "NH",
+    "NJ",
+    "NM",
+    "NV",
+    "NY",
+    "OH",
+    "OK",
+    "OR",
+    "PA",
+    "PR",
+    "PW",
+    "RI",
+    "SC",
+    "SD",
+    "TN",
+    "TX",
+    "UT",
+    "VA",
+    "VI",
+    "VT",
+    "WA",
+    "WI",
+    "WV",
+    "WY",
+    "XX"
+  ],
+  "window_end": "2026-11-16",
+  "window_start": "2025-11-16"
+}

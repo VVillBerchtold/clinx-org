@@ -1,4 +1,4 @@
-/** The site is ClinX; the 340B Scorecard is its first project. */
+/** The site is ClinX. The 340B Scorecard was its first project; the main menu below lists everything it holds now. */
 export const SITE_NAME = 'ClinX';
 
 /** The site's public address, with no slash at the end. */
@@ -26,6 +26,25 @@ export const CSP_FORM_META = CSP_FORM.replace("; frame-ancestors 'none'", '');
 /** Where the contact form's mail goes, and the address shown beside it. */
 export const CONTACT_EMAIL = 'will@clinx.org';
 
+/** Who builds and maintains ClinX, as the pages name him, and as the first words of a citation. */
+export const MAKER_NAME = 'Will Berchtold';
+export const MAKER_CITED_AS = 'Berchtold, W.';
+
+/**
+ * One line a reader can copy to cite a page of this site. `what` is what is cited (the site, or its
+ * open data) and `path` is that page's address on the site. The day is left for the reader to put in.
+ * The address comes last with no full stop after it, so a copied address still opens.
+ */
+export function citeLine(what: string, path: string): string {
+  return `${MAKER_CITED_AS} ${what}. clinx.org. Read [day month year]. ${SITE_URL}${path}`;
+}
+/** What the two citations name: the site as a whole, and the open data on the Data page. */
+export const CITE_SITE = 'ClinX: open healthcare data and tools for clinics';
+export const CITE_DATA = 'ClinX open data: 340B and health centers';
+
+/** The day the wording of the Terms of use page (/terms/) last changed. Move it on with every change to that page's text. */
+export const TERMS_CHANGED = '2026-11-16';
+
 export interface NavLink {
   href: string;
   label: string;
@@ -36,9 +55,11 @@ export interface NavLink {
 export interface NavGroup {
   label: string;
   items: readonly NavLink[];
+  /** A page of the group that is not one of its items (a section's front page): the group shows as the current one there too. */
+  home?: string;
 }
 
-/** The main menu. 340B is a group: the Scorecard, the state laws, the bills, the federal notices, the calendar and the rebate pilot sit side by side under it. */
+/** The main menu. 340B is a group: the Scorecard, the state laws, the bills, the federal notices, the calendar and the rebate pilot sit side by side under it. Health centers is the second group: the records, the funding calendar and the shortage areas. */
 export const NAV: readonly (NavLink | NavGroup)[] = [
   {
     label: '340B',
@@ -51,14 +72,29 @@ export const NAV: readonly (NavLink | NavGroup)[] = [
       { href: '/rebate-pilot/', label: 'Rebate pilot', note: 'What the federal rebate pilot changes' },
     ],
   },
+  {
+    label: 'Health centers',
+    home: '/health-centers/',
+    items: [
+      { href: '/health-centers/records/', label: 'Records', note: 'What each health center reported to HRSA' },
+      { href: '/health-centers/funding/', label: 'Funding', note: 'HRSA opportunities and Federal Register dates' },
+      { href: '/health-centers/shortage-areas/', label: 'Shortage areas', note: 'What HRSA designates, proposes to withdraw and changes' },
+    ],
+  },
   { href: '/data/', label: 'Data' },
   { href: '/methods/', label: 'Methods' },
   { href: '/tools/', label: 'Tools' },
   { href: '/writing/', label: 'Writing' },
   { href: '/about/', label: 'About' },
-  { href: '/products/', label: 'Products' },
   { href: '/contact/', label: 'Contact' },
 ];
+
+/** What ClinX's maker sells, kept out of the main menu: the foot of every page lists these under their own heading. */
+export const OTHER_PRODUCTS: readonly NavLink[] = [{ href: '/products/', label: 'ReferralFinderX' }];
+
+/** The health centers section: its name and its front page, which the trail of every page in it links to. */
+export const HC_NAME = 'Health centers';
+export const HC_HOME = '/health-centers/';
 
 const WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
 
@@ -131,9 +167,22 @@ export const SCHEDULE_DESIGNER_RELEASED = '19 November 2026';
 /** The article about where the Schedule Designer keeps a schedule, and the day it goes public. */
 export const SCHEDULE_DESIGNER_ARTICLE_TITLE = 'The workbook is the saved schedule';
 export const SCHEDULE_DESIGNER_ARTICLE_PUBLISHED = '2026-11-19';
+
+/**
+ * The tools, each with one line on what it gives back. The About page lists them and stops the build
+ * when a tool page exists that is not named here.
+ */
+export const TOOL_LINKS: readonly NavLink[] = [
+  { href: '/tools/schedule-designer/', label: SCHEDULE_DESIGNER, note: "A clinic's template week, saved as a workbook" },
+  { href: '/tools/cleaner-copy/', label: CLEANER_COPY, note: 'A copy of a report with randomized values in the columns you choose' },
+  { href: '/tools/file-check/', label: FILE_CHECK, note: 'What in a report will trip up a script or a pivot table' },
+];
 /** The article about what a workbook holds outside its cells, and the day it goes public. */
 export const WORKBOOK_ARTICLE_TITLE = 'What an Excel workbook carries besides its cells';
 export const WORKBOOK_ARTICLE_PUBLISHED = '2026-11-16';
 /** The guide to checking that a page sends nothing, and the day it goes public. */
 export const CHECKING_ARTICLE_TITLE = 'How to check that a page sends nothing';
 export const CHECKING_ARTICLE_PUBLISHED = '2026-11-16';
+/** The essay on what a clinic's software subscriptions are for, and the day it goes public. */
+export const RENTING_ARTICLE_TITLE = 'What are we renting?';
+export const RENTING_ARTICLE_PUBLISHED = '2026-11-17';

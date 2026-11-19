@@ -5,6 +5,8 @@ import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { printedHcWords, withoutPrintedHcWords } from './hc/printed-words.mjs';
+import { SECURITY_TXT_PATH, securityTxtProblems, securityTxtSiteLinks } from './security-txt.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = resolve(process.argv[2] ?? join(root, 'dist'));
@@ -15,6 +17,9 @@ if (!existsSync(dist)) {
 
 const problems = [];
 const fail = (where, message) => problems.push(`${where}: ${message}`);
+// A piece of text cut out of a page, kept as its own short text. Without this the piece would keep
+// the whole page in memory, and with thousands of large pages that is more than the program may use.
+const own = (text) => Buffer.from(text, 'utf8').toString('utf8');
 
 function walk(dir) {
   const out = [];
@@ -130,6 +135,10 @@ const PRINTED_WORKBOOK_WORDS = existsSync(filedPath)
       .flatMap((words) => [words, escapeHtml(words)])
       .sort((a, b) => b.length - a.length)
   : [];
+// The health centers pages print two of HRSA's own line titles and the agency's own description paragraphs as published.
+// Where one holds a word this check bans, exactly that text is let through on the records pages and the funding pages
+// (see scripts/hc/printed-words.mjs); the site's own sentences on those pages are still checked.
+const PRINTED_HC_WORDS = printedHcWords(root);
 // The site's own way back to the start of a page. It is a navigation label on every page, never a word about a filer.
 const NAV_LABELS = ['Back to top'];
 const EMAIL = /[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}/g;
@@ -214,7 +223,7 @@ for (const file of htmlFiles) {
   for (const m of noComments.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)) {
     const attrs = attributesOf(m[1]);
     if (attrs.length === 1 && attrs[0][0] === 'type' && attrs[0][1] === 'application/ld+json') {
-      labelBlocks.push(m[2]);
+      labelBlocks.push(own(m[2]));
       continue;
     }
     const hasSrc = attrs.some(([n]) => n === 'src');
@@ -250,7 +259,7 @@ for (const file of htmlFiles) {
     for (const [n, v] of attrs) {
       if (n === 'style') fail(page, 'style attribute');
       if (/^on[a-z]+$/.test(n)) fail(page, `${n} event handler attribute`);
-      if (n === 'id') pageIds.add(v);
+      if (n === 'id') pageIds.add(own(v));
       if ((n === 'src' || n === 'srcset') && (isExternal(v) || /(^|,\s*)https?:\/\//i.test(v))) fail(page, `${n} points outside the site: ${v}`);
     }
 
@@ -282,18 +291,18 @@ for (const file of htmlFiles) {
       if (get('name') === 'robots' && /noindex/.test(get('content') ?? '')) unlisted = true;
       if (get('property') === 'og:image') {
         ogImages.push(get('content') ?? '');
-        shareImages.add(get('content') ?? '');
+        shareImages.add(own(get('content') ?? ''));
       }
     }
 
     // Links to check: anything on this site.
     if (name === 'a' || name === 'link') {
       const href = get('href');
-      if (href !== undefined) links.push({ page, target: href });
+      if (href !== undefined) links.push({ page, target: own(href) });
     }
     if (name === 'script' || name === 'img') {
       const src = get('src');
-      if (src !== undefined) links.push({ page, target: src });
+      if (src !== undefined) links.push({ page, target: own(src) });
       if (name === 'script' && src !== undefined) scriptPages.set(src, (scriptPages.get(src) ?? new Set()).add(page));
     }
   }
@@ -340,6 +349,7 @@ for (const file of htmlFiles) {
   if (page.startsWith('/notices/') || page.startsWith('/calendar/') || page.startsWith('/rebate-pilot/')) {
     for (const words of PRINTED_NOTICE_WORDS) checked = checked.replaceAll(words, ' ');
   }
+  checked = withoutPrintedHcWords(page, checked, PRINTED_HC_WORDS);
   for (const label of NAV_LABELS) checked = checked.replaceAll(label, ' ');
   const word = BANNED_WORDS.exec(checked);
   if (word) fail(page, `page text contains "${word[0].trim()}" near: ...${checked.slice(Math.max(0, word.index - 40), word.index + 40).replace(/\s+/g, ' ')}...`);
@@ -504,7 +514,7 @@ else {
       const wanted = [...listedPages].sort();
       if (named.join('\n') !== wanted.join('\n')) fail('sitemap.xml', `names ${named.length} page(s) but ${wanted.length} may be listed`);
     }
-    if (/Draft wording/.test(htmlFiles.map((f) => readFileSync(f, 'utf8')).join(''))) fail('pages', 'a "Draft wording" tag is on a public build');
+    if (htmlFiles.some((f) => /Draft wording/.test(readFileSync(f, 'utf8')))) fail('pages', 'a "Draft wording" tag is on a public build');
   }
 }
 // Link previews. Every page names exactly one picture (checked page by page above). It must be one of
@@ -670,6 +680,22 @@ for (const f of files) if (statSync(f).size > MAX_FILE_BYTES) fail(urlOf(f), `is
   }
 }
 
+// The file that says where to report a security problem (see scripts/security-txt.mjs). It must be in the build, name a
+// contact, carry an end date that is still at least 30 days away, and be served as plain text. The pages of this site
+// that it names are added to the links checked below.
+{
+  const where = SECURITY_TXT_PATH.slice(1);
+  const file = join(dist, where);
+  const text = existsSync(file) ? readFileSync(file, 'utf8') : null;
+  for (const problem of securityTxtProblems(text, SITE)) fail(where, problem);
+  if (text !== null) {
+    for (const target of securityTxtSiteLinks(text, SITE)) links.push({ page: SECURITY_TXT_PATH, target });
+    const headers = existsSync(headersPath) ? readFileSync(headersPath, 'utf8') : '';
+    const rule = new RegExp(`^${SECURITY_TXT_PATH.replaceAll('.', '\\.')}\\n((?:[ \\t]+.*\\n?)+)`, 'm').exec(headers);
+    if (!rule || !/^\s*Content-Type:\s*text\/plain; charset=utf-8\s*$/m.test(rule[1])) fail('_headers', `no rule serves ${SECURITY_TXT_PATH} as plain text. Add these two lines to public/_headers: "${SECURITY_TXT_PATH}" and, under it and indented, "Content-Type: text/plain; charset=utf-8".`);
+  }
+}
+
 // Every internal link must resolve to a built file, and every #fragment to an id on that page.
 function resolveTarget(page, target) {
   const [beforeHash, fragment] = target.split('#');
@@ -694,6 +720,49 @@ for (const { page, target } of links) {
   if (fragment && file.endsWith('.html')) {
     const known = ids.get(urlOf(file));
     if (known && !known.has(decodeURIComponent(fragment))) fail(page, `link to a missing anchor: ${target}`);
+  }
+}
+
+// The About page says what is on the site. It must link every page the main menu links and every tool,
+// so a section or a tool added later cannot be left out of it. The home page and About itself are not
+// expected there.
+{
+  const aboutPath = join(dist, 'about', 'index.html');
+  if (!existsSync(aboutPath)) fail('/about/', 'missing from the build');
+  else {
+    const about = readFileSync(aboutPath, 'utf8');
+    const header = /<header\b[\s\S]*?<\/header>/.exec(about)?.[0] ?? '';
+    const main = /<main\b[\s\S]*?<\/main>/.exec(about)?.[0] ?? '';
+    const hrefs = (html) => new Set([...html.matchAll(/href="(\/[^"#]*)(?:#[^"]*)?"/g)].map((m) => m[1]));
+    const inMenu = [...hrefs(header)].filter((h) => h !== '/' && h !== '/about/');
+    const toolsDir = join(dist, 'tools');
+    const toolPages = existsSync(toolsDir)
+      ? readdirSync(toolsDir).filter((name) => existsSync(join(toolsDir, name, 'index.html'))).map((name) => `/tools/${name}/`)
+      : [];
+    if (inMenu.length < 10) fail('/about/', `the main menu was read as ${inMenu.length} links, too few to be right`);
+    const said = hrefs(main);
+    for (const want of [...inMenu, ...toolPages]) if (!said.has(want)) fail('/about/', `the About page does not link ${want}, which the site has`);
+  }
+}
+
+// A saved copy of a tool is one file that holds the whole tool. The built site must carry the very
+// file that is on record, and the tool's page must print that file's fingerprint.
+{
+  const recordPath = join(root, 'src', 'lib', 'saved-copies.json');
+  const record = existsSync(recordPath) ? JSON.parse(readFileSync(recordPath, 'utf8')) : {};
+  for (const [key, copy] of Object.entries(record)) {
+    const file = join(dist, copy.file);
+    const pagePath = join(dist, 'tools', key, 'index.html');
+    if (!existsSync(file)) fail(copy.file, 'the saved copy is on record and missing from the build');
+    else {
+      const data = readFileSync(file);
+      const print = createHash('sha256').update(data).digest('hex');
+      if (print !== copy.sha256) fail(copy.file, `the saved copy is not the file on record (its SHA-256 is ${print})`);
+      if (data.length !== copy.bytes) fail(copy.file, `the saved copy is ${data.length} bytes, and the record says ${copy.bytes}`);
+    }
+    const html = existsSync(pagePath) ? readFileSync(pagePath, 'utf8') : '';
+    if (!html.includes(copy.sha256)) fail(`/tools/${key}/`, 'the page does not print the fingerprint of its saved copy');
+    if (!html.includes(`href="${copy.file}" download="${copy.savedAs}"`)) fail(`/tools/${key}/`, 'the page does not offer its saved copy under the name on record');
   }
 }
 

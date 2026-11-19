@@ -47,6 +47,7 @@ describe('The footer', () => {
 
 describe('The phone menu', () => {
   it('keeps a section with pages of its own behind one row that opens', () => {
-    expect(layout).toContain("class:list={['nav-fold', { on: item.items.some(here) }]} open={item.items.some(here)}");
+    expect(layout).toContain("class:list={['nav-fold', { on: groupOn(item) }]} open={groupOn(item)}");
+    expect(layout).toContain('group.items.some(here)');
   });
 });

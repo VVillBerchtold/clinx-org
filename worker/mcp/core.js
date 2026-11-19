@@ -13,13 +13,23 @@
 // is answered the newer way; everything else is answered the older way.
 
 import { TOOLS, InputError } from './tools.js';
+import { echo } from './inputs.js';
+
+// The picture a client may show beside the server's name: the ClinX mark, a purple dot on a pale
+// square, as clinx.org serves it. The PNG is first because every client that shows icons reads PNG;
+// the second is the same mark as a drawing that stays sharp at any size.
+const ICONS = [
+  { src: 'https://clinx.org/brand/clinx-mark-square-1024.png', mimeType: 'image/png', sizes: ['1024x1024'] },
+  { src: 'https://clinx.org/brand/clinx-mark-square.svg', mimeType: 'image/svg+xml', sizes: ['any'] },
+];
 
 export const SERVER = {
   name: 'clinx-340b',
-  title: 'ClinX: 340B laws, bills, federal notices, filed reports and calendar',
-  version: '0.2.0',
-  description: 'Open tables about the federal 340B drug pricing program: state laws on the books, bills in Congress and the state legislatures, federal rules and notices, the reports covered entities and states have filed, the states whose law requires reports, and a calendar of their dates.',
+  title: 'ClinX open data: 340B and health centers',
+  version: '0.3.3',
+  description: 'ClinX\'s open data for clinics, in two groups. 340B: state laws on the books, bills in Congress and the state legislatures, federal rules and notices, the reports covered entities and states have filed, the states whose law requires reports, and a calendar of their dates. Health centers: what each health center reported to HRSA, HRSA\'s funding opportunities and their dates, and shortage designations and health center sites by state.',
   websiteUrl: 'https://clinx.org',
+  icons: ICONS,
 };
 
 export const MODERN = ['2026-07-28'];
@@ -31,9 +41,11 @@ const SERVER_KEY = 'io.modelcontextprotocol/serverInfo';
 const HOUR_MS = 60 * 60 * 1000;
 
 export const INSTRUCTIONS = [
-  'Read-only lookups over ClinX\'s open tables on the federal 340B drug pricing program.',
+  'Read-only lookups over ClinX\'s open data for clinics, in two groups: the federal 340B drug pricing program, and federally funded health centers.',
   'find_laws and get_law cover state laws already on the books; find_bills and get_bill cover bills in Congress (state "US") and the state legislatures; find_notices and get_notice cover the rules, proposed rules and notices federal agencies publish in the Federal Register (place "FED"), with comment deadlines and effective dates; calendar gives dated steps, hearings, session days and federal dates; reporting_states lists the states whose law requires 340B reports, grouped by what the public can see; find_filings and get_filing cover the reports covered entities and states have filed, with every figure exactly as filed; state_overview gives one state, Congress or the federal agencies at a glance; about_the_data says where the tables come from and when each was last brought up to date.',
+  'The health center tools: find_health_centers lists the health centers whose yearly reports to HRSA (the Uniform Data System) are held; get_health_center_report gives one health center\'s report for a year, table by table, with every value exactly as HRSA published it; find_funding_opportunities covers HRSA\'s funding opportunities on Grants.gov, forecasts and posted notices; health_center_calendar gives their dated lines and the Federal Register\'s; shortage_area_changes gives HRSA\'s shortage designations and health center sites for a state or territory, with what changed in the last 365 days.',
   'Every row carries a link to the official page: cite it. Summaries are a reading aid written by a person from the official text, not legal advice, and a bill\'s summary can trail a newer version of its text. A bill at the stage Did not pass is finished. For a federal rule or notice the Federal Register governs. A filed report is given exactly as the official file prints it, a claim count of 1 to 5 is never given, and ClinX ranks no filer. Dates on the calendar can move.',
+  'In a health center report a cell HRSA marked is given as the mark and its meaning, never as a number, and a withheld value is never worked out. ClinX ranks no health center and compares none with another. A forecast date is HRSA\'s estimate and can move.',
 ].join(' ');
 
 /** What a tool says when the tables cannot be fetched. */
@@ -43,6 +55,14 @@ export const UNREACHABLE = 'The tables at clinx.org could not be reached just no
 export const CODE = { parse: -32700, request: -32600, method: -32601, params: -32602, internal: -32603, headers: -32020, version: -32022 };
 
 const fail = (id, code, message, data) => ({ jsonrpc: '2.0', id: id ?? null, error: data === undefined ? { code, message } : { code, message, data } });
+
+// A tool's answer is sent once, as text. The same answer as an object is remembered here, beside
+// the reply and never inside it, so nothing is added to what is sent. Whoever counts requests by
+// kind (src/usage.js) reads the id of the row that was looked up from it, without reading a long
+// text a second time. It is forgotten as soon as the reply is.
+const answers = new WeakMap();
+/** The answer a reply was written from, as an object. Undefined for a refusal or any other reply. */
+export const answerOf = (reply) => (reply !== null && typeof reply === 'object' ? answers.get(reply) : undefined);
 
 const describe = ({ name, title, description, inputSchema, annotations }) => ({ name, title, description, inputSchema, annotations: { title, ...annotations } });
 
@@ -79,10 +99,14 @@ export async function handle(message, tables) {
 
     case 'initialize': {
       const asked = params.protocolVersion;
+      const agreed = LEGACY.includes(asked) ? asked : LEGACY[0];
+      // The website and the icon became part of what a server may say about itself in the
+      // 2025-11-25 revision. A client that agreed an earlier one is told what it was told before.
+      const more = agreed === '2025-11-25' ? { websiteUrl: SERVER.websiteUrl, icons: SERVER.icons } : {};
       return done({
-        protocolVersion: LEGACY.includes(asked) ? asked : LEGACY[0],
+        protocolVersion: agreed,
         capabilities: { tools: { listChanged: false } },
-        serverInfo: { name: SERVER.name, title: SERVER.title, version: SERVER.version },
+        serverInfo: { name: SERVER.name, title: SERVER.title, version: SERVER.version, ...more },
         instructions: INSTRUCTIONS,
       });
     }
@@ -95,10 +119,13 @@ export async function handle(message, tables) {
 
     case 'tools/call': {
       const tool = typeof params.name === 'string' ? TOOLS.find((t) => t.name === params.name) : undefined;
-      if (!tool) return fail(id, CODE.params, `Unknown tool: ${String(params.name)}`);
+      if (!tool) return fail(id, CODE.params, `Unknown tool: ${echo(params.name)}`);
       const args = params.arguments ?? {};
       if (typeof args !== 'object' || Array.isArray(args)) return fail(id, CODE.params, 'arguments must be an object');
-      return done(await call(tool, args, tables));
+      const { said, answered } = await call(tool, args, tables);
+      const reply = done(said);
+      if (answered !== undefined) answers.set(reply, answered);
+      return reply;
     }
 
     default:
@@ -106,12 +133,19 @@ export async function handle(message, tables) {
   }
 }
 
-/** Run one tool. A problem with the inputs, or with reaching the tables, is the tool's answer, marked as an error. */
+/**
+ * Run one tool. A problem with the inputs, or with reaching the tables, is the tool's answer, marked as an error.
+ * Gives back `said`, the result as it is sent, and for an answer `answered`, the same answer as an object.
+ *
+ * The answer is sent once, as JSON in a text block. The protocol also allows a second copy of it as
+ * `structuredContent`, and asks for one only of a tool that declares an output schema, which none
+ * of these do. A second copy doubled every reply, so it is not sent.
+ */
 async function call(tool, args, tables) {
-  const said = (text) => ({ content: [{ type: 'text', text }], isError: true });
+  const said = (text) => ({ said: { content: [{ type: 'text', text }], isError: true } });
   const known = Object.keys(tool.inputSchema.properties ?? {});
   const extra = Object.keys(args).filter((key) => !known.includes(key));
-  if (extra.length) return said(`${tool.name} does not take ${extra.join(', ')}. It takes: ${known.join(', ') || 'nothing'}.`);
+  if (extra.length) return said(`${tool.name} does not take ${extra.map(echo).join(', ')}. It takes: ${known.join(', ') || 'nothing'}.`);
   let held;
   try {
     held = await tables();
@@ -120,7 +154,7 @@ async function call(tool, args, tables) {
   }
   try {
     const result = await tool.run(held, args);
-    return { content: [{ type: 'text', text: JSON.stringify(result) }], structuredContent: result, isError: false };
+    return { said: { content: [{ type: 'text', text: JSON.stringify(result) }], isError: false }, answered: result };
   } catch (error) {
     if (error instanceof InputError) return said(error.message);
     throw error;

@@ -49,7 +49,7 @@ import { CONTACT_EMAIL } from '../../lib/site';
       <h2 id="assistants">Lookups from AI assistants</h2>
       <div class="split-body">
         <p>
-          An AI assistant can look things up in the open tables of laws, bills, federal notices and dates (<a href="/data/#assistants">how</a>). The site sees the lookup the assistant sends, not what you typed to the assistant. It answers from its own files and keeps no copy of the lookup.
+          An AI assistant can look things up in the open tables of laws, bills, federal notices and dates, and in the health centers files (<a href="/data/assistants/">how</a>). The site sees the lookup the assistant sends, not what you typed to the assistant. It answers from its own files and keeps no copy of the lookup.
         </p>
         <p>The site does count lookups by kind, so the work goes to the tables people use. One count holds only this:</p>
         <ul>
@@ -58,8 +58,9 @@ import { CONTACT_EMAIL } from '../../lib/site';
           <li>whether an answer was found, and the public law, bill or notice that was opened;</li>
           <li>the name the assistant program gives itself.</li>
         </ul>
+        <p>A lookup about health centers is counted the same way, and the count does not hold which health center was asked about.</p>
         <p>A count never holds the words searched for, a date or anything else typed in, an internet address, or anything that could tell one person from another. The host keeps the counts for three months and then drops them.</p>
-        <p>To keep one sender from flooding the service, the host counts how many lookups an internet address sends in a minute and asks it to wait past 60. The site keeps none of that.</p>
+        <p>To keep one sender from flooding the service, the host counts how many lookups an internet address sends in a minute and asks it to wait past 200. The site keeps none of that.</p>
       </div>
     </section>
 

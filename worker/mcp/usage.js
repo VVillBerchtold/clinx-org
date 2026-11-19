@@ -15,8 +15,9 @@
 // The server itself keeps nothing. A host that wants counts passes a `counted` function to the
 // web door (src/http.js) and decides where the descriptions go.
 
-import { MODERN, LEGACY, UNREACHABLE } from './core.js';
+import { MODERN, LEGACY, UNREACHABLE, answerOf } from './core.js';
 import { TOOLS, isPlace, FILINGS_UNREAD, REPORTING_UNREAD } from './tools.js';
+import { HC_UNREAD } from './health-center-tools.js';
 
 const METHODS = ['server/discover', 'initialize', 'ping', 'tools/list', 'tools/call'];
 const CLIENT_KEY = 'io.modelcontextprotocol/clientInfo';
@@ -47,7 +48,7 @@ function filtersOf(tool, args) {
 function outcomeOf(reply) {
   if (reply === null || reply === undefined) return 'no answer';
   if (reply.error) return 'refused';
-  if (reply.result?.isError) return [UNREACHABLE, FILINGS_UNREAD, REPORTING_UNREAD].includes(reply.result.content?.[0]?.text) ? 'tables unreachable' : 'mistake';
+  if (reply.result?.isError) return [UNREACHABLE, FILINGS_UNREAD, REPORTING_UNREAD, ...Object.values(HC_UNREAD)].includes(reply.result.content?.[0]?.text) ? 'tables unreachable' : 'mistake';
   return 'answered';
 }
 
@@ -79,7 +80,9 @@ export function describeRequest(message, reply) {
       place = isPlace(code) ? code : '';
       filters = filtersOf(known, args);
       // The id comes from the answer, not from what was typed: it is a public row the server found.
-      const found = outcome === 'answered' ? reply.result.structuredContent : undefined;
+      // The answer is sent as text only; the server keeps the object it was written from beside the
+      // reply (answerOf in src/core.js), so the id is read from that and the text is not read again.
+      const found = outcome === 'answered' ? answerOf(reply) : undefined;
       lookedUp = found?.bill?.bill_id ?? found?.law?.law_id ?? found?.notice?.notice_id ?? found?.filing?.filing_id ?? '';
     }
   }

@@ -1,0 +1,157 @@
+---
+import '../../styles/pages.css';
+import Base from '../../layouts/Base.astro';
+import Draft from '../../components/Draft.astro';
+import PageHead from '../../components/PageHead.astro';
+import { MAKER_NAME, TERMS_CHANGED } from '../../lib/site';
+import { formatDate } from '../../lib/data';
+
+/**
+ * The terms of use: what a reader may do with the site, its data, its tools and its connector for AI
+ * assistants, and what the site does not promise. The two parts in bold (no warranty, limit of
+ * liability) are bold on purpose: such a statement is expected to stand out from the text around it.
+ * The request limit named below is the one in wrangler.jsonc (MCP_LIMIT); tests/terms.test.ts holds
+ * the two together.
+ */
+---
+
+<Base title="Terms of use" crumbs={[{ name: 'Terms of use', path: '/terms/' }]} description="What you may do with ClinX's data, tools and connector for AI assistants, and what ClinX does not promise.">
+  <PageHead title="Terms of use" trail={[{ label: 'ClinX' }]} wide>
+    <p class="lede head-tag">
+      <span>ClinX costs nothing to read and use. These terms say what you may do with it and what it does not promise. Last changed {formatDate(TERMS_CHANGED)}.</span>
+      <Draft />
+    </p>
+  </PageHead>
+
+  <div class="after-product">
+    <section class="split" aria-labelledby="who">
+      <h2 id="who">Who runs ClinX</h2>
+      <div class="split-body">
+        <p>ClinX is built and maintained by <a href="/about/#founder-name">{MAKER_NAME}</a>, an individual in Rhode Island, in the United States. ClinX is not a company. If a company runs it later, this page will say so.</p>
+        <p>In these terms, "ClinX" means the site clinx.org, its data files, its tools and its connector for AI assistants, and {MAKER_NAME} as the person who runs them.</p>
+      </div>
+    </section>
+
+    <section class="split" aria-labelledby="agreeing">
+      <h2 id="agreeing">Agreeing to these terms</h2>
+      <div class="split-body">
+        <p>By using ClinX you agree to these terms. If you do not agree, please do not use it. If you use ClinX for an organization, you agree for that organization.</p>
+      </div>
+    </section>
+
+    <section class="split" aria-labelledby="data">
+      <h2 id="data">What you may do with the data</h2>
+      <div class="split-body">
+        <p>The data ClinX has put together is under the Creative Commons Attribution 4.0 licence (CC BY 4.0). You may copy it, share it and build on it, for any purpose, as long as you give credit. The Data page has <a href="/data/#cite">a line you can copy</a>.</p>
+        <p>The official filings and files the data was read from are public records of the state or federal agency that published them. Each record links to its official source.</p>
+        <p>The site's code is under the MIT licence (<a href="/about/#licences">licences</a>).</p>
+        <p>The name ClinX and its mark are not covered by those licences. You may use the name to say where data came from. Please do not use the name or the mark in a way that suggests your work is ClinX's, or that ClinX endorses it.</p>
+      </div>
+    </section>
+
+    <section class="split" aria-labelledby="advice">
+      <h2 id="advice">Not advice</h2>
+      <div class="split-body">
+        <p>ClinX publishes public records and tools for working with them. Nothing on it is legal, medical, financial, billing or compliance advice, and using it does not make anyone your adviser. A summary in plain words is a reading aid; the official text at the link governs. Before you act on anything here, check the official source and, where it matters, ask a qualified professional.</p>
+        <p>ClinX is not part of any government agency, and no agency endorses it.</p>
+      </div>
+    </section>
+
+    <section class="split" aria-labelledby="accuracy">
+      <h2 id="accuracy">How accurate the data is</h2>
+      <div class="split-body">
+        <p>The records are read from public sources with care, and a figure is shown as its source printed it. Even so, the data can hold mistakes, can be incomplete and can fall behind its source. Dates on a calendar can move. Check a figure or a date against the official source before you rely on it.</p>
+        <p>If you find something wrong, please <a href="/about/#corrections">report it</a>. Corrections are made in the open.</p>
+      </div>
+    </section>
+
+    <section class="split" aria-labelledby="tools">
+      <h2 id="tools">Tools that open your files</h2>
+      <div class="split-body">
+        <p>Some <a href="/tools/">tools</a> open a file you choose. The file is read in your browser and is not sent to ClinX. You are responsible for the files you open, for checking the result, and for any duty you have to protect what is in them, including any duty under privacy law. No tool here decides for you whether a file may be shared.</p>
+      </div>
+    </section>
+
+    <section class="split" aria-labelledby="connector">
+      <h2 id="connector">The connector for AI assistants</h2>
+      <div class="split-body">
+        <p>The <a href="/data/assistants/">connector</a> at clinx.org/mcp lets an AI assistant look things up in the same public data. It only reads. What an assistant writes with it is the assistant's own work and can be wrong, so ask it for the official link and read the source. The company that makes your assistant has its own terms, and ClinX is not part of that company.</p>
+        <p>Automated use is welcome within fair limits. The site allows up to 200 requests a minute from one address and may slow or block heavier use.</p>
+      </div>
+    </section>
+
+    <section class="split" aria-labelledby="fair-use">
+      <h2 id="fair-use">Fair use of the site</h2>
+      <div class="split-body">
+        <p>Please do not try to break the site, overload it, get around its limits or reach anything that is not public. Do not use it to break the law. Do not present ClinX's data as an official record, and do not suggest that ClinX endorses you or your product.</p>
+        <p>ClinX may limit or block access for anyone who breaks these terms.</p>
+        <p>To report a security problem, see <a href="/privacy/#report">Report a problem</a> on the Privacy page.</p>
+      </div>
+    </section>
+
+    <section class="split" aria-labelledby="links">
+      <h2 id="links">Links to other sites</h2>
+      <div class="split-body">
+        <p>ClinX links to official sources and to other sites it does not run. It is not responsible for what is on them.</p>
+      </div>
+    </section>
+
+    <section class="split" aria-labelledby="send">
+      <h2 id="send">What you send to ClinX</h2>
+      <div class="split-body">
+        <p>If you send a correction, a suggestion or another message, ClinX may use it to improve the site without owing you anything. Please leave patient details out of any message. The <a href="/privacy/">Privacy page</a> says what the site receives and keeps.</p>
+      </div>
+    </section>
+
+    <section class="split" aria-labelledby="copyright">
+      <h2 id="copyright">Copyright concerns</h2>
+      <div class="split-body">
+        <p>If you believe something on ClinX infringes your copyright, write through the <a href="/contact/">contact page</a> with the address of the page, what you own and how to reach you. It will be looked at promptly.</p>
+      </div>
+    </section>
+
+    <section class="split" aria-labelledby="warranty">
+      <h2 id="warranty">No warranty</h2>
+      <div class="split-body">
+        <p><strong>ClinX is provided "as is" and "as available", at no charge, without warranty of any kind, express or implied, to the fullest extent the law allows. This includes any implied warranty of merchantability, fitness for a particular purpose, title or non-infringement, and any promise that ClinX is accurate, complete, current, free of errors or always available.</strong></p>
+      </div>
+    </section>
+
+    <section class="split" aria-labelledby="liability">
+      <h2 id="liability">Limit of liability</h2>
+      <div class="split-body">
+        <p><strong>To the fullest extent the law allows, ClinX is not liable for any indirect, incidental, special, consequential, exemplary or punitive damages, or for lost profits, lost revenue, lost data or the cost of a decision made in reliance on ClinX, however caused and even if told such a loss was possible. To the same extent, ClinX's total liability for all claims about the site, its data, its tools and its connector is limited to one hundred U.S. dollars (US$100).</strong></p>
+        <p>Some places do not allow some of these limits. Where that is so, the limits apply as far as the law there allows.</p>
+      </div>
+    </section>
+
+    <section class="split" aria-labelledby="claims">
+      <h2 id="claims">Claims caused by your use</h2>
+      <div class="split-body">
+        <p>If someone brings a claim against ClinX because you broke these terms or the law while using ClinX, you agree to cover the reasonable costs of that claim, including reasonable legal fees, as far as the law allows.</p>
+      </div>
+    </section>
+
+    <section class="split" aria-labelledby="changes">
+      <h2 id="changes">Changes</h2>
+      <div class="split-body">
+        <p>These terms may change. The date under the title shows when they last did. Using ClinX after a change means you accept the changed terms. ClinX, or any part of it, may change or stop at any time.</p>
+      </div>
+    </section>
+
+    <section class="split" aria-labelledby="law">
+      <h2 id="law">The law that applies</h2>
+      <div class="split-body">
+        <p>These terms are governed by the laws of the State of Rhode Island, in the United States, without regard to its rules on conflicts of law. Any dispute about ClinX or these terms is to be brought in the state or federal courts located in Rhode Island, and you and ClinX agree to those courts.</p>
+      </div>
+    </section>
+
+    <section class="split" aria-labelledby="rest">
+      <h2 id="rest">The rest</h2>
+      <div class="split-body">
+        <p>If a court finds that part of these terms cannot be enforced, the rest still applies. Not acting on a breach once does not give up the right to act on it later. These terms, with the licences named above, are the whole agreement between you and ClinX about using it.</p>
+        <p>Questions about these terms go through the <a href="/contact/">contact page</a>.</p>
+      </div>
+    </section>
+  </div>
+</Base>

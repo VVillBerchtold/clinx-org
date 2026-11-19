@@ -1,0 +1,31 @@
+---
+/**
+ * The filter above a list. It is drawn hidden and the script src/scripts/hc-areas-filter.ts switches it on,
+ * so a list is whole without script. It filters the rows of the table named in `target`.
+ */
+interface Props {
+  target: string;
+  textLabel: string;
+  kinds?: readonly { value: string; label: string }[] | undefined;
+}
+const { target, textLabel, kinds } = Astro.props;
+---
+
+<div class="hc-filter" data-hc-filter data-for={target} hidden>
+  <label>
+    {textLabel}
+    <input type="search" data-hc-text autocomplete="off" spellcheck="false" />
+  </label>
+  {
+    kinds && (
+      <label>
+        Kind of area
+        <select data-hc-kind>
+          <option value="">All kinds</option>
+          {kinds.map((k) => <option value={k.value}>{k.label}</option>)}
+        </select>
+      </label>
+    )
+  }
+  <p class="hc-count" data-hc-count aria-live="polite"></p>
+</div>

@@ -20,6 +20,7 @@ The dot is the typeface's own dot. It is a little wider than it is tall, so it i
 - **Clear space.** Keep a gap as wide as the dot on every side of the wordmark, and half the mark's width around the mark.
 - **Smallest size.** Wordmark: 16 pixels tall. Mark: 16 pixels.
 - **Where a square is needed** (a picture that is cut to a circle, or cannot show through), use `clinx-mark-square.svg`: the dot on the light page colour.
+- **Two files keep their names.** The server for AI assistants names `clinx-mark-square-1024.png` and `clinx-mark-square.svg` as its icon, by their addresses on clinx.org. A client fetches them from there, so they are not renamed or moved (`tests/assistant-icon.test.ts` fails if they are).
 
 ## Colours
 

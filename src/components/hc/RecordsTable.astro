@@ -1,0 +1,144 @@
+---
+import { DENSE_FROM, MARKS, cellWords, columnParts, shortColumn, type RCell, type RTable } from '../../lib/hc-records';
+
+/**
+ * One table of a health center's report: HRSA's table name, its lines in HRSA's order with HRSA's line
+ * titles, its columns with HRSA's column titles. A value is printed as published, a mark in words with its
+ * cell address in HRSA's workbook beside it. A table whose every cell is one mark is one sentence. A table whose
+ * column titles differ from line to line is a list of its lines, each with its own cells.
+ */
+interface Props {
+  table: RTable;
+  year: number;
+  center: string;
+}
+const { table, year, center } = Astro.props;
+// A table read from two sheets prints the sheet with each address, which is too long to sit beside a figure.
+const slim = table.sheets.length === 1;
+const LONG_FROM = 24;
+const SHORT_TITLE = 40;
+/** A table of this many value columns or fewer has one text line to a row at desktop width. */
+const SLIM_TO = 3;
+const lineName = (line: string): string => (/^L[0-9]/.test(line) ? `Line ${line.slice(1)}` : line);
+const markSentence = (mark: string): string => {
+  const m = MARKS.find((x) => x.name === mark)!;
+  return `HRSA marks every cell of this table ${m.mark} for this health center in ${year}: ${m.cover}. The table has ${table.cellCount} cells, and they are not listed one by one.`;
+};
+const cellClass = (c: RCell | null): string | undefined => (c === null ? 'num blank' : 'num');
+// A list: each line once, with the cells it has. Used where the column titles differ from line to line, so a grid would be mostly empty.
+const lines = table.layout === 'list' ? table.blocks.flatMap((b) => b.rows).map((r) => ({ line: r.line, title: r.title, cells: r.cells.filter((c): c is RCell => c !== null) })).filter((r) => r.cells.length > 0) : [];
+// A list whose values are answers in words is set left; a list of figures is set right.
+const wordy = lines.some((r) => r.cells.some((c) => c.kind === 'value' && /[A-Za-z]{3}/.test(c.text)));
+const range = (rows: { line: string }[]): string => (rows.length > 1 ? `${lineName(rows[0]!.line)} to ${lineName(rows[rows.length - 1]!.line)}` : lineName(rows[0]?.line ?? ''));
+const sheetNote = table.sheets
+  .map((s) => (s.row !== null && s.status === 'row_present' ? `sheet ${s.sheet}, row ${s.row}` : `sheet ${s.sheet}`))
+  .join(' and ');
+---
+
+<details class="hcr-table" open={table.open && table.status === 'present' && table.onlyMark === null}>
+  <summary>
+    <h3 id={table.id}>{table.name}</h3>
+    <span class="hcr-sub">{table.label !== '' ? `${table.label}. ` : ''}{table.lineCount} {table.lineCount === 1 ? 'line' : 'lines'}</span>
+  </summary>
+  {
+    table.status === 'unnamed' ? (
+      <p>
+        HRSA's {year} file has no row with this health center's ID in {table.name}. It holds rows whose ID is --- and whose every cell is ---, suppressed health center confidential data, as many as there are health centers in the file without a named row. ClinX counts this health center among them and does not say which of those rows is its own.
+      </p>
+    ) : table.status === 'absent' ? (
+      <p>HRSA's {year} file has no row for this health center in {table.name}.</p>
+    ) : table.onlyMark !== null ? (
+      <p>{markSentence(table.onlyMark)}</p>
+    ) : (
+      <>
+        <p class="hcr-where">Cells are in HRSA's workbook, {sheetNote}. The small code with each figure is its address there.</p>
+        {table.layout === 'grid' ? (
+          table.blocks.map((block) => {
+            const dense = block.columns.length >= DENSE_FROM;
+            // A long table of one or two columns and short line titles is set in two halves side by side, so the page is half as long.
+            const cut = Math.ceil(block.rows.length / 2);
+            const halves = block.columns.length <= 2 && block.rows.length >= LONG_FROM && block.rows.every((r) => r.title.length <= SHORT_TITLE) ? [block.rows.slice(0, cut), block.rows.slice(cut)] : [block.rows];
+            const keyed = dense && block.columns.some((c) => shortColumn(table.name, c.title) !== columnParts(c.title).words);
+            return (
+            <>
+            {table.blocks.length > 1 && <p class="hcr-block-head">{range(block.rows)}{block.part ? `, ${block.part}` : ''}</p>}
+            {keyed && (
+              <div class="hcr-key">
+                <p>The column headings of {table.blocks.length > 1 ? `${range(block.rows)}` : 'this table'} are shortened. HRSA's title of each column:</p>
+                <dl>
+                  {block.columns.map((c) => (
+                    <div>
+                      <dt>{shortColumn(table.name, c.title)}{columnParts(c.title).code !== '' && <span class="hcr-code">{columnParts(c.title).code}</span>}</dt>
+                      <dd>{c.title}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            )}
+            <div class:list={['hcr-pieces', { 'hcr-halves': halves.length > 1 }]}>
+            {halves.map((rows, h) => (
+            <div class:list={['table-wrap', 'wide', 'stack', 'hcr-grid', `n${Math.min(block.columns.length, DENSE_FROM)}`, { 'hcr-slim': slim && block.columns.length <= SLIM_TO, 'hcr-dense': dense, 'hcr-roomy': dense && block.columns.length <= 7, 'hcr-many': block.columns.length >= 9 }]}>
+              <table role="table">
+                <caption class="visually-hidden"><span>{table.name}: {table.label !== '' ? `${table.label}, ` : ''}{table.blocks.length > 1 ? `${range(block.rows)}, ` : ''}{block.part ? `${block.part}, ` : ''}{center}, {year}{h > 0 ? ', continued' : ''}</span></caption>
+                <thead role="rowgroup">
+                  <tr role="row">
+                    <th role="columnheader" scope="col">Line</th>
+                    {block.columns.map((c) =>
+                      dense ? (
+                        <th role="columnheader" scope="col" class="num"><span class="visually-hidden">{c.title}</span><span aria-hidden="true">{shortColumn(table.name, c.title)}{columnParts(c.title).code !== '' && <span class="hcr-code">{columnParts(c.title).code}</span>}</span></th>
+                      ) : (
+                        <th role="columnheader" scope="col" class="num">{c.title}</th>
+                      ),
+                    )}
+                  </tr>
+                </thead>
+                <tbody role="rowgroup">
+                  {rows.map((r) => (
+                    <tr role="row">
+                      <th role="rowheader" scope="row"><span class="hcr-line">{lineName(r.line)}</span>{r.title}</th>
+                      {r.cells.map((c, i) => (
+                        <td role="cell" class={cellClass(c)} data-label={block.columns[i]!.title}>
+                          {c !== null && (c.kind === 'value' ? (
+                            <>{c.text}{c.exponent && <span class="hcr-exp">published with an exponent</span>}<span class="hcr-ref">{c.ref}</span></>
+                          ) : c.kind === 'empty' ? null : (
+                            <><span class:list={['hcr-mark', { 'hcr-clinx': c.kind === 'clinx', 'hcr-typed': c.kind === 'typed' }]}>{cellWords(c)}</span>{c.ref !== '' && <span class="hcr-ref">{c.ref}</span>}</>
+                          ))}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            ))}
+            </div>
+            </>
+            );
+          })
+        ) : (
+          <ul class:list={['hcr-ledger', { 'hcr-words': wordy }]} role="list" aria-label={`${table.name}: ${table.label !== '' ? `${table.label}, ` : ''}${center}, ${year}`}>
+            {lines.map((row) => (
+              <li>
+                <p class="hcr-ledger-line"><span class="hcr-line">{lineName(row.line)}</span>{row.title}</p>
+                <dl>
+                  {row.cells.map((c) => (
+                    <div>
+                      <dt>{c.columnTitle}</dt>
+                      <dd>
+                        {c.kind === 'value' ? (
+                          <>{c.text}{c.exponent && <span class="hcr-exp">published with an exponent</span>}<span class="hcr-ref">{c.ref}</span></>
+                        ) : c.kind === 'empty' ? null : (
+                          <><span class:list={['hcr-mark', { 'hcr-clinx': c.kind === 'clinx', 'hcr-typed': c.kind === 'typed' }]}>{cellWords(c)}</span>{c.ref !== '' && <span class="hcr-ref">{c.ref}</span>}</>
+                        )}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </li>
+            ))}
+          </ul>
+        )}
+      </>
+    )
+  }
+</details>

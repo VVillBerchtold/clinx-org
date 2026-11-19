@@ -1,0 +1,230 @@
+---
+/**
+ * One HRSA funding opportunity: its title and number, whether it is a forecast or posted, every date it
+ * gives with the text as published, its money fields as published, who can apply, its listing numbers,
+ * its description as published (plain text), the words that made ClinX flag it, and the link to its
+ * own page on Grants.gov. Everything shown comes from src/lib/hc-funding.ts.
+ */
+import '../../../../styles/home.css';
+import '../../../../styles/scorecard.css';
+import '../../../../styles/hc-funding.css';
+import Arrow from '../../../../components/Arrow.astro';
+import OnPage from '../../../../components/OnPage.astro';
+import PageHead from '../../../../components/PageHead.astro';
+import Pager from '../../../../components/Pager.astro';
+import Base from '../../../../layouts/Base.astro';
+import { HC_HOME, HC_NAME } from '../../../../lib/site';
+import {
+  FUNDING_HOME, countText, dayText, getFunding, isWebAddress, moneyText, opportunityDates, opportunityPath, paragraphs, programListingNumbers, statusLabel,
+  type Opportunity,
+} from '../../../../lib/hc-funding';
+
+export function getStaticPaths() {
+  const data = getFunding();
+  const ordered = [...data.opportunities].sort((a, b) => a.title.localeCompare(b.title, 'en') || a.id.localeCompare(b.id));
+  return ordered.map((o, i) => ({
+    params: { id: o.id },
+    props: { id: o.id, prev: ordered[i - 1]?.id, next: ordered[i + 1]?.id },
+  }));
+}
+
+const { id, prev: prevId, next: nextId } = Astro.props as { id: string; prev: string | undefined; next: string | undefined };
+const data = getFunding();
+const o = data.opportunities.find((x) => x.id === id) as Opportunity;
+const step = (otherId: string | undefined) => {
+  const other = otherId === undefined ? undefined : data.opportunities.find((x) => x.id === otherId);
+  return other ? { href: opportunityPath(other.id), name: other.title } : undefined;
+};
+const day = dayText(data.day);
+const programNumbers = programListingNumbers(data);
+const forecast = o.status === 'forecasted';
+const dates = opportunityDates(o);
+const descriptionParagraphs = paragraphs(o.description);
+const eligibilityParagraphs = paragraphs(o.eligibility);
+const money: [string, string][] = [
+  ['Estimated funding', moneyText(o.estimatedFunding)],
+  ['Award ceiling', moneyText(o.awardCeiling)],
+  ['Award floor', moneyText(o.awardFloor)],
+  ['Number of awards', countText(o.numberOfAwards)],
+];
+const comments = [...new Set([o.changeComment, o.recordChangeComment].filter((c) => c.trim() !== ''))];
+const items = [
+  { id: 'dates-heading', label: 'Dates' },
+  { id: 'money-heading', label: 'Money' },
+  { id: 'who-heading', label: 'Who can apply' },
+  { id: 'description-heading', label: 'Description' },
+  { id: 'flags-heading', label: 'Why ClinX flagged it' },
+  { id: 'source', label: 'Source' },
+];
+---
+
+<Base
+  title={`${o.title} (${o.number})`}
+  crumbs={[{ name: HC_NAME, path: HC_HOME }, { name: 'Health center funding calendar', path: FUNDING_HOME }, { name: o.title, path: opportunityPath(o.id) }]}
+  description={`${statusLabel(o.status)} HRSA opportunity ${o.number} on Grants.gov: its dates, amounts, eligibility and description as HRSA published them in the file of ${day}, with a link to its Grants.gov page.`}
+>
+  <PageHead title={o.title} trail={[{ label: HC_NAME, href: HC_HOME }, { label: 'Funding', href: FUNDING_HOME }, { label: o.number }]}>
+    <p class="lede">
+      {statusLabel(o.status)} opportunity {o.number} of the {o.agencyName}, on Grants.gov. {forecast ? 'HRSA expects to post it, and its dates are estimates that can move.' : 'Applications are open on Grants.gov.'} Everything below is as HRSA published it in the file of {day}.
+    </p>
+    <div class="btn-row"><a class="btn" href={o.grantsGovUrl}>Grants.gov page of {o.number} <Arrow /></a></div>
+  </PageHead>
+
+  <OnPage title={o.title} items={items} />
+
+  <div class="prose">
+    <section class="panel" aria-labelledby="about-title">
+      <h2 id="about-title" class="visually-hidden">About this opportunity</h2>
+      <dl class="fund-kv">
+        <dt>Opportunity number</dt>
+        <dd>{o.number}</dd>
+        <dt>Grants.gov id</dt>
+        <dd>{o.id}</dd>
+        <dt>Status</dt>
+        <dd>{statusLabel(o.status)}</dd>
+        <dt>Category</dt>
+        <dd>{o.category}</dd>
+        {o.fiscalYear !== null && <><dt>Fiscal year</dt><dd>{o.fiscalYear}</dd></>}
+        <dt>Funding instrument</dt>
+        <dd>{o.fundingInstruments.length > 0 ? o.fundingInstruments.join('; ') : 'Not given'}</dd>
+        <dt>Funding category</dt>
+        <dd>{o.fundingCategories.length > 0 ? o.fundingCategories.join('; ') : 'Not given'}</dd>
+        <dt>Cost sharing or matching</dt>
+        <dd>{o.costSharing ? 'Yes' : 'No'}</dd>
+        <dt>Revision of the record</dt>
+        <dd>{o.revision}</dd>
+      </dl>
+    </section>
+
+    <h2 id="dates-heading">Dates</h2>
+    <div class="table-wrap wide stack fund-table">
+      <table role="table">
+        <caption><span>Every date the record of {o.number} gives, as published</span></caption>
+        <thead role="rowgroup">
+          <tr role="row">
+            <th role="columnheader" scope="col">Date</th>
+            <th role="columnheader" scope="col">Day</th>
+            <th role="columnheader" scope="col">As published</th>
+            <th role="columnheader" scope="col">Estimated or firm</th>
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          {
+            dates.map((d) => (
+              <tr role="row">
+                <th role="rowheader" scope="row">{d.label}</th>
+                <td role="cell" data-label="Day">{dayText(d.stamp.date)}</td>
+                <td role="cell" class="id" data-label="As published">{d.stamp.asPublished}</td>
+                <td role="cell" data-label="Estimated or firm"><span class:list={['fund-chip', d.estimated ? 'est' : 'firm']}>{d.estimated ? 'Estimated' : 'Firm'}</span></td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="fund-small">
+      {forecast ? 'This is a forecast: the dates marked Estimated are HRSA’s plan, and HRSA changes them. ' : 'This opportunity is posted: its application due date is the one stated in the notice. The earlier forecast’s estimated dates are kept in the table and marked. '}Firm marks a date that HRSA does not label as an estimate.
+    </p>
+    {o.applicationDueNote !== '' && <p class="fund-text"><strong>HRSA's note on the due date.</strong> {o.applicationDueNote}</p>}
+    {
+      comments.length > 0 && (
+        <div class="fund-text">
+          <p><strong>HRSA's comment on its last change.</strong></p>
+          {comments.map((c) => <p>{c}</p>)}
+        </div>
+      )
+    }
+    {
+      o.packages.length > 0 && (
+        <div class="table-wrap wide stack fund-table">
+          <table role="table">
+            <caption><span>Application packages of {o.number}</span></caption>
+            <thead role="rowgroup">
+              <tr role="row">
+                <th role="columnheader" scope="col">Package</th>
+                <th role="columnheader" scope="col">Opens</th>
+                <th role="columnheader" scope="col">Closes</th>
+              </tr>
+            </thead>
+            <tbody role="rowgroup">
+              {
+                o.packages.map((p) => (
+                  <tr role="row">
+                    <th role="rowheader" scope="row">{p.packageId}</th>
+                    <td role="cell" data-label="Opens">{p.opens}</td>
+                    <td role="cell" data-label="Closes">{p.closes}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+      )
+    }
+
+    <h2 id="money-heading">Money</h2>
+    <dl class="fund-kv">
+      {money.map(([label, value]) => <><dt>{label}</dt><dd class="num">{value}</dd></>)}
+    </dl>
+    <p class="fund-small">Amounts are in US dollars, as HRSA published them.</p>
+
+    <h2 id="who-heading">Who can apply</h2>
+    {o.applicantTypes.length > 0 ? <ul class="fund-list">{o.applicantTypes.map((t) => <li>{t}</li>)}</ul> : <p>HRSA gives no applicant type.</p>}
+    {
+      eligibilityParagraphs.length > 0 && (
+        <div class="fund-text">
+          <p><strong>Additional information on eligibility, in HRSA's own words.</strong></p>
+          {eligibilityParagraphs.map((p) => <p>{p}</p>)}
+        </div>
+      )
+    }
+    <h3 id="listings-heading">Assistance listing numbers</h3>
+    {o.listings.length > 0 ? <ul class="fund-list">{o.listings.map((l) => <li><span class="mono">{l.number}</span> {l.programTitle}</li>)}</ul> : <p>HRSA gives no listing number.</p>}
+
+    <h2 id="description-heading">Description</h2>
+    <div class="fund-text">
+      {descriptionParagraphs.length === 0 && <p>HRSA gives no description.</p>}
+      {descriptionParagraphs.map((p) => <p>{p}</p>)}
+    </div>
+    <p class="fund-small">The description is HRSA's own text, printed as HRSA published it with its markup removed.</p>
+    {
+      o.moreInformationUrl !== '' && isWebAddress(o.moreInformationUrl) && (
+        <p><a href={o.moreInformationUrl}>{o.moreInformationText !== '' ? o.moreInformationText : 'More information attached by HRSA'}</a> (a link HRSA attached to this opportunity)</p>
+      )
+    }
+    {
+      o.attachmentFileNames.length > 0 && (
+        <>
+          <h3 id="attachments-heading">Attachments</h3>
+          <p class="fund-small">The names of the files attached on Grants.gov. The files themselves are there.</p>
+          <ul class="fund-list">{o.attachmentFileNames.map((n) => <li>{n}</li>)}</ul>
+        </>
+      )
+    }
+
+    <h2 id="flags-heading">Why ClinX flagged it</h2>
+    <ul class="fund-list">
+      <li>
+        {o.namesHealthCenters ? `Names health centers: yes. The title, description or eligibility text holds ${o.matchedTerms.length === 1 ? 'the word' : 'these words'}: ${o.matchedTerms.join(', ')}.` : 'Names health centers: no. None of the words health center, federally qualified, FQHC, look-alike or 330 is in its title, description or eligibility text.'}
+      </li>
+      <li>
+        {o.healthCenterProgram ? `Health Center Program listing: yes. It carries assistance listing ${o.listings.filter((l) => programNumbers.includes(l.number)).map((l) => l.number).join(', ')}, which ClinX lists as the Health Center Program's.` :'Health Center Program listing: no. Its listing numbers are not on the list ClinX keeps for the Health Center Program.'}
+      </li>
+    </ul>
+    <p class="fund-small">A flag sorts and filters the calendar. It is a match on words or on a number and says nothing about who may take part.</p>
+
+    <h2 id="source">Source</h2>
+    <dl class="facts panel">
+      <dt>Grants.gov page</dt>
+      <dd><a href={o.grantsGovUrl}>{o.title} on Grants.gov</a></dd>
+      <dt>Day of the file</dt>
+      <dd>{day}</dd>
+      <dt>Record last changed by HRSA</dt>
+      <dd>{o.dates['last_changed'] ? o.dates['last_changed'].asPublished : 'Not given'}</dd>
+      <dt>Where the file comes from</dt>
+      <dd>HRSA's record of this opportunity on Grants.gov, read on {day}. The same row is in <a href="/data/health-centers/funding/opportunities.json">opportunities.json</a> and <a href="/data/health-centers/funding/opportunities.csv">opportunities.csv</a>. <a href={FUNDING_HOME}>The calendar</a> shows its dates beside those of the other opportunities.</dd>
+    </dl>
+  </div>
+
+  <Pager label="More opportunities" noun="opportunity" prev={step(prevId)} next={step(nextId)} up={{ href: FUNDING_HOME, label: 'The funding calendar' }} />
+</Base>

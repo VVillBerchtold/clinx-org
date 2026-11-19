@@ -1,0 +1,409 @@
+/* Health center records: the list, a health center's page for one year. Colours only through the tokens. */
+
+/* The list */
+.hcr-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  align-items: end;
+  margin: 0 0 1rem;
+}
+.hcr-filter[hidden] { display: none; }
+.hcr-filter label {
+  display: grid;
+  gap: 0.25rem;
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+.hcr-filter input,
+.hcr-filter select {
+  font: inherit;
+  font-weight: 400;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 0.55rem 0.7rem;
+  min-height: 44px;
+  max-width: 100%;
+}
+.hcr-filter input { min-width: min(100%, 20rem); }
+.hcr-filter select { min-width: min(100%, 14rem); }
+/* A search box that stands by itself is a comfortable width for a name. */
+.hcr-filter-one label { flex: 0 1 26rem; }
+.hcr-filter-one input { width: 100%; }
+.hcr-count { margin: 0 0 0.75rem; font-size: var(--text-sm); color: var(--muted); }
+.hcr-list tr[hidden], .hcr-list tbody[hidden] { display: none; }
+/* A state's page: the counts of its five files, in one even row above its list. */
+.hcr-state-main { min-width: 0; }
+.hcr-state-main > .small { max-width: 70ch; margin: 0 0 var(--s4); }
+.hcr-yearcounts {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0 0 0.75rem;
+  padding: 0;
+  list-style: none;
+}
+.hcr-yearcounts li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0;
+  max-width: none;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+}
+.hcr-yearcounts strong { font: 700 1.375rem/1.1 var(--display); letter-spacing: -0.015em; font-variant-numeric: tabular-nums; }
+@media (max-width: 480px) {
+  .hcr-yearcounts { gap: 0.25rem; }
+  .hcr-yearcounts li { padding: 0.5rem 0.4rem; }
+  .hcr-yearcounts .label { font-size: 0.625rem; letter-spacing: 0.02em; }
+  .hcr-yearcounts strong { font-size: 1.125rem; }
+}
+/* Every health center by name: closed until opened or searched; columns keep it short. */
+.hcr-namelist {
+  columns: 20rem auto;
+  column-gap: 2rem;
+  margin: 0;
+  padding: 0.5rem 1.25rem 1rem;
+  list-style: none;
+}
+.hcr-namelist li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  margin: 0;
+  max-width: none;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--line);
+  break-inside: avoid;
+}
+.hcr-namelist li[hidden] { display: none; }
+.hcr-namelist a { font-size: var(--text-sm); font-weight: 650; overflow-wrap: anywhere; }
+.hcr-namelist span { font-size: var(--text-xs); color: var(--muted); }
+.hcr-names[hidden] { display: none; }
+/* The heading of a state's group in the list. */
+.hcr-list .hcr-group th {
+  padding-block: 1.125rem 0.5rem;
+  background: var(--bg);
+  border-bottom: 2px solid var(--line);
+  font: 700 1.125rem/1.25 var(--display);
+  letter-spacing: -0.01em;
+  text-align: left;
+  color: var(--ink);
+}
+.hcr-list .hcr-group-count { margin-left: 0.5rem; font: 500 var(--text-sm) / 1.25 var(--body); letter-spacing: 0; color: var(--muted); }
+.hcr-list .hcr-group-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.25rem 1rem; }
+.hcr-list .hcr-group-back { font: 600 var(--text-xs) / 1.25 var(--body); letter-spacing: 0; }
+.hcr-places { margin-bottom: 1.25rem; }
+.hcr-list th[scope='row'] { font-size: var(--text-sm); }
+.hcr-list th[scope='row'] a { font-weight: 650; }
+.hcr-list thead th { white-space: normal; }
+.hcr-years { display: flex; flex-wrap: wrap; gap: 0.25rem 0.625rem; margin: 0; padding: 0; list-style: none; }
+.hcr-years li { margin: 0; padding: 0; max-width: none; }
+.hcr-years a { font-size: var(--text-sm); font-variant-numeric: tabular-nums; }
+/* On a wide screen the five years of a health center sit on one line, so a long list stays short. */
+@media (min-width: 761px) {
+  .hcr-list .hcr-years { flex-wrap: nowrap; }
+}
+
+/* Facts at the head of a page */
+.hcr-facts { margin-top: var(--s2); max-width: 52rem; }
+.hcr-facts dd { font-weight: 500; }
+.hcr-facts .hcr-flag { font-variant-numeric: tabular-nums; color: var(--muted); }
+.hcr-facts ul { margin: 0; padding: 0; list-style: none; }
+.hcr-facts li { margin: 0; padding: 0; }
+
+/* Sections */
+.hcr-section { padding-block: var(--s5); }
+.hcr-section > h2 { margin-bottom: var(--s3); }
+.hcr-section > p { max-width: 70ch; }
+.hcr-section > p + * { margin-top: var(--s4); }
+.hcr-section [id] { scroll-margin-top: 6rem; }
+
+/* At a glance */
+.hcr-tiles { margin: 0; }
+.hcr-tiles.n1 { grid-template-columns: minmax(0, 1fr); }
+.hcr-tiles.n2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.hcr-tiles.n3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.hcr-tiles strong { color: var(--accent); }
+.hcr-tiles strong.hcr-tile-words { min-height: clamp(2.25rem, 4.4vw, 3.75rem); display: flex; align-items: end; font: 650 var(--text-base)/1.25 var(--body, inherit); letter-spacing: 0; color: var(--muted); }
+.hcr-tiles li > span { color: var(--ink); font-weight: 600; }
+.hcr-tiles li > small { display: block; margin-top: 0.25rem; font-size: var(--text-xs); color: var(--muted); }
+.hcr-glance {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 27rem), 1fr));
+  gap: var(--s4);
+  margin-top: var(--s4);
+}
+.hcr-glance + p { margin-top: var(--s3); }
+.hcr-card {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  overflow: hidden;
+}
+.hcr-card > h3 { margin: 0; padding: 1.25rem 1.25rem 0; font: 700 1.125rem/1.25 var(--display); letter-spacing: -0.01em; }
+.hcr-card > .hcr-where { margin: 0.25rem 0 0; padding: 0 1.25rem; font-size: var(--text-xs); color: var(--muted); }
+.hcr-card .table-wrap { border: 0; border-radius: 0; margin-top: var(--s3); }
+.hcr-card > p.hcr-sentence { padding: var(--s3) 1.25rem 1.25rem; margin: 0; }
+.hcr-grid.hcr-bars thead th:first-child { min-width: 8rem; }
+.hcr-card .table-wrap.wide.hcr-bars tbody th[scope='row'] { min-width: 8rem; }
+.hcr-bars thead th.num { min-width: 0; }
+.hcr-bars td.share { --fig: 4.5rem; min-width: 8.75rem; width: auto; }
+.hcr-bars td.share .hcr-ref { display: block; text-align: right; }
+.hcr-bars td.share .bar-figure { font-weight: 600; white-space: nowrap; }
+.hcr-bars td.share .hcr-mark { display: inline-block; }
+
+/* Legend of the marks */
+.hcr-legend { display: grid; gap: var(--s2); margin: 0 0 var(--s4); padding: var(--s4); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); }
+.hcr-legend dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 0.375rem 1rem; margin: 0; }
+.hcr-legend dt { font-weight: 600; font-size: var(--text-sm); }
+.hcr-legend dd { margin: 0; font-size: var(--text-sm); }
+.hcr-legend p { margin: 0; font-size: var(--text-sm); color: var(--muted); max-width: 75ch; }
+.hcr-legend .hcr-sym { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+/* Tables */
+.hcr-table { border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--surface); margin-top: 2rem; }
+.hcr-table[open] { padding-bottom: 0.5rem; }
+.hcr-table > summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.125rem 1rem;
+  align-items: baseline;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  list-style: none;
+}
+.hcr-table > summary::-webkit-details-marker { display: none; }
+.hcr-table > summary::after {
+  content: '';
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-right: 2px solid var(--muted);
+  border-bottom: 2px solid var(--muted);
+  transform: rotate(45deg);
+  transition: transform 0.2s var(--ease);
+}
+.hcr-table[open] > summary::after { transform: rotate(225deg); }
+.hcr-table > summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-md); }
+.hcr-table > summary h3 { margin: 0; font: 700 1.125rem/1.25 var(--display); letter-spacing: -0.01em; }
+.hcr-table > summary .hcr-sub { grid-column: 1; font-size: var(--text-sm); color: var(--muted); }
+.hcr-table[open] > summary { border-bottom: 1px solid var(--line); }
+.hcr-table .table-wrap { border: 0; border-radius: 0 0 var(--r-lg) var(--r-lg); }
+.hcr-table .table-wrap + .table-wrap { border-top: 1px solid var(--line); border-radius: 0 0 var(--r-lg) var(--r-lg); }
+.hcr-table > p { margin: 0; padding: 1rem 1.25rem; max-width: 80ch; }
+.hcr-table > .hcr-where { padding-block: 0.625rem 0; font-size: var(--text-xs); color: var(--muted); }
+.hcr-grid table, .hcr-plain table { min-width: 100%; }
+.hcr-grid thead th { white-space: normal; vertical-align: bottom; line-height: 1.25; min-width: 7rem; }
+.hcr-grid thead th:first-child { min-width: 14rem; }
+.hcr-grid th[scope='row'], .hcr-plain th[scope='row'] { font-weight: 600; font-size: var(--text-sm); }
+.hcr-grid th[scope='row'] .hcr-line, .hcr-plain th[scope='row'] .hcr-line {
+  display: block;
+  font-family: var(--mono);
+  font-size: var(--text-xs);
+  font-weight: 450;
+  color: var(--muted);
+}
+.hcr-grid td, .hcr-plain td { font-variant-numeric: tabular-nums; }
+.hcr-grid td.num, .hcr-plain td.num { vertical-align: top; }
+.hcr-ref {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  font-weight: 400;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+.hcr-exp { display: block; font-size: 0.6875rem; font-weight: 400; color: var(--muted); white-space: normal; }
+.hcr-mark {
+  display: inline-block;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  line-height: 1.25;
+  padding: 0.1rem 0.45rem;
+  border: 1px dashed var(--muted);
+  border-radius: var(--r-sm);
+  color: var(--ink);
+  white-space: normal;
+}
+.hcr-mark.hcr-clinx { border-style: solid; background: var(--accent-wash); }
+.hcr-mark.hcr-typed, .hcr-mark.hcr-none { border-color: var(--line); color: var(--muted); }
+
+/* Sites and ZIP codes */
+.hcr-plain thead th { white-space: normal; vertical-align: bottom; }
+.hcr-plain td { font-size: var(--text-sm); }
+.hcr-plain td.hcr-text { white-space: normal; min-width: 9rem; }
+
+/* One table of HRSA's may hold several small tables. Each gets its own heading and a rule above it, so they do not run together. */
+.hcr-table > .hcr-block-head {
+  max-width: none;
+  margin: 1.75rem 0 0;
+  padding: 1.5rem 1.25rem 0.5rem;
+  border-top: 1px solid var(--line);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.hcr-table > .hcr-where + .hcr-block-head { margin-top: 0.75rem; }
+.hcr-table .hcr-pieces .table-wrap { border-radius: 0; }
+@media (min-width: 761px) {
+  .hcr-table .table-wrap.wide tbody th,
+  .hcr-table .table-wrap.wide tbody td { padding-block: 0.625rem; }
+}
+
+/* Even columns. From tablet width up every record table has a fixed layout: the line takes what the value
+   columns leave, the value columns are all one width, and a table of few columns is no wider than it needs. */
+.hcr-code {
+  display: block;
+  margin-top: 0.15rem;
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  font-weight: 450;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+.hcr-key { padding: 0.75rem 1.25rem 1rem; border-bottom: 1px solid var(--line); }
+.hcr-key > p { margin: 0 0 0.5rem; font-size: var(--text-xs); color: var(--muted); }
+.hcr-key dl { margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); gap: 0.4rem 1.5rem; }
+.hcr-key dl > div { display: grid; grid-template-columns: 8.5rem minmax(0, 1fr); gap: 0.75rem; align-items: baseline; font-size: var(--text-xs); line-height: 1.35; }
+.hcr-key dt { font-weight: 650; color: var(--ink); }
+.hcr-key dt .hcr-code { display: inline; margin-left: 0.4rem; }
+.hcr-key dd { margin: 0; color: var(--muted); }
+.hcr-plain.hcr-sites td, .hcr-plain.hcr-sites th { overflow-wrap: break-word; }
+/* A list of lines: each line once, its cells beside it with HRSA's column title */
+.hcr-ledger { list-style: none; margin: 0; padding: 0; }
+.hcr-ledger > li {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: 0.5rem 2rem;
+  max-width: 66rem;
+  padding: 0.875rem 1.25rem;
+  border-top: 1px solid var(--line);
+}
+.hcr-ledger > li:first-child { border-top: 0; }
+.hcr-ledger-line { margin: 0; font-weight: 600; font-size: var(--text-sm); line-height: 1.4; }
+.hcr-ledger-line .hcr-line { display: block; font-family: var(--mono); font-size: var(--text-xs); font-weight: 450; color: var(--muted); }
+.hcr-ledger dl { margin: 0; display: grid; gap: 0.5rem; align-content: start; }
+.hcr-ledger dl > div { display: grid; grid-template-columns: minmax(0, 1fr) minmax(7rem, auto); gap: 1.25rem; align-items: baseline; }
+.hcr-ledger dt { font-size: var(--text-sm); color: var(--muted); line-height: 1.4; }
+.hcr-ledger dd { margin: 0; text-align: right; font-size: var(--text-sm); font-weight: 600; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.hcr-ledger.hcr-words dl > div { grid-template-columns: minmax(0, 11rem) minmax(0, 1fr); }
+.hcr-ledger.hcr-words dd { text-align: left; }
+@media (max-width: 760px) {
+  .hcr-ledger > li { grid-template-columns: minmax(0, 1fr); padding-inline: 1rem; }
+}
+.hcr-dense .hcr-mark { padding: 0; border: 0; background: none; font-weight: 500; color: var(--muted); }
+@media (min-width: 761px) {
+  .hcr-table .table-wrap.hcr-grid:not(.hcr-bars) table,
+  .table-wrap.hcr-sites table { table-layout: fixed; width: 100%; min-width: 0; }
+  .hcr-table .table-wrap.hcr-grid:not(.hcr-bars) thead th,
+  .hcr-table .table-wrap.hcr-grid:not(.hcr-bars) tbody th[scope='row'],
+  .table-wrap.hcr-sites thead th,
+  .table-wrap.hcr-sites tbody th[scope='row'],
+  .table-wrap.hcr-sites td { min-width: 0; }
+  .hcr-table .table-wrap.hcr-grid:not(.hcr-bars) thead th.num { width: 10rem; }
+  .hcr-table .table-wrap.hcr-grid.n5 thead th.num { width: 9rem; }
+  .hcr-table .table-wrap.hcr-grid.n1 table { max-width: 40rem; }
+  .hcr-table .table-wrap.hcr-grid.n2 table { max-width: 50rem; }
+  .hcr-table .table-wrap.hcr-grid.n3 table { max-width: 60rem; }
+  .hcr-table .table-wrap.hcr-grid.n4 thead th.num { width: 10.5rem; }
+  .hcr-table .table-wrap.hcr-grid.hcr-dense table { min-width: min(48rem, 100%); }
+  .hcr-table .table-wrap.hcr-grid.hcr-dense.hcr-many table { min-width: min(60rem, 100%); }
+  .hcr-table .table-wrap.hcr-grid.hcr-dense thead th:first-child { width: 13.5rem; }
+  .hcr-table .table-wrap.hcr-grid.hcr-dense.hcr-roomy thead th:first-child { width: 20rem; }
+  .hcr-table .table-wrap.hcr-grid.hcr-dense thead th.num { width: auto; font-size: var(--text-xs); overflow-wrap: normal; hyphens: none; }
+  .hcr-table .table-wrap.hcr-grid.hcr-dense th,
+  .hcr-table .table-wrap.hcr-grid.hcr-dense td { padding-inline: 0.5rem; }
+  .hcr-table .table-wrap.hcr-grid.hcr-dense th:first-child { padding-left: 1.25rem; }
+  .hcr-table .table-wrap.hcr-grid.hcr-dense th:last-child,
+  .hcr-table .table-wrap.hcr-grid.hcr-dense td:last-child { padding-right: 1.25rem; }
+  .hcr-table .table-wrap.hcr-grid.hcr-dense td { font-size: var(--text-sm); }
+  .table-wrap.hcr-sites thead th { width: 10%; }
+  .table-wrap.hcr-sites thead th:first-child { width: 17%; }
+  .table-wrap.hcr-sites thead th:nth-child(2) { width: 17%; }
+  .table-wrap.hcr-sites thead th:nth-child(3) { width: 12%; }
+  .table-wrap.hcr-sites thead th:nth-child(4) { width: 9%; }
+  .table-wrap.hcr-sites thead th.num { width: 7%; }
+  .table-wrap.hcr-sites thead th:nth-child(8) { width: 7%; }
+  .table-wrap.hcr-sites thead th:nth-child(9) { width: 11%; }
+  .table-wrap.hcr-sites th, .table-wrap.hcr-sites td { padding-inline: 0.5rem; }
+  .table-wrap.hcr-sites th:first-child { padding-left: 1.25rem; }
+}
+
+/* A table of one to three columns, on a wide screen: one text line to a row. The line number hangs to the left of
+   its title, the cell address follows its figure, and an empty last cell carries the rules to the edge of the card,
+   so every small table of one card ends at the same edge. */
+@media (min-width: 1000px) {
+  .hcr-table .table-wrap.hcr-grid:is(.n1, .n2, .n3) table { max-width: none; }
+  .hcr-table .table-wrap.hcr-grid:is(.n1, .n2, .n3) thead th:first-child { width: min(30rem, 100vw - 46rem); }
+  .hcr-table .table-wrap.hcr-grid.hcr-slim thead th.num { width: 12rem; padding-right: 4.5rem; }
+  .hcr-table .table-wrap:is(.n1, .n2, .n3) tr::after { content: ''; display: table-cell; border-top: 1px solid var(--line); }
+  .hcr-table .table-wrap:is(.n1, .n2, .n3) thead tr::after { border-top: 0; border-bottom: 1px solid var(--line); }
+  .hcr-table .table-wrap:is(.n1, .n2, .n3) tbody tr:first-child::after { border-top: 0; }
+  .hcr-table .table-wrap.hcr-slim tbody th[scope='row'] { padding-left: 7.75rem; }
+  .hcr-table .table-wrap.hcr-slim tbody th[scope='row'] .hcr-line { float: left; width: 6.5rem; margin-left: -6.5rem; line-height: 1.45rem; }
+  .hcr-table .table-wrap.hcr-slim td .hcr-ref { display: inline-block; width: 2.75rem; margin-left: 0.5rem; text-align: left; vertical-align: baseline; }
+  .hcr-table .table-wrap.hcr-slim td .hcr-mark { max-width: calc(100% - 3.25rem); vertical-align: baseline; text-align: left; }
+  /* A list of lines: the same, one text line to a cell */
+  .hcr-ledger > li { padding-block: 0.625rem; max-width: none; grid-template-columns: minmax(0, 27.5rem) minmax(0, 34rem); }
+  .hcr-ledger-line { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); align-items: baseline; }
+  .hcr-ledger dl { gap: 0.3rem; }
+  .hcr-ledger dd .hcr-ref { display: inline-block; width: 2.75rem; margin-left: 0.5rem; text-align: left; }
+}
+@media (min-width: 1200px) {
+  /* A long table of short lines: two halves side by side */
+  .hcr-halves { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+  .hcr-table .hcr-halves > .table-wrap + .table-wrap { border-top: 0; border-left: 1px solid var(--line); }
+  .hcr-table .hcr-halves .table-wrap:is(.n1, .n2) tr::after { content: none; }
+  .hcr-table .hcr-halves .table-wrap.hcr-grid:is(.n1, .n2) thead th:first-child { width: auto; }
+  .hcr-table .hcr-halves .table-wrap.hcr-grid.hcr-slim thead th.num { width: 9rem; padding-inline: 0.75rem 4.5rem; }
+  .hcr-table .hcr-halves .table-wrap.hcr-slim td { padding-left: 0.75rem; }
+  .hcr-table .hcr-halves .table-wrap.hcr-slim tbody th[scope='row'] { padding-left: 6.25rem; }
+  .hcr-table .hcr-halves .table-wrap.hcr-slim tbody th[scope='row'] .hcr-line { width: 5rem; margin-left: -5rem; }
+  .hcr-table .hcr-halves .table-wrap.hcr-slim tbody th[scope='row'] { overflow-wrap: break-word; }
+}
+
+/* A tablet held upright is too narrow for the widest tables and too wide for the stacked layout, so there they keep their width and scroll inside their card. */
+@media (min-width: 761px) and (max-width: 999px) {
+  .hcr-table .table-wrap.hcr-grid.hcr-dense table { min-width: 48rem; }
+  .hcr-table .table-wrap.hcr-grid.hcr-dense.hcr-many table { min-width: 60rem; }
+}
+
+/* Notes and source */
+.hcr-care ul { margin: 0; padding-left: 1.25rem; max-width: 72ch; }
+.hcr-care li + li { margin-top: var(--s2); }
+.hcr-source .facts dd { font-weight: 500; overflow-wrap: anywhere; }
+.hcr-source .mono { font-size: var(--text-xs); overflow-wrap: anywhere; }
+.hcr-links { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; margin: var(--s3) 0 0; padding: 0; list-style: none; }
+.hcr-links li { margin: 0; padding: 0; max-width: none; }
+
+@media (max-width: 600px) {
+  /* In the stacked list a state's heading is a band across the list. */
+  .table-wrap.stack.hcr-list tbody tr.hcr-group {
+    display: block;
+    padding: 1.25rem 0.875rem 0.625rem;
+    background: var(--bg);
+    border-top: 0;
+  }
+  .table-wrap.stack.hcr-list tbody tr.hcr-group th {
+    display: block;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+  .hcr-table > summary { padding: 0.875rem 1rem; }
+  .hcr-legend dl { grid-template-columns: minmax(0, 1fr); }
+  .hcr-card > h3 { padding-inline: 1rem; }
+  .hcr-card > .hcr-where, .hcr-card > p.hcr-sentence { padding-inline: 1rem; }
+  .hcr-tiles.n2, .hcr-tiles.n3 { grid-template-columns: minmax(0, 1fr); }
+}

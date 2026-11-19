@@ -38,7 +38,12 @@
 **Search engines told two different stories**
 - `robots.txt`, each page's own "do not list" tag and `sitemap.xml` must agree: either the private preview (nothing listed) or the public site (everything listed except "page not found" and the contact form's answer pages).
 - A "Draft wording" tag on a public build.
+- An About page that does not link every page in the main menu and every tool. The About page builds its list from the menu, so this fails only if someone breaks that link.
 - A page whose canonical address is not its own, or a missing link-preview picture.
+
+**A stale place to report a security problem**
+- `/.well-known/security.txt` tells a person who finds a security problem whom to write to. The scan fails if the file is missing, names no contact, has no end date (its `Expires` line), or has one fewer than 30 days away. The message says which file to open and gives a line to write. The rule is in `scripts/security-txt.mjs`.
+- The same file not served as plain text, or naming a page of this site that the build did not produce.
 
 ## The drug pages get their own scan
 

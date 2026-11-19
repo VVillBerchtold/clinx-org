@@ -1,0 +1,272 @@
+---
+/**
+ * The funding and deadline calendar: the dates of the funding opportunities HRSA has forecast or posted
+ * on Grants.gov and of the Federal Register documents that name health centers, in one list, with a
+ * page for each opportunity, a calendar file and the six files as downloads. Everything shown comes
+ * from src/lib/hc-funding.ts.
+ */
+import '../../../styles/home.css';
+import '../../../styles/scorecard.css';
+import '../../../styles/hc-funding.css';
+import Arrow from '../../../components/Arrow.astro';
+import FundingRows from '../../../components/hc/FundingRows.astro';
+import OnPage from '../../../components/OnPage.astro';
+import PageHead from '../../../components/PageHead.astro';
+import Base from '../../../layouts/Base.astro';
+import {
+  DOWNLOADS, FUNDING_FEED, FUNDING_HOME, KINDS, KIND_NOTES, ahead, byMonth, dayText, downloadPath, estimatedBeforeDay, flagLabels, foundByText, fundingFile, kindLabel, getFunding,
+  opportunityPath, passed, programListingNumbers, registerNewestFirst, statusLabel,
+} from '../../../lib/hc-funding';
+import { HC_HOME, HC_NAME, SITE_URL } from '../../../lib/site';
+
+const data = getFunding();
+const day = dayText(data.day);
+const coming = ahead(data);
+const before = passed(data);
+const months = byMonth(coming);
+const forecasts = data.opportunities.filter((o) => o.status === 'forecasted').length;
+const posted = data.opportunities.length - forecasts;
+const names = data.opportunities.filter((o) => o.namesHealthCenters).length;
+const program = data.opportunities.filter((o) => o.healthCenterProgram).length;
+const listings = programListingNumbers(data);
+const staleEstimates = estimatedBeforeDay(data).length;
+const opportunities = [...data.opportunities].sort((a, b) => a.title.localeCompare(b.title, 'en') || a.id.localeCompare(b.id));
+const documents = registerNewestFirst(data);
+const sizeText = new Map<string, string>(DOWNLOADS.map((d) => [d.name, `${Math.round(new TextEncoder().encode(fundingFile(d.name)).length / 1024)} KiB`]));
+const dueOf = (o: (typeof data.opportunities)[number]) => (o.dates['application_due'] ? { stamp: o.dates['application_due'], estimated: false } : o.dates['est_application_due'] ? { stamp: o.dates['est_application_due'], estimated: true } : undefined);
+---
+
+<Base
+  title="Health center funding calendar: HRSA opportunities and Federal Register dates"
+  crumbs={[{ name: HC_NAME, path: HC_HOME }, { name: 'Health center funding calendar', path: FUNDING_HOME }]}
+  description={`The dates of ${data.opportunities.length} HRSA funding opportunities on Grants.gov and of ${data.register.length} Federal Register documents that name health centers, in one list in date order. Each estimated date is marked, and each date links to the agency's own page.`}
+>
+  <PageHead title="Funding and deadline calendar" trail={[{ label: HC_NAME, href: HC_HOME }, { label: 'Funding' }]}>
+    <p class="lede">
+      This calendar lists, in date order, the dates of the funding opportunities HRSA has forecast or posted on Grants.gov and of the Federal Register documents that name health centers. Each row links to the agency's own page, and each date HRSA estimates is marked Estimated.
+    </p>
+    <p class="small muted">The files were read on {day}. Every "ahead" and "passed" on this page is measured from that day. Each count is a count of rows in the agencies' files on that day.</p>
+    <OnPage
+      title="Funding calendar"
+      items={[
+        { id: 'ahead-heading', label: 'Dates ahead' },
+        { id: 'passed-heading', label: 'Dates before the files' },
+        { id: 'opportunities-heading', label: 'The opportunities' },
+        { id: 'register-heading', label: 'Federal Register documents' },
+        { id: 'read-with-care', label: 'Read with care' },
+        { id: 'source', label: 'Source' },
+        { id: 'downloads-heading', label: 'Downloads' },
+      ]}
+    />
+  </PageHead>
+
+  <ul class="fund-glance" aria-label="Counts in the files of this day">
+    <li><strong>{data.opportunities.length}</strong><span>HRSA opportunities: {forecasts} forecast, {posted} posted</span></li>
+    <li><strong>{data.register.length}</strong><span>Federal Register documents found by two questions</span></li>
+    <li><strong>{coming.length}</strong><span>dated events from {day} on</span></li>
+  </ul>
+
+  <section class="section" aria-labelledby="note-heading">
+    <div class="note">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="2"></circle><path d="M10 9v5M10 6v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+      <div>
+        <p><strong id="note-heading">A forecast is HRSA's plan, and its dates move.</strong> Forecast is HRSA's word for an opportunity it expects to post on Grants.gov. Posted is its word for an opportunity that is open for applications on Grants.gov. Every date HRSA gives in a forecast is its estimate and is marked Estimated. A date marked Firm is stated in a posted notice or in a Federal Register document.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="ahead-heading">
+    <div class="section-head">
+      <h2 id="ahead-heading">Dates ahead</h2>
+      <p>{coming.length} dated events from {day} to {dayText(coming[coming.length - 1]!.day)}, in date order and grouped by month. Each date links to the page of the opportunity here and to the agency's own page.</p>
+    </div>
+
+    <div class="fund-filter" data-fund-filter hidden>
+      <label>
+        Show
+        <select data-fund-scope>
+          <option value="">All dates</option>
+          <option value="names">Opportunities whose text names health centers ({names})</option>
+          <option value="program">Opportunities under the Health Center Program's listing ({program})</option>
+        </select>
+      </label>
+      <label>
+        Kind of date
+        <select data-fund-kind>
+          <option value="">All kinds</option>
+          {KINDS.map((kind) => <option value={kind}>{kindLabel(kind)}</option>)}
+        </select>
+      </label>
+    </div>
+    <p class="fund-count" data-fund-count aria-live="polite"></p>
+
+    <dl class="fund-legend">
+      <div><dt><span class="fund-chip est">Estimated</span></dt> <dd>HRSA's estimate in a forecast. It can change.</dd></div>
+      <div><dt><span class="fund-chip firm">Firm</span></dt> <dd>A date stated in a posted notice or in a Federal Register document.</dd></div>
+      <div><dt><span class="fund-chip flag">Names health centers</span></dt> <dd>The title, description or eligibility text holds one of these words: health center, federally qualified, FQHC, look-alike, 330. The match is on words, so it also matches a title such as Teaching Health Center Graduate Medical Education.</dd></div>
+      <div><dt><span class="fund-chip flag">Health Center Program listing</span></dt> <dd>The opportunity carries assistance listing {listings.join(', ')}, which ClinX lists as the Health Center Program's.</dd></div>
+    </dl>
+
+    <div data-fund-ahead>
+      {
+        months.map((group) => (
+          <section class="fund-month" data-fund-month aria-labelledby={`month-${group.month}`}>
+            <h3 id={`month-${group.month}`}>{group.label}</h3>
+            <FundingRows events={group.events} data={data} />
+          </section>
+        ))
+      }
+    </div>
+    <p class="small muted" data-fund-none hidden>No date matches. Clear the filter to see all of them.</p>
+    <ul class="small muted fund-list">
+      {KINDS.map((kind) => <li><strong>{kindLabel(kind)}.</strong> {KIND_NOTES[kind]}</li>)}
+    </ul>
+  </section>
+
+  <section class="section" aria-labelledby="passed-heading">
+    <div class="section-head">
+      <h2 id="passed-heading">Dates before the files</h2>
+      <p>The files hold every dated event from 60 days before {day} on. {before.length} of them fall before that day.</p>
+    </div>
+    <details class="fund-past">
+      <summary>{before.length} dates before {day}</summary>
+      <div class="fund-inner">
+        <p class="small muted">A date marked Estimated in this list is one HRSA gave in a forecast and had not changed in the file of {day}: {staleEstimates} of them. They are shown as the agency gave them.</p>
+        <FundingRows events={before} data={data} />
+      </div>
+    </details>
+  </section>
+
+  <section class="section" aria-labelledby="opportunities-heading">
+    <div class="section-head">
+      <h2 id="opportunities-heading">The {data.opportunities.length} opportunities</h2>
+      <p>Every HRSA opportunity in the file, A to Z by title. The title opens the opportunity's page here, with every date, amount and text as HRSA published it.</p>
+    </div>
+    <div class="table-wrap wide stack fund-table">
+      <table role="table">
+        <caption><span>The {data.opportunities.length} HRSA opportunities on Grants.gov on {day}, A to Z by title</span></caption>
+        <thead role="rowgroup">
+          <tr role="row">
+            <th role="columnheader" scope="col">Title</th>
+            <th role="columnheader" scope="col">Number</th>
+            <th role="columnheader" scope="col">Forecast or posted</th>
+            <th role="columnheader" scope="col">Application due</th>
+            <th role="columnheader" scope="col">Flags</th>
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          {
+            opportunities.map((o) => {
+              const due = dueOf(o);
+              const flags = flagLabels(o);
+              return (
+                <tr role="row">
+                  <th role="rowheader" scope="row"><a href={opportunityPath(o.id)}>{o.title}</a></th>
+                  <td role="cell" class="id" data-label="Number">{o.number}</td>
+                  <td role="cell" data-label="Forecast or posted">{statusLabel(o.status)}</td>
+                  <td role="cell" data-label="Application due">{due ? `${dayText(due.stamp.date)}${due.estimated ? ' (estimated)' : ''}` : 'Not given'}</td>
+                  <td role="cell" class:list={[{ blank: flags.length === 0 }]} data-label="Flags">{flags.join(', ')}</td>
+                </tr>
+              );
+            })
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="register-heading">
+    <div class="section-head">
+      <h2 id="register-heading">Federal Register documents</h2>
+      <p>ClinX put two questions to the Federal Register on {day}. Question 1: which documents of the twelve months before that day, from HRSA, contain the phrase "health center". Question 2: which documents of the same twelve months, from any agency, contain the phrase "federally qualified health center". The {data.register.length} documents below are the answers. A document that answers both questions is listed once.</p>
+    </div>
+    <div class="table-wrap wide stack fund-table">
+      <table role="table">
+        <caption><span>The {data.register.length} Federal Register documents found, newest publication first</span></caption>
+        <thead role="rowgroup">
+          <tr role="row">
+            <th role="columnheader" scope="col">Document</th>
+            <th role="columnheader" scope="col">Type</th>
+            <th role="columnheader" scope="col">Published</th>
+            <th role="columnheader" scope="col">Comments close</th>
+            <th role="columnheader" scope="col">Takes effect</th>
+            <th role="columnheader" scope="col">Found by</th>
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          {
+            documents.map((d) => (
+              <tr role="row">
+                <th role="rowheader" scope="row">
+                  {d.title}
+                  <span class="sub">{d.agencyNames.join('; ')}</span>
+                  <span class="sub"><a href={d.htmlUrl}>Federal Register page, document {d.documentNumber}</a></span>
+                </th>
+                <td role="cell" data-label="Type">{d.type}</td>
+                <td role="cell" data-label="Published">{dayText(d.publicationDate)}</td>
+                <td role="cell" class:list={[{ none: d.commentsCloseOn === '' }]} data-label="Comments close">{d.commentsCloseOn === '' ? 'No date given' : dayText(d.commentsCloseOn)}</td>
+                <td role="cell" class:list={[{ none: d.effectiveOn === '' }]} data-label="Takes effect">{d.effectiveOn === '' ? 'No date given' : dayText(d.effectiveOn)}</td>
+                <td role="cell" data-label="Found by">{foundByText(d.foundBy)}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="read-with-care">
+    <div class="note">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="2"></circle><path d="M10 9v5M10 6v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+      <div>
+        <p><strong id="read-with-care">Read with care.</strong> The list covers the opportunities HRSA has forecast or posted on Grants.gov and the Federal Register documents that the two questions found. It leaves out opportunities of other agencies, notices that closed or were archived before the first download, and documents that do not use the two phrases. Foundations, states and other sources of money a health center has are not covered.</p>
+        <p>A date is printed as the agency wrote it. No time zone is applied and the time of day is not kept. Amounts on an opportunity's page are as published, and ClinX adds none of them together. The two flags sort and filter the list by the words of a text and by a listing number. They say nothing about who may apply. Nothing on these pages is ranked, and no health center, area or state is compared with another. The contact details HRSA attaches to an opportunity are not kept, and email addresses and phone numbers inside a text were removed by pattern.</p>
+        <p>The agencies change their records. {staleEstimates} of the estimated dates fall before {day}, which means HRSA had not moved them in the file of that day. The calendar file below and the downloads are from the same day as this page.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="source">
+    <div class="section-head">
+      <h2 id="source">Source</h2>
+    </div>
+    <dl class="facts panel">
+      <dt>Opportunities</dt>
+      <dd>Every opportunity of agency HHS-HRSA that is forecast or posted on <a href="https://www.grants.gov/">Grants.gov</a>, from its public search and record services. Each opportunity page here links to its own page on Grants.gov.</dd>
+      <dt>Federal Register</dt>
+      <dd>The answers of the <a href="https://www.federalregister.gov/">Federal Register</a> to the two questions above. Each document links to its own page there.</dd>
+      <dt>Day of the files</dt>
+      <dd>{day}. The files give no refresh schedule.</dd>
+      <dt>What the counts are</dt>
+      <dd>Counts of rows in the agencies' files on that day: {data.opportunities.length} opportunities, {data.register.length} documents and {data.events.length} dated events.</dd>
+      <dt>How it was read</dt>
+      <dd>The records were saved as the agencies serve them and read into the tables below by a program that keeps only listed fields. <a href="/methods/#health-centers">Methods</a> sets out how ClinX reads public files.</dd>
+    </dl>
+  </section>
+
+  <section class="section" aria-labelledby="downloads-heading">
+    <div class="section-head">
+      <h2 id="downloads-heading">Downloads and calendar file</h2>
+      <p>The six files hold the same rows as this page, free to download and reuse.</p>
+    </div>
+    <ul class="fund-downloads">
+      {
+        DOWNLOADS.map((d) => (
+          <li>
+            <a href={downloadPath(d.name)}>{d.name}</a>
+            <span>{d.what} {sizeText.get(d.name)}.</span>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="panel">
+      <p><strong>Calendar file.</strong> The {data.events.length} dated events as one all-day calendar file that a calendar app can open or subscribe to. An estimated date has "(estimated)" in its title, and each event links to the agency's own page.</p>
+      <div class="btn-row"><a class="btn" href={FUNDING_FEED}>Calendar file (.ics) <Arrow /></a></div>
+      <span class="fund-feed">{SITE_URL}{FUNDING_FEED}</span>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import '../../../scripts/hc-funding-filter';
+</script>

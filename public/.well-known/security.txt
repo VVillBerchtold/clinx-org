@@ -1,0 +1,8 @@
+# Where to report a security problem with clinx.org.
+# Please write before telling anyone else.
+Contact: mailto:will@clinx.org
+Contact: https://clinx.org/contact/
+Expires: 2027-10-17T00:00:00Z
+Preferred-Languages: en
+Canonical: https://clinx.org/.well-known/security.txt
+Policy: https://clinx.org/privacy/#report

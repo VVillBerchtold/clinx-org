@@ -40,6 +40,9 @@ describe('share cards', () => {
     expect(shareCardFor('/calendar/ri/').id).toBe('calendar');
     expect(shareCardFor('/notices/').id).toBe('notices');
     expect(shareCardFor('/rebate-pilot/').id).toBe('notices');
+    expect(shareCardFor('/health-centers/').id).toBe('health-centers');
+    expect(shareCardFor('/health-centers/records/010030/2024/').id).toBe('health-centers');
+    expect(shareCardFor('/health-centers/shortage-areas/ri/').id).toBe('health-centers');
     expect(shareCardFor('/tools/file-check/').id).toBe('tools');
     expect(shareCardFor('/data/').id).toBe('data');
     expect(shareCardFor('/methods/').id).toBe('methods');

@@ -1,15 +1,18 @@
 ---
 import '../../styles/pages.css';
 import Base from '../../layouts/Base.astro';
+import Arrow from '../../components/Arrow.astro';
 import Draft from '../../components/Draft.astro';
 import OnPage from '../../components/OnPage.astro';
 import PageHead from '../../components/PageHead.astro';
 import { buildStateDrugViews, formatDate, getDataset, stateDrugCsv } from '../../lib/data';
 import { getBillsRecord } from '../../lib/bills';
 import { stateName, statesFileText } from '../../lib/states';
-import { PREVIEW, REPOSITORIES, SITE_URL } from '../../lib/site';
+import { CITE_DATA, HC_HOME, MAKER_NAME, PREVIEW, REPOSITORIES, SITE_URL, citeLine } from '../../lib/site';
 import { renderSections } from '../../lib/markdown';
-import { datasetNode } from '../../lib/structured-data';
+import { datasetNode, healthCenterDatasetNodes } from '../../lib/structured-data';
+import { fileGroups, partDays } from '../../lib/hc-hub';
+import { recordsSource } from '../../lib/hc-records';
 
 const data = getDataset();
 // A file's size, the way a person reads it: the larger files are in the megabytes, and nothing is rounded to zero.
@@ -23,7 +26,7 @@ const repositories = [
   { name: 'The filings dataset', href: REPOSITORIES.dataset, what: 'The data, its checks and its changelog. Corrections are reported here.' },
   { name: 'The bills, notices and calendar tables', href: REPOSITORIES.bills, what: 'Every bill and every federal rule or notice that names 340B, and their dates, with the tools that build the tables.' },
   { name: 'The registry tracker', href: REPOSITORIES.tracker, what: 'Keeps dated copies of the federal 340B registry and reports what changed.' },
-  { name: 'The server for AI assistants', href: REPOSITORIES.assistants, what: 'The program behind clinx.org/mcp. It answers an assistant from the filings, laws, bills, notices and calendar tables, and only reads.' },
+  { name: 'The server for AI assistants', href: REPOSITORIES.assistants, what: 'The program behind clinx.org/mcp. It answers an assistant from the 340B tables (filings, laws, bills, notices, calendar) and from the health centers files, and only reads.' },
   { name: 'This site', href: REPOSITORIES.site, what: 'The pages you are reading, built from the dataset.' },
 ];
 // The bills table is a second set of files, kept beside the dataset's.
@@ -38,6 +41,9 @@ const billFiles = [
 ];
 // The states with a reporting law, grouped by what each state makes public: written by this site from its own registry.
 const statesFileHash = await sha256Hex(statesFileText(SITE_URL));
+// The health centers files, grouped by part, each with the SHA-256 of the file as this site serves it.
+const hcDays = partDays();
+const hcGroups = await Promise.all(fileGroups().map(async (g) => ({ ...g, files: await Promise.all(g.files.map(async (f) => ({ ...f, sha256: await sha256Hex(f.text) }))) })));
 const dictionary = renderSections(data.dictionaryMarkdown);
 const intro = dictionary.find((s) => s.title === '');
 const fileSections = dictionary.filter((s) => s.title !== '');
@@ -58,19 +64,25 @@ const describe: Record<string, string> = {
 ---
 
 <Base
-  title="340B open data: downloads and data dictionary"
+  title="ClinX open data: 340B and health centers downloads"
   description="Download the 340B state filings dataset as CSV and JSON files, read the data dictionary, and see the dataset version. Free to use under CC BY 4.0."
   crumbs={[{ name: 'Data', path: '/data/' }]}
-  about={[datasetNode(data, drugFiles.map(({ view, sha256 }) => ({ name: view.csvName, path: view.csvPath, sha256 })))]}
+  about={[datasetNode(data, drugFiles.map(({ view, sha256 }) => ({ name: view.csvName, path: view.csvPath, sha256 }))), ...healthCenterDatasetNodes(hcGroups, recordsSource().years)]}
 >
-  <PageHead title="Data" trail={[{ label: '340B Scorecard' }]}>
-    <p class="lede">Every figure on this site, as files you can download. Each one is kept as filed or printed and cites the page of the PDF it was read from.</p>
+  <PageHead title="Data" trail={[{ label: 'ClinX' }]}>
+    <p class="lede">Every figure on this site, as files you can download. A 340B figure is kept as filed or printed and cites the page of the PDF it was read from. The health centers files are kept as the agencies published them.</p>
+    <p class="btn-row">
+      <a class="btn ghost" href="#downloads">340B data</a>
+      <a class="btn ghost" href="#health-centers">Health centers data</a>
+    </p>
     <OnPage
       title="Data"
       items={[
-        { id: 'downloads', label: 'Downloads' },
+        { id: 'downloads', label: '340B downloads' },
+        { id: 'health-centers', label: 'Health centers' },
         { id: 'assistants', label: 'AI assistants' },
         { id: 'version', label: 'Version' },
+        { id: 'cite', label: 'How to cite' },
         { id: 'repositories', label: 'Code' },
         { id: 'data-dictionary', label: 'Data dictionary' },
       ]}
@@ -78,7 +90,7 @@ const describe: Record<string, string> = {
   </PageHead>
 
   <section class="split" aria-labelledby="downloads">
-    <h2 id="downloads">Downloads</h2>
+    <h2 id="downloads">340B downloads</h2>
     <div class="split-body">
       <ul class="files">
         {
@@ -133,26 +145,55 @@ const describe: Record<string, string> = {
     </div>
   </section>
 
+  <section class="split" aria-labelledby="health-centers">
+    <h2 id="health-centers">Health centers</h2>
+    <div class="split-body">
+      <p>
+        The files behind the <a href={HC_HOME}>health centers pages</a>, one group for each part. Each file holds what the agency published, in the agency's own words and marks. The line under each file is its SHA-256, so you can confirm your copy matches.
+      </p>
+      {
+        hcGroups.map((g) => (
+          <>
+            <h3 id={`health-centers-${g.id}`}><a href={g.page}>{g.title}</a></h3>
+            <p class="small muted">{g.day}.</p>
+            <ul class="files">
+              {g.files.map((f) => (
+                <li>
+                  <div>
+                    <strong>{f.name}</strong>
+                    <p>{f.what}</p>
+                    <p class="small muted">{sizeOf(new TextEncoder().encode(f.text).length)}</p>
+                  </div>
+                  <a class="btn ghost" href={f.href} download aria-label={`Download ${f.name}`}>Download</a>
+                  <span class="hash"><span class="visually-hidden">SHA-256: </span>{f.sha256}</span>
+                </li>
+              ))}
+            </ul>
+            <p class="small muted">{g.note}</p>
+          </>
+        ))
+      }
+    </div>
+  </section>
+
   <section class="split" aria-labelledby="assistants">
     <h2 id="assistants">Ask through an AI assistant</h2>
     <div class="split-body">
       <p>
-        The filings, laws, bills, federal notices and calendar can also be read by an AI assistant. You ask a question in plain words; the assistant looks it up in the same tables as the files above and gives you the rows, each with its official link.
+        The 340B filings, laws, bills, federal notices and calendar can also be read by an AI assistant, and so can the health centers files: the records, the funding calendar and the shortage areas. You ask a question in plain words; the assistant looks it up in the same files as the ones above and gives you the rows, each with its official link.
       </p>
       <dl class="facts">
         <dt>Address</dt>
         <dd><span class="mono">https://clinx.org/mcp</span></dd>
         <dt>What it reads</dt>
-        <dd>Filings, state laws, bills, federal notices, the calendar</dd>
+        <dd>340B: filings, state laws, bills, federal notices, the calendar. Health centers: the records, funding opportunities and their dates, shortage areas and sites</dd>
         <dt>What it changes</dt>
         <dd>Nothing. It only reads</dd>
         <dt>Cost</dt>
         <dd>Free. No key and no account</dd>
       </dl>
-      <p>To use it, open an assistant that accepts connectors, also called MCP servers, add a new one and give it the address. It reads one filer's report at a time, with the same small-number rule as the pages.</p>
-      <p>Questions to try: What did Adena Regional Medical Center report to Ohio for 2025? Which states have a contract pharmacy law, and when did each take effect? What is on the 340B calendar for Minnesota in January? Is a federal 340B notice open for comment right now?</p>
-      <p>An assistant can misread a row or leave one out. Ask it for the official link and read the source before you rely on an answer.</p>
-      <p>The site counts what assistants ask for by kind. It never keeps the words of a question, and never who asked. <a href="/privacy/#assistants">What is counted</a></p>
+      <p>One page has the steps for Claude, ChatGPT and VS Code, everything an assistant can look up, questions to try and what to keep in mind.</p>
+      <div class="btn-row"><a class="btn" href="/data/assistants/">Use ClinX with an AI assistant <Arrow /></a></div>
     </div>
   </section>
 
@@ -168,9 +209,22 @@ const describe: Record<string, string> = {
         <dd>{formatDate(data.dataDate)}</dd>
         <dt>Bills and federal notices retrieved</dt>
         <dd>{formatDate(billsRecord.retrieved)} ({billsRecord.bills} bills, {billsRecord.notices} federal notices, {billsRecord.events.toLocaleString('en-US')} calendar dates)</dd>
+        <dt>Health centers files</dt>
+        <dd>Records: HRSA refreshed its latest file on {hcDays.records}. Funding: files of {hcDays.funding}. Shortage areas: files of {hcDays.areas}.</dd>
         <dt>Licence</dt>
         <dd>Data: Creative Commons Attribution 4.0 (CC BY 4.0). Code: MIT.</dd>
       </dl>
+    </div>
+  </section>
+
+  <section class="split" aria-labelledby="cite">
+    <h2 id="cite">How to cite</h2>
+    <div class="split-body">
+      <p class="head-tag">
+        <span>The data on this page is put together and maintained by <a href="/about/#founder-name">{MAKER_NAME}</a>, who builds ClinX. It is under Creative Commons Attribution 4.0 (CC BY 4.0): free to use and to share, with credit to the source. This line gives that credit. Put in the day you read the data.</span>
+        <Draft />
+      </p>
+      <p class="panel">{citeLine(CITE_DATA, '/data/')}</p>
     </div>
   </section>
 

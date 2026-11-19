@@ -4,7 +4,7 @@ import '../styles/tokens.css';
 import '../styles/layout.css';
 import displayFont from '../../node_modules/@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-opsz-normal.woff2?url';
 import bodyFont from '../../node_modules/@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2?url';
-import { CSP_FORM_META, CSP_META, NAV, PREVIEW, SITE_NAME, SITE_URL } from '../lib/site';
+import { CSP_FORM_META, CSP_META, NAV, OTHER_PRODUCTS, PREVIEW, SITE_NAME, SITE_URL } from '../lib/site';
 import { shareCard, shareCardFor } from '../lib/share-cards';
 import { formatDate, getDataset } from '../lib/data';
 import { toBlock, trailNode, type Crumb, type Node } from '../lib/structured-data';
@@ -31,12 +31,14 @@ const data = getDataset();
 const path = Astro.url.pathname;
 /** True for the menu link of the section this page is in. */
 const here = (link: { href: string }): boolean => path.startsWith(link.href);
-// The footer follows the main menu: the 340B group, then the data and the tools, then the rest of the site.
+/** True for the menu group the page is in: one of its pages, or the group's own front page. */
+const groupOn = (group: { items: readonly { href: string }[]; home?: string }): boolean => group.items.some(here) || (group.home !== undefined && path === group.home);
+// The footer follows the main menu: the groups (340B, health centers), then the data and the tools, then the rest of the site.
 const footGroups = NAV.flatMap((item) => ('items' in item ? [item] : []));
 const footLinks = NAV.flatMap((item) => ('href' in item ? [item] : []));
 const WORK = ['/data/', '/methods/', '/tools/', '/writing/'];
 const footWork = footLinks.filter((link) => WORK.includes(link.href));
-const footSite = [...footLinks.filter((link) => !WORK.includes(link.href)), { href: '/privacy/', label: 'Privacy and security' }];
+const footSite = [...footLinks.filter((link) => !WORK.includes(link.href)), { href: '/privacy/', label: 'Privacy and security' }, { href: '/terms/', label: 'Terms of use' }];
 const refreshFiles = import.meta.glob<{ last_refresh: string }>('../../refresh/last-refresh.json', { eager: true, import: 'default' });
 const lastRefresh = Object.values(refreshFiles)[0]?.last_refresh;
 const fullTitle = path === '/' ? title : `${title} | ${SITE_NAME}`;
@@ -89,7 +91,7 @@ const labels: Node[] = unlisted ? [] : [...about, ...(crumbs.length > 0 ? [trail
               NAV.map((item) =>
                 'items' in item ? (
                   <li>
-                    <details class:list={['nav-drop', { on: item.items.some(here) }]}>
+                    <details class:list={['nav-drop', { on: groupOn(item) }]}>
                       <summary>
                         {item.label}
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -128,7 +130,7 @@ const labels: Node[] = unlisted ? [] : [...about, ...(crumbs.length > 0 ? [trail
                 NAV.map((item) =>
                   'items' in item ? (
                     <li>
-                      <details class:list={['nav-fold', { on: item.items.some(here) }]} open={item.items.some(here)}>
+                      <details class:list={['nav-fold', { on: groupOn(item) }]} open={groupOn(item)}>
                         <summary>
                           {item.label}
                           <svg width="14" height="14" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" /></svg>
@@ -178,7 +180,7 @@ const labels: Node[] = unlisted ? [] : [...about, ...(crumbs.length > 0 ? [trail
           </div>
           {
             footGroups.map((group) => (
-              <nav class="foot-wide" aria-label={group.label}>
+              <nav class:list={{ 'foot-wide': group.items.length > 3 }} aria-label={group.label}>
                 <h2>{group.label}</h2>
                 <ul>
                   {group.items.map((link) => (
@@ -200,16 +202,28 @@ const labels: Node[] = unlisted ? [] : [...about, ...(crumbs.length > 0 ? [trail
               ))}
             </ul>
           </nav>
-          <nav aria-label="ClinX">
-            <h2>ClinX</h2>
-            <ul>
-              {footSite.map((link) => (
-                <li>
-                  <a href={link.href}>{link.label}</a>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          <div class="foot-pair">
+            <nav aria-label="ClinX">
+              <h2>ClinX</h2>
+              <ul>
+                {footSite.map((link) => (
+                  <li>
+                    <a href={link.href}>{link.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+            <nav aria-label="Other products">
+              <h2>Other products</h2>
+              <ul>
+                {OTHER_PRODUCTS.map((link) => (
+                  <li>
+                    <a href={link.href}>{link.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
         </div>
         <div class="foot-base">
           <span>

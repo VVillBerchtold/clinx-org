@@ -1,0 +1,314 @@
+---
+import '../../styles/home.css';
+import '../../styles/scorecard.css';
+import '../../styles/hc-areas.css';
+import Base from '../../layouts/Base.astro';
+import { HC_HOME, HC_NAME } from '../../lib/site';
+import OnPage from '../OnPage.astro';
+import PageHead from '../PageHead.astro';
+import AreasCare from './AreasCare.astro';
+import AreasCountsTable from './AreasCountsTable.astro';
+import AreasDesignations from './AreasDesignations.astro';
+import AreasFilter from './AreasFilter.astro';
+import AreasSource from './AreasSource.astro';
+import {
+  AREAS_PATH,
+  areaPath,
+  changeViews,
+  changesSentence,
+  day,
+  eventCountsByKind,
+  eventRows,
+  getState,
+  nameOf,
+  NO_STATE,
+  num,
+  proposedRows,
+  SERIES,
+  SERIES_INFO,
+  siteAddress,
+  siteLists,
+  UPDATED_MEANS,
+} from '../../lib/hc-areas';
+
+/**
+ * The page of one state or territory in the shortage area tracker (/health-centers/shortage-areas/<st>/):
+ * counts on the day of HRSA's files, the designations marked Proposed For Withdrawal, what HRSA's own dates say
+ * happened in the 365 days before, the health center sites added in the same window, and the changes between
+ * ClinX's copies. Every list is whole.
+ */
+interface Props {
+  code: string;
+}
+const { code } = Astro.props;
+const state = getState(code);
+const name = nameOf(code);
+const when = day(state.snapshot_day);
+const from = day(state.window_start);
+const proposed = proposedRows(state);
+const designated = eventRows(state, 'designated');
+const withdrawn = eventRows(state, 'withdrawn');
+const updated = eventRows(state, 'updated');
+const updatedByKind = eventCountsByKind(updated);
+const { added, notActive } = siteLists(state);
+const c = state.counts;
+const noState = code === NO_STATE;
+const title = noState ? 'Rows with no state in HRSA’s files' : name;
+const places = noState ? 'the rows of HRSA’s files that give no state' : name;
+
+
+---
+
+<Base
+  title={`${title}: shortage areas and health center sites`}
+  crumbs={[{ name: HC_NAME, path: HC_HOME }, { name: 'Shortage areas', path: AREAS_PATH }, { name: title, path: areaPath(code) }]}
+  description={`${noState ? 'Rows with no state' : name} in HRSA’s files of ${when}: designated shortage areas and underserved areas, those HRSA proposes to withdraw, what HRSA’s own dates say happened in the 365 days before, and health center sites added.`}
+>
+  <PageHead title={title} trail={[{ label: HC_NAME, href: HC_HOME }, { label: 'Shortage areas', href: AREAS_PATH }, { label: title }]}>
+    <p class="lede">
+      What HRSA’s files of {when} show for {places}: the designated shortage areas and underserved areas, the designations HRSA marks Proposed For Withdrawal, what HRSA’s own dates say happened from {from} to {when}, and the health center sites HRSA added to scope in the same 365 days.
+    </p>
+    {noState && <p class="lede">HRSA writes the code XX where a row gives no state. These rows have a page so that the counts of all the pages cover every row in HRSA’s files.</p>}
+    <p class="hc-day"><strong>Files of {when}</strong><span>Counts are counts of rows in HRSA’s files on that day.</span></p>
+    <OnPage
+      title={title}
+      items={[
+        { id: 'counts-heading', label: 'Counts on the day' },
+        { id: 'proposed-heading', label: 'Proposed for withdrawal' },
+        { id: 'recent-heading', label: 'In the last 365 days' },
+        { id: 'sites-heading', label: 'Health center sites added' },
+        { id: 'changes-heading', label: 'Changes between copies' },
+        { id: 'read-with-care', label: 'Read with care' },
+        { id: 'source-heading', label: 'Source' },
+      ]}
+    />
+  </PageHead>
+
+  <section class="section" aria-labelledby="counts-heading">
+    <div class="section-head">
+      <h2 id="counts-heading">Counts on {when}</h2>
+      <p>By kind of area and status. Under each count is the number of rows HRSA publishes for those designations.</p>
+    </div>
+    <AreasCountsTable counts={c.designations} caption={`${title}: designations in HRSA’s files of ${when}, by kind of area and status`} />
+    <ul class="hc-facts">
+      {
+        Object.entries(c.sites).map(([status, n]) => (
+          <li>
+            <span class="hc-fact-n">{num(n)}</span>
+            <span class="hc-fact-what">health center sites in HRSA’s sites file with the state {code} and the status {status}</span>
+          </li>
+        ))
+      }
+      <li>
+        <span class="hc-fact-n">{num(c.designations_with_components_in_other_states)}</span>
+        <span class="hc-fact-what">designations of {places} with a component in another state</span>
+      </li>
+      <li>
+        <span class="hc-fact-n">{num(c.designations_from_other_primary_states_with_components_here)}</span>
+        <span class="hc-fact-what">designations of another primary state with a component in {noState ? 'rows with no state' : name}. They are counted under their own primary state.</span>
+      </li>
+    </ul>
+  </section>
+
+  <section class="section" aria-labelledby="proposed-heading">
+    <div class="section-head">
+      <h2 id="proposed-heading">Proposed for withdrawal</h2>
+      <p>The status HRSA gives in its file. The page says nothing about what follows.</p>
+    </div>
+    {
+      proposed.length === 0 ? (
+        <p>HRSA’s files of {when} have no designation of {places} with the status Proposed For Withdrawal.</p>
+      ) : (
+        <>
+          <p>
+            {num(proposed.length)} {proposed.length === 1 ? 'designation has' : 'designations have'} the status Proposed For Withdrawal. Every one is listed, by kind of area and then by name.
+          </p>
+          <AreasDesignations id="proposed-table" variant="proposed" rows={proposed} caption={`${title}: designations HRSA marks Proposed For Withdrawal, ${when}`} />
+        </>
+      )
+    }
+  </section>
+
+  <section class="section" aria-labelledby="recent-heading">
+    <div class="section-head">
+      <h2 id="recent-heading">In the last 365 days</h2>
+      <p>From {from} to {when}, by HRSA’s own dates.</p>
+    </div>
+    <p>
+      A designation is listed under designated when HRSA’s designation date falls in these days, and under withdrawn when HRSA’s withdrawn date does. The status column shows the status in HRSA’s file on {when}, which can differ from what the event suggests. A designation with more than one date in the window is listed once for each.
+    </p>
+
+    <h3 id="designated-heading">Designated: {num(designated.length)}</h3>
+    {
+      designated.length === 0 ? (
+        <p>No designation of {places} has a designation date in these days.</p>
+      ) : (
+        <AreasDesignations id="designated-table" variant="event" dateLabel="Date designated" rows={designated} caption={`${title}: designations with a designation date from ${from} to ${when}`} />
+      )
+    }
+
+    <h3 id="withdrawn-heading">Withdrawn: {num(withdrawn.length)}</h3>
+    {
+      withdrawn.length === 0 ? (
+        <p>No designation of {places} has a withdrawn date in these days.</p>
+      ) : (
+        <AreasDesignations id="withdrawn-table" variant="event" dateLabel="Date withdrawn" rows={withdrawn} caption={`${title}: designations with a withdrawn date from ${from} to ${when}`} />
+      )
+    }
+
+    <h3 id="updated-heading">Updated: {num(updated.length)}</h3>
+    <p>{UPDATED_MEANS}</p>
+    {
+      updated.length === 0 ? (
+        <p>No designation of {places} has a last update date in these days.</p>
+      ) : (
+        <>
+          <p>By kind of area: {SERIES.map((s, i) => `${i > 0 ? ', ' : ''}${SERIES_INFO[s].short.toLowerCase()} ${num(updatedByKind[s])}`).join('')}.</p>
+          <details class="hc-fold">
+            <summary>Show the {num(updated.length)} updated {updated.length === 1 ? 'row' : 'rows'}</summary>
+            <AreasDesignations id="updated-table" variant="event" dateLabel="Last update date" rows={updated} caption={`${title}: designations with a last update date from ${from} to ${when}`} />
+          </details>
+        </>
+      )
+    }
+  </section>
+
+  <section class="section" aria-labelledby="sites-heading">
+    <div class="section-head">
+      <h2 id="sites-heading">Health center sites added in the last 365 days</h2>
+      <p>HRSA’s date “Site Added to Scope this Date”, from {from} to {when}.</p>
+    </div>
+    {
+      added.length === 0 ? (
+        <p>No site in HRSA’s sites file for {places} has a date added to scope in these days.</p>
+      ) : (
+        <>
+          <p>{num(added.length)} {added.length === 1 ? 'site' : 'sites'}, newest first. Each is a service delivery or look-alike site of a health center, with the address HRSA publishes.</p>
+          <AreasFilter target="sites-table" textLabel="Site, health center, city or county" />
+          <div class="table-wrap wide stack hc-list">
+            <table id="sites-table" data-sortable>
+              <caption><span>{title}: health center sites added to scope from {from} to {when}</span></caption>
+              <thead role="rowgroup">
+                <tr role="row">
+                  <th role="columnheader" scope="col" data-sort="text">Site</th>
+                  <th role="columnheader" scope="col" data-sort="text">Health center</th>
+                  <th role="columnheader" scope="col" data-sort="text">Added to scope</th>
+                  <th role="columnheader" scope="col">Address</th>
+                  <th role="columnheader" scope="col" data-sort="text">County</th>
+                </tr>
+              </thead>
+              <tbody role="rowgroup">
+                {
+                  added.map((s) => (
+                    <tr role="row">
+                      <th role="rowheader" scope="row" data-value={s.site_name}>
+                        {s.site_name}
+                        <span class="hc-id">Site {s.key}</span>
+                      </th>
+                      <td role="cell" data-label="Health center" data-value={s.health_center_name}>
+                        {s.health_center_name}
+                        <span class="hc-id">Number {s.health_center_number}</span>
+                      </td>
+                      <td role="cell" class="hc-date" data-label="Added to scope" data-value={s.added_to_scope_iso}>{s.added_to_scope_as_published}</td>
+                      <td role="cell" class="hc-counties" data-label="Address">{siteAddress(s)}</td>
+                      <td role="cell" data-label="County" data-value={s.county}>{s.county === '' ? 'No county in HRSA’s file' : s.county}</td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </table>
+          </div>
+        </>
+      )
+    }
+    {
+      notActive.length > 0 && (
+        <>
+          <h3 id="not-active-heading">Sites whose status is not Active: {num(notActive.length)}</h3>
+          <div class="table-wrap wide stack hc-list">
+            <table id="not-active-table" data-sortable>
+              <caption><span>{title}: sites whose status in HRSA’s file is not Active, {when}</span></caption>
+              <thead role="rowgroup">
+                <tr role="row">
+                  <th role="columnheader" scope="col" data-sort="text">Site</th>
+                  <th role="columnheader" scope="col" data-sort="text">Health center</th>
+                  <th role="columnheader" scope="col" data-sort="text">Status</th>
+                  <th role="columnheader" scope="col">Address</th>
+                </tr>
+              </thead>
+              <tbody role="rowgroup">
+                {
+                  notActive.map((s) => (
+                    <tr role="row">
+                      <th role="rowheader" scope="row" data-value={s.site_name}>
+                        {s.site_name}
+                        <span class="hc-id">Site {s.key}</span>
+                      </th>
+                      <td role="cell" data-label="Health center">{s.health_center_name}<span class="hc-id">Number {s.health_center_number}</span></td>
+                      <td role="cell" data-label="Status" data-value={s.site_status}>{s.site_status}</td>
+                      <td role="cell" class="hc-counties" data-label="Address">{siteAddress(s)}</td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </table>
+          </div>
+        </>
+      )
+    }
+  </section>
+
+  <section class="section" aria-labelledby="changes-heading">
+    <div class="section-head">
+      <h2 id="changes-heading">Changes between ClinX’s copies</h2>
+      <p>Taken from the differences between two dated copies of HRSA’s files.</p>
+    </div>
+    <p>{changesSentence(state.snapshot_day, state.changes.length)}</p>
+    {
+      state.changes.length > 0 && (
+        <div class="table-wrap wide stack hc-list">
+          <table id="changes-table" data-sortable>
+            <caption><span>{title}: changes between ClinX’s copies of HRSA’s files</span></caption>
+            <thead role="rowgroup">
+              <tr role="row">
+                <th role="columnheader" scope="col" data-sort="text">Name</th>
+                <th role="columnheader" scope="col" data-sort="text">From copy of</th>
+                <th role="columnheader" scope="col" data-sort="text">To copy of</th>
+                <th role="columnheader" scope="col" data-sort="text">Kind of change</th>
+                <th role="columnheader" scope="col" data-sort="text">Field</th>
+                <th role="columnheader" scope="col">Before</th>
+                <th role="columnheader" scope="col">After</th>
+              </tr>
+            </thead>
+            <tbody role="rowgroup">
+              {
+                changeViews(state.changes).map((ch) => (
+                  <tr role="row">
+                    <th role="rowheader" scope="row" data-value={ch.name}>
+                      {ch.name}
+                      <span class="hc-id">{ch.ref}</span>
+                    </th>
+                    <td role="cell" class="hc-date" data-label="From copy of" data-value={ch.fromIso}>{ch.from}</td>
+                    <td role="cell" class="hc-date" data-label="To copy of" data-value={ch.toIso}>{ch.to}</td>
+                    <td role="cell" data-label="Kind of change" data-value={ch.kind}>{ch.kind}</td>
+                    <td role="cell" data-label="Field" data-value={ch.field}>{ch.field}</td>
+                    <td role="cell" class:list={['hc-counties', { 'hc-words': ch.beforeEmpty }]} data-label="Before">{ch.before}</td>
+                    <td role="cell" class:list={['hc-counties', { 'hc-words': ch.afterEmpty }]} data-label="After">{ch.after}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+      )
+    }
+    <p class="small muted">A row says what changed in HRSA’s file between two copies and never why. A designation HRSA removes from its file is listed as no longer listed, and the page does not say whether it was withdrawn.</p>
+  </section>
+
+  <AreasCare state />
+  <AreasSource state={code} />
+</Base>
+
+<script>
+  import '../../scripts/hc-areas-filter';
+</script>

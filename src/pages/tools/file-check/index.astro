@@ -7,7 +7,14 @@ import '../../../styles/file-check.css';
 import Base from '../../../layouts/Base.astro';
 import Arrow from '../../../components/Arrow.astro';
 import PageHead from '../../../components/PageHead.astro';
+import { formatDate } from '../../../lib/data';
 import { CLEANER_COPY, FILE_CHECK } from '../../../lib/site';
+import savedCopies from '../../../lib/saved-copies.json';
+
+// The saved copy: one file that holds the whole tool. It is made by scripts/single-file.mjs and
+// kept in public/, and its fingerprint is on record in src/lib/saved-copies.json.
+const saved = savedCopies['file-check'];
+const savedSize = `${Math.round(saved.bytes / 1024).toLocaleString('en-US')} KB`;
 
 const STEPS = ['Choose a file', 'Go through the list', 'Take the list'];
 ---
@@ -65,7 +72,10 @@ const STEPS = ['Choose a file', 'Go through the list', 'Take the list'];
           ))
         }
       </ol>
-      <p class="cc-wire" id="cc-wire"><span class="cc-wire-dot" aria-hidden="true"></span><span id="cc-wire-say">No connection can be opened from this page</span></p>
+      <div class="fc-lines">
+        <p class="cc-wire" id="cc-wire"><span class="cc-wire-dot" aria-hidden="true"></span><span id="cc-wire-say">No connection can be opened from this page</span></p>
+        <p class="cc-wire" id="fc-selftest"><span class="cc-wire-dot" aria-hidden="true"></span><span id="fc-selftest-say">Testing itself on the built-in sample</span></p>
+      </div>
     </div>
     <p id="cc-where" class="cc-where" aria-hidden="true"></p>
 
@@ -158,6 +168,27 @@ const STEPS = ['Choose a file', 'Go through the list', 'Take the list'];
       </span>
       <Arrow />
     </a>
+  </section>
+
+  <section id="fc-keep" class="fc-keep" aria-labelledby="fc-keep-h">
+    <div class="fc-keep-say">
+      <h2 id="fc-keep-h">Keep a copy that does not change</h2>
+      <p>This page is sent fresh each time it is opened. The saved copy is one file that holds the whole tool. It works with the network off, and it stays the same until you replace it.</p>
+      <p>Each copy checks the sample report built into it before it reads a file, and stops if the answer is not the one it expects.</p>
+      <a class="btn" href={saved.file} download={saved.savedAs}><svg width="18" height="18" aria-hidden="true" focusable="false"><use href="#cc-i-save"></use></svg>Save {FILE_CHECK} as one file</a>
+    </div>
+    <dl class="fc-keep-facts">
+      <div><dt>Version</dt><dd>{saved.version}</dd></div>
+      <div><dt>Made</dt><dd>{formatDate(saved.made)}</dd></div>
+      <div><dt>Size</dt><dd>{savedSize}</dd></div>
+      <div class="is-wide"><dt>Fingerprint (SHA-256)</dt><dd class="fc-print">{saved.sha256}</dd></div>
+    </dl>
+    <details class="fc-keep-how">
+      <summary>How to compare the fingerprint</summary>
+      <p>A fingerprint is a line of 64 characters worked out from every byte of a file. Change one character of the file and the line changes.</p>
+      <p>On a Mac, open Terminal, type <code>shasum -a 256</code> and a space, drag the saved file into the window and press Return. On Windows, open PowerShell, type <code>Get-FileHash</code> and a space, drag the file in and press Enter.</p>
+      <p>The line it prints should match the one above. Windows shows the letters in capitals.</p>
+    </details>
   </section>
 
   <script>

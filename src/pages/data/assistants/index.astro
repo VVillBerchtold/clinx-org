@@ -1,0 +1,251 @@
+---
+import '../../../styles/pages.css';
+import Base from '../../../layouts/Base.astro';
+import Arrow from '../../../components/Arrow.astro';
+import OnPage from '../../../components/OnPage.astro';
+import PageHead from '../../../components/PageHead.astro';
+import { ASSISTANTS_ADDRESS, CLAUDE_ADD_LINK, VSCODE_ADD_LINK, VSCODE_SETTINGS, assistantToolGroups } from '../../../lib/assistant-tools';
+import { EXAMPLE_YEAR, assistantExample, reportLinesNaming340b } from '../../../lib/assistant-example';
+import { PREVIEW, REPOSITORIES } from '../../../lib/site';
+
+// Every lookup the server offers, read from its own definitions. With none read, the build stops.
+const groups = assistantToolGroups();
+const count = groups.reduce((n, g) => n + g.tools.length, 0);
+
+// Questions that the lookups above can answer today.
+const questions: { label: string; items: string[] }[] = [
+  {
+    label: '340B',
+    items: [
+      'What did Adena Regional Medical Center report to Ohio for 2025?',
+      'Which states have a contract pharmacy law, and when did each take effect?',
+      'What is on the 340B calendar for Minnesota in January?',
+      'Is a federal 340B notice open for comment right now?',
+    ],
+  },
+  {
+    label: 'Health centers',
+    items: [
+      'Which health centers in Rhode Island have records, and what did one of them report in Table 3A for 2025?',
+      'Which HRSA funding opportunities are open today, and when are they due?',
+      'Which shortage designations in Rhode Island are proposed for withdrawal?',
+    ],
+  },
+];
+
+// The worked example: its figures are read from the two records' own files, never typed in here.
+const example = assistantExample();
+const first = example[0]!;
+// The page says HRSA's report has no line that names 340B. If a year's report gains one, the build stops so the sentence is rewritten.
+if (reportLinesNaming340b() !== 0) throw new Error('A line of the HRSA report now names 340B: rewrite the worked example on the page for AI assistants');
+---
+
+<Base
+  title="Use ClinX with an AI assistant: 340B and health centers data"
+  description="Add ClinX to Claude, ChatGPT, VS Code or another AI assistant and ask about 340B filings, laws, bills and notices, and about health centers. Free, with no key and no account."
+  crumbs={[
+    { name: 'Data', path: '/data/' },
+    { name: 'AI assistants', path: '/data/assistants/' },
+  ]}
+>
+  <PageHead title="Use ClinX with an AI assistant" trail={[{ label: 'ClinX' }, { label: 'Data', href: '/data/' }]}>
+    <p class="lede">
+      An AI assistant such as Claude or ChatGPT can look things up in the ClinX open data while you talk to it. You ask in plain words, and it reads the same files this site is built from and gives you the rows, each with its official link.
+    </p>
+    <OnPage
+      title="AI assistants"
+      items={[
+        { id: 'address', label: 'The address' },
+        { id: 'add', label: 'How to add it' },
+        { id: 'answers', label: 'What it can answer' },
+        { id: 'questions', label: 'Questions to try' },
+        { id: 'example', label: 'A worked example' },
+        { id: 'keep-in-mind', label: 'What to keep in mind' },
+        { id: 'privacy', label: 'Privacy' },
+        { id: 'problem', label: 'Report a problem' },
+        { id: 'code', label: 'Code and licence' },
+      ]}
+    />
+  </PageHead>
+
+  <section class="split" aria-labelledby="address">
+    <h2 id="address">The address</h2>
+    <div class="split-body">
+      <dl class="facts">
+        <dt>Address</dt>
+        <dd><span class="mono">{ASSISTANTS_ADDRESS}</span></dd>
+        <dt>What it reads</dt>
+        <dd>340B: filings, state laws, bills, federal notices, the calendar. Health centers: the records, funding opportunities and their dates, shortage areas and sites</dd>
+        <dt>What it changes</dt>
+        <dd>Nothing. It only reads</dd>
+        <dt>Cost</dt>
+        <dd>Free. No key and no account</dd>
+      </dl>
+      <p>The address is for an assistant. A browser that opens it is sent to this page.</p>
+    </div>
+  </section>
+
+  <section class="split" aria-labelledby="add">
+    <h2 id="add">How to add it</h2>
+    <div class="split-body add-ways">
+      <p>Assistants call this a connector, or an MCP server. You add it once. After that the assistant uses it when a question calls for it.</p>
+
+      <h3 id="add-claude">Claude</h3>
+      <p>This link opens Claude with the name and the address filled in. You sign in to Claude and confirm.</p>
+      <div class="btn-row"><a class="btn" href={CLAUDE_ADD_LINK}>Add ClinX to Claude <Arrow /></a></div>
+      <p>The same steps by hand:</p>
+      <ol>
+        <li>In Claude, open Customize and then Connectors.</li>
+        <li>Choose to add a custom connector.</li>
+        <li>Give it the name ClinX and the address <span class="mono">{ASSISTANTS_ADDRESS}</span>.</li>
+        <li>Confirm. ClinX is then in your list of connectors.</li>
+      </ol>
+
+      <h3 id="add-chatgpt">ChatGPT</h3>
+      <p>ChatGPT can add a server by its address where your plan allows custom connectors. These are the steps on the web. ChatGPT may word them differently.</p>
+      <ol>
+        <li>Go to <a href="https://chatgpt.com/plugins">chatgpt.com/plugins</a>.</li>
+        <li>Press the plus button and choose to add a custom MCP server.</li>
+        <li>Give it the name ClinX and the address <span class="mono">{ASSISTANTS_ADDRESS}</span>.</li>
+        <li>Where it asks about authentication, choose no authentication.</li>
+        <li>Read the warning ChatGPT shows for a custom server and accept it.</li>
+        <li>Create it as a plugin, then install it from your personal plugins.</li>
+        <li>In a chat, type @ and the name to use it.</li>
+      </ol>
+
+      <h3 id="add-vscode">VS Code</h3>
+      <p>This link opens VS Code, which asks you before it adds the server.</p>
+      <div class="btn-row"><a class="btn ghost" href={VSCODE_ADD_LINK}>Add ClinX to VS Code <Arrow /></a></div>
+      <p>Or paste this into the file <span class="mono">.vscode/mcp.json</span> in your workspace:</p>
+      <pre class="snippet"><code>{VSCODE_SETTINGS}</code></pre>
+
+      <h3 id="add-other">Any other assistant</h3>
+      <p>Find where the assistant adds a connector or a remote MCP server, and give it the address <span class="mono">{ASSISTANTS_ADDRESS}</span>. It needs no key and no sign-in. If it asks for the kind of connection, choose HTTP, which some assistants call Streamable HTTP.</p>
+    </div>
+  </section>
+
+  <section class="split" aria-labelledby="answers">
+    <h2 id="answers">What it can answer</h2>
+    <div class="split-body">
+      <p>The assistant has {count} lookups to choose from. You ask your question and the assistant picks the lookup. Each one reads a table and changes nothing.</p>
+      {
+        groups.map((g) => (
+          <>
+            <h3 class="label here-label" id={`answers-${g.id}`}>{g.label}</h3>
+            <ul class="repos">
+              {g.tools.map((t) => (
+                <li>
+                  <strong>{t.title}</strong>
+                  <span>{t.line}</span>
+                </li>
+              ))}
+            </ul>
+          </>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="split" aria-labelledby="questions">
+    <h2 id="questions">Questions to try</h2>
+    <div class="split-body">
+      <p>Each of these can be answered from the tables as they stand today.</p>
+      {
+        questions.map((q) => (
+          <>
+            <h3 class="label here-label">{q.label}</h3>
+            <ul>
+              {q.items.map((item) => <li>{item}</li>)}
+            </ul>
+          </>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="split" aria-labelledby="example">
+    <h2 id="example">A worked example</h2>
+    <div class="split-body">
+      <p>A health center in Ohio files a 340B report with the state. It also sends HRSA a report each year, the Uniform Data System. The two records come from two agencies, and neither one points to the other. An assistant with ClinX added can read both for the same health center. It takes three questions.</p>
+      <ol>
+        <li>What did {first.name} report to Ohio about 340B for {EXAMPLE_YEAR}?</li>
+        <li>What is on Table 9E, line 1g of the same health center's {EXAMPLE_YEAR} report to HRSA?</li>
+        <li>And on Table 8A, line 8b?</li>
+      </ol>
+      <p>The first answer is the filing, with the payments the health center received for 340B drugs. The second is the line for its Health Center Program grant. The third is what it spent on pharmaceuticals. These are the figures the three answers hold for two health centers.</p>
+      {
+        example.map((c) => (
+          <>
+            <h3 class="label here-label">
+              {c.name}, {c.city}
+            </h3>
+            <dl class="facts example-facts">
+              {c.filed.map((f) => (
+                <>
+                  <dt>{f.label}</dt>
+                  <dd>
+                    {f.text}
+                    <span class="example-from">Filed with Ohio, {f.where}</span>
+                  </dd>
+                </>
+              ))}
+              {c.reported.map((f) => (
+                <>
+                  <dt>{f.label}</dt>
+                  <dd>
+                    {f.text}
+                    <span class="example-from">Reported to HRSA, {f.where}</span>
+                  </dd>
+                </>
+              ))}
+            </dl>
+            <p class="example-links">
+              <a href={c.filingPath}>The filing with Ohio</a>
+              <a href={c.reportPath}>The report to HRSA</a>
+            </p>
+          </>
+        ))
+      }
+      <p>HRSA's report has no line that names 340B. The payments a health center received for 340B drugs are in its filing with the state.</p>
+      <p>Payments received are money that came in. The same filing gives what the drugs cost and what the program cost to run, on other lines. A grant is one of several sources of a health center's income. The figures are set side by side so the two records can be read together. ClinX draws no conclusion from them.</p>
+      <p>The assistant knows the two records are about the same place from the 340B ID. For most Ohio health centers the ID holds a number that HRSA's report also uses: the ID {first.id340b} belongs to health center {first.key}. A few do not match this way and need a search by name.</p>
+      <p>For some health centers HRSA withholds the line for pharmaceuticals. The assistant then gives HRSA's mark and what it means, and no figure.</p>
+    </div>
+  </section>
+
+  <section class="split" aria-labelledby="keep-in-mind">
+    <h2 id="keep-in-mind">What to keep in mind</h2>
+    <div class="split-body">
+      <p>An assistant can misread a row or leave one out. Ask it for the official link and read the source before you rely on an answer.</p>
+      <p>It reads one filer's report at a time, with the same small-number rule as the pages: a claim count of 1 to 5 is never given (<a href="/methods/#9-small-claim-counts">Methods, section 9</a>). A health center's report is given one table at a time, each value as HRSA published it and each of HRSA's marks with its meaning in words. It puts health centers in the order of their names, never of a figure.</p>
+      <p>The assistant reads the files as this site last published them. It can tell you the day each table was last brought up to date.</p>
+      <p>One internet address can send about 200 lookups a minute, and an assistant often makes several lookups for one question. Past that, the address is asked to wait a minute.</p>
+    </div>
+  </section>
+
+  <section class="split" aria-labelledby="privacy">
+    <h2 id="privacy">Privacy</h2>
+    <div class="split-body">
+      <p>The site sees the lookup the assistant sends. It does not see what you typed to the assistant. It answers from its own files and keeps no copy of the lookup.</p>
+      <p>The site counts lookups by kind, so the work goes to the tables people use. A count never holds the words searched for, an internet address, or anything that could tell one person from another.</p>
+      <div class="btn-row"><a class="btn ghost" href="/privacy/#assistants">What is counted <Arrow /></a></div>
+    </div>
+  </section>
+
+  <section class="split" aria-labelledby="problem">
+    <h2 id="problem">Report a problem</h2>
+    <div class="split-body">
+      <p>If an answer does not match the official source, or your assistant cannot connect, use the contact form. The question you asked and the link the assistant gave are enough to find the row.</p>
+      <div class="btn-row"><a class="btn ghost" href="/contact/">Contact <Arrow /></a></div>
+    </div>
+  </section>
+
+  <section class="split" aria-labelledby="code">
+    <h2 id="code">Code and licence</h2>
+    <div class="split-body">
+      <p>
+        The program behind the address is open. {PREVIEW ? 'Its code' : <a href={REPOSITORIES.assistants}>Its code</a>} is free to use under the MIT licence. The data it reads is the data on the <a href="/data/">Data</a> page, free to use under Creative Commons Attribution 4.0 (CC BY 4.0).
+      </p>
+    </div>
+  </section>
+</Base>

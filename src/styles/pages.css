@@ -144,6 +144,44 @@
   letter-spacing: -0.015em;
 }
 
+/* About: the name of a group above its list of pages */
+.split-body > .here-label {
+  margin-top: 1rem;
+}
+/* The list sits flush under its group's name */
+.split-body > .here-label + .repos {
+  padding-left: 0;
+  margin-top: -0.5rem;
+}
+/* On a narrow screen every line goes under its name, so the rows match */
+@media (max-width: 640px) {
+  .split-body > .here-label + .repos li {
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+}
+
+/* AI assistants: the worked example. Each figure with the record and the place it was read from. */
+.example-facts {
+  max-width: var(--measure);
+  padding-block: 0.25rem;
+}
+.example-facts dd {
+  font-variant-numeric: tabular-nums;
+}
+.example-from {
+  display: block;
+  color: var(--muted);
+  font-weight: 400;
+  font-size: var(--text-sm);
+}
+.example-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.5rem;
+  font-size: var(--text-sm);
+}
+
 /* Three plain rules, each with its number */
 .rules {
   list-style: none;
@@ -338,6 +376,27 @@
 .repos span {
   color: var(--muted);
   font-size: var(--text-sm);
+}
+/* The assistants page: one heading for each assistant, with room above it */
+.add-ways > h3 {
+  margin-top: var(--s4);
+}
+/* A few lines to copy, such as a settings file. Long lines wrap, so the page never scrolls sideways. */
+.snippet {
+  max-width: var(--measure);
+  margin: 0;
+  padding: var(--s4);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  font: 400 var(--text-sm) / 1.55 var(--mono);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.snippet code {
+  padding: 0;
+  background: none;
+  font-size: inherit;
 }
 .doc h3 {
   font-family: var(--mono);

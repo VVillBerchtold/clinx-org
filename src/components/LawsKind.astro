@@ -4,11 +4,12 @@
  * what it does, each opening on its state's page, beside a map of the states that have one.
  * Everything shown comes from the dataset's laws table (src/lib/laws.ts).
  */
+import StateMap from './StateMap.astro';
 import '../styles/scorecard.css';
 import '../styles/laws.css';
 import Base from '../layouts/Base.astro';
 import PageHead from './PageHead.astro';
-import { KIND_PAGES, LAWS_HOME, getLaws, kindOpening, kindPath, lawName, lawsMapSvg, lawsOfKind, lawsPath, type KindInfo } from '../lib/laws';
+import { KIND_PAGES, LAWS_HOME, getLaws, kindOpening, kindPath, lawName, lawsMapSvg, lawsOfKind, lawsPath, type KindInfo, lawsMapCards } from '../lib/laws';
 import { stateName } from '../lib/states';
 
 interface Props {
@@ -54,11 +55,13 @@ const others = laws.kinds.filter((k) => k.kind !== kind.kind).map((k) => ({ ...k
     <aside class="law-aside" aria-label="Where these laws are, and the other kinds">
       <div class="law-map">
         <h2 class="label">Where these laws are</h2>
-        <Fragment set:html={lawsMapSvg(laws, 'kind-laws-map', { kind: kind.kind })} />
-        <ul class="legend">
-          <li><span class="key live" aria-hidden="true"></span>Has a law of this kind</li>
-          <li><span class="key" aria-hidden="true"></span>None listed</li>
-        </ul>
+        <StateMap
+          strip
+          svg={lawsMapSvg(laws, 'kind-laws-map', { kind: kind.kind })}
+          legend={[{ tone: 'has', label: 'Has a law of this kind' }, { tone: 'none', label: 'None listed' }]}
+          rest={{ note: 'Point at a state to see how many laws of this kind it has.' }}
+          cards={lawsMapCards(laws, { kind: kind.kind })}
+        />
       </div>
       <div class="law-index">
         <h2 class="label">Other kinds of law</h2>

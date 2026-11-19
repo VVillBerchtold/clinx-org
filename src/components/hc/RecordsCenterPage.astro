@@ -1,0 +1,379 @@
+---
+import '../../styles/home.css';
+import '../../styles/scorecard.css';
+import '../../styles/hc-records.css';
+import Base from '../../layouts/Base.astro';
+import { HC_HOME, HC_NAME } from '../../lib/site';
+import OnPage from '../OnPage.astro';
+import PageHead from '../PageHead.astro';
+import Pager from '../Pager.astro';
+import RecordsTable from './RecordsTable.astro';
+import RecordsYearSwitch from './RecordsYearSwitch.astro';
+import {
+  DOWNLOADS,
+  MARKS,
+  RECORDS_PATH,
+  buildYearView,
+  cellWords,
+  centerDownload,
+  centerPath,
+  formatDay,
+  fundingTypes,
+  glanceBar,
+  glanceScale,
+  listOfYears,
+  listRows,
+  megabytes,
+  nameSentence,
+  refreshDay,
+  placeInWords,
+  statePath,
+  yearsMissing,
+  yearsOf,
+  type RCell,
+} from '../../lib/hc-records';
+
+/**
+ * One health center's report to HRSA for one year (Uniform Data System): the cells HRSA publishes as one
+ * cell at a glance, then every table in HRSA's order, the sites, the patients by ZIP code, a note on reading
+ * the report, and the source. A value is printed as published and no value is added to another. No page
+ * compares this health center with another or one year with another.
+ */
+interface Props {
+  centerKey: string;
+  year: number;
+}
+const { centerKey, year } = Astro.props;
+const view = buildYearView(centerKey, year);
+const { header, workbook } = view;
+const funding = fundingTypes(header);
+const renamed = nameSentence(centerKey);
+const retrieved = formatDay(workbook.retrieved_utc.slice(0, 10));
+const refreshed = refreshDay(workbook.report_last_refreshed);
+const list = listRows();
+const at = list.findIndex((r) => r.key === centerKey);
+// The step to a neighbour opens its report for the same year, or its latest where it has none for this year.
+const stepOf = (r: (typeof list)[number] | undefined) => (r ? { href: centerPath(r.key, yearsOf(r.key).includes(year) ? year : r.lastYear), name: r.name } : undefined);
+const here = list[at]!;
+const missing = yearsMissing(centerKey);
+const notListed = missing.length === 0 ? '' : `HRSA's ${missing.length === 1 ? 'file' : 'files'} for ${listOfYears(missing)} ${missing.length === 1 ? 'does' : 'do'} not list this health center's ID. Its reports here are for ${listOfYears(view.years)}.`;
+const prev = stepOf(list[at - 1]);
+const next = stepOf(list[at + 1]);
+const plain = (t: string): string => (t === '-' ? 'No entry' : t);
+const shortLine = (line: string): string => (/^L[0-9]/.test(line) ? `Line ${line.slice(1)}` : line);
+const cellWordsOf = (c: RCell): string => cellWords(c);
+// At a glance: a block of one line becomes one tile for each of its cells; a block of several lines is a table with bars.
+const single = (g: (typeof view.glance)[number]): boolean => g.rows.length === 1 && g.table.status === 'present';
+const tiles = view.glance.filter(single).flatMap((g) =>
+  g.rows[0]!.cells.flatMap((c, i) =>
+    c === null
+      ? []
+      : [{
+          figure: c.kind === 'value' ? c.text : cellWordsOf(c) || 'No entry',
+          words: c.kind !== 'value',
+          label: g.columns.length === 1 ? g.heading : g.columns[i]!.title,
+          where: g.where,
+          ref: c.ref,
+        }],
+  ),
+);
+const cards = view.glance.filter((g) => !single(g));
+if (view.sites.length > 0) tiles.push({ figure: view.sites.length.toLocaleString('en-US'), words: false, label: view.sites.length === 1 ? 'Site listed' : 'Sites listed', where: 'HRSA’s list of sites', ref: '' });
+// A slash-joined label may wrap after its slash, never inside a word.
+const slashParts = (text: string): string[] => text.split('/');
+const place = `${header.city}, ${header.state}`;
+const sitesWord = view.sites.length === 1 ? 'site' : 'sites';
+const address = [header.street, header.addressLine2 !== '' && header.addressLine2 !== '-' ? header.addressLine2 : '', `${header.city}, ${header.state} ${header.zip}`].filter((p) => p !== '').join(', ');
+
+const items = [
+  ...(view.glance.length > 0 ? [{ id: 'glance', label: 'At a glance' }] : []),
+  { id: 'report', label: 'The report, table by table' },
+  ...view.tables.map((t) => ({ id: t.id, label: t.label !== '' ? `${t.name}: ${t.label}` : t.name })),
+  { id: 'sites', label: 'Sites' },
+  { id: 'zips', label: 'Patients by ZIP code' },
+  { id: 'read-with-care', label: 'Read with care' },
+  { id: 'source', label: 'Source' },
+];
+---
+
+<Base
+  title={`${header.name}, ${year} report`}
+  crumbs={[
+    { name: HC_NAME, path: HC_HOME },
+    { name: 'Health center records', path: RECORDS_PATH },
+    { name: here.stateName, path: statePath(here.state) },
+    { name: `${header.name}, ${year}`, path: Astro.url.pathname },
+  ]}
+  description={`What ${header.name} (${place}) reported to HRSA for ${year} in the Uniform Data System, table by table in HRSA's words, with each value's address in HRSA's workbook, its sites and its source.`}
+>
+  <PageHead wide title={header.name} trail={[{ label: HC_NAME, href: HC_HOME }, { label: 'Records', href: RECORDS_PATH }, { label: here.stateName, href: statePath(here.state) }, { label: `${year} report` }]}>
+    <p class="lede">
+      {place}. The Uniform Data System report that this health center filed with HRSA for {year}, as HRSA published it. Each value is in HRSA's words and has the address of its cell in HRSA's workbook.
+    </p>
+    {renamed !== '' && <p class="small muted">{renamed}</p>}
+    {notListed !== '' && <p class="small muted">{notListed}</p>}
+    <dl class="facts hcr-facts">
+      <dt>Funding types</dt>
+      <dd>
+        {
+          funding.length === 0 ? (
+            "No funding flag in HRSA's file is TRUE for this year."
+          ) : (
+            <ul>
+              {funding.map((f) => <li>{f.words} <span class="hcr-flag">({f.flag})</span></li>)}
+            </ul>
+          )
+        }
+      </dd>
+      <dt>Urban or rural</dt>
+      <dd>{header.urbanRural}</dd>
+      <dt>Address</dt>
+      <dd>{address}</dd>
+      <dt>Sites listed</dt>
+      <dd>{view.sites.length}</dd>
+      <dt>Health center ID</dt>
+      <dd><span class="mono">{header.key}</span>, grant number <span class="mono">{header.grant}</span></dd>
+    </dl>
+    <RecordsYearSwitch centerKey={centerKey} years={view.years} current={year} />
+  </PageHead>
+
+  <OnPage title={header.name} items={items} />
+
+  {
+    view.glance.length > 0 && (
+      <section class="hcr-section" aria-labelledby="glance">
+        <h2 id="glance">At a glance</h2>
+        <p>Figures from the report below, as HRSA published them, each with its table, line and cell.</p>
+        {
+          tiles.length > 0 && (
+            <ul class:list={['stats', 'hcr-tiles', `n${Math.min(tiles.length, 4)}`]}>
+              {tiles.map((t) => (
+                <li>
+                  <strong class:list={[{ 'hcr-tile-words': t.words }]}>{t.figure}</strong>
+                  <span>{t.label}</span>
+                  <small>{t.where}{t.ref !== '' && `, cell ${t.ref}`}</small>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+        {
+          cards.length > 0 && (
+            <div class="hcr-glance">
+              {cards.map((b) => {
+                const scale = glanceScale(b);
+                return (
+                  <section class="hcr-card" aria-labelledby={b.id}>
+                    <h3 id={b.id}>{b.heading}</h3>
+                    <p class="hcr-where">{b.where}</p>
+                    {b.table.status !== 'present' ? (
+                      <p class="hcr-sentence">HRSA's {year} file has no named row for this health center in {b.table.name}. The table below says more.</p>
+                    ) : (
+                      <div class="table-wrap wide stack hcr-grid hcr-bars">
+                        <table role="table">
+                          <caption class="visually-hidden">{b.heading}, {header.name}, {year}</caption>
+                          <thead role="rowgroup">
+                            <tr role="row">
+                              <th role="columnheader" scope="col">Line</th>
+                              {b.columns.map((c) => <th role="columnheader" scope="col" class="num">{c.title}</th>)}
+                            </tr>
+                          </thead>
+                          <tbody role="rowgroup">
+                            {b.rows.map((r) => (
+                              <tr role="row" class="tone-plain">
+                                <th role="rowheader" scope="row"><span class="hcr-line">{shortLine(r.line)}</span>{r.title}</th>
+                                {r.cells.map((c, i) => (
+                                  <td role="cell" class={c === null ? 'num blank' : 'num share'} data-label={b.columns[i]!.title}>
+                                    {c !== null && (c.kind === 'value' ? (
+                                      <>
+                                        <span class="rail">
+                                          <span class="rail-track">
+                                            {glanceBar(c, scale) > 0 && <svg class="bar" width={`${glanceBar(c, scale)}%`} height="8" aria-hidden="true" focusable="false" />}
+                                          </span>
+                                          <span class="bar-figure">{c.text}</span>
+                                        </span>
+                                        <span class="hcr-ref">{c.ref}</span>
+                                      </>
+                                    ) : c.kind === 'empty' ? null : (
+                                      <><span class:list={['hcr-mark', { 'hcr-clinx': c.kind === 'clinx', 'hcr-typed': c.kind === 'typed' }]}>{cellWordsOf(c)}</span>{c.ref !== '' && <span class="hcr-ref">{c.ref}</span>}</>
+                                    ))}
+                                  </td>
+                                ))}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </section>
+                );
+              })}
+            </div>
+          )
+        }
+        {cards.some((b) => b.table.status === 'present') && <p class="small muted">In each table the bars share one scale. The full width is the largest figure in that table.</p>}
+      </section>
+    )
+  }
+
+  <section class="hcr-section" aria-labelledby="report">
+    <h2 id="report">The report, table by table</h2>
+    <p>The {view.tables.length} tables of the {year} report, in HRSA's order, with HRSA's table codes, line titles and column titles. The words beside a table code are ClinX's plain label for it. A table that opens shows its lines; the others open when selected.</p>
+    <div class="hcr-legend">
+      <dl>
+        {MARKS.map((m) => (
+          <>
+            <dt><span class="hcr-sym">{m.mark}</span> {m.cell}</dt>
+            <dd>HRSA's cover sheet: {m.cover}.</dd>
+          </>
+        ))}
+        <dt>{'Withheld by ClinX'}</dt>
+        <dd>A patient count from 1 to 15 that HRSA printed and ClinX does not repeat.</dd>
+        <dt>{'Typed text, not kept'}</dt>
+        <dd>A cell where the health center typed words. ClinX keeps no typed text.</dd>
+      </dl>
+      <p>Counts on this page are counts of rows and cells in HRSA's file as retrieved on {retrieved}.</p>
+    </div>
+    {view.tables.map((t) => <RecordsTable table={t} year={year} center={header.name} />)}
+  </section>
+
+  <section class="hcr-section" aria-labelledby="sites">
+    <h2 id="sites">Sites</h2>
+    {
+      view.sites.length === 0 ? (
+        <p>HRSA's {year} file lists no site for this health center.</p>
+      ) : (
+        <>
+          <p>
+            The {view.sites.length} {sitesWord} that HRSA lists for this health center in {year}, in the file's order{view.sitesAsOf !== '' ? `, as of ${view.sitesAsOf}` : ''}. Active, permanent, seasonal and mobile service delivery sites are included.
+          </p>
+          <div class="table-wrap wide stack hcr-plain hcr-sites">
+            <table role="table">
+              <caption><span>Sites of {header.name} in {year}</span></caption>
+              <thead role="rowgroup">
+                <tr role="row">
+                  <th role="columnheader" scope="col">Site</th>
+                  <th role="columnheader" scope="col">Address</th>
+                  <th role="columnheader" scope="col">Site type</th>
+                  <th role="columnheader" scope="col">Location type</th>
+                  <th role="columnheader" scope="col">Setting</th>
+                  <th role="columnheader" scope="col">Schedule</th>
+                  <th role="columnheader" scope="col" class="num">Weekly hours</th>
+                  <th role="columnheader" scope="col">Service area</th>
+                  <th role="columnheader" scope="col">Operated by</th>
+                </tr>
+              </thead>
+              <tbody role="rowgroup">
+                {view.sites.map((s) => (
+                  <tr role="row">
+                    <th role="rowheader" scope="row">{s.name}</th>
+                    <td role="cell" class="hcr-text" data-label="Address">{s.address}</td>
+                    <td role="cell" class="hcr-text" data-label="Site type">{slashParts(s.type).map((part, i) => (i === 0 ? part : <>/<wbr />{part}</>))}</td>
+                    <td role="cell" class="hcr-text" data-label="Location type">{s.locationType}</td>
+                    <td role="cell" class="hcr-text" data-label="Setting">{s.setting}</td>
+                    <td role="cell" class="hcr-text" data-label="Schedule">{[plain(s.schedule), plain(s.calendar)].filter((p) => p !== '').join(', ')}</td>
+                    <td role="cell" class="num" data-label="Weekly hours">{plain(s.hours)}</td>
+                    <td role="cell" class="hcr-text" data-label="Service area">{s.area}</td>
+                    <td role="cell" class="hcr-text" data-label="Operated by">{slashParts(s.operatedBy).map((part, i) => (i === 0 ? part : <>/<wbr />{part}</>))}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )
+    }
+  </section>
+
+  <section class="hcr-section" aria-labelledby="zips">
+    <h2 id="zips">Patients by ZIP code</h2>
+    {
+      view.zips.length === 0 ? (
+        <p>HRSA's {year} file has no ZIP code rows for this health center.</p>
+      ) : (
+        <>
+          <p>HRSA's file lists {view.zips.length} ZIP code rows for this health center in {year}, with its patients by insurance in each, in the file's order. A mark stands where HRSA withholds a count.</p>
+          <details class="hcr-table">
+            <summary>
+              <h3 id="zip-table">ZIP code rows</h3>
+              <span class="hcr-sub">{view.zips.length} rows</span>
+            </summary>
+            <div class="table-wrap wide stack hcr-plain hcr-zips">
+              <table role="table">
+                <caption><span>Patients by ZIP code and insurance, {header.name}, {year}</span></caption>
+                <thead role="rowgroup">
+                  <tr role="row">
+                    <th role="columnheader" scope="col">ZIP code</th>
+                    {view.zipColumns.map((c) => <th role="columnheader" scope="col" class="num">{c}</th>)}
+                  </tr>
+                </thead>
+                <tbody role="rowgroup">
+                  {view.zips.map((z) => (
+                    <tr role="row">
+                      <th role="rowheader" scope="row">{z.zip !== '-' ? z.zip : z.type}</th>
+                      {z.cells.map((c) => (
+                        <td role="cell" class="num" data-label={c.label}>
+                          {c.mark ? <span class="hcr-mark">{MARKS.find((m) => m.name === c.mark)!.cell}</span> : c.text}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </details>
+        </>
+      )
+    }
+  </section>
+
+  <section class="hcr-section hcr-care" aria-labelledby="read-with-care">
+    <h2 id="read-with-care">Read with care</h2>
+    <ul>
+      <li>The report is the health center's own. It filed these figures with HRSA, and ClinX shows them as HRSA published them.</li>
+      <li>HRSA withholds some cells. The mark -- stands where a patient count of 1 to 15 is withheld, and the mark --- where confidential data is withheld. The cell says which.</li>
+      <li>
+        ClinX has a rule of its own for small counts. In a column that counts patients, a whole number from 1 to 15 is not repeated here, and the cell reads Withheld by ClinX.
+        {view.clinxWithheld === 0 ? ' No cell on this page needed the rule.' : ` ${view.clinxWithheld} ${view.clinxWithheld === 1 ? 'cell' : 'cells'} on this page ${view.clinxWithheld === 1 ? 'is' : 'are'} withheld this way.`}
+      </li>
+      <li>Definitions change between years. A line with the same code can mean something different in another year, so ClinX shows the years one at a time and calculates no change.</li>
+      <li>Text that a health center typed into a cell is not kept. Those cells read Typed text, not kept.</li>
+      {view.exponents > 0 && <li>{view.exponents} {view.exponents === 1 ? 'number is' : 'numbers are'} published in the form 1e+05. They are printed as published and marked.</li>}
+      <li>No health center is ranked or compared with another here, and no figure is added to another.</li>
+    </ul>
+  </section>
+
+  <section class="hcr-section hcr-source" aria-labelledby="source">
+    <h2 id="source">Source</h2>
+    <dl class="facts panel">
+      <dt>Workbook</dt>
+      <dd><a href={workbook.url}>Open {workbook.file} on data.hrsa.gov</a></dd>
+      <dt>Size</dt>
+      <dd>{megabytes(workbook.bytes)}</dd>
+      <dt>Retrieved</dt>
+      <dd>{retrieved}</dd>
+      <dt>Report last refreshed by HRSA</dt>
+      <dd>{refreshed}</dd>
+      <dt>SHA-256</dt>
+      <dd><span class="mono">{workbook.sha256}</span></dd>
+      <dt>This health center in the workbook</dt>
+      <dd>Row {header.sheetRow} of the sheet HealthCenterInfo. The small code under a value is the column letter and row of its cell in the sheet of its table.</dd>
+      <dt>How it was read</dt>
+      <dd>
+        {
+          view.reads === 'two_reads'
+            ? 'Two separate programs read every cell of the workbook, and they agreed on every cell.'
+            : 'One program read the workbook. A second read has not been made.'
+        }
+      </dd>
+    </dl>
+    <ul class="hcr-links">
+      <li><a class="btn ghost" href={centerDownload(centerKey)}>This health center, all years (JSON)</a></li>
+      <li><a class="btn ghost" href={DOWNLOADS.centers}>All health centers listed (CSV)</a></li>
+      <li><a class="btn ghost" href={DOWNLOADS.lines}>Lines and columns of the report (CSV)</a></li>
+    </ul>
+    <p class="small muted">The report covers {listOfYears(view.years)}. This page shows {year}.</p>
+  </section>
+
+  <Pager label="More health centers" noun="health center" prev={prev} next={next} up={{ href: statePath(here.state), label: `Health centers in ${placeInWords(here.state)}` }} />
+</Base>

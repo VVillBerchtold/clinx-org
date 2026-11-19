@@ -27,21 +27,6 @@
   flex-direction: column;
   gap: 0.875rem;
 }
-.lawmap .has .tile {
-  fill: var(--accent);
-  opacity: 1;
-}
-.lawmap .has .abbr {
-  fill: var(--bg);
-  font-weight: 700;
-}
-.lawmap a {
-  text-decoration: none;
-}
-.lawmap .here .tile {
-  stroke: var(--ink);
-  stroke-width: 3;
-}
 
 /* ---------- All states: the kinds beside the map ---------- */
 

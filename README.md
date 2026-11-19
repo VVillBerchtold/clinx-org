@@ -9,7 +9,7 @@
 
 # clinx-org
 
-This is the code for [clinx.org](https://clinx.org), a free website that shows what hospitals and health centers report to their states about the federal 340B drug program.
+This is the code for [clinx.org](https://clinx.org), a free website of open healthcare data and small tools for clinics. So far the data covers the federal 340B drug program (what hospitals and health centers report to their states, the state laws, the bills, the federal notices and their dates) and the federally funded health centers (their yearly reports to HRSA, funding dates and shortage areas). The tools work on a report in your browser and keep the file on your computer.
 
 You do not need to be a programmer to find your way around here. This page explains what the site is, where its numbers come from and where each part lives. The deeper notes are in [`docs/`](docs/), one topic to a page.
 
@@ -25,7 +25,7 @@ And it lists the bills in Congress and the state legislatures that name 340B: wh
 
 It lists the federal rules and notices that name 340B too: what each one does about 340B in a sentence, the day comments close and the day it takes effect, all on the same calendar. One page sets out the 340B rebate pilot, from the federal notice that opened it.
 
-An AI assistant can read the laws, bills, notices and calendar as well, at `clinx.org/mcp`. It only reads, and the site keeps no question it is asked.
+An AI assistant can read the laws, bills, notices and calendar as well, and the health centers files, at `clinx.org/mcp`. It only reads, and the site keeps no question it is asked.
 
 Six states are in the scorecard today: Rhode Island, Vermont, Minnesota (two years of its report), Idaho, Maine and Ohio (241 Excel workbooks, one for each covered entity). Each state has its own form, so the site never adds two states together or sets them side by side as if they were alike.
 

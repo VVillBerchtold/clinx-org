@@ -1,0 +1,615 @@
+{
+  "changes": [],
+  "changes_columns": [
+    "from_day",
+    "to_day",
+    "file",
+    "key",
+    "state",
+    "name",
+    "kind",
+    "field",
+    "before",
+    "after"
+  ],
+  "counts": {
+    "change_rows": 0,
+    "designations": {
+      "hpsa-dh": {
+        "Designated": {
+          "designations": 39,
+          "file_rows": 39
+        },
+        "Proposed For Withdrawal": {
+          "designations": 1,
+          "file_rows": 1
+        },
+        "Withdrawn": {
+          "designations": 25,
+          "file_rows": 119
+        }
+      },
+      "hpsa-mh": {
+        "Designated": {
+          "designations": 44,
+          "file_rows": 79
+        },
+        "Proposed For Withdrawal": {
+          "designations": 0,
+          "file_rows": 0
+        },
+        "Withdrawn": {
+          "designations": 30,
+          "file_rows": 144
+        }
+      },
+      "hpsa-pc": {
+        "Designated": {
+          "designations": 46,
+          "file_rows": 156
+        },
+        "Proposed For Withdrawal": {
+          "designations": 0,
+          "file_rows": 0
+        },
+        "Withdrawn": {
+          "designations": 57,
+          "file_rows": 372
+        }
+      },
+      "mua": {
+        "Designated": {
+          "designations": 42,
+          "file_rows": 290
+        },
+        "Proposed For Withdrawal": {
+          "designations": 0,
+          "file_rows": 0
+        },
+        "Withdrawn": {
+          "designations": 2,
+          "file_rows": 22
+        }
+      }
+    },
+    "designations_from_other_primary_states_with_components_here": 0,
+    "designations_with_components_in_other_states": 0,
+    "recent_events": {
+      "hpsa-dh": {
+        "designated": 1,
+        "updated": 1,
+        "withdrawn": 0
+      },
+      "hpsa-mh": {
+        "designated": 2,
+        "updated": 2,
+        "withdrawn": 0
+      },
+      "hpsa-pc": {
+        "designated": 6,
+        "updated": 12,
+        "withdrawn": 0
+      },
+      "mua": {
+        "designated": 0,
+        "updated": 0,
+        "withdrawn": 0
+      }
+    },
+    "sites": {
+      "Active": 163
+    },
+    "sites_added_to_scope_in_window": 3,
+    "sites_not_active": 0
+  },
+  "notes": {
+    "counts": "Counts of rows in HRSA's files on the snapshot's day. 'designations' counts each designation once; 'file_rows' counts the component rows HRSA publishes for those designations (a county, county subdivision or census tract each).",
+    "state": "A designation is placed in the state HRSA gives as its primary state. Components in other states are shown in the 'states' column of a row.",
+    "updated": "'updated' means only that HRSA's 'last update date' for the designation falls in the window. The file does not say what was updated.",
+    "window": "The window is the 365 days up to and including the snapshot's day, counted from the snapshot's day and never from the clock."
+  },
+  "proposed": [
+    {
+      "counties": "Mercer County, NJ",
+      "designation_date_as_published": "08/15/2023",
+      "designation_date_iso": "2023-08-15",
+      "designation_type": "HPSA Population",
+      "discipline": "DH",
+      "file": "hpsa",
+      "id": "6346722929",
+      "key": "DH/6346722929",
+      "last_update_date_as_published": "09/22/2025",
+      "last_update_date_iso": "2025-09-22",
+      "name": "LI Trenton Dental",
+      "score": "17",
+      "state": "NJ",
+      "states": "NJ",
+      "status": "Proposed For Withdrawal"
+    }
+  ],
+  "proposed_columns": [
+    "file",
+    "discipline",
+    "key",
+    "id",
+    "name",
+    "designation_type",
+    "state",
+    "states",
+    "counties",
+    "score",
+    "status",
+    "designation_date_as_published",
+    "designation_date_iso",
+    "last_update_date_as_published",
+    "last_update_date_iso"
+  ],
+  "recent": [
+    {
+      "counties": "Atlantic County, NJ",
+      "designation_type": "Geographic HPSA",
+      "discipline": "MH",
+      "event": "designated",
+      "event_date_as_published": "10/29/2026",
+      "event_date_iso": "2026-10-29",
+      "file": "hpsa",
+      "id": "7347185152",
+      "key": "MH/7347185152",
+      "name": "Atlantic County",
+      "score": "10",
+      "state": "NJ",
+      "states": "NJ",
+      "status": "Designated"
+    },
+    {
+      "counties": "Atlantic County, NJ",
+      "designation_type": "Geographic HPSA",
+      "discipline": "MH",
+      "event": "updated",
+      "event_date_as_published": "10/29/2026",
+      "event_date_iso": "2026-10-29",
+      "file": "hpsa",
+      "id": "7347185152",
+      "key": "MH/7347185152",
+      "name": "Atlantic County",
+      "score": "10",
+      "state": "NJ",
+      "states": "NJ",
+      "status": "Designated"
+    },
+    {
+      "counties": "Atlantic County, NJ",
+      "designation_type": "Geographic HPSA",
+      "discipline": "PC",
+      "event": "designated",
+      "event_date_as_published": "10/22/2026",
+      "event_date_iso": "2026-10-22",
+      "file": "hpsa",
+      "id": "1345813027",
+      "key": "PC/1345813027",
+      "name": "Hammonton SA",
+      "score": "7",
+      "state": "NJ",
+      "states": "NJ",
+      "status": "Designated"
+    },
+    {
+      "counties": "Atlantic County, NJ",
+      "designation_type": "Geographic HPSA",
+      "discipline": "PC",
+      "event": "updated",
+      "event_date_as_published": "10/22/2026",
+      "event_date_iso": "2026-10-22",
+      "file": "hpsa",
+      "id": "1345813027",
+      "key": "PC/1345813027",
+      "name": "Hammonton SA",
+      "score": "7",
+      "state": "NJ",
+      "states": "NJ",
+      "status": "Designated"
+    },
+    {
+      "counties": "Middlesex County, NJ",
+      "designation_type": "Federally Qualified Health Center",
+      "discipline": "PC",
+      "event": "updated",
+      "event_date_as_published": "08/22/2026",
+      "event_date_iso": "2026-08-22",
+      "file": "hpsa",
+      "id": "1349993464",
+      "key": "PC/1349993464",
+      "name": "Chandler Health",
+      "score": "5",
+      "state": "NJ",
+      "states": "NJ",
+      "status": "Withdrawn"
+    },
+    {
+      "counties": "Camden County, NJ",
+      "designation_type": "Federally Qualified Health Center",
+      "discipline": "PC",
+      "event": "updated",
+      "event_date_as_published": "08/22/2026",
+      "event_date_iso": "2026-08-22",
+      "file": "hpsa",
+      "id": "1349993466",
+      "key": "PC/1349993466",
+      "name": "Our Lady of Lourdes",
+      "score": "0",
+      "state": "NJ",
+      "states": "NJ",
+      "status": "Withdrawn"
+    },
+    {
+      "counties": "Hudson County, NJ",
+      "designation_type": "Federally Qualified Health Center",
+      "discipline": "PC",
+      "event": "updated",
+      "event_date_as_published": "08/22/2026",
+      "event_date_iso": "2026-08-22",
+      "file": "hpsa",
+      "id": "1349993467",
+      "key": "PC/1349993467",
+      "name": "Jersey City Family Health",
+      "score": "0",
+      "state": "NJ",
+      "states": "NJ",
+      "status": "Withdrawn"
+    },
+    {
+      "counties": "Ocean County, NJ",
+      "designation_type": "Federally Qualified Health Center Look A Like",
+      "discipline": "PC",
+      "event": "updated",
+      "event_date_as_published": "08/22/2026",
+      "event_date_iso": "2026-08-22",
+      "file": "hpsa",
+      "id": "1349993475",
+      "key": "PC/1349993475",
+      "name": "Ocean Health Initiatives",
+      "score": "0",
+      "state": "NJ",
+      "states": "NJ",
+      "status": "Withdrawn"
+    },
+    {
+      "counties": "Atlantic County, NJ",
+      "designation_type": "Federally Qualified Health Center Look A Like",
+      "discipline": "PC",
+      "event": "updated",
+      "event_date_as_published": "08/22/2026",
+      "event_date_iso": "2026-08-22",
+      "file": "hpsa",
+      "id": "1349993478",
+      "key": "PC/1349993478",
+      "name": "Atlantic Health Initiatives, Inc.",
+      "score": "0",
+      "state": "NJ",
+      "states": "NJ",
+      "status": "Withdrawn"
+    },
+    {
+      "counties": "Monmouth County, NJ",
+      "designation_type": "Federally Qualified Health Center Look A Like",
+      "discipline": "PC",
+      "event": "updated",
+      "event_date_as_published": "08/22/2026",
+      "event_date_iso": "2026-08-22",
+      "file": "hpsa",
+      "id": "1349993479",
+      "key": "PC/1349993479",
+      "name": "Visiting Nurse Association of Central Jersey Commu",
+      "score": "0",
+      "state": "NJ",
+      "states": "NJ",
+      "status": "Withdrawn"
+    },
+    {
+      "counties": "Burlington County, NJ",
+      "designation_type": "Correctional Facility",
+      "discipline": "PC",
+      "event": "designated",
+      "event_date_as_published": "05/29/2026",
+      "event_date_iso": "2026-05-29",
+      "file": "hpsa",
+      "id": "1343715902",
+      "key": "PC/1343715902",
+      "name": "Mid-State Correctional Facility",
+      "score": "6",
+      "state": "NJ",
+      "states": "NJ",
+      "status": "Designated"
+    },
+    {
+      "counties": "Burlington County, NJ",
+      "designation_type": "Correctional Facility",
+      "discipline": "PC",
+      "event": "updated",
+      "event_date_as_published": "05/29/2026",
+      "event_date_iso": "2026-05-29",
+      "file": "hpsa",
+      "id": "1343715902",
+      "key": "PC/1343715902",
+      "name": "Mid-State Correctional Facility",
+      "score": "6",
+      "state": "NJ",
+      "states": "NJ",
+      "status": "Designated"
+    },
+    {
+      "counties": "Essex County, NJ",
+      "designation_type": "Geographic HPSA",
+      "discipline": "MH",
+      "event": "designated",
+      "event_date_as_published": "03/11/2026",
+      "event_date_iso": "2026-03-11",
+      "file": "hpsa",
+      "id": "7342316983",
+      "key": "MH/7342316983",
+      "name": "North Newark",
+      "score": "19",
+      "state": "NJ",
+      "states": "NJ",
+      "status": "Designated"
+    },
+    {
+      "counties": "Essex County, NJ",
+      "designation_type": "Geographic HPSA",
+      "discipline": "MH",
+      "event": "updated",
+      "event_date_as_published": "03/11/2026",
+      "event_date_iso": "2026-03-11",
+      "file": "hpsa",
+      "id": "7342316983",
+      "key": "MH/7342316983",
+      "name": "North Newark",
+      "score": "19",
+      "state": "NJ",
+      "states": "NJ",
+      "status": "Designated"
+    },
+    {
+      "counties": "Mercer County, NJ",
+      "designation_type": "Geographic HPSA",
+      "discipline": "DH",
+      "event": "designated",
+      "event_date_as_published": "02/25/2026",
+      "event_date_iso": "2026-02-25",
+      "file": "hpsa",
+      "id": "6345993019",
+      "key": "DH/6345993019",
+      "name": "Trenton SA",
+      "score": "19",
+      "state": "NJ",
+      "states": "NJ",
+      "status": "Designated"
+    },
+    {
+      "counties": "Mercer County, NJ",
+      "designation_type": "Geographic HPSA",
+      "discipline": "DH",
+      "event": "updated",
+      "event_date_as_published": "02/25/2026",
+      "event_date_iso": "2026-02-25",
+      "file": "hpsa",
+      "id": "6345993019",
+      "key": "DH/6345993019",
+      "name": "Trenton SA",
+      "score": "19",
+      "state": "NJ",
+      "states": "NJ",
+      "status": "Designated"
+    },
+    {
+      "counties": "Ocean County, NJ",
+      "designation_type": "Geographic HPSA",
+      "discipline": "PC",
+      "event": "designated",
+      "event_date_as_published": "02/25/2026",
+      "event_date_iso": "2026-02-25",
+      "file": "hpsa",
+      "id": "1346512899",
+      "key": "PC/1346512899",
+      "name": "Lakewood SA",
+      "score": "10",
+      "state": "NJ",
+      "states": "NJ",
+      "status": "Designated"
+    },
+    {
+      "counties": "Ocean County, NJ",
+      "designation_type": "Geographic HPSA",
+      "discipline": "PC",
+      "event": "updated",
+      "event_date_as_published": "02/25/2026",
+      "event_date_iso": "2026-02-25",
+      "file": "hpsa",
+      "id": "1346512899",
+      "key": "PC/1346512899",
+      "name": "Lakewood SA",
+      "score": "10",
+      "state": "NJ",
+      "states": "NJ",
+      "status": "Designated"
+    },
+    {
+      "counties": "Essex County, NJ",
+      "designation_type": "Geographic HPSA",
+      "discipline": "PC",
+      "event": "designated",
+      "event_date_as_published": "02/25/2026",
+      "event_date_iso": "2026-02-25",
+      "file": "hpsa",
+      "id": "1346542462",
+      "key": "PC/1346542462",
+      "name": "South Essex County SA",
+      "score": "13",
+      "state": "NJ",
+      "states": "NJ",
+      "status": "Designated"
+    },
+    {
+      "counties": "Essex County, NJ",
+      "designation_type": "Geographic HPSA",
+      "discipline": "PC",
+      "event": "updated",
+      "event_date_as_published": "02/25/2026",
+      "event_date_iso": "2026-02-25",
+      "file": "hpsa",
+      "id": "1346542462",
+      "key": "PC/1346542462",
+      "name": "South Essex County SA",
+      "score": "13",
+      "state": "NJ",
+      "states": "NJ",
+      "status": "Designated"
+    },
+    {
+      "counties": "Union County, NJ",
+      "designation_type": "Geographic HPSA",
+      "discipline": "PC",
+      "event": "designated",
+      "event_date_as_published": "02/25/2026",
+      "event_date_iso": "2026-02-25",
+      "file": "hpsa",
+      "id": "1349658307",
+      "key": "PC/1349658307",
+      "name": "Elizabeth SA",
+      "score": "13",
+      "state": "NJ",
+      "states": "NJ",
+      "status": "Designated"
+    },
+    {
+      "counties": "Union County, NJ",
+      "designation_type": "Geographic HPSA",
+      "discipline": "PC",
+      "event": "updated",
+      "event_date_as_published": "02/25/2026",
+      "event_date_iso": "2026-02-25",
+      "file": "hpsa",
+      "id": "1349658307",
+      "key": "PC/1349658307",
+      "name": "Elizabeth SA",
+      "score": "13",
+      "state": "NJ",
+      "states": "NJ",
+      "status": "Designated"
+    },
+    {
+      "counties": "Essex County, NJ",
+      "designation_type": "Geographic HPSA",
+      "discipline": "PC",
+      "event": "designated",
+      "event_date_as_published": "01/21/2026",
+      "event_date_iso": "2026-01-21",
+      "file": "hpsa",
+      "id": "1342398978",
+      "key": "PC/1342398978",
+      "name": "North Newark",
+      "score": "13",
+      "state": "NJ",
+      "states": "NJ",
+      "status": "Designated"
+    },
+    {
+      "counties": "Essex County, NJ",
+      "designation_type": "Geographic HPSA",
+      "discipline": "PC",
+      "event": "updated",
+      "event_date_as_published": "01/21/2026",
+      "event_date_iso": "2026-01-21",
+      "file": "hpsa",
+      "id": "1342398978",
+      "key": "PC/1342398978",
+      "name": "North Newark",
+      "score": "13",
+      "state": "NJ",
+      "states": "NJ",
+      "status": "Designated"
+    }
+  ],
+  "recent_columns": [
+    "event_date_iso",
+    "event",
+    "file",
+    "discipline",
+    "key",
+    "id",
+    "name",
+    "designation_type",
+    "state",
+    "states",
+    "counties",
+    "score",
+    "status",
+    "event_date_as_published"
+  ],
+  "sites_recent": [
+    {
+      "added_to_scope_as_published": "03/10/2026",
+      "added_to_scope_iso": "2026-03-10",
+      "address": "1420 Crestmont Ave",
+      "city": "Camden",
+      "county": "Camden County",
+      "health_center_name": "CAMCARE HEALTH CORPORATION",
+      "health_center_number": "H80CS00172",
+      "key": "BPS-H80-041422",
+      "postal_code": "08103-3182",
+      "reason": "added to scope in the last 365 days",
+      "site_name": "CAMcare Mobile Unit",
+      "site_status": "Active",
+      "state": "NJ"
+    },
+    {
+      "added_to_scope_as_published": "03/10/2026",
+      "added_to_scope_iso": "2026-03-10",
+      "address": "525 Clinton St",
+      "city": "Camden",
+      "county": "Camden County",
+      "health_center_name": "PROJECT HOPE",
+      "health_center_number": "H80CS09032",
+      "key": "BPS-H80-041425",
+      "postal_code": "08103-1223",
+      "reason": "added to scope in the last 365 days",
+      "site_name": "KIPP: Cooper Norcross",
+      "site_status": "Active",
+      "state": "NJ"
+    },
+    {
+      "added_to_scope_as_published": "01/28/2026",
+      "added_to_scope_iso": "2026-01-28",
+      "address": "4100 Park Ave",
+      "city": "Weehawken",
+      "county": "Hudson County",
+      "health_center_name": "North Hudson Community Action Corporation",
+      "health_center_number": "H80CS00521",
+      "key": "BPS-H80-041236",
+      "postal_code": "07086-6196",
+      "reason": "added to scope in the last 365 days",
+      "site_name": "North Hudson Community Action Corporation @Weehawken",
+      "site_status": "Active",
+      "state": "NJ"
+    }
+  ],
+  "sites_recent_columns": [
+    "reason",
+    "state",
+    "key",
+    "site_name",
+    "health_center_number",
+    "health_center_name",
+    "site_status",
+    "added_to_scope_as_published",
+    "added_to_scope_iso",
+    "address",
+    "city",
+    "postal_code",
+    "county"
+  ],
+  "snapshot_day": "2026-11-16",
+  "state": "NJ",
+  "window_end": "2026-11-16",
+  "window_start": "2025-11-16"
+}

@@ -1,0 +1,47 @@
+---
+import '../../../styles/article.css';
+import Base from '../../../layouts/Base.astro';
+import Arrow from '../../../components/Arrow.astro';
+import Draft from '../../../components/Draft.astro';
+import PageHead from '../../../components/PageHead.astro';
+import article from '../../../content/what-are-we-renting.md?raw';
+import { renderSections } from '../../../lib/markdown';
+import { ARTICLE_TITLE, CHECKING_ARTICLE_TITLE, CLEANER_COPY, RENTING_ARTICLE_PUBLISHED, RENTING_ARTICLE_TITLE } from '../../../lib/site';
+import { articleNode, founderNode } from '../../../lib/structured-data';
+
+const sections = renderSections(article);
+const path = '/writing/what-are-we-renting/';
+const articleDescription = 'Why clinic software became something to rent, what has changed, and what is still worth paying for when a small tool can work on a file in the browser.';
+---
+
+<Base
+  title={RENTING_ARTICLE_TITLE}
+  description={articleDescription}
+  crumbs={[
+    { name: 'Writing', path: '/writing/' },
+    { name: RENTING_ARTICLE_TITLE, path },
+  ]}
+  about={[articleNode(articleDescription, { path, title: RENTING_ARTICLE_TITLE, published: RENTING_ARTICLE_PUBLISHED }), founderNode()]}
+>
+  <PageHead wide title={RENTING_ARTICLE_TITLE} trail={[{ label: 'Writing', href: '/writing/' }, { label: 'Essay' }]}>
+    <p class="byline">By Will Berchtold <span aria-hidden="true">·</span> 6 minute read <Draft /></p>
+  </PageHead>
+  <article class="article">
+    {
+      sections.map((section) => (
+        <section aria-labelledby={section.title === '' ? undefined : section.id}>
+          {section.title !== '' && <h2 id={section.id}>{section.title}</h2>}
+          <Fragment set:html={section.html} />
+        </section>
+      ))
+    }
+    <p class="small muted article-related">Related: <a href="/writing/check-a-page/">{CHECKING_ARTICLE_TITLE}</a> and <a href="/writing/no-phi/">{ARTICLE_TITLE}</a></p>
+  </article>
+  <div class="prod article-end">
+    <div>
+      <strong>Try a tool that works this way</strong>
+      <p>{CLEANER_COPY} has a sample report built in, so you can try it and check it without a file of your own.</p>
+    </div>
+    <a class="btn" href="/tools/cleaner-copy/">Open the tool <Arrow /></a>
+  </div>
+</Base>

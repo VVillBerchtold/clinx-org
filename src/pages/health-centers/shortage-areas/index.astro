@@ -1,0 +1,172 @@
+---
+import '../../../styles/home.css';
+import '../../../styles/scorecard.css';
+import '../../../styles/hc-areas.css';
+import Base from '../../../layouts/Base.astro';
+import { HC_HOME, HC_NAME } from '../../../lib/site';
+import OnPage from '../../../components/OnPage.astro';
+import PageHead from '../../../components/PageHead.astro';
+import StateMap from '../../../components/StateMap.astro';
+import AreasCare from '../../../components/hc/AreasCare.astro';
+import AreasCountsTable from '../../../components/hc/AreasCountsTable.astro';
+import AreasFilter from '../../../components/hc/AreasFilter.astro';
+import AreasSource from '../../../components/hc/AreasSource.astro';
+import { stateMapSvg, type MapCard } from '../../../lib/state-map';
+import { AREAS_PATH, areaPath, changesSentence, day, EVENTS, getIndex, getState, nameOf, NO_STATE, num, SERIES, SERIES_INFO, stateCodes } from '../../../lib/hc-areas';
+
+/**
+ * The front page of the shortage area tracker: what it is, the day of HRSA's files, a way to pick a state,
+ * the national counts, and the source. No state is ranked; the list is A to Z.
+ */
+const index = getIndex();
+const when = day(index.snapshot_day);
+const from = day(index.window_start);
+const codes = stateCodes();
+const national = index.national_counts;
+
+// The map over the table: one tile for each state and territory, and beside it the same counts the table gives.
+const onMap = new Set(codes.filter((code) => code !== NO_STATE));
+const COLUMNS = ['Designated', 'Proposed'];
+const figures = (designations: typeof national.designations) =>
+  SERIES.map((s) => ({ label: SERIES_INFO[s].short, values: [num(designations[s].Designated.designations), num(designations[s]['Proposed For Withdrawal'].designations)] }));
+const cards: MapCard[] = [...onMap].map((code) => ({
+  code,
+  kicker: `Files of ${when}`,
+  name: nameOf(code),
+  columns: COLUMNS,
+  rows: figures(getState(code).counts.designations),
+  go: `Select the tile to open ${nameOf(code)}.`,
+}));
+const mapSvg = stateMapSvg({
+  id: 'areas-map',
+  title: 'States and territories with a shortage areas page',
+  desc: 'A grid of the 50 states and the District of Columbia, with a row of territories under it. Each is a link to its page. The table after the map gives the same counts for each.',
+  territories: true,
+  tile: (place) => (onMap.has(place.code) ? { tone: 'has', href: areaPath(place.code), label: 'shortage areas and health center sites', card: true } : { tone: 'none' }),
+});
+const rest = { kicker: `Files of ${when}`, name: 'All states and territories', columns: COLUMNS, rows: figures(national.designations) };
+---
+
+<Base
+  title="Shortage areas and health center sites"
+  crumbs={[{ name: HC_NAME, path: HC_HOME }, { name: 'Shortage areas', path: AREAS_PATH }]}
+  description={`HRSA’s shortage area designations, underserved areas and health center sites by state, as of its files of ${when}, with the designations HRSA proposes to withdraw and what its own dates say happened in the last 365 days.`}
+>
+  <PageHead title="Shortage areas and health center sites" trail={[{ label: HC_NAME, href: HC_HOME }, { label: 'Shortage areas' }]}>
+    <p class="lede">
+      HRSA designates areas as short of primary care, dental health or mental health providers and areas and populations as medically underserved, and lists every health center service site. ClinX keeps a dated copy of those files and shows, state by state, what is designated, what HRSA marks Proposed For Withdrawal and what HRSA’s own dates say happened in the last 365 days.
+    </p>
+    <p class="hc-day"><strong>Files of {when}</strong><span>Counts are counts of rows in HRSA’s files on that day.</span></p>
+    <OnPage
+      title="Shortage areas"
+      items={[
+        { id: 'states-heading', label: 'Pick a state' },
+        { id: 'national-heading', label: 'All states and territories' },
+        { id: 'changes-heading', label: 'Changes between copies' },
+        { id: 'read-with-care', label: 'Read with care' },
+        { id: 'source-heading', label: 'Source' },
+      ]}
+    />
+  </PageHead>
+
+  <section class="section" aria-labelledby="states-heading">
+    <div class="section-head">
+      <h2 id="states-heading">Pick a state</h2>
+      <p>Select a state on the map, or a name in the table under it.</p>
+    </div>
+    <p>
+      Each count is the number of designations in HRSA’s files of {when} with that state as primary state and that status. HRSA writes the code XX where a row gives no state, and those rows are the last line of the list.
+    </p>
+    <StateMap svg={mapSvg} legend={[{ tone: 'has', label: 'Has a page. Select a tile to open it' }]} rest={rest} cards={cards} />
+    <h3 class="hc-map-next" id="states-list">The same counts as a table</h3>
+    <AreasFilter target="states-table" textLabel="State or territory" />
+    <div class="table-wrap wide stack hc-list hc-states">
+      <table id="states-table" data-sortable>
+        <caption><span>Designations by state and territory in HRSA’s files of {when}: designated, and proposed for withdrawal</span></caption>
+        <thead role="rowgroup">
+          <tr role="row">
+            <th role="columnheader" scope="col" data-sort="text">State or territory</th>
+            {SERIES.map((s) => <th role="columnheader" scope="col" class="num" data-sort="number">Designated, {SERIES_INFO[s].short.toLowerCase()}</th>)}
+            {SERIES.map((s) => <th role="columnheader" scope="col" class="num" data-sort="number">Proposed, {SERIES_INFO[s].short.toLowerCase()}</th>)}
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          {
+            codes.map((code) => {
+              const counts = getState(code).counts.designations;
+              return (
+                <tr role="row">
+                  <th role="rowheader" scope="row" data-value={code === NO_STATE ? '~' : nameOf(code)}>
+                    <a href={areaPath(code)}>{nameOf(code)}</a>
+                    <span class="hc-id">{code}</span>
+                  </th>
+                  {SERIES.map((s) => (
+                    <td role="cell" class:list={['num', { zero: counts[s].Designated.designations === 0 }]} data-label={`Designated, ${SERIES_INFO[s].short.toLowerCase()}`} data-value={counts[s].Designated.designations}>
+                      {num(counts[s].Designated.designations)}
+                    </td>
+                  ))}
+                  {SERIES.map((s) => (
+                    <td role="cell" class:list={['num', { zero: counts[s]['Proposed For Withdrawal'].designations === 0 }]} data-label={`Proposed, ${SERIES_INFO[s].short.toLowerCase()}`} data-value={counts[s]['Proposed For Withdrawal'].designations}>
+                      {num(counts[s]['Proposed For Withdrawal'].designations)}
+                    </td>
+                  ))}
+                </tr>
+              );
+            })
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="small muted">
+      Designated and Proposed are HRSA’s statuses Designated and Proposed For Withdrawal. The page of each state also counts Withdrawn designations and the rows HRSA publishes for each count.
+    </p>
+  </section>
+
+  <section class="section" aria-labelledby="national-heading">
+    <div class="section-head">
+      <h2 id="national-heading">All states and territories</h2>
+      <p>The same counts for every row of HRSA’s files, with the number of designations first and the number of rows under it.</p>
+    </div>
+    <AreasCountsTable counts={national.designations} caption={`All states and territories: designations in HRSA’s files of ${when}, by kind of area and status`} />
+    <div class="table-wrap wide stack hc-list hc-counts">
+      <table>
+        <caption><span>All states and territories: events by HRSA’s own dates from {from} to {when}</span></caption>
+        <thead role="rowgroup">
+          <tr role="row">
+            <th role="columnheader" scope="col">Kind of area</th>
+            {EVENTS.map((e) => <th role="columnheader" scope="col" class="num">{e[0]!.toUpperCase() + e.slice(1)}</th>)}
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          {
+            SERIES.map((s) => (
+              <tr role="row">
+                <th role="rowheader" scope="row">{SERIES_INFO[s].label}</th>
+                {EVENTS.map((e) => <td role="cell" class="num" data-label={e[0]!.toUpperCase() + e.slice(1)}>{num(national.recent_events[s][e])}</td>)}
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="small muted">
+      Updated means only that HRSA’s last update date for a designation falls in these 365 days. HRSA’s file does not say what was updated.
+      {Object.entries(national.sites).map(([status, n]) => ` HRSA’s sites file holds ${num(n)} health center sites with the status ${status}.`).join('')}
+    </p>
+  </section>
+
+  <section class="section" aria-labelledby="changes-heading">
+    <div class="section-head">
+      <h2 id="changes-heading">Changes between copies</h2>
+    </div>
+    <p>{changesSentence(index.snapshot_day, index.change_rows_so_far)}</p>
+    <p>Each state’s page lists the changes of that state, and changes.csv lists them for all states.</p>
+  </section>
+
+  <AreasCare />
+  <AreasSource />
+</Base>
+
+<script>
+  import '../../../scripts/hc-areas-filter';
+</script>
