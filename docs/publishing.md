@@ -10,7 +10,7 @@ The site is served by Cloudflare. `wrangler.jsonc` is the whole configuration, a
 - one address, `clinx.org`, and no spare or preview addresses;
 - one program, `worker/index.ts`, which runs only for paths under `/api/` and for `/mcp`.
 
-The security headers come from `public/_headers`, which the build copies into `dist/`. The page security policy is also repeated in a tag on every page, so it holds on any host.
+The security headers come from `public/_headers`, which the build copies into `dist/`. The page security policy is also repeated in a tag on every page, so it holds on any host. The same file tells the host to hand over the standalone copy of the Schedule Designer as a download, so a browser saves it and does not open it on the site.
 
 ## Nothing is published by accident
 

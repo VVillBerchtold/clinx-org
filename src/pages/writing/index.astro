@@ -4,14 +4,23 @@ import Base from '../../layouts/Base.astro';
 import Arrow from '../../components/Arrow.astro';
 import Draft from '../../components/Draft.astro';
 import PageHead from '../../components/PageHead.astro';
-import { ARTICLE_TITLE, CHECKING_ARTICLE_TITLE, CLEANER_COPY, CLEANER_COPY_ARTICLE_TITLE, WORKBOOK_ARTICLE_TITLE } from '../../lib/site';
+import { ARTICLE_TITLE, CHECKING_ARTICLE_TITLE, CLEANER_COPY, CLEANER_COPY_ARTICLE_TITLE, SCHEDULE_DESIGNER, SCHEDULE_DESIGNER_ARTICLE_TITLE, WORKBOOK_ARTICLE_TITLE } from '../../lib/site';
 
 /** What a piece of writing ends with: the tool or demo its last button opens. */
 const cleanerCopy = { href: '/tools/cleaner-copy/', kind: 'Tool', name: CLEANER_COPY };
+const scheduleDesigner = { href: '/tools/schedule-designer/', kind: 'Tool', name: SCHEDULE_DESIGNER };
 const totalsDemo = { href: '/writing/no-phi/demo/', kind: 'Demo', name: 'Totals from a file' };
 
 /** Every piece, newest first. Each one is drawn as the same card. */
 const pieces = [
+  {
+    href: '/writing/saved-as-a-workbook/',
+    kind: 'Article',
+    minutes: 4,
+    title: SCHEDULE_DESIGNER_ARTICLE_TITLE,
+    say: 'The Schedule Designer keeps no account and sends nothing, so a saved schedule is an Excel workbook on your own computer.',
+    goesWith: scheduleDesigner,
+  },
   {
     href: '/writing/cleaner-copy/',
     kind: 'Article',

@@ -1,6 +1,7 @@
 // Scans the built site (dist/) for things this site must never contain.
 // No dependency: a careful tag scanner is enough for the HTML Astro writes.
 // Usage: node scripts/check-dist.mjs [dist-folder]
+import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -142,6 +143,23 @@ const shareImages = new Set();
 const ids = new Map(); // url path -> Set of ids
 const links = []; // { page, target }
 const labelPages = new Map(); // url path -> the page's blocks of data for search engines (text)
+const scriptPages = new Map(); // script file -> Set of the pages that load it
+
+// One file is built differently from every page, and is known here by its exact address: the
+// standalone copy of Schedule Designer (scripts/standalone.mjs). It is a download a person opens
+// from their own computer, so its styles and its script are inside the file. It is left out of the
+// page checks below and has its own, further down (checkStandalone). Every other file is checked as before.
+const STANDALONE = '/tools/schedule-designer/clinx-schedule-designer.html';
+const STANDALONE_PAGE = '/tools/schedule-designer/index.html';
+// Schedule Designer can remember where a person's file is when they ask it to: one record, in one
+// browser database of this name. Only the script of that one page, and the copy, may name a database.
+const DESIGNER_DATABASE = 'clinx-schedule-designer';
+const SCRIPT_WORDS = ['XMLHttpRequest', 'WebSocket', 'sendBeacon', 'EventSource', 'importScripts', 'document.cookie', 'localStorage', 'sessionStorage', 'indexedDB'];
+function checkDesignerDatabase(where, js) {
+  if (!js.includes('indexedDB')) return;
+  if (js.split('indexedDB.open(').length - 1 !== 1) fail(where, 'the script must open its one database in exactly one place');
+  if (!js.includes(DESIGNER_DATABASE)) fail(where, `the script names a database but not ${DESIGNER_DATABASE}`);
+}
 
 // The data a page gives search engines must be well-formed, must describe this page, and must name
 // only pages and files this site really has.
@@ -182,6 +200,7 @@ function checkLabels(page, raw, listed) {
 
 for (const file of htmlFiles) {
   const page = urlOf(file);
+  if (page === STANDALONE) continue;
   const source = readFileSync(file, 'utf8');
   // A linked figure must not touch the word before or after it ("of$47.8 million").
   if (/[A-Za-z,]<a class="cited"/.test(source) || /<\/span><\/a>[A-Za-z]/.test(source)) fail(page, 'a linked figure touches the word beside it (missing space)');
@@ -275,6 +294,7 @@ for (const file of htmlFiles) {
     if (name === 'script' || name === 'img') {
       const src = get('src');
       if (src !== undefined) links.push({ page, target: src });
+      if (name === 'script' && src !== undefined) scriptPages.set(src, (scriptPages.get(src) ?? new Set()).add(page));
     }
   }
 
@@ -338,9 +358,14 @@ for (const file of cssFiles) {
 for (const file of files.filter((f) => f.endsWith('.js'))) {
   const js = readFileSync(file, 'utf8');
   const name = urlOf(file);
-  for (const word of ['XMLHttpRequest', 'WebSocket', 'sendBeacon', 'EventSource', 'importScripts', 'document.cookie', 'localStorage', 'sessionStorage', 'indexedDB']) {
+  // The script that Schedule Designer's page loads, and no other page does, may name the one database.
+  const users = scriptPages.get(name) ?? new Set();
+  const isDesigner = users.size === 1 && users.has(STANDALONE_PAGE);
+  for (const word of SCRIPT_WORDS) {
+    if (word === 'indexedDB' && isDesigner) continue;
     if (js.includes(word)) fail(name, `script uses ${word}`);
   }
+  if (isDesigner) checkDesignerDatabase(name, js);
   const calls = js.split('fetch(').length - 1;
   const isDemo = /\/_astro\/demo\.[^/]*\.js$/.test(name);
   if (calls > (isDemo ? 1 : 0)) fail(name, `script has ${calls} network call(s)`);
@@ -352,6 +377,103 @@ for (const file of files.filter((f) => f.endsWith('.js'))) {
     const formatName = /^http:\/\/www\.w3\.org\//.test(m[0]) || /^http:\/\/schemas\.openxmlformats\.org\//.test(m[0]);
     if (!/^https:\/\/example\.invalid\//.test(m[0]) && !formatName) fail(name, `script names an outside address: ${m[0]}`);
   }
+}
+
+// The standalone copy of Schedule Designer. It must load nothing at all, carry a policy that
+// refuses every connection and lets its one style block and its one script block through by their
+// fingerprints, and match the checksum file published beside it.
+function checkStandalone() {
+  const where = STANDALONE;
+  const file = join(dist, STANDALONE);
+  if (!existsSync(file)) return fail(where, 'missing from the build (npm run build writes it)');
+  const bytes = readFileSync(file);
+  const source = bytes.toString('utf8');
+  const fileName = STANDALONE.split('/').pop();
+
+  // The checksum file: the SHA-256 of the copy and its name, in the usual one-line form.
+  const sumPath = `${file}.sha256`;
+  if (!existsSync(sumPath)) fail(`${where}.sha256`, 'missing from the build');
+  else if (readFileSync(sumPath, 'utf8') !== `${createHash('sha256').update(bytes).digest('hex')}  ${fileName}\n`) fail(`${where}.sha256`, 'is not the SHA-256 of the copy followed by its name');
+
+  // One style block and one script block, and the policy names exactly those two by fingerprint.
+  const scripts = [...source.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
+  const styles = [...source.matchAll(/<style\b([^>]*)>([\s\S]*?)<\/style>/gi)];
+  if (scripts.length !== 1 || scripts[0][1] !== ' type="module"') fail(where, `has ${scripts.length} script block(s); expected one, a module with no address`);
+  if (styles.length !== 1 || styles[0][1] !== '') fail(where, `has ${styles.length} style block(s); expected one`);
+  const js = scripts[0]?.[2] ?? '';
+  const css = styles[0]?.[2] ?? '';
+  const fingerprint = (text) => `'sha256-${createHash('sha256').update(text, 'utf8').digest('base64')}'`;
+  const policies = [...source.matchAll(/<meta\s+http-equiv="Content-Security-Policy"\s+content="([^"]*)">/gi)];
+  if ((source.match(/http-equiv/gi) ?? []).length !== 1 || policies.length !== 1) fail(where, 'must carry exactly one http-equiv tag, its policy');
+  else {
+    const policy = policies[0][1];
+    const wanted = `default-src 'none'; script-src ${fingerprint(js)}; style-src ${fingerprint(css)}; font-src data:; img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'`;
+    if (/unsafe-inline|unsafe-eval|unsafe-hashes|\*/.test(policy)) fail(where, 'the policy contains an unsafe word or a wildcard');
+    if (!policy.includes("connect-src 'none'")) fail(where, "the policy does not carry connect-src 'none'");
+    if (policy !== wanted) fail(where, 'the policy is not the agreed one, or its fingerprints do not match the style and script blocks in the file');
+    const at = policies[0].index;
+    if (at > (styles[0]?.index ?? 0) || at > (scripts[0]?.index ?? 0)) fail(where, 'the policy comes after a block it should govern');
+  }
+
+  // No load of any kind. In the markup an address may only be a place inside the file (#...), and the tab icon is data.
+  const markup = source.replace(/<!--[\s\S]*?-->/g, '').replace(js, '').replace(css, '');
+  let h1 = 0;
+  let sawTitle = false;
+  let sawLang = false;
+  let unlisted = false;
+  for (const m of markup.matchAll(TAG)) {
+    const name = m[1].toLowerCase();
+    const attrs = attributesOf(m[2]);
+    const get = (n) => attrs.find(([k]) => k === n)?.[1];
+    if (name === 'h1') h1++;
+    if (name === 'title') sawTitle = true;
+    if (name === 'html' && get('lang') === 'en') sawLang = true;
+    if (name === 'meta' && get('name') === 'robots' && /noindex/.test(get('content') ?? '')) unlisted = true;
+    if (['iframe', 'object', 'embed', 'base', 'frame', 'form', 'img', 'picture', 'source', 'video', 'audio', 'track', 'portal', 'fencedframe'].includes(name)) fail(where, `<${name}> element`);
+    if (name === 'link' && (get('rel') !== 'icon' || !(get('href') ?? '').startsWith('data:image/'))) fail(where, 'a <link> other than the tab icon written in as data');
+    for (const [n, v] of attrs) {
+      if (n === 'style') fail(where, 'style attribute');
+      if (/^on[a-z]+$/.test(n)) fail(where, `${n} event handler attribute`);
+      if (['href', 'xlink:href', 'src', 'srcset', 'action', 'formaction', 'poster', 'data', 'ping', 'background', 'manifest', 'cite', 'longdesc', 'usemap', 'codebase', 'archive', 'imagesrcset'].includes(n)) {
+        const inside = v.startsWith('#') || (name === 'link' && v.startsWith('data:image/'));
+        if (!inside) fail(where, `${n} points outside the file: ${v.slice(0, 80)}`);
+      }
+    }
+  }
+  for (const m of css.matchAll(/url\(\s*['"]?([^'")]{0,40})/gi)) if (!m[1].startsWith('data:')) fail(where, `the styles load a file: ${m[1]}`);
+  if (/@import/i.test(css)) fail(where, '@import in the styles');
+  // The word http may stand in the file only as the name of its policy tag and as the two kinds of
+  // format name that are never fetched (see the scripts check above).
+  const withoutNames = source.replaceAll('http-equiv', '').replace(/http:\/\/(?:www\.w3\.org|schemas\.openxmlformats\.org)\/[^\s`'"\\)<]*/g, '');
+  const loads = /https?:|\/\/[a-z0-9-]+\.[a-z]{2,}\//i.exec(withoutNames);
+  if (loads) fail(where, `names an outside address near: ...${withoutNames.slice(Math.max(0, loads.index - 40), loads.index + 60).replace(/\s+/g, ' ')}...`);
+
+  // The script: no connection of any kind, and no storage but the one database.
+  for (const word of SCRIPT_WORDS) if (word !== 'indexedDB' && js.includes(word)) fail(where, `script uses ${word}`);
+  if (js.split('fetch(').length - 1 > 0) fail(where, 'script has a network call');
+  if (/\bimport\s*\(|(?:^|[;\n])\s*import\b/.test(js)) fail(where, 'script imports another file');
+  checkDesignerDatabase(where, js);
+
+  // The page itself.
+  if (h1 !== 1) fail(where, `has ${h1} <h1>, expected exactly one`);
+  if (!sawTitle) fail(where, 'no <title>');
+  if (!sawLang) fail(where, 'html lang is not "en"');
+  if (!unlisted) fail(where, 'must ask search engines not to list it');
+  const text = markup.replace(/<[^>]*>/g, ' ');
+  for (const words of ['Standalone copy', 'This copy does not update itself', 'clinx.org/tools/schedule-designer/', 'Keeps nothing unless you choose otherwise']) {
+    if (!text.includes(words)) fail(where, `does not say: ${words}`);
+  }
+  if (EMAIL.test(text)) fail(where, 'contains an email address');
+  EMAIL.lastIndex = 0;
+  const word = BANNED_WORDS.exec(text);
+  if (word) fail(where, `page text contains "${word[0].trim()}" near: ...${text.slice(Math.max(0, word.index - 40), word.index + 40).replace(/\s+/g, ' ')}...`);
+  if (/[\u2013\u2014]/.test(text)) fail(where, 'page text uses a dash as punctuation');
+}
+checkStandalone();
+// The page of the tool offers the copy and its checksum as downloads.
+{
+  const page = existsSync(join(dist, STANDALONE_PAGE)) ? readFileSync(join(dist, STANDALONE_PAGE), 'utf8') : '';
+  for (const href of [STANDALONE, `${STANDALONE}.sha256`]) if (!page.includes(`href="${href}" download`)) fail(STANDALONE_PAGE, `does not offer ${href} as a download`);
 }
 
 // Search engines. robots.txt, the pages' own "do not list" tags and sitemap.xml must tell one story:

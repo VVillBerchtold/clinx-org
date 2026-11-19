@@ -5,7 +5,7 @@ import { founderNode, siteNode } from '../lib/structured-data';
 import Arrow from '../components/Arrow.astro';
 import Draft from '../components/Draft.astro';
 import { getBills } from '../lib/bills';
-import { CLEANER_COPY, FILE_CHECK, REFERRALFINDERX_URL, numberWord, numberWordCap } from '../lib/site';
+import { CLEANER_COPY, FILE_CHECK, REFERRALFINDERX_URL, SCHEDULE_DESIGNER, numberWord, numberWordCap } from '../lib/site';
 import { REPORTING_GROUPS, statesInGroup, statesWith, tileMapSvg } from '../lib/states';
 
 const live = statesWith('live');
@@ -76,7 +76,7 @@ const ways = [
     <div class="wrap">
       <div class="band-head split-head">
         <h2 id="work-title">What ClinX does.</h2>
-        <p class="lede">So far the data covers the federal 340B drug program, and the tools work on the reports a clinic already has. Everything is free to use.</p>
+        <p class="lede">So far the data covers the federal 340B drug program, and the tools work on the reports and schedules a clinic keeps. Everything is free to use.</p>
       </div>
       <div class="work band-body">
         <article class="work-row" aria-labelledby="work-data">
@@ -118,7 +118,7 @@ const ways = [
         <article class="work-row" aria-labelledby="work-tools">
           <div class="work-say">
             <p class="label">Tools</p>
-            <h3 id="work-tools">Small tools for the files a clinic already has.</h3>
+            <h3 id="work-tools">Small tools for the files a clinic keeps.</h3>
             <p>
               A clinic's reports hold patient details, which rules out most online tools. Each tool here runs inside your browser, on a page that cannot open a connection. The file you choose stays on your computer.
             </p>
@@ -131,6 +131,12 @@ const ways = [
           <div class="work-show">
             <p class="work-zero"><b>0</b><span>requests since you chose a file. Each tool counts the requests its page makes while it works, and shows you the count.</span></p>
             <ul class="work-tools">
+              <li>
+                <a href="/tools/schedule-designer/">
+                  <span><strong>{SCHEDULE_DESIGNER}</strong>A template week for each person, with the appointments and hours counted as you build it.</span>
+                  <Arrow />
+                </a>
+              </li>
               <li>
                 <a href="/tools/cleaner-copy/">
                   <span><strong>{CLEANER_COPY}</strong>A copy of your report with randomized values in the columns you choose.</span>

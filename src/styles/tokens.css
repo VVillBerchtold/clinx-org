@@ -107,3 +107,65 @@
     --warn-wash: #2c2110;
   }
 }
+
+/*
+  ---------- Schedule Designer: the twelve swatches ----------
+  A schedule names a kind of time by a swatch number, never by a colour value. Each swatch is a
+  fill and the ink that is written on it. The light fills match the ones the saved workbook uses.
+  Every pair is readable: ink on fill is at least 6.5 to 1 in both themes.
+  Order: purple, blue, teal, green, lime, yellow, orange, red, pink, sand, slate, grey.
+*/
+:root {
+  --sw-1: #e4dafb;
+  --sw-1-ink: #3b1f8c;
+  --sw-2: #d6e6fb;
+  --sw-2-ink: #123f7a;
+  --sw-3: #cfefec;
+  --sw-3-ink: #0b4f4a;
+  --sw-4: #d5efd5;
+  --sw-4-ink: #1c5221;
+  --sw-5: #e6f3c2;
+  --sw-5-ink: #3f5208;
+  --sw-6: #fbf0be;
+  --sw-6-ink: #5c4700;
+  --sw-7: #fcddbf;
+  --sw-7-ink: #7a3a05;
+  --sw-8: #f9d3d0;
+  --sw-8-ink: #7d1a14;
+  --sw-9: #f9d4e7;
+  --sw-9-ink: #7a1750;
+  --sw-10: #ede3d0;
+  --sw-10-ink: #54432a;
+  --sw-11: #d8dee8;
+  --sw-11-ink: #2d3a4d;
+  --sw-12: #e4e4e4;
+  --sw-12-ink: #3a3a3a;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --sw-1: #32266e;
+    --sw-1-ink: #dcd2ff;
+    --sw-2: #17366b;
+    --sw-2-ink: #cfe2ff;
+    --sw-3: #0f4744;
+    --sw-3-ink: #bff0ea;
+    --sw-4: #1d4a22;
+    --sw-4-ink: #c8f0c8;
+    --sw-5: #3a4a0e;
+    --sw-5-ink: #e0f2ae;
+    --sw-6: #54430a;
+    --sw-6-ink: #fbe9a0;
+    --sw-7: #663310;
+    --sw-7-ink: #ffd9b5;
+    --sw-8: #6b1f1b;
+    --sw-8-ink: #ffd0cc;
+    --sw-9: #66184a;
+    --sw-9-ink: #ffd0e8;
+    --sw-10: #4a3d28;
+    --sw-10-ink: #eedfc4;
+    --sw-11: #2c394d;
+    --sw-11-ink: #d5deeb;
+    --sw-12: #3a3a40;
+    --sw-12-ink: #e3e3e8;
+  }
+}

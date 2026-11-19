@@ -4,7 +4,7 @@ import '../../styles/tools.css';
 import Base from '../../layouts/Base.astro';
 import Arrow from '../../components/Arrow.astro';
 import PageHead from '../../components/PageHead.astro';
-import { CLEANER_COPY, FILE_CHECK } from '../../lib/site';
+import { CLEANER_COPY, FILE_CHECK, SCHEDULE_DESIGNER } from '../../lib/site';
 ---
 
 <Base title="Tools" crumbs={[{ name: 'Tools', path: '/tools/' }]} description="Small tools from ClinX for the work around clinic data. Each one runs in your browser and keeps your file on your computer.">
@@ -12,7 +12,16 @@ import { CLEANER_COPY, FILE_CHECK } from '../../lib/site';
     <p class="lede">Small tools for the work around clinic data. Each one runs in your browser and keeps your file on your computer.</p>
   </PageHead>
 
-  <div class="tool-cards has-three">
+  <div class="tool-cards">
+    <a class="card" href="/tools/schedule-designer/">
+      <span class="label">Template week</span>
+      <span class="piece-steps" aria-hidden="true"><b>1</b><i></i><b>2</b><i></i><b>3</b><i></i><b>4</b></span>
+      <span>
+        <strong>{SCHEDULE_DESIGNER}</strong>
+        <p>A template week for each person in a clinic, with the appointments and hours counted as you build it.</p>
+      </span>
+      <span class="tool-go">Open the tool <Arrow /></span>
+    </a>
     <a class="card" href="/tools/cleaner-copy/">
       <span class="label">Workbooks and CSV files</span>
       <span class="piece-steps" aria-hidden="true"><b>1</b><i></i><b>2</b><i></i><b>3</b><i></i><b>4</b></span>

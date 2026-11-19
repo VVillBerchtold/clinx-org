@@ -19,8 +19,12 @@ function pagesIn(dir) {
   return out;
 }
 
+// The standalone copy of Schedule Designer is a download, never a page of the site (scripts/standalone.mjs).
+const STANDALONE = join(dist, 'tools', 'schedule-designer', 'clinx-schedule-designer.html');
+
 const addresses = [];
 for (const file of pagesIn(dist)) {
+  if (file === STANDALONE) continue;
   const html = readFileSync(file, 'utf8');
   if (/<meta name="robots" content="[^"]*noindex/.test(html)) continue;
   const canonical = html.match(/<link rel="canonical" href="([^"]+)"/);

@@ -1,0 +1,277 @@
+---
+// This page uses the same frame of numbered steps as Cleaner Copy, so it loads that page's
+// stylesheet first. The stylesheet after it holds what only this page has.
+import '../../../styles/pages.css';
+import '../../../styles/cleaner-copy.css';
+import '../../../styles/schedule-designer.css';
+import Base from '../../../layouts/Base.astro';
+import Arrow from '../../../components/Arrow.astro';
+import PageHead from '../../../components/PageHead.astro';
+import { SCHEDULE_DESIGNER, SCHEDULE_DESIGNER_ARTICLE_TITLE } from '../../../lib/site';
+
+const STEPS = ['Start', 'Set up', 'Design', 'Check and save'];
+---
+
+<Base
+  title={`${SCHEDULE_DESIGNER}: plan a clinic's template week`}
+  crumbs={[
+    { name: 'Tools', path: '/tools/' },
+    { name: SCHEDULE_DESIGNER, path: '/tools/schedule-designer/' },
+  ]}
+  description="Plan a clinic's template week in your browser. Build each person's week on a grid, watch the appointment counts and hours add up, and save it as an Excel workbook."
+>
+  <svg class="cc-sprite" width="0" height="0" aria-hidden="true" focusable="false">
+    <symbol id="sd-i-check" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m4 10.5 4 4 8-9"></path></symbol>
+    <symbol id="sd-i-right" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12M11 5l5 5-5 5"></path></symbol>
+    <symbol id="sd-i-left" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 10H4M9 5l-5 5 5 5"></path></symbol>
+    <symbol id="sd-i-prev" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 5 7.5 10l5 5"></path></symbol>
+    <symbol id="sd-i-next" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 5 5 5-5 5"></path></symbol>
+    <symbol id="sd-i-down" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 7.5 5 5 5-5"></path></symbol>
+    <symbol id="sd-i-save" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3v10M5.5 9l4.5 4.5L14.5 9M4 16.5h12"></path></symbol>
+    <symbol id="sd-i-file" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2.5h5.5l4 4V16a1.5 1.5 0 0 1-1.5 1.5H6A1.5 1.5 0 0 1 4.5 16V4A1.5 1.5 0 0 1 6 2.5ZM11.5 2.5v4h4M7.5 10.5h5M7.5 13.5h5"></path></symbol>
+    <symbol id="sd-i-new" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2.5h5.5l4 4V16a1.5 1.5 0 0 1-1.5 1.5H6A1.5 1.5 0 0 1 4.5 16V4A1.5 1.5 0 0 1 6 2.5ZM11.5 2.5v4h4M10 9.5v5M7.5 12h5"></path></symbol>
+    <symbol id="sd-i-open" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6v9.5a1 1 0 0 0 1 1h13a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1H10l-1.8-2H3.5a1 1 0 0 0-1 1V6Z"></path></symbol>
+    <symbol id="sd-i-spark" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m9 2.5 1.7 4.3L15 8.5l-4.3 1.7L9 14.5l-1.7-4.3L3 8.5l4.3-1.7L9 2.5ZM15.3 13l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7.7-1.8Z"></path></symbol>
+    <symbol id="sd-i-info" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15ZM10 9.2V14M10 6.3v.2"></path></symbol>
+    <symbol id="sd-i-alert" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3.2 17.5 16h-15L10 3.2ZM10 8.5V12M10 14.3v.2"></path></symbol>
+    <symbol id="sd-i-undo" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4.5 3.5 8 7 11.500M3.5 8H12a4.5 4.5 0 0 1 0 9H8.500"></path></symbol>
+    <symbol id="sd-i-redo" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m13 4.500 3.500 3.500-3.500 3.500M16.500 8H8a4.5 4.5 0 0 0 0 9h3.500"></path></symbol>
+    <symbol id="sd-i-expand" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8V3.5H8M12 3.5h4.5V8M16.5 12v4.5H12M8 16.5H3.5V12"></path></symbol>
+    <symbol id="sd-i-shrink" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3.500V8H3.500M16.500 8H12V3.500M12 16.500V12h4.500M3.500 12H8v4.500"></path></symbol>
+    <symbol id="sd-i-more" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 10h.01M10 10h.01M15.5 10h.01"></path></symbol>
+    <symbol id="sd-i-look" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10s3-5.500 8-5.500S18 10 18 10s-3 5.500-8 5.500S2 10 2 10ZM10 12.300a2.300 2.300 0 1 0 0-4.600 2.300 2.300 0 0 0 0 4.600Z"></path></symbol>
+    <symbol id="sd-i-eraser" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m8.500 16.500-4.900-4.900a1.200 1.200 0 0 1 0-1.700l6.300-6.300a1.200 1.200 0 0 1 1.700 0l4.800 4.800a1.200 1.200 0 0 1 0 1.700l-6.400 6.400H8.500ZM6.800 6.900l6.300 6.300M10 16.500h6.500"></path></symbol>
+    <symbol id="sd-i-person" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10 10a3.250 3.250 0 1 0 0-6.500 3.250 3.250 0 0 0 0 6.500ZM3.750 16.500c.600-2.700 3.100-4 6.250-4s5.650 1.300 6.250 4"></path></symbol>
+    <symbol id="sd-i-day" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 4h13v12h-13zM8 4v12M12.500 4v12"></path></symbol>
+    <symbol id="sd-i-room" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5.500 17V4.200c0-.400.300-.700.700-.700h7.600c.400 0 .700.300.700.700V17M3.500 17h13M11.800 10.200v.100"></path></symbol>
+    <symbol id="sd-i-grid" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3.500 3.500H9V9H3.500zM11 3.500h5.500V9H11zM3.500 11H9v5.500H3.500zM11 11h5.500v5.500H11z"></path></symbol>
+    <symbol id="sd-i-plus" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4v12M4 10h12"></path></symbol>
+    <symbol id="sd-i-close" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m5 5 10 10M15 5 5 15"></path></symbol>
+    <symbol id="sd-i-trash" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h12M8 6V4h4v2M5.500 6l.700 10.500h7.600L14.500 6M8.500 9v5M11.500 9v5"></path></symbol>
+    <symbol id="sd-i-copy" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h9.5v9.5H7zM4 13V3.5h9.5"></path></symbol>
+    <symbol id="sd-i-print" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7V3.500h8V7M6 14H4.200a.700.700 0 0 1-.700-.700V7.700c0-.400.300-.700.700-.700h11.600c.400 0 .700.300.700.700v5.600c0 .400-.300.700-.700.700H14M6 11.500h8v5H6z"></path></symbol>
+    <symbol id="sd-i-keys" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2.500 5.500h15v9h-15zM5.500 8.500h.010M8.500 8.500h.010M11.500 8.500h.010M14.500 8.500h.010M6.500 11.500h7"></path></symbol>
+    <symbol id="sd-i-pin" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17.500s5-4.600 5-8.600a5 5 0 0 0-10 0c0 4 5 8.600 5 8.600ZM10 10.600A1.800 1.800 0 1 0 10 7a1.800 1.800 0 0 0 0 3.600Z"></path></symbol>
+    <symbol id="sd-i-home" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3.500 9.500 10 4l6.500 5.500M5.500 8.500V16h9V8.500M8.500 16v-4h3v4"></path></symbol>
+    <symbol id="sd-i-clock" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.500a7.500 7.500 0 1 1 0 15 7.500 7.500 0 0 1 0-15ZM10 6v4.200l2.800 1.800"></path></symbol>
+    <symbol id="sd-i-target" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.500v3M10 14.500v3M2.500 10h3M14.500 10h3M10 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"></path></symbol>
+    <symbol id="sd-i-sheet" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3.500 4h13v12h-13zM3.500 8h13M3.500 12h13M8 4v12"></path></symbol>
+  </svg>
+
+  <PageHead wide title={SCHEDULE_DESIGNER} trail={[{ label: 'Tools', href: '/tools/' }, { label: SCHEDULE_DESIGNER }]}>
+    <p class="lede">Build each person's week on a grid and watch the appointment counts and hours add up as you go. When it looks right, save it as an Excel workbook that this page can open again.</p>
+    <ul class="cc-promises">
+      <li><svg width="16" height="16" aria-hidden="true" focusable="false"><use href="#sd-i-check"></use></svg>Runs in your browser</li>
+      <li><svg width="16" height="16" aria-hidden="true" focusable="false"><use href="#sd-i-check"></use></svg>Opens no connection</li>
+      <li><svg width="16" height="16" aria-hidden="true" focusable="false"><use href="#sd-i-check"></use></svg>Keeps nothing unless you choose otherwise</li>
+    </ul>
+  </PageHead>
+
+  <p id="sd-off" class="panel cc-off">This tool works in your browser, so it needs scripts turned on. <a href="/writing/saved-as-a-workbook/">The article</a> explains what it does.</p>
+
+  <div id="sd" class="cc sd" hidden>
+    <div class="cc-rail">
+      <ol id="sd-steps" class="cc-steps">
+        {
+          STEPS.map((label, i) => (
+            <li>
+              <button type="button" class="cc-stepper" data-go={i + 1} disabled>
+                <span class="cc-num" aria-hidden="true">
+                  <span>{i + 1}</span>
+                  <svg width="16" height="16" focusable="false">
+                    <use href="#sd-i-check" />
+                  </svg>
+                </span>
+                <span class="cc-step-say">
+                  <span class="cc-step-count">Step {i + 1}</span>
+                  <span class="cc-step-name">{label}</span>
+                </span>
+              </button>
+            </li>
+          ))
+        }
+      </ol>
+      <div id="sd-wire" class="cc-wire sd-wire">
+        <span class="sd-wire-part"><span class="cc-wire-dot" aria-hidden="true"></span><span id="sd-wire-say">No connection can be opened from this page</span></span>
+        <span id="sd-saved" class="sd-saved" hidden></span>
+      </div>
+    </div>
+    <p id="sd-where" class="cc-where" aria-hidden="true"></p>
+
+    <div id="sd-body" class="cc-body">
+      <!-- Step 1 -->
+      <section id="sd-step-1" class="cc-step" aria-labelledby="sd-h-1">
+        <header class="cc-step-head">
+          <h2 id="sd-h-1" tabindex="-1">Start</h2>
+          <p id="sd-start-say">Choose how to begin. The sample clinic is a quick way to see what the tool does.</p>
+        </header>
+        <div id="sd-lead" class="sd-lead" hidden></div>
+        <p id="sd-lost" class="cc-problem" role="alert" hidden></p>
+        <div id="sd-confirm" class="sd-confirm" role="alertdialog" aria-labelledby="sd-confirm-say" hidden>
+          <p id="sd-confirm-say"></p>
+          <div class="btn-row">
+            <button id="sd-confirm-yes" class="btn" type="button">Replace it</button>
+            <button id="sd-confirm-no" class="btn ghost" type="button">Keep working on it</button>
+          </div>
+        </div>
+        <ul class="sd-starts">
+          <li id="sd-sample-card" class="sd-start is-main">
+            <span class="cc-badge big"><svg width="28" height="28" aria-hidden="true" focusable="false"><use href="#sd-i-spark"></use></svg></span>
+            <h3>Open the sample clinic</h3>
+            <p>An invented clinic with two sites, eight providers and three support staff. Its week is already filled in, so you can try everything.</p>
+            <button id="sd-sample" class="btn accent" type="button">Open the sample</button>
+          </li>
+          <li class="sd-start">
+            <span class="cc-badge big"><svg width="28" height="28" aria-hidden="true" focusable="false"><use href="#sd-i-new"></use></svg></span>
+            <h3>Start a new schedule</h3>
+            <p>An empty week with one site and a few kinds of time. You add your own places and people next.</p>
+            <button id="sd-new" class="btn ghost" type="button">Start new</button>
+          </li>
+          <li id="sd-drop" class="sd-start">
+            <span class="cc-badge big"><svg width="28" height="28" aria-hidden="true" focusable="false"><use href="#sd-i-open"></use></svg></span>
+            <h3>Open a saved schedule</h3>
+            <div class="sd-start-words">
+              <p id="sd-open-help">Choose a workbook this page saved earlier, or drop it on this card.</p>
+              <button id="sd-open-setup" class="cc-link sd-start-alt" type="button">Use a saved schedule's set-up</button>
+            </div>
+            <input id="sd-file" class="visually-hidden" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" aria-describedby="sd-open-help" tabindex="-1" />
+            <button id="sd-open" class="btn ghost" type="button">Choose a file</button>
+          </li>
+        </ul>
+        <p id="sd-problem" class="cc-problem" role="alert" hidden></p>
+        <div class="cc-limits">
+          <h3>Good to know</h3>
+          <ul>
+            <li>This is a template week. It holds no patients and no real appointments.</li>
+            <li>The schedule lives in this tab until you save it. Save the workbook before you close the page.</li>
+            <li>Each person's week snaps to a grid of 15 or 20 minutes. You can switch the grid at any time and the blocks keep their true times.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Step 2 -->
+      <section id="sd-step-2" class="cc-step" aria-labelledby="sd-h-2" hidden>
+        <header class="cc-step-head">
+          <h2 id="sd-h-2" tabindex="-1">Set up</h2>
+          <p>Name the places, the kinds of time and the people. You can come back and change any of it later.</p>
+        </header>
+        <div id="sd-from" class="sd-from" role="status" hidden>
+          <svg width="18" height="18" aria-hidden="true" focusable="false"><use href="#sd-i-info"></use></svg>
+          <p id="sd-from-say"></p>
+          <button id="sd-from-close" class="cc-link" type="button">Dismiss</button>
+        </div>
+        <div id="sd-setup" class="sd-setup"></div>
+      </section>
+
+      <!-- Step 3 -->
+      <section id="sd-step-3" class="cc-step sd-step-design" aria-labelledby="sd-h-3" hidden>
+        <h2 id="sd-h-3" class="visually-hidden" tabindex="-1">Design</h2>
+        <div id="sd-design" class="sd-design">
+          <div id="sd-bar" class="sd-bar"></div>
+          <div id="sd-how" class="sd-how" hidden></div>
+          <div id="sd-work" class="sd-work">
+            <div id="sd-palette" class="sd-palette"></div>
+            <div class="sd-stage">
+              <div id="sd-notice" class="sd-notice-slot" role="status" hidden></div>
+              <div id="sd-canvas" class="sd-canvas-host"></div>
+              <div id="sd-pick" class="sd-pick" hidden></div>
+              <div id="sd-view" class="sd-view" hidden></div>
+              <div id="sd-under" class="sd-under">
+                <p id="sd-status" class="sd-status"></p>
+              </div>
+            </div>
+            <div id="sd-side" class="sd-side"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 4 -->
+      <section id="sd-step-4" class="cc-step" aria-labelledby="sd-h-4" hidden>
+        <header class="cc-step-head">
+          <h2 id="sd-h-4" tabindex="-1">Check and save</h2>
+          <p id="sd-check-say">The page has read the whole week.</p>
+        </header>
+        <div id="sd-check" class="sd-check"></div>
+      </section>
+    </div>
+
+    <div id="sd-foot" class="cc-foot" hidden>
+      <button id="sd-back" class="btn ghost" type="button"><svg width="18" height="18" aria-hidden="true" focusable="false"><use href="#sd-i-left"></use></svg><span class="sd-back-say">Back</span></button>
+      <div id="sd-tally" class="cc-tally" role="status"></div>
+      <button id="sd-next" class="btn accent" type="button"><span id="sd-next-say">Continue</span><svg width="18" height="18" aria-hidden="true" focusable="false"><use href="#sd-i-right"></use></svg></button>
+    </div>
+    <p id="sd-live" class="visually-hidden" role="status" aria-live="polite"></p>
+  </div>
+
+  <div id="sd-print" class="sd-print" aria-hidden="true"></div>
+
+  <section class="cc-about sd-about" aria-labelledby="sd-about-h">
+    <h2 id="sd-about-h">What you can do with it</h2>
+    <ul class="cc-uses sd-about-list">
+      <li>
+        <h3>Mock up a template week</h3>
+        <p>Lay out each person's appointments and other time, and see whether the hours meet their contract before anyone rebuilds it in the scheduling system. Enter a person's working hours and their week shows when they are at work.</p>
+      </li>
+      <li>
+        <h3>See rooms beside the schedule</h3>
+        <p>A block of time can name a room. The page shows when two people are in one room and which rooms are free.</p>
+      </li>
+      <li>
+        <h3>Plan support staff beside providers</h3>
+        <p>Support staff, such as medical assistants, have weeks of their own. A week can be filled from the patient time of the providers a person works with, and each provider's week shows when somebody is with them.</p>
+      </li>
+      <li>
+        <h3>Keep it as a workbook</h3>
+        <p>The saved file is an ordinary Excel workbook with a sheet for each person. This page opens it again when the week needs to change.</p>
+      </li>
+    </ul>
+    <a class="cc-read" href="/writing/saved-as-a-workbook/">
+      <span>
+        <span class="label">Article</span>
+        <strong>{SCHEDULE_DESIGNER_ARTICLE_TITLE}</strong>
+        <span class="muted">What the page writes into the workbook, what it reads back, and what to know before you rely on it.</span>
+      </span>
+      <Arrow />
+    </a>
+  </section>
+
+  <section class="cc-about sd-pickup" aria-labelledby="sd-pickup-h">
+    <h2 id="sd-pickup-h">Picking up where you left off</h2>
+    <ul class="cc-uses sd-pickup-list">
+      <li>
+        <h3>The workbook holds your work</h3>
+        <p>The workbook you save holds the whole set-up and the week. Open it here again and carry on from where you stopped.</p>
+      </li>
+      <li>
+        <h3>Remembering your file in Edge</h3>
+        <p>In Edge the page can remember where your file is and save changes back into it. Turn on <strong>Remember this file on this computer</strong> to use it. Edge asks you before the page opens the file again.</p>
+      </li>
+      <li>
+        <h3>A new season from the last one</h3>
+        <p>On the Start step, choose <strong>Use a saved schedule's set-up</strong> to begin an empty week with the set-up from an earlier workbook. That workbook stays as it was.</p>
+      </li>
+      <li>
+        <h3>Other browsers</h3>
+        <p>In other browsers you open and save the workbook by hand. You choose it each time, and saving puts a copy with your downloads. The page offers to remember your file wherever the browser supports it.</p>
+      </li>
+    </ul>
+  </section>
+
+  <section id="sd-own" class="cc-about sd-own" aria-labelledby="sd-own-h">
+    <h2 id="sd-own-h">Keep your own copy</h2>
+    <div class="sd-own-card">
+      <div class="sd-own-say">
+        <p>The whole tool also comes as one file. Save it on your computer and open it in your browser whenever you need it. It loads nothing from anywhere and opens no connection.</p>
+        <p>The copy does not update itself, so come back to this page for the current one. The checksum file beside it holds the SHA-256 of the copy, for checking that the file you have is the one published here.</p>
+      </div>
+      <div class="sd-own-do">
+        <a class="btn accent" href="/tools/schedule-designer/clinx-schedule-designer.html" download><svg width="18" height="18" aria-hidden="true" focusable="false"><use href="#sd-i-save"></use></svg>Download the copy</a>
+        <a class="cc-link" href="/tools/schedule-designer/clinx-schedule-designer.html.sha256" download>Download its checksum</a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    import '../../../scripts/schedule-designer/main';
+  </script>
+</Base>

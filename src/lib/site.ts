@@ -118,6 +118,19 @@ export const CLEANER_COPY_ARTICLE_TITLE = 'Getting a clinic report ready for AI 
 export const CLEANER_COPY_ARTICLE_PUBLISHED = '2026-11-16';
 /** The tool that looks through a report for what would trip up a script or a pivot table. */
 export const FILE_CHECK = 'File Check';
+/** The tool for designing a clinic's template week. The name is written here once. */
+export const SCHEDULE_DESIGNER = 'Schedule Designer';
+/** The version the standalone copy of the tool prints (scripts/standalone.mjs). Raise it when the tool changes in a way a person would notice. */
+export const SCHEDULE_DESIGNER_VERSION = '1.0';
+/**
+ * The day that version was released, as the standalone copy prints it. It is written here, and
+ * not taken from the clock at build time, so two builds of the same source give the same file
+ * and the same checksum. Change it together with the version.
+ */
+export const SCHEDULE_DESIGNER_RELEASED = '19 November 2026';
+/** The article about where the Schedule Designer keeps a schedule, and the day it goes public. */
+export const SCHEDULE_DESIGNER_ARTICLE_TITLE = 'The workbook is the saved schedule';
+export const SCHEDULE_DESIGNER_ARTICLE_PUBLISHED = '2026-11-19';
 /** The article about what a workbook holds outside its cells, and the day it goes public. */
 export const WORKBOOK_ARTICLE_TITLE = 'What an Excel workbook carries besides its cells';
 export const WORKBOOK_ARTICLE_PUBLISHED = '2026-11-16';

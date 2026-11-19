@@ -16,7 +16,8 @@
     "check:data": "node scripts/check-data.mjs",
     "check": "ASTRO_TELEMETRY_DISABLED=1 astro check",
     "test": "vitest run",
-    "build": "ASTRO_TELEMETRY_DISABLED=1 astro build && node scripts/sitemap.mjs",
+    "build": "ASTRO_TELEMETRY_DISABLED=1 astro build && node scripts/sitemap.mjs && node scripts/standalone.mjs",
+    "standalone": "node scripts/standalone.mjs",
     "check:dist": "node scripts/check-dist.mjs && node scripts/check-drug-pages.mjs"
   },
   "dependencies": {

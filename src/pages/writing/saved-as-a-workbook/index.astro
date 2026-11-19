@@ -1,0 +1,57 @@
+---
+import '../../../styles/article.css';
+import Base from '../../../layouts/Base.astro';
+import Arrow from '../../../components/Arrow.astro';
+import Draft from '../../../components/Draft.astro';
+import PageHead from '../../../components/PageHead.astro';
+import article from '../../../content/schedule-designer.md?raw';
+import { renderSections } from '../../../lib/markdown';
+import {
+  ARTICLE_TITLE,
+  CHECKING_ARTICLE_TITLE,
+  SCHEDULE_DESIGNER,
+  SCHEDULE_DESIGNER_ARTICLE_PUBLISHED,
+  SCHEDULE_DESIGNER_ARTICLE_TITLE,
+  WORKBOOK_ARTICLE_TITLE,
+} from '../../../lib/site';
+import { articleNode, founderNode } from '../../../lib/structured-data';
+
+const sections = renderSections(article);
+const path = '/writing/saved-as-a-workbook/';
+const articleDescription =
+  'The Schedule Designer keeps no account and sends nothing, so a saved schedule is an Excel workbook on your own computer. What the page writes into it, what it reads back, and what to know before you rely on it.';
+---
+
+<Base
+  title={SCHEDULE_DESIGNER_ARTICLE_TITLE}
+  description={articleDescription}
+  crumbs={[
+    { name: 'Writing', path: '/writing/' },
+    { name: SCHEDULE_DESIGNER_ARTICLE_TITLE, path },
+  ]}
+  about={[articleNode(articleDescription, { path, title: SCHEDULE_DESIGNER_ARTICLE_TITLE, published: SCHEDULE_DESIGNER_ARTICLE_PUBLISHED }), founderNode()]}
+>
+  <PageHead wide title={SCHEDULE_DESIGNER_ARTICLE_TITLE} trail={[{ label: 'Writing', href: '/writing/' }, { label: 'Article' }]}>
+    <p class="byline">By Will Berchtold <span aria-hidden="true">·</span> 4 minute read <Draft /></p>
+  </PageHead>
+  <article class="article">
+    {
+      sections.map((section) => (
+        <section aria-labelledby={section.title === '' ? undefined : section.id}>
+          {section.title !== '' && <h2 id={section.id}>{section.title}</h2>}
+          <Fragment set:html={section.html} />
+        </section>
+      ))
+    }
+    <p class="small muted article-related">
+      Related: <a href="/writing/inside-a-workbook/">{WORKBOOK_ARTICLE_TITLE}</a>, <a href="/writing/check-a-page/">{CHECKING_ARTICLE_TITLE}</a> and <a href="/writing/no-phi/">{ARTICLE_TITLE}</a>
+    </p>
+  </article>
+  <div class="prod article-end">
+    <div>
+      <strong>Try it</strong>
+      <p>Open the sample week in the {SCHEDULE_DESIGNER} and save it. Then look at the workbook in Excel.</p>
+    </div>
+    <a class="btn" href="/tools/schedule-designer/">Open the tool <Arrow /></a>
+  </div>
+</Base>

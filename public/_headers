@@ -10,3 +10,6 @@
 /contact/
   ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'
+
+/tools/schedule-designer/clinx-schedule-designer.html
+  Content-Disposition: attachment; filename="clinx-schedule-designer.html"
