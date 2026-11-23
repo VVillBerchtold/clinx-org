@@ -190,7 +190,7 @@ const fNow = mapFacts(last);
 const nm = (r: { code: string }[], i: number): string => stateName(r[i]?.code ?? '');
 const mapSteps: { month: string; year: string; label?: string; narrow?: boolean; text: string }[] = [
   { month: '2012-01', year: '2012',
-    text: `Only ${f12.measured} states have 50 arrangements to measure. The typical one sends ${pct(f12.median, 1)} of them to a pharmacy across a state line. Before 2017 the counts are a lower bound.` },
+    text: `Only ${f12.measured} states have 50 arrangements to measure. The typical one sends ${pct(f12.median, 1)} of them to a pharmacy across a state line.` },
   { month: '2017-01', year: '2017',
     text: `Every state is on the map. The typical one sends ${pct(f17.median)} out of state, and ${fmt(f17.crossing)} arrangements cross a line, the most of them to ${nm(f17.receivers, 0)}.` },
   { month: '2020-01', year: '2020',
@@ -411,7 +411,7 @@ const parts = [
           <li><span class="rx-key oi" aria-hidden="true"></span>At insurer-owned pharmacies</li>
           <li><span class="rx-key oo" aria-hidden="true"></span>At all other pharmacies</li>
         </ul>
-        <figcaption>The pharmacy's state is from its address in the registry; the entity's is from its street address. Insurer-owned: specialty, mail and infusion pharmacies whose name ties them to a company that also owns a health insurer or pharmacy benefit manager. The registry records no owner, so this is matched by name.</figcaption>
+        <figcaption>The pharmacy's state is from its address in the registry; the entity's is from its street address. Insurer-owned: specialty, mail and infusion pharmacies whose name ties them to a company that also owns a health insurer or pharmacy benefit manager.</figcaption>
       </figure>
 
       <h3 class="rx-sub-h">Whose pharmacies cross the line</h3>
@@ -565,7 +565,7 @@ const parts = [
         </ul>
       </div>
       <h3 class="rx-sub-h">Every law state on one clock</h3>
-      <p class="rx-small">Each line is one state: the arrangements its entities hold, set to 100 in the month its law took effect, from two years before to two years after. The bold line is the median law state; the dashed line is the whole country over the same months. Both stop where fewer than five states have reached that month. A year after its law, the median state stood at {yearOn(aligned.median)} and the country at {yearOn(aligned.nation)} ({nYear} states have a full year since). Shown as recorded; this does not say what the laws caused.</p>
+      <p class="rx-small">Each line is one state: the arrangements its entities hold, set to 100 in the month its law took effect, from two years before to two years after. The bold line is the median law state; the dashed line is the whole country over the same months. Both stop where fewer than five states have reached that month. A year after its law, the median state stood at {yearOn(aligned.median)} and the country at {yearOn(aligned.nation)} ({nYear} states have a full year since).</p>
       <figure class="rx-figure rx-aligned" data-aligned={alignedData}>
         <Fragment set:html={alignedChart.wide} />
         <Fragment set:html={alignedChart.narrow} />
@@ -584,7 +584,7 @@ const parts = [
         </ul>
       </figure>
       <h3 class="rx-sub-h">State by state</h3>
-      <p class="rx-small">Arrangements held by the state's entities, by month from January 2018. Each chart has its own scale; the number in its corner is its largest month. The dot and line mark the day the law took effect. Shown as recorded; the charts do not say what the law caused.</p>
+      <p class="rx-small">Arrangements held by the state's entities, by month from January 2018. Each chart has its own scale; the number in its corner is its largest month. The dot and line mark the day the law took effect.</p>
       <ul class="rx-multiples">
         {lawCards.map((c) => (
           <li>
@@ -600,7 +600,7 @@ const parts = [
 
   <footer class="rx-source">
     <div class="wrap rx-measure">
-      <p>Source: U.S. Health Resources and Services Administration, Office of Pharmacy Affairs, 340B OPAIS, Covered Entity Daily Export of 23 November 2026, rebuilt month by month. How it is counted, with the code: <a href={`${REGISTRY_REPO}#readme`}>the repository's notes</a>.</p>
+      <p>Source: U.S. Health Resources and Services Administration, Office of Pharmacy Affairs, 340B OPAIS, Covered Entity Daily Export of 23 November 2026, rebuilt month by month. Counts before 2017 are a lower bound, and owners are matched by pharmacy name, since the registry records none. The page shows what the registry records, not what any law caused. How it is counted, with the code: <a href={`${REGISTRY_REPO}#readme`}>the repository's notes</a>.</p>
     </div>
   </footer>
 </Base>

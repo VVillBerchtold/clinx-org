@@ -17,7 +17,7 @@ You do not need to be a programmer to find your way around here. This page expla
 
 - It shows the figures each filer reported: what it paid for 340B drugs, what it was paid, and what went to outside vendors.
 - Every figure is a link. It opens the filing's own PDF at the page the figure was read from.
-- It gives no opinions. It does not grade a filer or say why a figure is what it is.
+- Its data pages give no opinions and grade no filer. A signed analysis under Writing may say what the figures mean, and it links to the data behind it.
 
 It also lists the state laws that name 340B, state by state and by kind, each with a plain summary and a link to the state's own page.
 
