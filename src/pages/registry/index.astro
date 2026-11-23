@@ -1,0 +1,387 @@
+---
+/**
+ * The 340B registry's history, 2010 to today: contract pharmacy arrangements as today's registry
+ * records them, month by month. One long page in seven parts: the count, the pharmacies, the
+ * distance, the chains, who holds them, the state laws, and what this record cannot say.
+ * Every chart is drawn at build time (src/lib/registry.ts); the hover layer is
+ * src/scripts/registry-charts.ts. Each chart has a table with the same figures.
+ */
+import '../../styles/registry.css';
+import Base from '../../layouts/Base.astro';
+import events from '../../data/registry/events.json';
+import {
+  FULL_RECORD_FROM,
+  H,
+  REGISTRY_REPO,
+  aroundLaw,
+  at,
+  flowMap,
+  flowRows,
+  fmt,
+  lastMonth,
+  lawMap,
+  lawStates,
+  lineChart,
+  monthLong,
+  monthShort,
+  pct,
+  pharmacyStates,
+  smallMultiple,
+  stateName,
+  type FederalEvent,
+  type Marker,
+} from '../../lib/registry';
+
+const last = lastMonth();
+const N = H.national;
+const first = '2010-01';
+const arr = at(N.arrangements, last);
+const ph = at(N.pharmacies, last);
+const ent = at(N.entities, last);
+const out = at(N.out_of_state, last);
+const y16 = '2016-01';
+const fed = events as FederalEvent[];
+const markers: Marker[] = fed
+  .filter((e) => e.label && e.date >= `${first}-01`)
+  .map((e, i) => ({ month: e.date.slice(0, 7), label: e.label, level: i % 3 }));
+
+// 1. The count.
+const hero = lineChart({
+  id: 'hero',
+  frame: 'hero',
+  area: true,
+  shadeBefore: FULL_RECORD_FROM,
+  markers,
+  series: [{ key: 'arr', label: 'arrangements', values: N.arrangements, slot: 1 }],
+  title: 'Contract pharmacy arrangements in the 340B registry, by month',
+  desc: `From ${fmt(at(N.arrangements, first))} on ${monthLong(first)} to ${fmt(arr)} on ${monthLong(last)}, as the registry records them today.`,
+});
+
+// 2. The pharmacies.
+const perPharmacy = N.arrangements.map((a, i) => (N.pharmacies[i] ? a / N.pharmacies[i]! : 0));
+const pharmacies = lineChart({
+  id: 'pharm',
+  frame: 'half',
+  from: '2012-01',
+  series: [{ key: 'ph', label: 'pharmacies', values: N.pharmacies, slot: 1 }],
+  title: 'Distinct contract pharmacies, by month',
+  desc: `${fmt(at(N.pharmacies, '2012-01'))} in January 2012, ${fmt(ph)} on ${monthLong(last)}.`,
+});
+const ratio = lineChart({
+  id: 'ratio',
+  frame: 'half',
+  from: '2012-01',
+  series: [{ key: 'pp', label: 'per pharmacy', values: perPharmacy.map((v) => Math.round(v * 10) / 10), slot: 2 }],
+  title: 'Arrangements for each contract pharmacy, by month',
+  desc: `${perPharmacy[H.months.indexOf('2012-01')]!.toFixed(1)} in January 2012, ${perPharmacy[perPharmacy.length - 1]!.toFixed(1)} on ${monthLong(last)}.`,
+});
+const phPeak = Math.max(...N.pharmacies);
+const phPeakMonth = H.months[N.pharmacies.indexOf(phPeak)]!;
+
+// 3. The distance.
+const share = N.arrangements.map((a, i) => (a ? N.out_of_state[i]! / a : 0));
+const distance = lineChart({
+  id: 'dist',
+  frame: 'full',
+  from: '2012-01',
+  percent: true,
+  area: true,
+  shadeBefore: FULL_RECORD_FROM,
+  series: [{ key: 'out', label: 'in another state', values: share, slot: 2 }],
+  title: "Share of arrangements whose pharmacy is in another state from the entity's street address",
+  desc: `${pct(share[H.months.indexOf('2012-01')]!, 1)} in January 2012, ${pct(share[share.length - 1]!)} on ${monthLong(last)}.`,
+});
+const mapThen = flowMap(y16);
+const mapNow = flowMap(last);
+const pairs = flowRows(last, 12);
+const receiving = pharmacyStates(last, 8);
+
+// 4. The chains.
+const C = H.chains;
+const chainSeries = C.groups.map((g, i) => ({ key: g, label: g, values: C.arrangements[g]!, slot: i === 4 ? 0 : i + 1 }));
+const totals = N.arrangements;
+const chains = lineChart({
+  id: 'chains',
+  frame: 'full',
+  from: '2012-01',
+  stacked: true,
+  percent: true,
+  series: chainSeries.map((s) => ({ ...s, values: s.values.map((v, i) => (totals[i] ? v / totals[i]! : 0)) })),
+  title: 'Share of arrangements by pharmacy group, by month',
+  desc: C.groups.map((g) => `${g} ${pct(at(C.arrangements[g]!, last) / arr)}`).join(', ') + ` on ${monthLong(last)}.`,
+});
+const mail = Object.entries(C.mail_detail).sort((a, b) => b[1].arrangements - a[1].arrangements);
+const mailArr = at(C.arrangements['Mail-order and specialty']!, last);
+const mailPh = at(C.pharmacies['Mail-order and specialty']!, last);
+const cvsOver = H.months.find((m) => at(C.arrangements.CVS!, m) > at(C.arrangements.Walgreens!, m) && m > '2015-01');
+
+// 5. Who holds them.
+const T = H.types;
+const types = lineChart({
+  id: 'types',
+  frame: 'full',
+  from: '2012-01',
+  shadeBefore: FULL_RECORD_FROM,
+  series: T.groups.map((g, i) => ({ key: g, label: g, values: T.arrangements[g]!, slot: i + 1 })),
+  title: 'Contract pharmacy arrangements by kind of covered entity, by month',
+  desc: T.groups.map((g) => `${g} ${fmt(at(T.arrangements[g]!, last))}`).join(', ') + ` on ${monthLong(last)}.`,
+});
+
+// 6. The laws.
+const lawsIn = lawStates();
+const lawsNoDate = H.laws.filter((l) => !l.effective && !lawsIn.some((x) => x.state === l.state));
+
+const parts = [
+  { id: 'count', label: 'The count' },
+  { id: 'pharmacies', label: 'Fewer pharmacies, more ties' },
+  { id: 'distance', label: 'Across state lines' },
+  { id: 'chains', label: 'Which pharmacies' },
+  { id: 'holders', label: 'Who holds them' },
+  { id: 'laws', label: 'The states step in' },
+  { id: 'record', label: 'What this record can say' },
+];
+---
+
+<Base
+  title="The 340B registry since 2010"
+  bleed
+  crumbs={[{ name: 'Registry history', path: '/registry/' }]}
+  description={`Contract pharmacy arrangements in the federal 340B registry, month by month since January 2010: ${fmt(arr)} on ${monthLong(last)}, ${pct(out / arr)} with a pharmacy in another state. Rebuilt from the dates the registry records.`}
+>
+  <header class="rx-head">
+    <div class="wrap">
+      <p class="rx-kicker"><span class="dot" aria-hidden="true"></span>340B <span aria-hidden="true">/</span> Registry history</p>
+      <h1>How 340B reached the pharmacy counter</h1>
+      <p class="rx-lede">
+        Clinics and hospitals in the 340B program may send their discounted drugs through outside pharmacies, under a contract each one registers with the federal government. The registry keeps the day each contract began and the day it ended. Counted month by month, those dates tell a story no single day of the registry shows.
+      </p>
+      <div class="rx-figures">
+        <div class="rx-hero-fig">
+          <p class="rx-hero-value">{fmt(arr)}</p>
+          <p class="rx-hero-label">contract pharmacy arrangements on {monthLong(last)}</p>
+        </div>
+        <dl class="rx-stats">
+          <div><dt>Distinct pharmacies</dt><dd>{fmt(ph)}</dd></div>
+          <div><dt>Covered entities and sites</dt><dd>{fmt(ent)}</dd></div>
+          <div><dt>Pharmacy in another state</dt><dd>{pct(out / arr)}</dd></div>
+          <div><dt>Arrangements on {monthLong(first)}</dt><dd>{fmt(at(N.arrangements, first))}</dd></div>
+        </dl>
+      </div>
+    </div>
+  </header>
+
+  <nav class="rx-parts wrap" aria-label="Parts of this page">
+    <ol>{parts.map((p, i) => <li><a href={`#${p.id}`}><span class="rx-part-n">{i + 1}</span>{p.label}</a></li>)}</ol>
+  </nav>
+
+  <section class="rx-section" id="count" aria-labelledby="count-h">
+    <div class="wrap">
+      <p class="rx-step">1</p>
+      <h2 id="count-h">The count</h2>
+      <p class="rx-text">
+        In January 2010 the registry records {fmt(at(N.arrangements, first))} contract pharmacy arrangements in force. That March, the federal government let every covered entity use as many outside pharmacies as it liked. By January 2016 there were {fmt(at(N.arrangements, y16))}, and on {monthLong(last)} there are {fmt(arr)}.
+      </p>
+      <figure class="rx-figure" data-chart="hero" data-chart-json={hero.data}>
+        <Fragment set:html={hero.wide} />
+        <Fragment set:html={hero.narrow} />
+        <figcaption>
+          Arrangements in force on the first day of each month, as the registry records them on {monthLong(last)}. Shaded: before 2017 the registry no longer lists every arrangement that ended, so those months count fewer than were in force. The saw teeth are real: new arrangements begin on the first day of a quarter, and endings fall in every month.
+        </figcaption>
+      </figure>
+      {
+        fed.length > 0 && (
+          <ol class="rx-events">
+            {fed.map((e) => (
+              <li>
+                <time datetime={e.date}>{monthShort(e.date.slice(0, 7))}</time>
+                <span>{e.text} {e.url && <a href={e.url}>Source</a>}</span>
+              </li>
+            ))}
+          </ol>
+        )
+      }
+      <details class="rx-table">
+        <summary>The figures, each January</summary>
+        <table>
+          <caption>Contract pharmacy arrangements, pharmacies and entities on 1 January of each year</caption>
+          <thead><tr><th scope="col">Day</th><th scope="col">Arrangements</th><th scope="col">Pharmacies</th><th scope="col">Entities and sites</th></tr></thead>
+          <tbody>
+            {H.months.filter((m) => m.endsWith('-01')).concat(last.endsWith('-01') ? [] : [last]).map((m) => (
+              <tr><th scope="row">{monthLong(m)}</th><td>{fmt(at(N.arrangements, m))}</td><td>{fmt(at(N.pharmacies, m))}</td><td>{fmt(at(N.entities, m))}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </details>
+    </div>
+  </section>
+
+  <section class="rx-section rx-alt" id="pharmacies" aria-labelledby="pharmacies-h">
+    <div class="wrap">
+      <p class="rx-step">2</p>
+      <h2 id="pharmacies-h">Fewer pharmacies, more ties</h2>
+      <p class="rx-text">
+        The number of distinct pharmacies stopped growing around {monthShort(phPeakMonth)}, at {fmt(phPeak)}. The arrangements kept growing. So each pharmacy now serves more covered entities: {perPharmacy[H.months.indexOf('2012-01')]!.toFixed(1)} arrangements for each pharmacy in January 2012, {perPharmacy[perPharmacy.length - 1]!.toFixed(1)} today.
+      </p>
+      <div class="rx-pair">
+        <figure class="rx-figure" data-chart="pharm" data-chart-json={pharmacies.data}>
+          <p class="rx-fig-title">Distinct contract pharmacies</p>
+          <Fragment set:html={pharmacies.wide} />
+          <Fragment set:html={pharmacies.narrow} />
+            </figure>
+        <figure class="rx-figure" data-chart="ratio" data-chart-json={ratio.data}>
+          <p class="rx-fig-title">Arrangements for each pharmacy</p>
+          <Fragment set:html={ratio.wide} />
+          <Fragment set:html={ratio.narrow} />
+            </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="rx-section" id="distance" aria-labelledby="distance-h">
+    <div class="wrap">
+      <p class="rx-step">3</p>
+      <h2 id="distance-h">Across state lines</h2>
+      <p class="rx-text">
+        In January 2012, {pct(share[H.months.indexOf('2012-01')]!, 1)} of arrangements joined an entity to a pharmacy in another state. On {monthLong(last)} it is {pct(share[share.length - 1]!)}: {fmt(out)} arrangements. Most of the distance runs to a few states where mail-order and specialty pharmacies sit.
+      </p>
+      <figure class="rx-figure" data-chart="dist" data-chart-json={distance.data}>
+        <Fragment set:html={distance.wide} />
+        <Fragment set:html={distance.narrow} />
+        <figcaption>The pharmacy's state is from its address in the registry; the entity's is from its street address.</figcaption>
+      </figure>
+
+      <div class="rx-maps" data-maps>
+        <div class="rx-map-switch" role="group" aria-label="Year of the map" hidden data-map-switch>
+          <button type="button" aria-pressed="false" data-map="then">{monthShort(y16)}</button>
+          <button type="button" aria-pressed="true" data-map="now">{monthShort(last)}</button>
+        </div>
+        <figure class="rx-map" data-map-panel="then">
+          <p class="rx-fig-title">{monthLong(y16)}</p>
+          <Fragment set:html={mapThen.svg} />
+          <figcaption>Arrows: the 40 pairs of states with the most arrangements across a state line, {fmt(mapThen.shown)} of {fmt(mapThen.total)}, pointing to the pharmacy's state. Tile shade: arrangements held by the state's entities. Under each code: the share of them with a pharmacy in another state.</figcaption>
+        </figure>
+        <figure class="rx-map" data-map-panel="now">
+          <p class="rx-fig-title">{monthLong(last)}</p>
+          <Fragment set:html={mapNow.svg} />
+          <figcaption>Arrows: the 40 pairs of states with the most arrangements across a state line, {fmt(mapNow.shown)} of {fmt(mapNow.total)}, pointing to the pharmacy's state. Tile shade: arrangements held by the state's entities. Under each code: the share of them with a pharmacy in another state.</figcaption>
+        </figure>
+      </div>
+
+      <div class="rx-two">
+        <div>
+          <h3>Where the pharmacies are</h3>
+          <p class="rx-small">Arrangements with a pharmacy in this state held by entities in other states, {monthLong(last)}.</p>
+          <ol class="rx-bars">
+            {receiving.map((r) => (
+              <li><span class="rx-bar-label">{r.state}</span><span class="rx-bar"><span class={`rx-bar-fill w${Math.max(1, Math.round((r.n / receiving[0]!.n) * 20))}`}></span></span><span class="rx-bar-value">{fmt(r.n)}</span></li>
+            ))}
+          </ol>
+        </div>
+        <div>
+          <h3>The pairs of states</h3>
+          <table class="rx-mini rx-pairs">
+            <caption class="visually-hidden">Arrangements across a state line, by pair of states, {monthLong(last)}</caption>
+            <thead><tr><th scope="col">Entity's state</th><th scope="col">Pharmacy's state</th><th scope="col">Arrangements</th></tr></thead>
+            <tbody>{pairs.map((p) => <tr><td>{p.from}</td><td>{p.to}</td><td>{fmt(p.n)}</td></tr>)}</tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="rx-section rx-alt" id="chains" aria-labelledby="chains-h">
+    <div class="wrap">
+      <p class="rx-step">4</p>
+      <h2 id="chains-h">Which pharmacies</h2>
+      <p class="rx-text">
+        For most of the decade Walgreens held more arrangements than any other chain.{cvsOver && <> CVS passed it in {monthShort(cvsOver)}.</>} The mail-order and specialty pharmacies are few but each is tied to hundreds of entities: {fmt(mailPh)} pharmacies hold {fmt(mailArr)} arrangements.
+      </p>
+      <figure class="rx-figure" data-chart="chains" data-chart-json={chains.data}>
+        <Fragment set:html={chains.wide} />
+        <Fragment set:html={chains.narrow} />
+        <ul class="rx-legend">{chainSeries.map((s) => <li><span class={`rx-key s${s.slot}`} aria-hidden="true"></span>{s.label}</li>)}</ul>
+        <figcaption>Groups are read from each pharmacy's name and the name it does business as, in the registry. Mail-order and specialty: Express Scripts and Accredo, Optum, AcariaHealth, CenterWell. Other: every pharmacy whose name names none of these.</figcaption>
+      </figure>
+      <table class="rx-mini rx-mail">
+        <caption>Mail-order and specialty, {monthLong(last)}</caption>
+        <thead><tr><th scope="col">Group</th><th scope="col">Pharmacies</th><th scope="col">Arrangements</th><th scope="col">For each pharmacy</th></tr></thead>
+        <tbody>{mail.map(([g, d]) => <tr><td>{g}</td><td>{fmt(d.pharmacies)}</td><td>{fmt(d.arrangements)}</td><td>{fmt(d.arrangements / Math.max(d.pharmacies, 1))}</td></tr>)}</tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="rx-section" id="holders" aria-labelledby="holders-h">
+    <div class="wrap">
+      <p class="rx-step">5</p>
+      <h2 id="holders-h">Who holds them</h2>
+      <p class="rx-text">
+        Health centers hold {fmt(at(T.arrangements['Health centers']!, last))} arrangements, hospitals {fmt(at(T.arrangements.Hospitals!, last))}, and the other federal grantees (Ryan White clinics, sexually transmitted disease and tuberculosis clinics, family planning clinics and others) {fmt(at(T.arrangements['Other federal grantees']!, last))}.
+      </p>
+      <figure class="rx-figure" data-chart="types" data-chart-json={types.data}>
+        <Fragment set:html={types.wide} />
+        <Fragment set:html={types.narrow} />
+        <ul class="rx-legend">{T.groups.map((g, i) => <li><span class={`rx-key s${i + 1}`} aria-hidden="true"></span>{g}</li>)}</ul>
+        <figcaption>Health centers: health center program grantees, look-alikes and tribal health centers. Hospitals: disproportionate share, critical access, children's, cancer, rural referral and sole community hospitals. A hospital's contract usually covers its outpatient sites, which are not counted again.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="rx-section rx-alt" id="laws" aria-labelledby="laws-h">
+    <div class="wrap">
+      <p class="rx-step">6</p>
+      <h2 id="laws-h">The states step in</h2>
+      <p class="rx-text">
+        From July 2020 several drug makers limited the 340B price at contract pharmacies. Starting with Arkansas in 2021, states passed laws that bar those limits. The ClinX table of state laws holds {H.laws.length} such laws in {new Set(H.laws.map((l) => l.state)).size} states.
+      </p>
+      <div class="rx-lawmap">
+        <Fragment set:html={lawMap()} />
+        <ul class="rx-legend rx-legend-seq">
+          <li><span class="rx-key ly2021" aria-hidden="true"></span>2021</li>
+          <li><span class="rx-key ly2022" aria-hidden="true"></span>2022</li>
+          <li><span class="rx-key ly2023" aria-hidden="true"></span>2023</li>
+          <li><span class="rx-key ly2024" aria-hidden="true"></span>2024</li>
+          <li><span class="rx-key ly2025" aria-hidden="true"></span>2025</li>
+          <li><span class="rx-key ly2026" aria-hidden="true"></span>2026</li>
+          {H.laws.some((l) => !l.effective) && <li><span class="rx-key lpend" aria-hidden="true"></span>Law, date not printed</li>}
+        </ul>
+      </div>
+      <h3 class="rx-sub-h">Each state's arrangements, with the day its law took effect</h3>
+      <p class="rx-small">Arrangements held by the state's entities, by month from January 2018. Each chart has its own scale; the number in its corner is its largest month. The dot and line mark the day the law took effect. Shown as recorded; the charts do not say what the law caused.</p>
+      <ul class="rx-multiples">
+        {lawsIn.map((l) => {
+          const a = aroundLaw(l.state, l.effective);
+          return (
+            <li>
+              <p class="sm-name"><a href={`/laws/${l.state.toLowerCase()}/`}>{stateName(l.state)}</a> <span>{l.effective}</span></p>
+              <Fragment set:html={smallMultiple(l.state, l.effective)} />
+              <p class="sm-note">{fmt(a.before)} a year before, {fmt(a.at)} on the day{a.after !== null && <>, {fmt(a.after)} a year after</>}</p>
+            </li>
+          );
+        })}
+      </ul>
+      {lawsNoDate.length > 0 && <p class="rx-small">Not charted, because the saved text of the law prints no effective date: {lawsNoDate.map((l) => stateName(l.state)).join(', ')}.</p>}
+    </div>
+  </section>
+
+  <section class="rx-section" id="record" aria-labelledby="record-h">
+    <div class="wrap rx-measure">
+      <p class="rx-step">7</p>
+      <h2 id="record-h">What this record can say</h2>
+      <ul class="rx-limits">
+        <li><strong>It is today's record of the past.</strong> Every figure counts the arrangements whose dates, as the registry records them on {monthLong(last)}, cover the day. If HRSA corrected a date, the correction is counted.</li>
+        <li><strong>Endings are listed from 2016.</strong> The registry lists {fmt(H.ended_listed.find((r) => r.year === 2016)?.ended_arrangements_listed ?? 0)} arrangements that ended in 2016 and none before; ended entities from 2017. So the months before 2017 count fewer arrangements than were in force. They are shaded on the charts.</li>
+        <li><strong>It is checked against counts made at the time.</strong> From 2017 on, the rebuilt counts run 2 to 7 percent below the yearly counts Drug Channels and GAO made from the same registry, always below, never above. The share held by the five largest companies (CVS, Walgreens, Express Scripts, Optum and Walmart) matches theirs to within half a point: 76.4 percent in May 2026 against 76.8. Before 2017 the gap grows, to about half GAO's 1,300 pharmacies in 2010.</li>
+        <li><strong>An arrangement is not a sale.</strong> A registered contract says a pharmacy may fill 340B drugs for the entity. It does not say how many prescriptions it fills, or whether a drug maker honors the 340B price there.</li>
+        <li><strong>It says what, never why.</strong> The charts beside each state law show the counts before and after. They are not a study of what the law did.</li>
+        <li><strong>From 23 November 2026 every day is kept.</strong> The <a href={REGISTRY_REPO}>registry history repository</a> stores each day's registry, without the people it names, so any day from then on can be rebuilt exactly.</li>
+      </ul>
+      <p class="rx-text">
+        How it is counted, with the code: <a href={`${REGISTRY_REPO}#readme`}>the repository's notes</a>. Source: U.S. Health Resources and Services Administration, Office of Pharmacy Affairs, 340B OPAIS, Covered Entity Daily Export of 23 November 2026.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import '../../scripts/registry-charts';
+</script>

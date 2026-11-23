@@ -69,6 +69,7 @@ export const NAV: readonly (NavLink | NavGroup)[] = [
       { href: '/bills/', label: 'Bills', note: 'The 340B bills in Congress and the states' },
       { href: '/notices/', label: 'Federal notices', note: 'Federal rules and notices that name 340B' },
       { href: '/calendar/', label: 'Calendar', note: 'Bill steps, hearings and federal deadlines' },
+      { href: '/registry/', label: 'Registry history', note: 'Contract pharmacies, month by month since 2010' },
       { href: '/rebate-pilot/', label: 'Rebate pilot', note: 'What the federal rebate pilot changes' },
     ],
   },
