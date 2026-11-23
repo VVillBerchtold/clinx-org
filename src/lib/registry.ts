@@ -245,7 +245,7 @@ export function lineChart(o: LineOptions): { wide: string; narrow: string; data:
   return { wide: lineSvg(o, 'wide'), narrow: lineSvg(o, 'narrow'), data };
 }
 
-// ---------- The flow map: where contract pharmacies sit, seen from the entity's state ----------
+// ---------- Across state lines: one tile map per month, on one scale ----------
 
 const TILE_W = 60;
 const TILE_GAP = 8;
@@ -255,70 +255,52 @@ const center = (code: string): [number, number] | null => {
   return [s.col * (TILE_W + TILE_GAP) + TILE_W / 2 + 4, s.row * (TILE_W + TILE_GAP) + TILE_W / 2 + 4];
 };
 
+/** Out-of-state share bands, the same for every map so two years compare directly. */
+export const SHARE_BANDS = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6];
+/** States with fewer arrangements than this are drawn plain: a share of a handful says little. */
+const FEW = 50;
+
 /**
- * Arcs from each entity's state to the state its contract pharmacy is in, for the pairs with the
- * most arrangements (the rest are counted in the note). Arcs bend to the right of their direction,
- * so a pair's two directions never overlap. Tile shade: arrangements held by the state's entities.
+ * A tile map of the states for one month. Each tile is shaded by the share of the arrangements held
+ * by the state's entities whose pharmacy is in another state, on one fixed scale (SHARE_BANDS).
  */
-export function flowMap(month: string, keep = 40): { svg: string; shown: number; total: number; pairs: number } {
-  const flows = H.flows[month] ?? [];
-  const total = flows.reduce((a, f) => a + f[2], 0);
-  const top = flows.slice(0, keep);
-  const shown = top.reduce((a, f) => a + f[2], 0);
-  const maxF = top[0]?.[2] ?? 1;
+export function shareMap(month: string): string {
   const held = H.out_of_state[month] ?? {};
-  const maxHeld = Math.max(...Object.values(held).map((v) => v[0]), 1);
   const w = 11 * (TILE_W + TILE_GAP) + 8;
   const h = 8 * (TILE_W + TILE_GAP) + 8;
   const tiles = STATES.map((s) => {
     const [cx, cy] = center(s.code)!;
-    const v = held[s.code]?.[0] ?? 0;
-    const step = v === 0 ? 0 : Math.min(5, 1 + Math.floor((Math.sqrt(v / maxHeld)) * 5));
-    const outShare = held[s.code] && held[s.code]![0] > 0 ? held[s.code]![1] / held[s.code]![0] : 0;
-    const q = `q${step}`;
-    return {
-      rect: `<rect class="fm-rect ${q}" x="${cx - TILE_W / 2}" y="${cy - TILE_W / 2}" width="${TILE_W}" height="${TILE_W}" rx="6"><title>${s.name}: ${fmt(v)} arrangements held by its entities, ${pct(outShare)} with a pharmacy in another state</title></rect>`,
-      text: `<g class="fm-label ${q}"><text class="fm-code" x="${cx}" y="${cy + 1}" text-anchor="middle" font-size="15">${s.code}</text><text class="fm-sub" x="${cx}" y="${cy + 18}" text-anchor="middle" font-size="10.5">${v ? pct(outShare) : ''}</text></g>`,
-    };
+    const [all, out] = held[s.code] ?? [0, 0];
+    const share = all ? out / all : 0;
+    const band = all < FEW ? 'few' : `b${SHARE_BANDS.filter((t) => share >= t).length}`;
+    const sub = all < FEW ? (all ? 'few' : '') : pct(share);
+    const label = all < FEW ? `${s.name}: ${fmt(all)} arrangements, too few to show a share` : `${s.name}: ${pct(share)} of ${fmt(all)} arrangements with a pharmacy in another state`;
+    return `<g class="sh-tile ${band}" data-code="${s.code}"><rect class="sh-rect" x="${cx - TILE_W / 2}" y="${cy - TILE_W / 2}" width="${TILE_W}" height="${TILE_W}" rx="6"/><text class="sh-code" x="${cx}" y="${cy - 2}" text-anchor="middle" font-size="15">${s.code}</text><text class="sh-sub" data-sub x="${cx}" y="${cy + 16}" text-anchor="middle" font-size="12">${sub}</text><title>${label}</title></g>`;
   });
-  const arcs = top
-    .map(([a, b, k]) => {
-      const p = center(a);
-      const q = center(b);
-      if (!p || !q) return '';
-      const [x1, y1] = p;
-      const [x2, y2] = q;
-      const dx = x2 - x1;
-      const dy = y2 - y1;
-      const len = Math.hypot(dx, dy);
-      const bend = Math.min(90, len * 0.28);
-      const mx = (x1 + x2) / 2 + (dy / len) * bend;
-      const my = (y1 + y2) / 2 - (dx / len) * bend;
-      const sw = (1 + 6 * Math.sqrt(k / maxF)).toFixed(2);
-      // Stop short of the pharmacy's tile centre, along the curve's last tangent, so the arrowhead shows.
-      const tx = x2 - mx;
-      const ty = y2 - my;
-      const tl = Math.hypot(tx, ty) || 1;
-      const ex = x2 - (tx / tl) * 18;
-      const ey = y2 - (ty / tl) * 18;
-      return `<path class="fm-arc" d="M${x1.toFixed(0)},${y1.toFixed(0)} Q${mx.toFixed(0)},${my.toFixed(0)} ${ex.toFixed(0)},${ey.toFixed(0)}" stroke-width="${sw}" marker-end="url(#fm-head-${month})"><title>${stateName(a)} entities, pharmacies in ${stateName(b)}: ${fmt(k)}</title></path>`;
-    })
-    .join('');
-  const head = `<defs><marker id="fm-head-${month}" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="3.2" markerHeight="3.2" orient="auto-start-reverse"><path class="fm-head" d="M0,0 L10,5 L0,10 z"/></marker></defs>`;
-  const svg = `<svg class="fm-svg" viewBox="0 0 ${w} ${h}" role="img" aria-label="Map of the states. Arrows run from an entity's state to the state of its contract pharmacy, for the ${top.length} pairs of states with the most arrangements on ${monthLong(month)}.">${head}<g class="fm-tiles">${tiles.map((t) => t.rect).join('')}</g><g class="fm-arcs">${arcs}</g><g class="fm-labels">${tiles.map((t) => t.text).join('')}</g></svg>`;
-  return { svg, shown, total, pairs: flows.length };
+  return `<svg class="sh-svg" viewBox="0 0 ${w} ${h}" role="img" aria-label="Map of the states on ${monthLong(month)}, each shaded by the share of its entities' contract pharmacy arrangements with a pharmacy in another state.">${tiles.join('')}</svg>`;
+}
+
+/** Median of the states' out-of-state shares (states with at least FEW arrangements). */
+export function medianShare(month: string): number {
+  const v = Object.values(H.out_of_state[month] ?? {}).filter(([a]) => a >= FEW).map(([a, o]) => o / a).sort((x, y) => x - y);
+  return v.length ? v[Math.floor(v.length / 2)]! : 0;
+}
+
+/** Arrangements reaching each state's pharmacies from entities in other states, for two months. */
+export function inbound(then: string, now: string, keep = 10): { code: string; state: string; then: number; now: number }[] {
+  const count = (m: string): Map<string, number> => {
+    const c = new Map<string, number>();
+    for (const [a, b, k] of H.flows[m] ?? []) if (a !== b) c.set(b, (c.get(b) ?? 0) + k);
+    return c;
+  };
+  const t = count(then);
+  const n = count(now);
+  return [...n.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, keep).map(([s, v]) => ({ code: s, state: stateName(s), then: t.get(s) ?? 0, now: v }));
 }
 
 /** The pairs of states behind a flow map, for its table. */
 export function flowRows(month: string, keep = 15): { from: string; to: string; n: number }[] {
   return (H.flows[month] ?? []).slice(0, keep).map(([a, b, n]) => ({ from: stateName(a), to: stateName(b), n }));
-}
-
-/** States whose entities' arrangements most often reach another state's pharmacy (pharmacy side). */
-export function pharmacyStates(month: string, keep = 10): { state: string; n: number }[] {
-  const c = new Map<string, number>();
-  for (const [, b, k] of H.flows[month] ?? []) c.set(b, (c.get(b) ?? 0) + k);
-  return [...c.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, keep).map(([s, n]) => ({ state: stateName(s), n }));
 }
 
 // ---------- The laws: a tile map by year, and one small chart per state ----------
@@ -378,4 +360,24 @@ export function aroundLaw(code: string, effective: string): { before: number; at
   const i = H.months.indexOf(m);
   const s = H.states[code]?.arrangements ?? [];
   return { before: s[i - 12] ?? 0, at: s[i] ?? 0, after: i + 12 < s.length ? s[i + 12]! : null };
+}
+
+/**
+ * The numbers the time-lapse needs (src/scripts/registry-charts.ts): for each January with a flow
+ * table, every state's band and share, and the arrangements reaching the given pharmacy states.
+ */
+export function timeLapse(states: { code: string }[]): string {
+  const months = Object.keys(H.out_of_state).filter((m) => m.endsWith('-01')).sort();
+  const share: Record<string, (number | null)[]> = {};
+  for (const s of STATES) {
+    share[s.code] = months.map((m) => {
+      const [all, out] = H.out_of_state[m]?.[s.code] ?? [0, 0];
+      return all < FEW ? null : Math.round((out / all) * 1000) / 1000;
+    });
+  }
+  const inb: Record<string, number[]> = {};
+  for (const { code } of states) {
+    inb[code] = months.map((m) => (H.flows[m] ?? []).reduce((a, [x, y, k]) => (y === code && x !== code ? a + k : a), 0));
+  }
+  return JSON.stringify({ months, bands: SHARE_BANDS, share, inbound: inb });
 }

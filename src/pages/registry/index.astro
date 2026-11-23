@@ -15,7 +15,6 @@ import {
   REGISTRY_REPO,
   aroundLaw,
   at,
-  flowMap,
   flowRows,
   fmt,
   lastMonth,
@@ -25,7 +24,11 @@ import {
   monthLong,
   monthShort,
   pct,
-  pharmacyStates,
+  inbound,
+  medianShare,
+  shareMap,
+  timeLapse,
+  SHARE_BANDS,
   smallMultiple,
   stateName,
   type FederalEvent,
@@ -91,10 +94,26 @@ const distance = lineChart({
   title: "Share of arrangements whose pharmacy is in another state from the entity's street address",
   desc: `${pct(share[H.months.indexOf('2012-01')]!, 1)} in January 2012, ${pct(share[share.length - 1]!)} on ${monthLong(last)}.`,
 });
-const mapThen = flowMap(y16);
-const mapNow = flowMap(last);
+const y17 = '2017-01';
+const mapThen = shareMap(y17);
+const mapNow = shareMap(last);
+const medThen = medianShare(y17);
+const medNow = medianShare(last);
 const pairs = flowRows(last, 12);
-const receiving = pharmacyStates(last, 8);
+const receiving = inbound(y17, last, 10);
+const inMax = Math.max(...receiving.map((r) => r.now), 1);
+function bw(v: number): string {
+  const w = v > 0 ? Math.max(1, Math.round((v / inMax) * 100)) : 0;
+  return 'w' + w;
+}
+const fl = receiving[0]!;
+const lapse = timeLapse(receiving);
+const B = SHARE_BANDS;
+const shareKey = [
+  { cls: 'sh-b0', label: `Under ${pct(B[0] ?? 0)}` },
+  ...B.slice(0, -1).map((t, i) => ({ cls: `sh-b${i + 1}`, label: `${pct(t)} to ${pct(B[i + 1] ?? 0)}` })),
+  { cls: `sh-b${B.length}`, label: `${pct(B[B.length - 1] ?? 0)} and over` },
+];
 
 // 4. The chains.
 const C = H.chains;
@@ -129,6 +148,16 @@ const types = lineChart({
 
 // 6. The laws.
 const lawsIn = lawStates();
+const lawCards = lawsIn.map((l) => {
+  const a = aroundLaw(l.state, l.effective);
+  return {
+    href: `/laws/${l.state.toLowerCase()}/`,
+    name: stateName(l.state),
+    effective: l.effective,
+    svg: smallMultiple(l.state, l.effective),
+    note: `${fmt(a.before)} a year before, ${fmt(a.at)} on the day` + (a.after !== null ? `, ${fmt(a.after)} a year after` : ''),
+  };
+});
 const lawsNoDate = H.laws.filter((l) => !l.effective && !lawsIn.some((x) => x.state === l.state));
 
 const parts = [
@@ -250,32 +279,55 @@ const parts = [
         <figcaption>The pharmacy's state is from its address in the registry; the entity's is from its street address.</figcaption>
       </figure>
 
+      <div class="rx-compare" data-compare data-lapse={lapse}>
+      <h3 class="rx-sub-h">Every state, then and now</h3>
+      <p class="rx-small">Each state's share of its entities' arrangements with a pharmacy in another state. Both maps use the same scale. The typical state went from {pct(medThen)} in {y17.slice(0, 4)} to {pct(medNow)} today.</p>
+      <div class="rx-lapse" hidden data-lapse-controls>
+        <button type="button" class="rx-play" data-play aria-label="Play the years from 2010"><span class="rx-play-icon" aria-hidden="true"></span><span data-play-label>Play</span></button>
+        <label class="rx-range">
+          <span class="visually-hidden">Year of the left map</span>
+          <span class="rx-range-end" aria-hidden="true">2010</span>
+          <input type="range" min="0" step="1" data-year-range />
+          <span class="rx-range-end" aria-hidden="true">{last.slice(0, 4)}</span>
+        </label>
+        <p class="rx-lapse-note" data-lapse-note aria-live="polite"></p>
+      </div>
       <div class="rx-maps" data-maps>
         <div class="rx-map-switch" role="group" aria-label="Year of the map" hidden data-map-switch>
-          <button type="button" aria-pressed="false" data-map="then">{monthShort(y16)}</button>
+          <button type="button" aria-pressed="false" data-map="then">{monthShort(y17)}</button>
           <button type="button" aria-pressed="true" data-map="now">{monthShort(last)}</button>
         </div>
         <figure class="rx-map" data-map-panel="then">
-          <p class="rx-fig-title">{monthLong(y16)}</p>
-          <Fragment set:html={mapThen.svg} />
-          <figcaption>Arrows: the 40 pairs of states with the most arrangements across a state line, {fmt(mapThen.shown)} of {fmt(mapThen.total)}, pointing to the pharmacy's state. Tile shade: arrangements held by the state's entities. Under each code: the share of them with a pharmacy in another state.</figcaption>
+          <p class="rx-map-year" data-then-year>{y17.slice(0, 4)}</p>
+          <Fragment set:html={mapThen} />
         </figure>
         <figure class="rx-map" data-map-panel="now">
-          <p class="rx-fig-title">{monthLong(last)}</p>
-          <Fragment set:html={mapNow.svg} />
-          <figcaption>Arrows: the 40 pairs of states with the most arrangements across a state line, {fmt(mapNow.shown)} of {fmt(mapNow.total)}, pointing to the pharmacy's state. Tile shade: arrangements held by the state's entities. Under each code: the share of them with a pharmacy in another state.</figcaption>
+          <p class="rx-map-year">Today <span>{monthShort(last)}</span></p>
+          <Fragment set:html={mapNow} />
         </figure>
       </div>
+      <ul class="rx-legend rx-legend-seq rx-share-key">
+        {shareKey.map((k) => <li><span class={`rx-key ${k.cls}`} aria-hidden="true"></span>{k.label}</li>)}
+        <li><span class="rx-key sh-few" aria-hidden="true"></span>Fewer than 50 arrangements</li>
+      </ul>
 
       <div class="rx-two">
         <div>
           <h3>Where the pharmacies are</h3>
-          <p class="rx-small">Arrangements with a pharmacy in this state held by entities in other states, {monthLong(last)}.</p>
-          <ol class="rx-bars">
+          <p class="rx-small">Arrangements reaching a state's pharmacies from entities in other states. {fl.state}'s went from {fmt(fl.then)} in {y17.slice(0, 4)} to {fmt(fl.now)}.</p>
+          <ol class="rx-pbars">
             {receiving.map((r) => (
-              <li><span class="rx-bar-label">{r.state}</span><span class="rx-bar"><span class={`rx-bar-fill w${Math.max(1, Math.round((r.n / receiving[0]!.n) * 20))}`}></span></span><span class="rx-bar-value">{fmt(r.n)}</span></li>
+              <li>
+                <span class="rx-bar-label">{r.state}</span>
+                <span class="rx-pbar"><span class={`rx-pbar-fill then ${bw(r.then)}`} data-then-bar={r.code}></span><span class={`rx-pbar-fill now ${bw(r.now)}`}></span></span>
+                <span class="rx-pbar-values"><span data-then-value={r.code}>{fmt(r.then)}</span><strong>{fmt(r.now)}</strong></span>
+              </li>
             ))}
           </ol>
+          <ul class="rx-legend">
+            <li><span class="rx-key pthen" aria-hidden="true"></span><span data-then-label>{monthShort(y17)}</span></li>
+            <li><span class="rx-key pnow" aria-hidden="true"></span>{monthShort(last)}</li>
+          </ul>
         </div>
         <div>
           <h3>The pairs of states</h3>
@@ -285,6 +337,7 @@ const parts = [
             <tbody>{pairs.map((p) => <tr><td>{p.from}</td><td>{p.to}</td><td>{fmt(p.n)}</td></tr>)}</tbody>
           </table>
         </div>
+      </div>
       </div>
     </div>
   </section>
@@ -348,16 +401,13 @@ const parts = [
       <h3 class="rx-sub-h">Each state's arrangements, with the day its law took effect</h3>
       <p class="rx-small">Arrangements held by the state's entities, by month from January 2018. Each chart has its own scale; the number in its corner is its largest month. The dot and line mark the day the law took effect. Shown as recorded; the charts do not say what the law caused.</p>
       <ul class="rx-multiples">
-        {lawsIn.map((l) => {
-          const a = aroundLaw(l.state, l.effective);
-          return (
-            <li>
-              <p class="sm-name"><a href={`/laws/${l.state.toLowerCase()}/`}>{stateName(l.state)}</a> <span>{l.effective}</span></p>
-              <Fragment set:html={smallMultiple(l.state, l.effective)} />
-              <p class="sm-note">{fmt(a.before)} a year before, {fmt(a.at)} on the day{a.after !== null && <>, {fmt(a.after)} a year after</>}</p>
-            </li>
-          );
-        })}
+        {lawCards.map((c) => (
+          <li>
+            <p class="sm-name"><a href={c.href}>{c.name}</a> <span>{c.effective}</span></p>
+            <Fragment set:html={c.svg} />
+            <p class="sm-note">{c.note}</p>
+          </li>
+        ))}
       </ul>
       {lawsNoDate.length > 0 && <p class="rx-small">Not charted, because the saved text of the law prints no effective date: {lawsNoDate.map((l) => stateName(l.state)).join(', ')}.</p>}
     </div>

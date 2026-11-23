@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { H, FULL_RECORD_FROM, at, flowMap, lastMonth, lawStates, lineChart, niceTicks } from '../src/lib/registry';
+import { H, FULL_RECORD_FROM, at, inbound, lastMonth, shareMap, lawStates, lineChart, niceTicks } from '../src/lib/registry';
 
 describe('registry history data', () => {
   it('has one value per month for every national series, with no gaps in the months', () => {
@@ -47,9 +47,11 @@ describe('registry charts', () => {
     expect(JSON.parse(c.data).series[0].values).toHaveLength(H.months.length);
   });
 
-  it('keeps the flow map to the 40 largest pairs of states', () => {
-    const f = flowMap(lastMonth());
-    expect((f.svg.match(/class="fm-arc"/g) ?? []).length).toBe(40);
-    expect(f.shown).toBeLessThanOrEqual(f.total);
+  it('shades every state map on one scale and counts only arrangements across a state line', () => {
+    const svg = shareMap(lastMonth());
+    expect((svg.match(/class="sh-tile /g) ?? []).length).toBeGreaterThanOrEqual(51);
+    const r = inbound('2017-01', lastMonth(), 5);
+    expect(r).toHaveLength(5);
+    for (const x of r) expect(x.now).toBeGreaterThan(x.then);
   });
 });

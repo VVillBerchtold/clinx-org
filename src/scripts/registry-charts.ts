@@ -144,3 +144,84 @@ if (maps && sw) {
   for (const b of buttons) b.addEventListener('click', () => pick(b.dataset.map!));
   pick('now');
 }
+
+// The time-lapse: the left map and the earlier bars follow a year slider, or play from 2010.
+interface Lapse {
+  months: string[];
+  bands: number[];
+  share: Record<string, (number | null)[]>;
+  inbound: Record<string, number[]>;
+}
+const cmp = document.querySelector<HTMLElement>('[data-compare]');
+const controls = cmp?.querySelector<HTMLElement>('[data-lapse-controls]');
+const range = cmp?.querySelector<HTMLInputElement>('[data-year-range]');
+if (cmp && controls && range && cmp.dataset.lapse) {
+  const L = JSON.parse(cmp.dataset.lapse) as Lapse;
+  const panel = cmp.querySelector<HTMLElement>('[data-map-panel="then"]')!;
+  const yearEl = cmp.querySelector<HTMLElement>('[data-then-year]')!;
+  const labelEl = cmp.querySelector<HTMLElement>('[data-then-label]');
+  const note = cmp.querySelector<HTMLElement>('[data-lapse-note]')!;
+  const play = cmp.querySelector<HTMLButtonElement>('[data-play]')!;
+  const playLabel = play.querySelector<HTMLElement>('[data-play-label]')!;
+  const tiles = new Map<string, SVGGElement>();
+  for (const g of panel.querySelectorAll<SVGGElement>('.sh-tile[data-code]')) tiles.set(g.dataset.code!, g);
+  const nowMax = Math.max(1, ...[...cmp.querySelectorAll<HTMLElement>('.rx-pbar-values strong')].map((e) => Number(e.textContent!.replace(/,/g, ''))));
+  const last = L.months.length - 1;
+  range.max = String(last);
+  const start = Math.max(0, L.months.indexOf('2017-01'));
+  range.value = String(start);
+  controls.removeAttribute('hidden');
+  cmp.classList.add('rx-lapse-on');
+
+  const show = (i: number): void => {
+    const m = L.months[i]!;
+    yearEl.textContent = m.slice(0, 4);
+    if (labelEl) labelEl.textContent = `Jan ${m.slice(0, 4)}`;
+    range.setAttribute('aria-valuetext', `January ${m.slice(0, 4)}`);
+    note.textContent = m < '2017-01' ? 'Before 2017 the registry no longer lists every ended arrangement: shares are a lower bound.' : '';
+    for (const [code, g] of tiles) {
+      const v = L.share[code]?.[i] ?? null;
+      const band = v === null ? 'few' : `b${L.bands.filter((t) => v >= t).length}`;
+      g.setAttribute('class', `sh-tile ${band}`);
+      const sub = g.querySelector('[data-sub]');
+      if (sub) sub.textContent = v === null ? '' : `${Math.round(v * 100)}%`;
+    }
+    for (const [code, vals] of Object.entries(L.inbound)) {
+      const v = vals[i] ?? 0;
+      const bar = cmp.querySelector<HTMLElement>(`[data-then-bar="${code}"]`);
+      const val = cmp.querySelector<HTMLElement>(`[data-then-value="${code}"]`);
+      if (bar) bar.className = `rx-pbar-fill then w${v > 0 ? Math.max(1, Math.round((v / nowMax) * 100)) : 0}`;
+      if (val) val.textContent = fmt(v);
+    }
+  };
+  show(start);
+  range.addEventListener('input', () => {
+    stop();
+    show(Number(range.value));
+  });
+
+  let timer = 0;
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function stop(): void {
+    if (!timer) return;
+    window.clearInterval(timer);
+    timer = 0;
+    play.classList.remove('is-playing');
+    playLabel.textContent = 'Play';
+  }
+  play.addEventListener('click', () => {
+    if (timer) return stop();
+    let i = Number(range.value) >= last ? 0 : Number(range.value);
+    if (i === start) i = 0;
+    range.value = String(i);
+    show(i);
+    play.classList.add('is-playing');
+    playLabel.textContent = 'Pause';
+    timer = window.setInterval(() => {
+      i += 1;
+      range.value = String(i);
+      show(i);
+      if (i >= last) stop();
+    }, still ? 1400 : 750);
+  });
+}
