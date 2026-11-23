@@ -260,3 +260,40 @@ if (cmp && controls && range && cmp.dataset.lapse) {
     }, still ? 1400 : 750);
   });
 }
+
+// The scroll story: the step that has scrolled into the space under the chart sets how many year bands are lit.
+const story = document.querySelector<HTMLElement>('[data-story]');
+const storyFig = story?.querySelector<HTMLElement>('[data-story-fig]');
+function storySteps(root: HTMLElement): HTMLElement[] {
+  return [...root.querySelectorAll<HTMLElement>('.rx-story-step')];
+}
+if (story && storyFig && storySteps(story).length) {
+  const steps = storySteps(story);
+  story.classList.add('rx-story-on');
+  let cur: HTMLElement | undefined;
+  const set = (step: HTMLElement): void => {
+    if (step === cur) return;
+    cur = step;
+    for (const s of steps) s.classList.toggle('is-on', s === step);
+    storyFig.dataset.upto = step.dataset.upto ?? '16';
+  };
+  // The step in play is the last one whose top has passed the middle of the space under
+  // the pinned chart, so a jump (a link, Back to top, a reload part way down) lands on the
+  // right year too, and the card in play is never half under the chart on a short window.
+  const pin = story.querySelector<HTMLElement>('.rx-story-pin') ?? storyFig;
+  let queued = false;
+  const pick = (): void => {
+    queued = false;
+    const under = Math.max(0, pin.getBoundingClientRect().bottom);
+    const line = under + (window.innerHeight - under) / 2;
+    let on = steps[0]!;
+    for (const s of steps) if (s.getBoundingClientRect().top <= line) on = s;
+    set(on);
+  };
+  const ask = (): void => {
+    if (!queued) { queued = true; requestAnimationFrame(pick); }
+  };
+  window.addEventListener('scroll', ask, { passive: true });
+  window.addEventListener('resize', ask, { passive: true });
+  pick();
+}

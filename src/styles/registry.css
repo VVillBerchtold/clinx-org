@@ -1095,3 +1095,51 @@ svg.rx-narrow {
 @media (max-width: 44rem) {
   .rx-callout { grid-template-columns: 1fr; }
 }
+
+
+/* ---------- Scroll story: the opening chart pinned while its steps pass ---------- */
+.rx-story { position: relative; margin-top: var(--s6); }
+.rx-story-pin {
+  position: sticky;
+  top: 0; /* flush to the top, so no card shows above the chart */
+  z-index: 3; /* the chart stays on top; each card slides away under it */
+  padding-block: var(--s3);
+  background: var(--bg);
+}
+.rx-story-fig { margin: 0; }
+.rx-story-steps {
+  position: relative;
+  z-index: 1;
+  list-style: none;
+  margin: 0;
+  padding: 0 0 45vh;
+  pointer-events: none;
+}
+.rx-story-step {
+  max-width: 26rem;
+  margin: 0 0 25vh auto;
+  padding: var(--s4) var(--s5);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--rx-1);
+  background: var(--surface);
+  box-shadow: 0 12px 32px -16px rgb(0 0 0 / 0.35);
+  pointer-events: auto;
+  transition: opacity 0.3s var(--ease);
+}
+.rx-story-on .rx-story-step { opacity: 0.55; }
+.rx-story-step:first-child { margin-top: 10vh; }
+.rx-story-on .rx-story-step.is-on { opacity: 1; }
+.rx-story-year { margin: 0 0 var(--s1); font-weight: 750; color: var(--rx-1); letter-spacing: 0.01em; }
+.rx-story-text { margin: 0; }
+.rx-story-after { margin-top: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .rx-story-step { transition: none; }
+}
+@media (max-width: 44rem) {
+  .rx-story-step { margin: 0 0 25vh; max-width: none; }
+}
+/* Bands above the step's year are dimmed (only once the script sets data-upto). */
+[data-upto="0"] .rx-layer.ck1, [data-upto="0"] .rx-layer.ck2, [data-upto="0"] .rx-layer.ck3, [data-upto="0"] .rx-layer.ck4, [data-upto="0"] .rx-layer.ck5, [data-upto="0"] .rx-layer.ck6, [data-upto="0"] .rx-layer.ck7, [data-upto="0"] .rx-layer.ck8, [data-upto="0"] .rx-layer.ck9, [data-upto="0"] .rx-layer.ck10, [data-upto="0"] .rx-layer.ck11, [data-upto="0"] .rx-layer.ck12, [data-upto="0"] .rx-layer.ck13, [data-upto="0"] .rx-layer.ck14, [data-upto="0"] .rx-layer.ck15, [data-upto="0"] .rx-layer.ck16 { opacity: 0.1; }
+[data-upto="6"] .rx-layer.ck7, [data-upto="6"] .rx-layer.ck8, [data-upto="6"] .rx-layer.ck9, [data-upto="6"] .rx-layer.ck10, [data-upto="6"] .rx-layer.ck11, [data-upto="6"] .rx-layer.ck12, [data-upto="6"] .rx-layer.ck13, [data-upto="6"] .rx-layer.ck14, [data-upto="6"] .rx-layer.ck15, [data-upto="6"] .rx-layer.ck16 { opacity: 0.1; }
+[data-upto="10"] .rx-layer.ck11, [data-upto="10"] .rx-layer.ck12, [data-upto="10"] .rx-layer.ck13, [data-upto="10"] .rx-layer.ck14, [data-upto="10"] .rx-layer.ck15, [data-upto="10"] .rx-layer.ck16 { opacity: 0.1; }
+[data-upto="13"] .rx-layer.ck14, [data-upto="13"] .rx-layer.ck15, [data-upto="13"] .rx-layer.ck16 { opacity: 0.1; }

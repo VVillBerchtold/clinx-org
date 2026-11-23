@@ -62,6 +62,15 @@ const nowOf = (yr: number): number => COHORTS.layers[String(yr)]!.at(-1) ?? 0;
 const recent = COHORTS.years.filter((yr) => yr >= 2024).reduce((a, yr) => a + nowOf(yr), 0);
 const peakOf = (yr: number): number => Math.max(...COHORTS.layers[String(yr)]!);
 const kept20 = nowOf(2020) / peakOf(2020);
+const sumUpTo = (yr: number, m: string): number =>
+  COHORTS.years.filter((y) => y <= yr).reduce((a, y) => a + (COHORTS.layers[String(y)]![H.months.indexOf(m)] ?? 0), 0);
+const storySteps = [
+  { upto: 0, year: '2010', text: `${fmt(at(N.arrangements, first))} arrangements are in force. Until March, most covered entities could use only one outside pharmacy.` },
+  { upto: 6, year: '2010 to 2016', text: `Once any number is allowed, each year adds a new band. By January 2017 the arrangements begun from 2010 to 2016 number ${fmt(sumUpTo(2016, '2017-01'))}.` },
+  { upto: 10, year: '2017 to 2020', text: `The bands thicken. The arrangements begun in 2020 alone reach ${fmt(peakOf(2020))} at their height, more than all of 2010 to 2016 together.` },
+  { upto: 13, year: '2021 to 2023', text: `Drug makers limit the 340B price at contract pharmacies from July 2020, and states begin to pass laws against the limits. New arrangements keep coming: ${fmt(peakOf(2023))} begun in 2023.` },
+  { upto: 16, year: 'Today', text: `${fmt(arr)} in force. ${pct(recent / arr)} began in 2024 or later, and every older band is thinning as its arrangements end.` },
+];
 const hero = lineChart({
   layers: cohortLayers,
   id: 'hero',
@@ -256,9 +265,23 @@ const parts = [
       <p class="rx-text">
         In January 2010 the registry records {fmt(at(N.arrangements, first))} contract pharmacy arrangements in force. That March, the federal government let every covered entity use as many outside pharmacies as it liked. By January 2016 there were {fmt(at(N.arrangements, y16))}, and on {monthLong(last)} there are {fmt(arr)}.
       </p>
-      <figure class="rx-figure" data-chart="hero" data-chart-json={hero.data}>
-        <Fragment set:html={hero.wide} />
-        <Fragment set:html={hero.narrow} />
+      <div class="rx-story" data-story>
+        <div class="rx-story-pin">
+          <figure class="rx-figure rx-story-fig" data-chart="hero" data-chart-json={hero.data} data-story-fig>
+            <Fragment set:html={hero.wide} />
+            <Fragment set:html={hero.narrow} />
+          </figure>
+        </div>
+        <ol class="rx-story-steps">
+          {storySteps.map((st) => (
+            <li class="rx-story-step" data-upto={st.upto}>
+              <p class="rx-story-year">{st.year}</p>
+              <p class="rx-story-text">{st.text}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+      <figure class="rx-figure rx-story-after">
         <ul class="rx-legend rx-cohort-key" aria-label="Year the arrangement began">
           <li class="rx-cohort-strip" aria-hidden="true">{COHORTS.years.map((_, j) => <span class={`rx-ck ck${j}`}></span>)}</li>
           <li>Each band: the arrangements that began in one year, from {COHORTS.years[0]} or before, at the bottom, to {COHORTS.years.at(-1)}, on the surface</li>
