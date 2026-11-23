@@ -274,6 +274,106 @@ if (cmp && controls && range && cmp.dataset.lapse) {
   });
 }
 
+// Every law state on one clock: the pointer reads the state line nearest to it, so no thin line
+// has to be hit exactly; the chips under the chart point at a state, and a click keeps it lit.
+const aligned = document.querySelector<HTMLElement>('[data-aligned]');
+if (aligned?.dataset.aligned) {
+  const A = JSON.parse(aligned.dataset.aligned) as { rows: { name: string; effective: string; index: (number | null)[] }[] };
+  const MON3 = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const day = (iso: string): string => `${Number(iso.slice(8, 10))} ${MON3[Number(iso.slice(5, 7)) - 1]} ${iso.slice(0, 4)}`;
+  const chips = [...aligned.querySelectorAll<HTMLButtonElement>('[data-la]')];
+  aligned.querySelector('[data-la-pick]')?.removeAttribute('hidden');
+  let pinned = -1;
+  const views: ((i: number, k?: number) => void)[] = [];
+  const light = (i: number, k?: number): void => {
+    for (const v of views) v(i, k);
+    for (const c of chips) c.classList.toggle('is-hot', Number(c.dataset.la) === i);
+  };
+
+  for (const svg of aligned.querySelectorAll<SVGSVGElement>('svg.la-svg')) {
+    const num = (k: string): number => Number(svg.dataset[k]);
+    const [l, pw, t, ph, w, lo, hi, span] = ['l', 'pw', 't', 'ph', 'w', 'lo', 'hi', 'span'].map(num) as [number, number, number, number, number, number, number, number];
+    const wide = svg.classList.contains('rx-wide');
+    const fs = wide ? 13 : 11;
+    const xk = (k: number): number => l + (k / (2 * span)) * pw;
+    const yv = (v: number): number => t + ph - ((Math.min(Math.max(v, lo), hi) - lo) / (hi - lo)) * ph;
+    const paths = [...svg.querySelectorAll<SVGPathElement>('.la-state')];
+    const hit = svg.querySelector<SVGRectElement>('.la-hit');
+    if (!hit) continue;
+    const dot = el('circle', { class: 'la-hot-dot', r: 5, cx: -99, cy: -99 });
+    const tip = el('g', { class: 'rx-tipcard' });
+    const cardW = wide ? 230 : 180;
+    const lh = fs + 7;
+    tip.append(el('rect', { class: 'rx-tipbg', width: cardW, height: lh * 3 + 12, rx: 8 }));
+    const head = el('text', { class: 'rx-tiphead', x: 12, y: lh, 'font-size': fs });
+    const sub = el('text', { class: 'rx-tiplabel', x: 12, y: lh * 2, 'font-size': fs - 1 });
+    const lab = el('text', { class: 'rx-tiplabel', x: 12, y: lh * 3, 'font-size': fs });
+    const val = el('text', { class: 'rx-tipvalue', x: cardW - 12, y: lh * 3, 'font-size': fs, 'text-anchor': 'end' });
+    tip.append(head, sub, lab, val);
+    svg.append(dot, tip);
+
+    views.push((i, k) => {
+      svg.classList.toggle('la-hot', i >= 0);
+      for (const p of paths) p.classList.toggle('is-hot', Number(p.dataset.i) === i);
+      const r = A.rows[i];
+      if (!r) {
+        tip.classList.remove('is-on');
+        dot.setAttribute('cx', '-99');
+        return;
+      }
+      // Without a pointer (a chip), read the line where it ends.
+      let at = k ?? -1;
+      if (at < 0 || r.index[at] == null) at = r.index.reduce<number>((a, v, j) => (v !== null ? j : a), span);
+      const v = r.index[at]!;
+      const off = at - span;
+      head.textContent = r.name;
+      sub.textContent = `Law in effect ${day(r.effective)}`;
+      lab.textContent = off === 0 ? 'The month of the law' : `${Math.abs(off)} month${Math.abs(off) === 1 ? '' : 's'} ${off < 0 ? 'before' : 'after'}`;
+      val.textContent = v.toFixed(1);
+      const px = xk(at);
+      const py = yv(v);
+      dot.setAttribute('cx', px.toFixed(1));
+      dot.setAttribute('cy', py.toFixed(1));
+      const left = px + 14 + cardW > w ? px - 14 - cardW : px + 14;
+      const top = Math.min(Math.max(py - (lh * 3 + 12) / 2, 4), t + ph - lh * 3 - 8);
+      tip.setAttribute('transform', `translate(${left.toFixed(1)},${top.toFixed(1)})`);
+      tip.classList.add('is-on');
+    });
+
+    const read = (ev: PointerEvent): void => {
+      const m = svg.getScreenCTM();
+      if (!m) return;
+      const pt = new DOMPoint(ev.clientX, ev.clientY).matrixTransform(m.inverse());
+      const k = Math.min(2 * span, Math.max(0, Math.round(((pt.x - l) / pw) * 2 * span)));
+      let best = -1;
+      let gap = Infinity;
+      A.rows.forEach((r, i) => {
+        const v = r.index[k];
+        if (v == null) return;
+        const g = Math.abs(yv(v) - pt.y);
+        if (g < gap) { gap = g; best = i; }
+      });
+      light(best, k);
+    };
+    hit.addEventListener('pointermove', read);
+    hit.addEventListener('pointerdown', read);
+    hit.addEventListener('pointerleave', () => light(pinned));
+  }
+
+  for (const c of chips) {
+    const i = Number(c.dataset.la);
+    c.addEventListener('pointerenter', () => light(i));
+    c.addEventListener('focus', () => light(i));
+    c.addEventListener('pointerleave', () => light(pinned));
+    c.addEventListener('blur', () => light(pinned));
+    c.addEventListener('click', () => {
+      pinned = pinned === i ? -1 : i;
+      for (const b of chips) b.setAttribute('aria-pressed', String(Number(b.dataset.la) === pinned));
+      light(pinned >= 0 ? pinned : i);
+    });
+  }
+}
+
 // The scroll stories: a chart pinned while step cards scroll under it. The step in play is the
 // last card whose top has passed the middle of the space under the pinned chart, so a jump (a
 // link, Back to top, a reload part way down) lands on the right step too, and the card in play

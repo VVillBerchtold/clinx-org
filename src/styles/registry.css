@@ -741,6 +741,13 @@ svg.rx-narrow {
 
 /* ---------- Limits ---------- */
 
+.rx-source {
+  padding-block: var(--s5) var(--s7);
+  border-top: 1px solid var(--line);
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+.rx-source p { margin: 0; }
 .rx-limits {
   display: grid;
   gap: var(--s4);
@@ -1025,8 +1032,30 @@ svg.rx-narrow {
   stroke-linejoin: round;
   transition: opacity 0.2s var(--ease), stroke-width 0.2s var(--ease);
 }
-.la-svg:hover .la-state { opacity: 0.14; }
-.la-svg .la-state:hover { opacity: 1; stroke-width: 3; }
+.la-state { pointer-events: none; }
+.la-svg.la-hot .la-state { opacity: 0.12; }
+.la-svg .la-state.is-hot { opacity: 1; stroke-width: 3; stroke: var(--rx-2); }
+.la-hit { fill: transparent; cursor: crosshair; }
+.la-hot-dot { fill: var(--rx-2); stroke: var(--bg); stroke-width: 2.5; pointer-events: none; }
+.la-svg .rx-tipcard { pointer-events: none; opacity: 0; }
+.la-svg .rx-tipcard.is-on { opacity: 1; }
+.la-pick { margin-top: var(--s4); }
+.la-pick-label { margin: 0 0 var(--s2); font-size: var(--text-sm); color: var(--muted); }
+.la-chips { display: flex; flex-wrap: wrap; gap: var(--s2); margin: 0; padding: 0; list-style: none; }
+.la-chip {
+  padding: var(--s1) var(--s3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+.la-chip span { color: var(--muted); font-size: var(--text-xs); }
+.la-chip.is-hot { border-color: var(--rx-2); }
+.la-chip[aria-pressed='true'] { background: var(--rx-2); border-color: var(--rx-2); color: var(--bg); }
+.la-chip[aria-pressed='true'] span { color: inherit; }
 .la-median { fill: none; stroke: var(--rx-1); stroke-width: 3.5; stroke-linejoin: round; stroke-linecap: round; pointer-events: none; }
 .la-nation { fill: none; stroke: var(--ink); stroke-width: 2; stroke-dasharray: 6 5; opacity: 0.7; pointer-events: none; }
 .la-dot { fill: var(--rx-2); stroke: var(--bg); stroke-width: 2.5; }
@@ -1137,6 +1166,19 @@ svg.rx-narrow {
 }
 @media (max-width: 44rem) {
   .rx-story-step { margin: 0 0 25vh; max-width: none; }
+}
+/* The opening story on a wider screen: each card spans the chart, its year beside its text. */
+@media (min-width: 44.0625rem) {
+  .rx-story:not(.rx-story-map) .rx-story-step {
+    display: grid;
+    grid-template-columns: 11rem minmax(0, 1fr);
+    gap: var(--s5);
+    align-items: baseline;
+    max-width: none;
+    margin-inline: 0;
+  }
+  .rx-story:not(.rx-story-map) .rx-story-year { margin: 0; font-size: 1.25rem; }
+  .rx-story:not(.rx-story-map) .rx-story-text { max-width: 62ch; }
 }
 /* The map story: on a wide screen the cards run in their own column beside the pinned maps. */
 @media (min-width: 64rem) {

@@ -511,13 +511,14 @@ function alignedSvg(size: Size): string {
     parts.push(`<text class="la-side" x="${(x(SPAN) - 10).toFixed(1)}" y="${f.t + 14}" text-anchor="end" font-size="${fs - 1}">Before the law</text>`);
     parts.push(`<text class="la-side" x="${(x(SPAN) + 10).toFixed(1)}" y="${f.t + 14}" font-size="${fs - 1}">After</text>`);
   }
-  for (const r of rows) {
-    const after = r.index.filter((v, k) => k > SPAN && v !== null).length;
-    parts.push(`<path class="la-state" d="${path(r.index)}"><title>${r.state}, law in effect ${r.effective}: ${r.index[0] ?? '?'} two years before, ${r.index[SPAN + Math.min(after, 12)] ?? '?'} ${after >= 12 ? 'a year after' : `${after} months after`}</title></path>`);
-  }
+  rows.forEach((r, i) => {
+    parts.push(`<path class="la-state" data-i="${i}" d="${path(r.index)}"/>`);
+  });
   parts.push(`<path class="la-nation" d="${path(nation)}"/>`);
   parts.push(`<path class="la-median" d="${path(med)}"/>`);
   parts.push(`<circle class="la-dot" cx="${x(SPAN).toFixed(1)}" cy="${y(100).toFixed(1)}" r="5"/>`);
+  // The pointer reads the nearest state line (registry-charts.ts); this is its target.
+  parts.push(`<rect class="la-hit" x="${f.l}" y="${f.t}" width="${pw}" height="${ph}"/>`);
   if (wide) {
     const lastK = (vals: (number | null)[]): number => vals.reduce<number>((a, v, k) => (v !== null ? k : a), 0);
     const ends = [
@@ -531,7 +532,7 @@ function alignedSvg(size: Size): string {
       parts.push(`<text class="rx-end-label ${e.cls}" x="${x(2 * SPAN) + 12}" y="${ty.toFixed(1)}" font-size="${fs}"><tspan class="rx-end-value" x="${x(2 * SPAN) + 12}">${Math.round(e.v)}</tspan><tspan x="${x(2 * SPAN) + 12}" dy="${fs + 3}">${e.a}</tspan></text>`);
     }
   }
-  return `<svg class="rx-svg rx-${size} la-svg" viewBox="0 0 ${f.w} ${f.h}" role="img" aria-label="Arrangements held by each law state's entities, indexed to 100 in the month its law took effect, two years before and after, with the median law state and the nation over the same months.">${parts.join('')}</svg>`;
+  return `<svg class="rx-svg rx-${size} la-svg" viewBox="0 0 ${f.w} ${f.h}" data-l="${f.l}" data-pw="${pw}" data-t="${f.t}" data-ph="${ph}" data-w="${f.w}" data-lo="${lo}" data-hi="${hi}" data-span="${SPAN}" role="img" aria-label="Arrangements held by each law state's entities, indexed to 100 in the month its law took effect, two years before and after, with the median law state and the nation over the same months.">${parts.join('')}</svg>`;
 }
 
 /** The aligned law chart in both sizes. */

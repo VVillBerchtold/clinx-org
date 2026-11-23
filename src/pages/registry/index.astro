@@ -228,6 +228,8 @@ const alignedChart = lawAlignedChart();
 const K = 24;
 const yearOn = (vals: (number | null)[]): number => Math.round(vals[K + 12] ?? 0);
 const nYear = aligned.rows.filter((r) => r.index[K + 12] !== null).length;
+const alignedData = JSON.stringify({ rows: aligned.rows.map((r) => ({ name: r.state, effective: r.effective, index: r.index })) });
+const alignedChips = aligned.rows.map((r, i) => ({ i, name: r.state, when: monthShort(r.effective.slice(0, 7)) }));
 const lawCards = lawsIn.map((l) => {
   const a = aroundLaw(l.state, l.effective);
   return {
@@ -247,7 +249,6 @@ const parts = [
   { id: 'chains', label: 'Which pharmacies' },
   { id: 'holders', label: 'Who holds them' },
   { id: 'laws', label: 'The states step in' },
-  { id: 'record', label: 'What this record can say' },
 ];
 ---
 
@@ -521,9 +522,17 @@ const parts = [
       </div>
       <h3 class="rx-sub-h">Every law state on one clock</h3>
       <p class="rx-small">Each line is one state: the arrangements its entities hold, set to 100 in the month its law took effect, from two years before to two years after. The bold line is the median law state; the dashed line is the whole country over the same months. Both stop where fewer than five states have reached that month. A year after its law, the median state stood at {yearOn(aligned.median)} and the country at {yearOn(aligned.nation)} ({nYear} states have a full year since). Shown as recorded; this does not say what the laws caused.</p>
-      <figure class="rx-figure rx-aligned">
+      <figure class="rx-figure rx-aligned" data-aligned={alignedData}>
         <Fragment set:html={alignedChart.wide} />
         <Fragment set:html={alignedChart.narrow} />
+        <div class="la-pick" hidden data-la-pick>
+          <p class="la-pick-label">Point at a line, or pick a state:</p>
+          <ul class="la-chips">
+            {alignedChips.map((c) => (
+              <li><button type="button" class="la-chip" data-la={c.i} aria-pressed="false">{c.name} <span>{c.when}</span></button></li>
+            ))}
+          </ul>
+        </div>
         <ul class="rx-legend">
           <li><span class="rx-key la-k-state" aria-hidden="true"></span>One law state</li>
           <li><span class="rx-key la-k-med" aria-hidden="true"></span>Median law state</li>
@@ -545,23 +554,11 @@ const parts = [
     </div>
   </section>
 
-  <section class="rx-section" id="record" aria-labelledby="record-h">
+  <footer class="rx-source">
     <div class="wrap rx-measure">
-      <p class="rx-step">7</p>
-      <h2 id="record-h">What this record can say</h2>
-      <ul class="rx-limits">
-        <li><strong>It is today's record of the past.</strong> Every figure counts the arrangements whose dates, as the registry records them on {monthLong(last)}, cover the day. If HRSA corrected a date, the correction is counted.</li>
-        <li><strong>Endings are listed from 2016.</strong> The registry lists {fmt(H.ended_listed.find((r) => r.year === 2016)?.ended_arrangements_listed ?? 0)} arrangements that ended in 2016 and none before; ended entities from 2017. So the months before 2017 count fewer arrangements than were in force. They are shaded on the charts.</li>
-        <li><strong>It is checked against counts made at the time.</strong> From 2017 on, the rebuilt counts run 2 to 7 percent below the yearly counts Drug Channels and GAO made from the same registry, always below, never above. The share held by the five largest companies (CVS, Walgreens, Express Scripts, Optum and Walmart) matches theirs to within half a point: 76.4 percent in May 2026 against 76.8. Before 2017 the gap grows, to about half GAO's 1,300 pharmacies in 2010.</li>
-        <li><strong>An arrangement is not a sale.</strong> A registered contract says a pharmacy may fill 340B drugs for the entity. It does not say how many prescriptions it fills, or whether a drug maker honors the 340B price there.</li>
-        <li><strong>It says what, never why.</strong> The charts beside each state law show the counts before and after. They are not a study of what the law did.</li>
-        <li><strong>From 23 November 2026 every day is kept.</strong> The <a href={REGISTRY_REPO}>registry history repository</a> stores each day's registry, without the people it names, so any day from then on can be rebuilt exactly.</li>
-      </ul>
-      <p class="rx-text">
-        How it is counted, with the code: <a href={`${REGISTRY_REPO}#readme`}>the repository's notes</a>. Source: U.S. Health Resources and Services Administration, Office of Pharmacy Affairs, 340B OPAIS, Covered Entity Daily Export of 23 November 2026.
-      </p>
+      <p>Source: U.S. Health Resources and Services Administration, Office of Pharmacy Affairs, 340B OPAIS, Covered Entity Daily Export of 23 November 2026, rebuilt month by month. How it is counted, with the code: <a href={`${REGISTRY_REPO}#readme`}>the repository's notes</a>.</p>
     </div>
-  </section>
+  </footer>
 </Base>
 
 <script>
