@@ -1150,6 +1150,10 @@ svg.rx-narrow {
   .rx-story-map .rx-story-step { max-width: none; margin: 0 0 45vh; }
   .rx-story-map .rx-story-step:first-child { margin-top: 0; }
 }
+/* Today's own step is for narrow screens, where the Today map is not pinned beside the other. */
+@media (min-width: 44.0625rem) {
+  .rx-story-narrow { display: none; }
+}
 /* On a narrow screen the map story pins one map, the one that steps; Today is its last step. */
 .rx-story-map .rx-maps { margin: var(--s4) 0 var(--s2); }
 .rx-story-map .rx-share-key { margin-bottom: 0; }

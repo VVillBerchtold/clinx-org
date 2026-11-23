@@ -163,9 +163,11 @@ const f12 = mapFacts('2012-01');
 const f17 = mapFacts('2017-01');
 const f20 = mapFacts('2020-01');
 const f23 = mapFacts('2023-01');
+const lastJan = Object.keys(H.out_of_state).filter((m) => m.endsWith('-01') && m <= last).sort().pop()!;
+const fJan = mapFacts(lastJan);
 const fNow = mapFacts(last);
 const nm = (r: { code: string }[], i: number): string => stateName(r[i]?.code ?? '');
-const mapSteps: { month: string; year: string; label?: string; text: string }[] = [
+const mapSteps: { month: string; year: string; label?: string; narrow?: boolean; text: string }[] = [
   { month: '2012-01', year: '2012',
     text: `Only ${f12.measured} states have 50 arrangements to measure. The typical one sends ${pct(f12.median, 1)} of them to a pharmacy across a state line. Before 2017 the counts are a lower bound.` },
   { month: '2017-01', year: '2017',
@@ -174,8 +176,11 @@ const mapSteps: { month: string; year: string; label?: string; text: string }[] 
     text: `The typical state now sends ${pct(f20.median)} out of state. ${nm(f20.receivers, 0)} draws the most from other states: ${fmt(f20.receivers[0]?.n ?? 0)} arrangements.` },
   { month: '2023-01', year: '2023',
     text: `${f23.half} states send half or more of their arrangements across a line. ${fmt(f23.crossing)} arrangements cross one in all.` },
-  { month: last, year: '', label: `Today, ${monthShort(last)}`,
-    text: `${fNow.half} states now send half or more. ${nm(fNow.receivers, 0)}, ${nm(fNow.receivers, 1)} and ${nm(fNow.receivers, 2)} draw the most, and ${fmt(fNow.crossing)} arrangements cross a line.` },
+  { month: lastJan, year: lastJan.slice(0, 4),
+    text: `${fJan.half} states send half or more. ${nm(fJan.receivers, 0)}, ${nm(fJan.receivers, 1)} and ${nm(fJan.receivers, 2)} draw the most, and ${fmt(fJan.crossing)} arrangements cross a line. The map beside it is today.` },
+  // On a narrow screen only one map is pinned, so Today gets a step of its own.
+  { month: last, year: '', label: `Today, ${monthShort(last)}`, narrow: true,
+    text: `${fNow.half} states send half or more, and ${fmt(fNow.crossing)} arrangements cross a line. ${nm(fNow.receivers, 0)} ${fNow.receivers[0]?.code === fJan.receivers[0]?.code ? 'still draws' : 'now draws'} the most.` },
 ];
 const B = SHARE_BANDS;
 const shareKey = [
@@ -419,7 +424,7 @@ const parts = [
         </div>
         <ol class="rx-story-steps">
           {mapSteps.map((st) => (
-            <li class="rx-story-step" data-month={st.month}>
+            <li class:list={['rx-story-step', { 'rx-story-narrow': st.narrow }]} data-month={st.month}>
               <p class="rx-story-year">{st.label ?? `January ${st.year}`}</p>
               <p class="rx-story-text">{st.text}</p>
             </li>

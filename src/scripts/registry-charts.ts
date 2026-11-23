@@ -295,8 +295,9 @@ function wireStory(story: HTMLElement, onStep: (step: HTMLElement) => void): voi
     const beside = p.right <= steps[0]!.getBoundingClientRect().left;
     const under = beside ? 0 : Math.max(0, p.bottom);
     const line = under + (window.innerHeight - under) / 2;
-    let on = steps[0]!;
-    for (const s of steps) if (s.getBoundingClientRect().top <= line) on = s;
+    const shown = steps.filter((s) => s.offsetParent !== null); // a step hidden at this width does not count
+    let on = shown[0] ?? steps[0]!;
+    for (const s of shown) if (s.getBoundingClientRect().top <= line) on = s;
     if (on === cur) return;
     cur = on;
     for (const s of steps) s.classList.toggle('is-on', s === on);
