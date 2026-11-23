@@ -15,6 +15,7 @@ import raw from '../data/registry/history.json';
 import cohortsRaw from '../data/registry/cohorts.json';
 import concRaw from '../data/registry/concentration.json';
 import insurerRaw from '../data/registry/insurer.json';
+import { REPOSITORIES } from './site';
 import { STATES } from './state-map';
 
 export interface Law {
@@ -55,7 +56,7 @@ interface History {
 
 export const H = raw as unknown as History;
 export const REGISTRY_HOME = '/registry/';
-export const REGISTRY_REPO = 'https://github.com/VVillBerchtold/clinx-340b-registry';
+export const REGISTRY_REPO = REPOSITORIES.registry;
 
 /** The record of endings starts here: ended arrangements are listed from 2016, ended entities from 2017. */
 export const FULL_RECORD_FROM = '2017-01';

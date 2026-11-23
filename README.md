@@ -46,6 +46,7 @@ flowchart LR
 |---|---|
 | [clinx-340b](https://github.com/VVillBerchtold/clinx-340b) | The dataset. Every figure read from the filings, checked against a second, separate read, and kept with its page number. Corrections are reported there. |
 | [clinx-radar](https://github.com/VVillBerchtold/clinx-radar) | A small tool that keeps dated copies of the federal 340B registry and reports what changed between two dates. |
+| [clinx-340b-registry](https://github.com/VVillBerchtold/clinx-340b-registry) | The registry history. A copy of the federal 340B registry for every day since 23 November 2026, kept as a daily delta, and the code that rebuilds its history since 2010 for the [registry history page](https://clinx.org/registry/). |
 | clinx-org (you are here) | The website. It reads the dataset and draws the pages. It never changes a figure. |
 
 ## What the site promises, and how the code keeps each promise
