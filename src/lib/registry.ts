@@ -181,19 +181,21 @@ function lineSvg(o: LineOptions, size: Size): string {
   });
   parts.push(`<line class="rx-axis" x1="${f.l}" x2="${f.w - f.r}" y1="${f.t + ph}" y2="${f.t + ph}"/>`);
 
-  // Event markers.
+  // Event markers (over the marks when the chart is stacked, where fills would hide them).
+  const markerParts: string[] = [];
   for (const mk of o.markers ?? []) {
     const i = months.indexOf(mk.month);
     if (i < 0) continue;
     const lv = mk.level ?? 0;
     const ly = f.t + 4 + lv * (fs + 6);
-    parts.push(`<line class="rx-marker" x1="${x(i).toFixed(1)}" x2="${x(i).toFixed(1)}" y1="${ly + 4}" y2="${f.t + ph}"/>`);
+    markerParts.push(`<line class="rx-marker" x1="${x(i).toFixed(1)}" x2="${x(i).toFixed(1)}" y1="${ly + 4}" y2="${f.t + ph}"/>`);
     // The label sits left of its line, or right of it when there is no room on the left.
     const room = x(i) - f.l > mk.label.length * (fs - 1) * 0.56 + 10;
-    if (size === 'wide') parts.push(`<text class="rx-marker-text" x="${(x(i) + (room ? -6 : 6)).toFixed(1)}" y="${ly + 10}" text-anchor="${room ? 'end' : 'start'}" font-size="${fs - 1}">${mk.label}</text>`);
-    else parts.push(`<circle class="rx-marker-dot" cx="${x(i).toFixed(1)}" cy="${ly + 4}" r="3"/>`);
+    if (size === 'wide') markerParts.push(`<text class="rx-marker-text" x="${(x(i) + (room ? -6 : 6)).toFixed(1)}" y="${ly + 10}" text-anchor="${room ? 'end' : 'start'}" font-size="${fs - 1}">${mk.label}</text>`);
+    else markerParts.push(`<circle class="rx-marker-dot" cx="${x(i).toFixed(1)}" cy="${ly + 4}" r="3"/>`);
   }
 
+  if (!o.stacked) parts.push(...markerParts);
   // Marks.
   const ends: { y: number; value: string; label: string }[] = [];
   vals.forEach((v, si) => {
@@ -215,6 +217,7 @@ function lineSvg(o: LineOptions, size: Size): string {
       ends.push({ y: endY - 2, value, label: s.label });
     }
   });
+  if (o.stacked) parts.push(...markerParts);
   // Direct labels at the right edge, pushed apart so none overlap.
   const gap = 2 * fs + 8;
   ends.sort((a, b) => a.y - b.y);
@@ -380,4 +383,115 @@ export function timeLapse(states: { code: string }[]): string {
     inb[code] = months.map((m) => (H.flows[m] ?? []).reduce((a, [x, y, k]) => (y === code && x !== code ? a + k : a), 0));
   }
   return JSON.stringify({ months, bands: SHARE_BANDS, share, inbound: inb });
+}
+
+/** Median of the numbers given (none: null). */
+function median(xs: number[]): number | null {
+  if (!xs.length) return null;
+  const s = [...xs].sort((a, b) => a - b);
+  const m = Math.floor(s.length / 2);
+  return s.length % 2 ? s[m]! : (s[m - 1]! + s[m]!) / 2;
+}
+
+export interface AlignedRow {
+  code: string;
+  state: string;
+  effective: string;
+  /** Index (law month = 100) at each offset from -SPAN to +SPAN; null outside the record. */
+  index: (number | null)[];
+}
+
+const SPAN = 24;
+export const MIN_STATES = 5;
+
+/**
+ * Every law state's arrangements, indexed to 100 in the month its law took effect, two years
+ * either side; with the median state and the nation over the same months as the reference.
+ */
+export function lawAligned(): { rows: AlignedRow[]; median: (number | null)[]; nation: (number | null)[] } {
+  const nat = H.national.arrangements;
+  const rows: AlignedRow[] = [];
+  const natRows: (number | null)[][] = [];
+  for (const l of lawStates()) {
+    const i = H.months.indexOf(l.effective.slice(0, 7));
+    const s = H.states[l.state]?.arrangements ?? [];
+    if (i < 0 || !s[i]) continue;
+    const pick = (arr: number[]): (number | null)[] =>
+      Array.from({ length: 2 * SPAN + 1 }, (_, k) => {
+        const j = i - SPAN + k;
+        return j >= 0 && j < arr.length ? Math.round((arr[j]! / arr[i]!) * 1000) / 10 : null;
+      });
+    rows.push({ code: l.state, state: stateName(l.state), effective: l.effective, index: pick(s) });
+    natRows.push(pick(nat));
+  }
+  // The median and the country are drawn only where at least five states have the month.
+  const col = (rs: (number | null)[][], k: number): number[] => rs.map((r) => r[k]).filter((v): v is number => v !== null);
+  const enough = (k: number): boolean => col(rows.map((r) => r.index), k).length >= MIN_STATES;
+  const med = Array.from({ length: 2 * SPAN + 1 }, (_, k) => (enough(k) ? median(col(rows.map((r) => r.index), k)) : null));
+  const nation = Array.from({ length: 2 * SPAN + 1 }, (_, k) => (enough(k) ? median(col(natRows, k)) : null));
+  return { rows, median: med, nation };
+}
+
+function alignedSvg(size: Size): string {
+  const { rows, median: med, nation } = lawAligned();
+  const wide = size === 'wide';
+  const f = wide ? { w: 1040, h: 420, l: 56, r: 170, t: 30, b: 40 } : { w: 360, h: 300, l: 40, r: 14, t: 24, b: 34 };
+  const fs = wide ? 13 : 11;
+  const pw = f.w - f.l - f.r;
+  const ph = f.h - f.t - f.b;
+  const lo = 40;
+  const hi = 200;
+  const x = (k: number): number => f.l + (k / (2 * SPAN)) * pw;
+  const y = (v: number): number => f.t + ph - ((Math.min(Math.max(v, lo), hi) - lo) / (hi - lo)) * ph;
+  const path = (vals: (number | null)[]): string => {
+    let d = '';
+    let pen = false;
+    vals.forEach((v, k) => {
+      if (v === null) return void (pen = false);
+      d += `${pen ? 'L' : 'M'}${x(k).toFixed(1)},${y(v).toFixed(1)}`;
+      pen = true;
+    });
+    return d;
+  };
+  const parts: string[] = [];
+  parts.push(`<rect class="la-after" x="${x(SPAN).toFixed(1)}" y="${f.t}" width="${(pw / 2).toFixed(1)}" height="${ph}"/>`);
+  for (const t of [50, 100, 150, 200]) {
+    parts.push(`<line class="${t === 100 ? 'la-base' : 'rx-grid'}" x1="${f.l}" x2="${f.l + pw}" y1="${y(t).toFixed(1)}" y2="${y(t).toFixed(1)}"/>`);
+    parts.push(`<text class="rx-tick" x="${f.l - 8}" y="${(y(t) + 4).toFixed(1)}" text-anchor="end" font-size="${fs}">${t}</text>`);
+  }
+  for (const k of wide ? [-24, -12, 0, 12, 24] : [-24, 0, 24]) {
+    const label = k === 0 ? 'Law in effect' : `${k > 0 ? '+' : ''}${k / 12} yr`;
+    parts.push(`<text class="rx-tick${k === 0 ? ' la-zero-text' : ''}" x="${x(k + SPAN).toFixed(1)}" y="${f.h - f.b + 22}" text-anchor="middle" font-size="${fs}">${label}</text>`);
+  }
+  parts.push(`<line class="la-zero" x1="${x(SPAN).toFixed(1)}" x2="${x(SPAN).toFixed(1)}" y1="${f.t - 6}" y2="${f.t + ph}"/>`);
+  if (wide) {
+    parts.push(`<text class="la-side" x="${(x(SPAN) - 10).toFixed(1)}" y="${f.t + 14}" text-anchor="end" font-size="${fs - 1}">Before the law</text>`);
+    parts.push(`<text class="la-side" x="${(x(SPAN) + 10).toFixed(1)}" y="${f.t + 14}" font-size="${fs - 1}">After</text>`);
+  }
+  for (const r of rows) {
+    const after = r.index.filter((v, k) => k > SPAN && v !== null).length;
+    parts.push(`<path class="la-state" d="${path(r.index)}"><title>${r.state}, law in effect ${r.effective}: ${r.index[0] ?? '?'} two years before, ${r.index[SPAN + Math.min(after, 12)] ?? '?'} ${after >= 12 ? 'a year after' : `${after} months after`}</title></path>`);
+  }
+  parts.push(`<path class="la-nation" d="${path(nation)}"/>`);
+  parts.push(`<path class="la-median" d="${path(med)}"/>`);
+  parts.push(`<circle class="la-dot" cx="${x(SPAN).toFixed(1)}" cy="${y(100).toFixed(1)}" r="5"/>`);
+  if (wide) {
+    const lastK = (vals: (number | null)[]): number => vals.reduce<number>((a, v, k) => (v !== null ? k : a), 0);
+    const ends = [
+      { k: lastK(med), v: med[lastK(med)]!, a: 'Median law state', cls: 'la-end-med' },
+      { k: lastK(nation), v: nation[lastK(nation)]!, a: 'The nation, same months', cls: 'la-end-nat' },
+    ].sort((p, q) => y(p.v) - y(q.v));
+    let prev = -Infinity;
+    for (const e of ends) {
+      const ty = Math.max(y(e.v) + 4, prev + 2 * fs + 8);
+      prev = ty;
+      parts.push(`<text class="rx-end-label ${e.cls}" x="${x(2 * SPAN) + 12}" y="${ty.toFixed(1)}" font-size="${fs}"><tspan class="rx-end-value" x="${x(2 * SPAN) + 12}">${Math.round(e.v)}</tspan><tspan x="${x(2 * SPAN) + 12}" dy="${fs + 3}">${e.a}</tspan></text>`);
+    }
+  }
+  return `<svg class="rx-svg rx-${size} la-svg" viewBox="0 0 ${f.w} ${f.h}" role="img" aria-label="Arrangements held by each law state's entities, indexed to 100 in the month its law took effect, two years before and after, with the median law state and the nation over the same months.">${parts.join('')}</svg>`;
+}
+
+/** The aligned law chart in both sizes. */
+export function lawAlignedChart(): { wide: string; narrow: string } {
+  return { wide: alignedSvg('wide'), narrow: alignedSvg('narrow') };
 }

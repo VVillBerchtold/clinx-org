@@ -20,6 +20,8 @@ import {
   lastMonth,
   lawMap,
   lawStates,
+  lawAligned,
+  lawAlignedChart,
   lineChart,
   monthLong,
   monthShort,
@@ -62,8 +64,11 @@ const hero = lineChart({
 
 // 2. The pharmacies.
 const perPharmacy = N.arrangements.map((a, i) => (N.pharmacies[i] ? a / N.pharmacies[i]! : 0));
+const phPeak = Math.max(...N.pharmacies);
+const phPeakMonth = H.months[N.pharmacies.indexOf(phPeak)]!;
 const pharmacies = lineChart({
   id: 'pharm',
+  markers: [{ month: phPeakMonth, label: `Peak, ${monthShort(phPeakMonth)}` }],
   frame: 'half',
   from: '2012-01',
   series: [{ key: 'ph', label: 'pharmacies', values: N.pharmacies, slot: 1 }],
@@ -78,8 +83,6 @@ const ratio = lineChart({
   title: 'Arrangements for each contract pharmacy, by month',
   desc: `${perPharmacy[H.months.indexOf('2012-01')]!.toFixed(1)} in January 2012, ${perPharmacy[perPharmacy.length - 1]!.toFixed(1)} on ${monthLong(last)}.`,
 });
-const phPeak = Math.max(...N.pharmacies);
-const phPeakMonth = H.months[N.pharmacies.indexOf(phPeak)]!;
 
 // 3. The distance.
 const share = N.arrangements.map((a, i) => (a ? N.out_of_state[i]! / a : 0));
@@ -119,8 +122,10 @@ const shareKey = [
 const C = H.chains;
 const chainSeries = C.groups.map((g, i) => ({ key: g, label: g, values: C.arrangements[g]!, slot: i === 4 ? 0 : i + 1 }));
 const totals = N.arrangements;
+const cvsOver = H.months.find((m) => at(C.arrangements.CVS!, m) > at(C.arrangements.Walgreens!, m) && m > '2015-01');
 const chains = lineChart({
   id: 'chains',
+  markers: cvsOver ? [{ month: cvsOver, label: 'CVS passes Walgreens' }] : [],
   frame: 'full',
   from: '2012-01',
   stacked: true,
@@ -132,7 +137,6 @@ const chains = lineChart({
 const mail = Object.entries(C.mail_detail).sort((a, b) => b[1].arrangements - a[1].arrangements);
 const mailArr = at(C.arrangements['Mail-order and specialty']!, last);
 const mailPh = at(C.pharmacies['Mail-order and specialty']!, last);
-const cvsOver = H.months.find((m) => at(C.arrangements.CVS!, m) > at(C.arrangements.Walgreens!, m) && m > '2015-01');
 
 // 5. Who holds them.
 const T = H.types;
@@ -148,6 +152,11 @@ const types = lineChart({
 
 // 6. The laws.
 const lawsIn = lawStates();
+const aligned = lawAligned();
+const alignedChart = lawAlignedChart();
+const K = 24;
+const yearOn = (vals: (number | null)[]): number => Math.round(vals[K + 12] ?? 0);
+const nYear = aligned.rows.filter((r) => r.index[K + 12] !== null).length;
 const lawCards = lawsIn.map((l) => {
   const a = aroundLaw(l.state, l.effective);
   return {
@@ -398,7 +407,18 @@ const parts = [
           {H.laws.some((l) => !l.effective) && <li><span class="rx-key lpend" aria-hidden="true"></span>Law, date not printed</li>}
         </ul>
       </div>
-      <h3 class="rx-sub-h">Each state's arrangements, with the day its law took effect</h3>
+      <h3 class="rx-sub-h">Every law state on one clock</h3>
+      <p class="rx-small">Each line is one state: the arrangements its entities hold, set to 100 in the month its law took effect, from two years before to two years after. The bold line is the median law state; the dashed line is the whole country over the same months. Both stop where fewer than five states have reached that month. A year after its law, the median state stood at {yearOn(aligned.median)} and the country at {yearOn(aligned.nation)} ({nYear} states have a full year since). Shown as recorded; this does not say what the laws caused.</p>
+      <figure class="rx-figure rx-aligned">
+        <Fragment set:html={alignedChart.wide} />
+        <Fragment set:html={alignedChart.narrow} />
+        <ul class="rx-legend">
+          <li><span class="rx-key la-k-state" aria-hidden="true"></span>One law state</li>
+          <li><span class="rx-key la-k-med" aria-hidden="true"></span>Median law state</li>
+          <li><span class="rx-key la-k-nat" aria-hidden="true"></span>The country, same months</li>
+        </ul>
+      </figure>
+      <h3 class="rx-sub-h">State by state</h3>
       <p class="rx-small">Arrangements held by the state's entities, by month from January 2018. Each chart has its own scale; the number in its corner is its largest month. The dot and line mark the day the law took effect. Shown as recorded; the charts do not say what the law caused.</p>
       <ul class="rx-multiples">
         {lawCards.map((c) => (

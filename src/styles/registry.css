@@ -1005,3 +1005,32 @@ svg.rx-narrow {
     display: block !important;
   }
 }
+
+/* ---------- Every law state on one clock ---------- */
+
+.la-after { fill: var(--rx-shade); }
+.la-base { stroke: var(--muted); stroke-width: 1; opacity: 0.6; }
+.la-zero { stroke: var(--rx-2); stroke-width: 2; }
+.la-zero-text { fill: var(--rx-2); font-weight: 650; }
+.la-side { fill: var(--muted); letter-spacing: 0.02em; }
+.la-state {
+  fill: none;
+  stroke: var(--rx-1);
+  stroke-width: 1.5;
+  opacity: 0.28;
+  stroke-linejoin: round;
+  transition: opacity 0.2s var(--ease), stroke-width 0.2s var(--ease);
+}
+.la-svg:hover .la-state { opacity: 0.14; }
+.la-svg .la-state:hover { opacity: 1; stroke-width: 3; }
+.la-median { fill: none; stroke: var(--rx-1); stroke-width: 3.5; stroke-linejoin: round; stroke-linecap: round; pointer-events: none; }
+.la-nation { fill: none; stroke: var(--ink); stroke-width: 2; stroke-dasharray: 6 5; opacity: 0.7; pointer-events: none; }
+.la-dot { fill: var(--rx-2); stroke: var(--bg); stroke-width: 2.5; }
+.la-end-nat .rx-end-value { fill: var(--muted); }
+.rx-key.la-k-state { background: var(--rx-1); opacity: 0.35; height: 3px; }
+.rx-key.la-k-med { background: var(--rx-1); height: 4px; }
+.rx-key.la-k-nat { background: transparent; border-top: 2px dashed var(--ink); height: 0; }
+.rx-aligned { margin-bottom: var(--s7); }
+@media (prefers-reduced-motion: reduce) {
+  .la-state { transition: none; }
+}

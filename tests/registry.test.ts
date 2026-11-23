@@ -55,3 +55,18 @@ describe('registry charts', () => {
     for (const x of r) expect(x.now).toBeGreaterThan(x.then);
   });
 });
+
+describe('lawAligned', () => {
+  it('sets every law state to 100 in its law month and keeps the median to months five states share', async () => {
+    const { lawAligned, MIN_STATES } = await import('../src/lib/registry');
+    const { rows, median, nation } = lawAligned();
+    expect(rows.length).toBeGreaterThanOrEqual(MIN_STATES);
+    for (const r of rows) expect(r.index[24]).toBe(100);
+    expect(median[24]).toBe(100);
+    expect(nation[24]).toBe(100);
+    median.forEach((v, k) => {
+      const have = rows.filter((r) => r.index[k] !== null).length;
+      expect(v === null).toBe(have < MIN_STATES);
+    });
+  });
+});
