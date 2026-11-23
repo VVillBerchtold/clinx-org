@@ -187,3 +187,6 @@ export const CHECKING_ARTICLE_PUBLISHED = '2026-11-16';
 /** The essay on what a clinic's software subscriptions are for, and the day it goes public. */
 export const RENTING_ARTICLE_TITLE = 'What are we renting?';
 export const RENTING_ARTICLE_PUBLISHED = '2026-11-17';
+/** The analysis of who owns the 340B contract pharmacies, and the day it goes public (set on publishing). */
+export const WHOSE_ARTICLE_TITLE = 'Whose pharmacies?';
+export const WHOSE_ARTICLE_PUBLISHED = '2026-11-23';

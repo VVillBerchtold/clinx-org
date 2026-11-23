@@ -197,3 +197,38 @@
     min-height: 0;
   }
 }
+
+/* An analysis: a chart wider than the text, and a plain two-column table that never scrolls sideways. */
+.wp-figure {
+  max-width: 66rem;
+  margin: var(--s6) 0;
+}
+.table-plain table {
+  width: 100%;
+  max-width: 32rem;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+.table-plain caption {
+  text-align: left;
+  font-weight: 600;
+  padding-bottom: var(--s2);
+}
+.table-plain th,
+.table-plain td {
+  padding: 0.5rem 0.25rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+.table-plain td {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.table-plain thead th:last-child {
+  text-align: right;
+}
+/* The text resumes after a wide figure: no second lead paragraph. */
+.article-cont > section:first-child > p:first-child {
+  font-size: inherit;
+  line-height: inherit;
+}

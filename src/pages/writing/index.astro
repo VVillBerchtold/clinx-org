@@ -4,15 +4,24 @@ import Base from '../../layouts/Base.astro';
 import Arrow from '../../components/Arrow.astro';
 import Draft from '../../components/Draft.astro';
 import PageHead from '../../components/PageHead.astro';
-import { ARTICLE_TITLE, CHECKING_ARTICLE_TITLE, CLEANER_COPY, CLEANER_COPY_ARTICLE_TITLE, RENTING_ARTICLE_TITLE, SCHEDULE_DESIGNER, SCHEDULE_DESIGNER_ARTICLE_TITLE, WORKBOOK_ARTICLE_TITLE } from '../../lib/site';
+import { ARTICLE_TITLE, CHECKING_ARTICLE_TITLE, CLEANER_COPY, CLEANER_COPY_ARTICLE_TITLE, RENTING_ARTICLE_TITLE, SCHEDULE_DESIGNER, SCHEDULE_DESIGNER_ARTICLE_TITLE, WHOSE_ARTICLE_TITLE, WORKBOOK_ARTICLE_TITLE } from '../../lib/site';
 
 /** What a piece of writing ends with: the tool or demo its last button opens. */
 const cleanerCopy = { href: '/tools/cleaner-copy/', kind: 'Tool', name: CLEANER_COPY };
 const scheduleDesigner = { href: '/tools/schedule-designer/', kind: 'Tool', name: SCHEDULE_DESIGNER };
+const registry = { href: '/registry/', kind: 'Data', name: 'Registry history' };
 const totalsDemo = { href: '/writing/no-phi/demo/', kind: 'Demo', name: 'Totals from a file' };
 
 /** Every piece, newest first. Each one is drawn as the same card. */
 const pieces = [
+  {
+    href: '/writing/whose-pharmacies/',
+    kind: 'Analysis',
+    minutes: 7,
+    title: WHOSE_ARTICLE_TITLE,
+    say: 'The federal 340B registry shows the safety net\'s contract pharmacies moving to pharmacies owned by the largest insurers and PBMs.',
+    goesWith: registry,
+  },
   {
     href: '/writing/saved-as-a-workbook/',
     kind: 'Article',
@@ -64,9 +73,9 @@ const pieces = [
 ];
 ---
 
-<Base title="Writing" crumbs={[{ name: 'Writing', path: '/writing/' }]} description="Articles, guides and an essay from ClinX: why its tools work in the browser, how they are built, and ways to check each one for yourself.">
+<Base title="Writing" crumbs={[{ name: 'Writing', path: '/writing/' }]} description="Articles, guides, an essay and an analysis from ClinX: why its tools work in the browser, how they are built, ways to check each one for yourself, and what the 340B data shows.">
   <PageHead title="Writing" trail={[{ label: 'ClinX' }]}>
-    <p class="lede">Why the tools here work in the browser, how they are built, and how to check each one for yourself.</p>
+    <p class="lede">Why the tools here work in the browser, how they are built, how to check each one for yourself, and what the 340B data shows.</p>
   </PageHead>
 
   <ul class="pieces">
@@ -98,5 +107,5 @@ const pieces = [
       ))
     }
   </ul>
-  <p class="pieces-note">Each piece ends at the tool or the demo it describes. All of the tools are on the <a href="/tools/">Tools</a> page.</p>
+  <p class="pieces-note">Each piece ends at the tool, demo or data it describes. All of the tools are on the <a href="/tools/">Tools</a> page.</p>
 </Base>

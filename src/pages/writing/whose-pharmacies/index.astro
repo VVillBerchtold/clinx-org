@@ -1,0 +1,169 @@
+---
+/**
+ * The essay "Whose pharmacies?". Every figure in the text comes from src/data/registry/whose-2026-11.json,
+ * written by the registry history repository's tools/whose_facts.py from the snapshot of 23 November 2026.
+ * The text is dated to that snapshot; the chart is the registry page's own and follows the registry.
+ */
+import '../../../styles/article.css';
+import '../../../styles/registry.css';
+import Base from '../../../layouts/Base.astro';
+import Arrow from '../../../components/Arrow.astro';
+import Draft from '../../../components/Draft.astro';
+import PageHead from '../../../components/PageHead.astro';
+import F from '../../../data/registry/whose-2026-11.json';
+import { FULL_RECORD_FROM, INSURER, REGISTRY_HOME, REGISTRY_REPO, fmt, lineChart, monthLong, pct } from '../../../lib/registry';
+import { WHOSE_ARTICLE_PUBLISHED, WHOSE_ARTICLE_TITLE } from '../../../lib/site';
+import { articleNode, founderNode } from '../../../lib/structured-data';
+
+const path = '/writing/whose-pharmacies/';
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+function monthYear(m: string): string {
+  return `${MONTHS[Number(m.slice(5, 7)) - 1]} ${m.slice(0, 4)}`;
+}
+function dayLong(iso: string): string {
+  return `${Number(iso.slice(8, 10))} ${monthYear(iso)}`;
+}
+function oneIn(share: number): string {
+  return String(Math.round(1 / share));
+}
+const snapDay = dayLong(F.snapshot);
+const nowDay = monthLong(F.now);
+const G = F.groups;
+const A = F.away;
+const P = F.pharmacies;
+const owners = Object.entries(F.owners).sort(function (a, b) { return b[1] - a[1]; });
+const big3 = (F.owners['CVS Health (Aetna, Caremark)'] ?? 0) + (F.owners['Cigna (Express Scripts, Accredo)'] ?? 0) + (F.owners['UnitedHealth (Optum)'] ?? 0);
+const rates = Object.entries(F.ending_rate);
+const lowYear = rates.reduce(function (a, b) { return b[1] < a[1] ? b : a; });
+const net = P.all[0]! - P.all[1]!;
+const dshFall = 1 - F.dsh_now / F.dsh_peak;
+const hcRise = F.hc_now / F.hc_at_dsh_peak - 1;
+
+// The chart: out of state, split by who owns the pharmacy (the same as on the registry page).
+const IN = INSURER;
+const share = IN.out_of_state.map(function (v, i) { return IN.arrangements[i] ? v / IN.arrangements[i]! : 0; });
+const insOut = IN.insurer_out.map(function (v, i) { return IN.arrangements[i] ? v / IN.arrangements[i]! : 0; });
+const othOut = IN.out_of_state.map(function (v, i) { return IN.arrangements[i] ? (v - IN.insurer_out[i]!) / IN.arrangements[i]! : 0; });
+const chart = lineChart({
+  id: 'whose',
+  frame: 'full',
+  from: '2012-01',
+  percent: true,
+  line: true,
+  layers: [
+    { label: 'at insurer-owned pharmacies', values: insOut, labelled: true, cls: 'oi' },
+    { label: 'at all other pharmacies', values: othOut, labelled: true, cls: 'oo' },
+  ],
+  shadeBefore: FULL_RECORD_FROM,
+  series: [{ key: 'out', label: 'in another state', values: share, slot: 2 }],
+  title: "Share of 340B contract pharmacy arrangements whose pharmacy is in another state from the entity, by who owns the pharmacy",
+  desc: `On ${monthLong(IN.months.at(-1)!)}, ${pct(share.at(-1)!)} in another state: ${pct(insOut.at(-1)!)} of all arrangements at insurer-owned pharmacies and ${pct(othOut.at(-1)!)} at all others.`,
+});
+
+const description = `What the federal 340B registry shows about who owns the contract pharmacies: ${pct(F.insurer_share, 1)} of arrangements are at pharmacies owned by companies that also own a health insurer or pharmacy benefit manager, up from ${pct(F.insurer_share_2016)} in 2016.`;
+---
+
+<Base
+  title={WHOSE_ARTICLE_TITLE}
+  description={description}
+  crumbs={[
+    { name: 'Writing', path: '/writing/' },
+    { name: WHOSE_ARTICLE_TITLE, path },
+  ]}
+  about={[articleNode(description, { path, title: WHOSE_ARTICLE_TITLE, published: WHOSE_ARTICLE_PUBLISHED }), founderNode()]}
+>
+  <PageHead wide title={WHOSE_ARTICLE_TITLE} trail={[{ label: 'Writing', href: '/writing/' }, { label: 'Analysis' }]}>
+    <p class="lede">The safety net's contract pharmacy networks now run through the insurers' own pharmacies.</p>
+    <p class="byline">By Will Berchtold <span aria-hidden="true">·</span> 7 minute read <span aria-hidden="true">·</span> Figures from the federal registry of {snapDay} <Draft /></p>
+  </PageHead>
+
+  <article class="article">
+    <section>
+      <p>For most of the 340B program's history, a contract pharmacy meant a drugstore down the road. A health center or a rural hospital that could not run its own pharmacy signed with the one its patients already used, so a person could fill a prescription near home at the discounted price.</p>
+      <p>The federal registry tells a different story today. On {nowDay} it listed {fmt(F.arrangements)} contract pharmacy arrangements. {fmt(F.insurer)} of them, {pct(F.insurer_share, 1)}, were at specialty, mail and infusion pharmacies owned by a company that also owns a health insurer or a pharmacy benefit manager: CVS Health (Aetna and Caremark), Cigna (Express Scripts and Accredo), UnitedHealth (Optum), Elevance (CarelonRx and BioPlus), Humana (CenterWell), Centene (AcariaHealth) and the Blue plans' Prime Therapeutics. In January 2016 the share was {pct(F.insurer_share_2016)}.</p>
+      <p>These are the companies that decide which drugs a plan covers, set what pharmacies are paid and process the claims. The 340B debate usually puts drug makers on one side and hospitals and clinics on the other. The registry shows a third party sitting inside the clinics' own networks.</p>
+    </section>
+
+    <section aria-labelledby="one-in-three">
+      <h2 id="one-in-three">One in {oneIn(F.entities_insurer / F.entities)}</h2>
+      <p>In 2016, about 1 in {oneIn(F.entities_insurer_share_2016)} covered entities with any contract pharmacy had one owned by an insurer group. Today it is 1 in {oneIn(F.entities_insurer / F.entities)}: {fmt(F.entities_insurer)} of {fmt(F.entities)}.</p>
+      <p>The change is sharpest where the program's purpose is plainest. From January 2017 to {monthYear(F.now)}, the insurer-owned share of arrangements went:</p>
+      <ul>
+        <li>from {pct(G.hc.insurer_2017)} to {pct(G.hc.insurer_now)} at federally funded health centers;</li>
+        <li>from {pct(G.cah.insurer_2017)} to {pct(G.cah.insurer_now)} at critical access hospitals, the rural hospitals of no more than 25 inpatient beds that Medicare certifies, most of them more than 35 miles from the nearest hospital;</li>
+        <li>from {pct(G.dsh.insurer_2017)} to {pct(G.dsh.insurer_now)} at disproportionate share (DSH) hospitals, the larger hospitals that serve many low-income patients.</li>
+      </ul>
+      <p>The movement has not slowed. Since 2022, insurer-owned pharmacies have taken between {pct(F.new_insurer_min)} and {pct(F.new_insurer_max)} of the new arrangements that start each quarter. Of the {fmt(F.pending)} arrangements already registered to begin on {dayLong(F.pending_day ?? F.snapshot)}, {fmt(F.pending_insurer)} are insurer-owned.</p>
+      <p>The three largest owners alone hold {fmt(big3)} arrangements. That agrees with the independent count <a href="https://www.drugchannels.net/2026/06/the-340b-contract-pharmacy-market-in.html">Drug Channels published in June 2026</a>: about 62,000 relationships for the same three companies' mail, specialty and infusion pharmacies, up from 14,000 in 2020.</p>
+      <div class="table-plain">
+        <table>
+          <caption>Arrangements at insurer-owned pharmacies on {nowDay}, by owner</caption>
+          <thead><tr><th scope="col">Owner</th><th scope="col">Arrangements</th></tr></thead>
+          <tbody>
+            {owners.map(([k, v]) => <tr><th scope="row">{k}</th><td>{fmt(v)}</td></tr>)}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section aria-labelledby="out-of-state">
+      <h2 id="out-of-state">The out-of-state story is mostly this story</h2>
+      <p>The rise of contract pharmacies across state lines is one of the most cited facts in the 340B argument, and several state laws now draw their lines by distance or by state. The registry shows how much of that distance belongs to one kind of pharmacy.</p>
+      <p>In January 2017, {pct(A['2017-01'].share, 1)} of arrangements joined an entity to a pharmacy in another state. On {nowDay} it was {pct(A.now.share, 1)}. Insurer-owned pharmacies held {pct(A['2017-01'].insurer_part)} of those out-of-state arrangements in 2017 and {pct(A.now.insurer_part)} now. {pct(A.now.insurer_rate)} of insurer-owned arrangements cross a state line; {pct(A.now.other_rate)} of all other arrangements do.</p>
+    </section>
+  </article>
+
+  <figure class="rx-figure wp-figure" data-chart="whose" data-chart-json={chart.data}>
+    <Fragment set:html={chart.wide} />
+    <Fragment set:html={chart.narrow} />
+    <ul class="rx-legend">
+      <li><span class="rx-key oi" aria-hidden="true"></span>At insurer-owned pharmacies</li>
+      <li><span class="rx-key oo" aria-hidden="true"></span>At all other pharmacies</li>
+    </ul>
+    <figcaption>Share of arrangements with a pharmacy in another state from the entity's street address. The chart follows the registry as it is updated; the figures in the text are from the registry of {snapDay}. The same chart, with every state, is on the <a href={`${REGISTRY_HOME}#distance`}>registry history page</a>.</figcaption>
+  </figure>
+
+  <article class="article article-cont">
+    <section>
+      <p>Leave the insurer-owned pharmacies out, and the picture is calmer. The share of all other arrangements in another state was {pct(A['2019-01'].other_rate, 1)} in January 2019 and {pct(A['2023-01'].other_rate, 1)} in January 2023. It has risen since, to {pct(A.now.other_rate, 1)}, but most of the long climb belongs to the insurers' mail and specialty pharmacies.</p>
+      <p>For critical access hospitals the pattern is starker: {pct(G.cah.away_now)} of their arrangements are with a pharmacy in another state, and {pct(G.cah.insurer_of_away_now)} of those are insurer-owned.</p>
+    </section>
+
+    <section aria-labelledby="hospitals">
+      <h2 id="hospitals">Hospitals are pulling back; health centers are not</h2>
+      <p>DSH hospital arrangements reached {fmt(F.dsh_peak)} in {monthYear(F.dsh_peak_month)}. They have fallen {pct(dshFall)} since, to {fmt(F.dsh_now)}. Over the same months, health center arrangements grew {pct(hcRise)}, to {fmt(F.hc_now)}. Health centers now hold {pct(F.hc_share_now, 1)} of all arrangements; DSH hospitals hold {pct(F.dsh_share_now, 1)}.</p>
+      <p>The registry cannot say why any entity ends an arrangement. It does show the order of events. Drug makers began limiting 340B prices at contract pharmacies in July 2020, and many of those limits exempt grantees such as health centers, so they fall most often on hospitals. Yet arrangements did not end faster in the years that followed. Of the arrangements in force at the start of {lowYear[0]}, {pct(lowYear[1], 1)} ended that year, the smallest yearly share in the record. The rate rose only later: {pct(F.ending_rate['2024'] ?? 0, 1)} in 2024 and {pct(F.ending_rate['2025'] ?? 0, 1)} in 2025.</p>
+    </section>
+
+    <section aria-labelledby="rite-aid">
+      <h2 id="rite-aid">The retail side shrank because one chain failed</h2>
+      <p>The number of distinct contract pharmacies peaked in {monthYear(F.pharmacy_peak[0] as string)} at {fmt(P.all[0]!)}, the month Rite Aid first filed for bankruptcy. On {nowDay} it stood at {fmt(P.all[1]!)}, a net loss of {fmt(net)}. Rite Aid accounts for {fmt(P['Rite Aid'][0]! - P['Rite Aid'][1]!)} of them: its pharmacies in the registry went from {fmt(P['Rite Aid'][0]!)} to {fmt(P['Rite Aid'][1]!)} as the chain filed for bankruptcy a second time in May 2025 and closed its last stores in October 2025. Walgreens lost {fmt(P.Walgreens[0]! - P.Walgreens[1]!)}. CVS retail stores grew by {fmt(P.CVS[1]! - P.CVS[0]!)}, and insurer-owned pharmacies by {fmt(P['insurer-owned'][1]! - P['insurer-owned'][0]!)}: {fmt(F.insurer_joined)} joined and {fmt(F.insurer_left)} left.</p>
+      <p>Rite Aid's closure left a mark the registry has not cleared. On {snapDay} it still listed {fmt(F.rite_aid_open.arrangements)} arrangements at {fmt(F.rite_aid_open.pharmacies)} Rite Aid pharmacies, held by {fmt(F.rite_aid_open.entities)} covered entities, {pct(F.rite_aid_open.health_center_share)} of the arrangements at health centers. A listed arrangement at a closed store is a record no one ended. It does not suggest anything was dispensed or billed there, and some of these rows may already have a termination filed that the public file does not yet show. But drug makers use this list to decide which claims to honor, and auditors use it to check entities. An accurate list serves everyone.</p>
+    </section>
+
+    <section aria-labelledby="cannot-say">
+      <h2 id="cannot-say">What the registry cannot say</h2>
+      <p>The registry records registrations. It holds no prescriptions, no patients, no prices and no money. "Out of state" compares the pharmacy's address with the entity's street address; a mail pharmacy registered in another state may send drugs to a patient who lives two miles from the clinic. "Insurer-owned" is matched by pharmacy name, because the registry records no owner. And the month-by-month rebuild counts 2 to 7% fewer arrangements than were published in each year since 2017, because some records leave the export outright. Most figures here are shares, which move far less than counts.</p>
+    </section>
+
+    <section aria-labelledby="why">
+      <h2 id="why">Why it matters</h2>
+      <p>Whatever one concludes about 340B, the contract pharmacy debate is now also a debate about the insurer-owned pharmacy groups at the center of American drug coverage. A rule written for the corner drugstore, whether it limits distance, caps the number of pharmacies or protects them, lands mostly on the mail and specialty businesses of CVS Health, Cigna and UnitedHealth. A rule written for hospitals reaches fewer arrangements each year, while health centers and rural hospitals, the entities with the thinnest margins, are the ones whose networks are changing fastest.</p>
+      <p>Lawmakers, regulators and the clinics themselves can see all of this in a public file anyone can download. It reads more clearly with the owners named.</p>
+    </section>
+
+    <p class="small muted article-related">How it is counted: the registry's Covered Entity Daily Export of {snapDay}, rebuilt month by month. The code, including the figures on this page, is in <a href={`${REGISTRY_REPO}#readme`}>the registry history repository</a>.</p>
+  </article>
+
+  <div class="prod article-end">
+    <div>
+      <strong>See the data</strong>
+      <p>Every month since January 2010, every state, and the pharmacies behind the counts.</p>
+    </div>
+    <a class="btn" href={REGISTRY_HOME}>Open the registry history <Arrow /></a>
+  </div>
+</Base>
+
+<script>
+  import '../../../scripts/registry-charts';
+</script>

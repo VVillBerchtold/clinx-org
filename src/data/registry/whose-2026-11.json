@@ -1,0 +1,124 @@
+{
+ "arrangements": 232731,
+ "away": {
+  "2017-01": {
+   "insurer_part": 0.3675227568270481,
+   "insurer_rate": 0.8392724573125464,
+   "other_rate": 0.09205110007097232,
+   "share": 0.13682056756516325
+  },
+  "2019-01": {
+   "insurer_part": 0.455884953144339,
+   "insurer_rate": 0.8784781374219194,
+   "other_rate": 0.14960783042717313,
+   "share": 0.24062229659779047
+  },
+  "2023-01": {
+   "insurer_part": 0.6498206660973527,
+   "insurer_rate": 0.903772150695995,
+   "other_rate": 0.15488106119550685,
+   "share": 0.3355743163855408
+  },
+  "now": {
+   "insurer_part": 0.6496284449086617,
+   "insurer_rate": 0.8932439710370415,
+   "other_rate": 0.19412612199870996,
+   "share": 0.3949237531742656
+  }
+ },
+ "dsh_now": 51470,
+ "dsh_peak": 58314,
+ "dsh_peak_month": "2024-04",
+ "dsh_share_now": 0.22115661428859928,
+ "ending_rate": {
+  "2017": 0.09794502268481452,
+  "2018": 0.13405962097593443,
+  "2019": 0.12053096592117765,
+  "2020": 0.09178423236514523,
+  "2021": 0.0768987966068258,
+  "2022": 0.08693184817610727,
+  "2023": 0.09649409377740333,
+  "2024": 0.12537929360359268,
+  "2025": 0.11242919394990773,
+  "2026": 0.09047619047619047
+ },
+ "entities": 12452,
+ "entities_insurer": 4158,
+ "entities_insurer_share_2016": 0.04314360947944096,
+ "groups": {
+  "cah": {
+   "away_now": 0.5758304874262651,
+   "insurer_2017": 0.019918973666441592,
+   "insurer_now": 0.34088792300527787,
+   "insurer_of_away_now": 0.5600485240598463
+  },
+  "dsh": {
+   "away_now": 0.4333592383912959,
+   "insurer_2017": 0.09114643768855883,
+   "insurer_now": 0.3271808820672236,
+   "insurer_of_away_now": 0.6992154225509976
+  },
+  "hc": {
+   "away_now": 0.31857078062792926,
+   "insurer_2017": 0.01577534123965093,
+   "insurer_now": 0.22746560499924406,
+   "insurer_of_away_now": 0.6200525200113899
+  }
+ },
+ "hc_at_dsh_peak": 78925,
+ "hc_now": 99215,
+ "hc_share_now": 0.4263076255419347,
+ "insurer": 66844,
+ "insurer_joined": 286,
+ "insurer_left": 67,
+ "insurer_share": 0.28721571256085354,
+ "insurer_share_2016": 0.020217684730478733,
+ "new_insurer_max": 0.40217391304347827,
+ "new_insurer_min": 0.23355242566510173,
+ "now": "2026-11",
+ "owners": {
+  "Blue plans (Prime Therapeutics)": 62,
+  "CVS Health (Aetna, Caremark)": 32441,
+  "Centene (AcariaHealth)": 83,
+  "Cigna (Express Scripts, Accredo)": 15706,
+  "Elevance (CarelonRx, BioPlus)": 3798,
+  "Humana (CenterWell)": 465,
+  "UnitedHealth (Optum)": 14289
+ },
+ "pending": 12282,
+ "pending_day": "2027-01-01",
+ "pending_insurer": 3684,
+ "pharmacies": {
+  "CVS": [
+   8082,
+   8258
+  ],
+  "Rite Aid": [
+   1449,
+   249
+  ],
+  "Walgreens": [
+   8179,
+   7815
+  ],
+  "all": [
+   32580,
+   30983
+  ],
+  "insurer-owned": [
+   580,
+   799
+  ]
+ },
+ "pharmacy_peak": [
+  "2023-10",
+  32580
+ ],
+ "rite_aid_open": {
+  "arrangements": 701,
+  "entities": 159,
+  "health_center_share": 0.920114122681883,
+  "pharmacies": 249
+ },
+ "snapshot": "2026-11-23"
+}
