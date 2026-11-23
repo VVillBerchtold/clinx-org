@@ -68,7 +68,7 @@ const sumUpTo = (yr: number, m: string): number =>
   COHORTS.years.filter((y) => y <= yr).reduce((a, y) => a + (COHORTS.layers[String(y)]![H.months.indexOf(m)] ?? 0), 0);
 const storySteps = [
   { upto: 0, year: '2010', text: `${fmt(at(N.arrangements, first))} arrangements are in force. Until March, most covered entities could use only one outside pharmacy.` },
-  { upto: 6, year: '2010 to 2016', text: `Once any number is allowed, each year adds a new band. By January 2017 the arrangements begun from 2010 to 2016 number ${fmt(sumUpTo(2016, '2017-01'))}.` },
+  { upto: 6, year: '2010 to 2016', text: `From March 2010, an entity may use as many outside pharmacies as it likes. Each year's new arrangements stack on the chart as a new band. By January 2017, the bands for 2010 to 2016 hold ${fmt(sumUpTo(2016, '2017-01'))} arrangements.` },
   { upto: 10, year: '2017 to 2020', text: `The bands thicken. The arrangements begun in 2020 alone reach ${fmt(peakOf(2020))} at their height, more than all of 2010 to 2016 together.` },
   { upto: 13, year: '2021 to 2023', text: `Drug makers limit the 340B price at contract pharmacies from July 2020, and states begin to pass laws against the limits. New arrangements keep coming: ${fmt(peakOf(2023))} begun in 2023.` },
   { upto: 16, year: 'Today', text: `${fmt(arr)} in force. ${pct(recent / arr)} began in 2024 or later, and every older band is thinning as its arrangements end.` },
