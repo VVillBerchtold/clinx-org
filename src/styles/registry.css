@@ -1034,3 +1034,28 @@ svg.rx-narrow {
 @media (prefers-reduced-motion: reduce) {
   .la-state { transition: none; }
 }
+
+/* ---------- The opening count, in layers by year begun ---------- */
+
+.rx-layer { stroke: var(--bg); stroke-width: 0.75; stroke-linejoin: round; }
+.ck0 { fill: color-mix(in oklab, var(--rx-1) 14%, var(--bg)); background: color-mix(in oklab, var(--rx-1) 14%, var(--bg)); }
+.ck1 { fill: color-mix(in oklab, var(--rx-1) 18%, var(--bg)); background: color-mix(in oklab, var(--rx-1) 18%, var(--bg)); }
+.ck2 { fill: color-mix(in oklab, var(--rx-1) 22%, var(--bg)); background: color-mix(in oklab, var(--rx-1) 22%, var(--bg)); }
+.ck3 { fill: color-mix(in oklab, var(--rx-1) 26%, var(--bg)); background: color-mix(in oklab, var(--rx-1) 26%, var(--bg)); }
+.ck4 { fill: color-mix(in oklab, var(--rx-1) 30%, var(--bg)); background: color-mix(in oklab, var(--rx-1) 30%, var(--bg)); }
+.ck5 { fill: color-mix(in oklab, var(--rx-1) 34%, var(--bg)); background: color-mix(in oklab, var(--rx-1) 34%, var(--bg)); }
+.ck6 { fill: color-mix(in oklab, var(--rx-1) 38%, var(--bg)); background: color-mix(in oklab, var(--rx-1) 38%, var(--bg)); }
+.ck7 { fill: color-mix(in oklab, var(--rx-1) 43%, var(--bg)); background: color-mix(in oklab, var(--rx-1) 43%, var(--bg)); }
+.ck8 { fill: color-mix(in oklab, var(--rx-1) 48%, var(--bg)); background: color-mix(in oklab, var(--rx-1) 48%, var(--bg)); }
+.ck9 { fill: color-mix(in oklab, var(--rx-1) 53%, var(--bg)); background: color-mix(in oklab, var(--rx-1) 53%, var(--bg)); }
+.ck10 { fill: color-mix(in oklab, var(--rx-1) 58%, var(--bg)); background: color-mix(in oklab, var(--rx-1) 58%, var(--bg)); }
+.ck11 { fill: color-mix(in oklab, var(--rx-1) 64%, var(--bg)); background: color-mix(in oklab, var(--rx-1) 64%, var(--bg)); }
+.ck12 { fill: color-mix(in oklab, var(--rx-1) 70%, var(--bg)); background: color-mix(in oklab, var(--rx-1) 70%, var(--bg)); }
+.ck13 { fill: color-mix(in oklab, var(--rx-1) 76%, var(--bg)); background: color-mix(in oklab, var(--rx-1) 76%, var(--bg)); }
+.ck14 { fill: color-mix(in oklab, var(--rx-1) 83%, var(--bg)); background: color-mix(in oklab, var(--rx-1) 83%, var(--bg)); }
+.ck15 { fill: color-mix(in oklab, var(--rx-1) 91%, var(--bg)); background: color-mix(in oklab, var(--rx-1) 91%, var(--bg)); }
+.ck16 { fill: var(--rx-1); background: var(--rx-1); }
+.rx-cohort-key { align-items: center; }
+.rx-cohort-strip { display: inline-flex; gap: 2px; }
+.rx-ck { display: inline-block; width: 12px; height: 12px; border-radius: 2px; }
+.rx-cohort-note { margin-top: var(--s3); max-width: 46rem; }

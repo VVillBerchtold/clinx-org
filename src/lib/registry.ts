@@ -12,6 +12,7 @@
  * Every chart is drawn twice, wide and narrow; the stylesheet shows one by the screen's width.
  */
 import raw from '../data/registry/history.json';
+import cohortsRaw from '../data/registry/cohorts.json';
 import { STATES } from './state-map';
 
 export interface Law {
@@ -128,6 +129,8 @@ export interface LineOptions {
   stacked?: boolean;
   percent?: boolean;
   markers?: Marker[];
+  /** Stacked layers drawn under the first series (which should be their total), oldest first. */
+  layers?: { label: string; values: number[]; labelled?: boolean }[];
   /** Shade the months before this one as "the record of endings is incomplete". */
   shadeBefore?: string;
   title: string;
@@ -195,6 +198,19 @@ function lineSvg(o: LineOptions, size: Size): string {
     else markerParts.push(`<circle class="rx-marker-dot" cx="${x(i).toFixed(1)}" cy="${ly + 4}" r="3"/>`);
   }
 
+  // Layers: stacked fills, oldest at the bottom, each a step darker than the one below.
+  const layerEnds: { y: number; value: string; label: string }[] = [];
+  if (o.layers) {
+    const run = new Array<number>(n).fill(0);
+    o.layers.forEach((ly, j) => {
+      const v = ly.values.slice(start);
+      const lower = run.map((val, i) => `${x(i).toFixed(1)},${y(val).toFixed(1)}`).reverse();
+      for (let i = 0; i < n; i++) run[i]! += v[i] ?? 0;
+      const upper = run.map((val, i) => `${x(i).toFixed(1)},${y(val).toFixed(1)}`);
+      parts.push(`<polygon class="rx-layer ck${j}" points="${[...upper, ...lower].join(' ')}"/>`);
+      if (ly.labelled && size === 'wide') layerEnds.push({ y: y(run[n - 1]! - (v[n - 1] ?? 0) / 2) + 4, value: fmt(v[n - 1] ?? 0), label: ly.label });
+    });
+  }
   if (!o.stacked) parts.push(...markerParts);
   // Marks.
   const ends: { y: number; value: string; label: string }[] = [];
@@ -204,7 +220,7 @@ function lineSvg(o: LineOptions, size: Size): string {
     const base = o.stacked && si > 0 ? stackTops[si - 1]! : null;
     const toY = (val: number): number => y(o.percent ? val : val);
     const pts = topLine.map((val, i) => `${x(i).toFixed(1)},${toY(val).toFixed(1)}`);
-    if (o.area || o.stacked) {
+    if ((o.area && !o.layers) || o.stacked) {
       const lower = base ? base.map((val, i) => `${x(i).toFixed(1)},${toY(val).toFixed(1)}`).reverse() : [`${x(n - 1).toFixed(1)},${y(0).toFixed(1)}`, `${x(0).toFixed(1)},${y(0).toFixed(1)}`];
       parts.push(`<polygon class="rx-fill s${s.slot}${o.stacked ? ' rx-stack' : ''}" points="${[...pts, ...lower].join(' ')}"/>`);
     }
@@ -219,7 +235,8 @@ function lineSvg(o: LineOptions, size: Size): string {
   });
   if (o.stacked) parts.push(...markerParts);
   // Direct labels at the right edge, pushed apart so none overlap.
-  const gap = 2 * fs + 8;
+  ends.push(...layerEnds);
+  const gap = 2 * fs + 13;
   ends.sort((a, b) => a.y - b.y);
   for (let i = 1; i < ends.length; i++) ends[i]!.y = Math.max(ends[i]!.y, ends[i - 1]!.y + gap);
   const over = ends.length ? ends[ends.length - 1]!.y - (f.t + ph - fs) : 0;
@@ -495,3 +512,7 @@ function alignedSvg(size: Size): string {
 export function lawAlignedChart(): { wide: string; narrow: string } {
   return { wide: alignedSvg('wide'), narrow: alignedSvg('narrow') };
 }
+
+
+/** Arrangements in force each month by the year they began (tools/cohorts.py). */
+export const COHORTS = cohortsRaw as { months: string[]; years: number[]; layers: Record<string, number[]> };

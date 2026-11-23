@@ -20,6 +20,7 @@ import {
   lastMonth,
   lawMap,
   lawStates,
+  COHORTS,
   lawAligned,
   lawAlignedChart,
   lineChart,
@@ -50,8 +51,18 @@ const markers: Marker[] = fed
   .filter((e) => e.label && e.date >= `${first}-01`)
   .map((e, i) => ({ month: e.date.slice(0, 7), label: e.label, level: i % 3 }));
 
-// 1. The count.
+// 1. The count, in layers by the year each arrangement began.
+const cohortLayers = COHORTS.years.map((yr) => ({
+  label: yr === COHORTS.years[0] ? `began ${yr} or before` : `began in ${yr}`,
+  values: COHORTS.layers[String(yr)]!,
+  labelled: yr >= 2022,
+}));
+const nowOf = (yr: number): number => COHORTS.layers[String(yr)]!.at(-1) ?? 0;
+const recent = COHORTS.years.filter((yr) => yr >= 2024).reduce((a, yr) => a + nowOf(yr), 0);
+const peakOf = (yr: number): number => Math.max(...COHORTS.layers[String(yr)]!);
+const kept20 = nowOf(2020) / peakOf(2020);
 const hero = lineChart({
+  layers: cohortLayers,
   id: 'hero',
   frame: 'hero',
   area: true,
@@ -222,6 +233,11 @@ const parts = [
       <figure class="rx-figure" data-chart="hero" data-chart-json={hero.data}>
         <Fragment set:html={hero.wide} />
         <Fragment set:html={hero.narrow} />
+        <ul class="rx-legend rx-cohort-key" aria-label="Year the arrangement began">
+          <li class="rx-cohort-strip" aria-hidden="true">{COHORTS.years.map((_, j) => <span class={`rx-ck ck${j}`}></span>)}</li>
+          <li>Each band: the arrangements that began in one year, from {COHORTS.years[0]} or before, at the bottom, to {COHORTS.years.at(-1)}, on the surface</li>
+        </ul>
+        <p class="rx-small rx-cohort-note">Of the {fmt(arr)} arrangements in force today, {fmt(recent)} ({pct(recent / arr)}) began in 2024 or later. The bands thin as arrangements end: of those that began in 2020, {pct(kept20)} of the high point are still in force.</p>
         <figcaption>
           Arrangements in force on the first day of each month, as the registry records them on {monthLong(last)}. Shaded: before 2017 the registry no longer lists every arrangement that ended, so those months count fewer than were in force. The saw teeth are real: new arrangements begin on the first day of a quarter, and endings fall in every month.
         </figcaption>
