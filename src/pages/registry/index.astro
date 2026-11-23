@@ -21,6 +21,7 @@ import {
   lawMap,
   lawStates,
   COHORTS,
+  CONCENTRATION,
   lawAligned,
   lawAlignedChart,
   lineChart,
@@ -75,6 +76,31 @@ const hero = lineChart({
 
 // 2. The pharmacies.
 const perPharmacy = N.arrangements.map((a, i) => (N.pharmacies[i] ? a / N.pharmacies[i]! : 0));
+// Concentration: arrangements by how many the pharmacy holds.
+const CC = CONCENTRATION;
+const ccTotal = CC.months.map((_, i) => CC.bins.reduce((a, b) => a + (CC.arrangements[b]![i] ?? 0), 0));
+const ccShare = (b: string): number[] => CC.arrangements[b]!.map((v, i) => (ccTotal[i] ? v / ccTotal[i]! : 0));
+const ccOrder = [...CC.bins].reverse(); // the biggest pharmacies at the bottom
+const ccCls: Record<string, string> = { '200 or more': 'ck16', '50 to 199': 'ck13', '10 to 49': 'ck10', '2 to 9': 'ck7', '1': 'ck4' };
+const big = '200 or more';
+const bigPh = CC.pharmacies[big]!.at(-1) ?? 0;
+const bigArr = CC.arrangements[big]!.at(-1) ?? 0;
+const phNow = ccTotal.length ? CC.bins.reduce((a, b) => a + (CC.pharmacies[b]!.at(-1) ?? 0), 0) : 0;
+const conc = lineChart({
+  id: 'conc',
+  frame: 'full',
+  from: '2012-01',
+  percent: true,
+  layers: ccOrder.map((b) => ({
+    label: b === '1' ? 'pharmacies with 1 arrangement' : `pharmacies with ${b}`,
+    values: ccShare(b),
+    labelled: true,
+    cls: ccCls[b] ?? 'ck8',
+  })),
+  series: [{ key: 'all', label: 'all arrangements', values: ccTotal.map(() => 1), slot: 1 }],
+  title: 'Share of arrangements by how many arrangements the pharmacy holds, by month',
+  desc: `On ${monthLong(last)}, ${fmt(bigPh)} pharmacies with 200 or more arrangements each hold ${pct(bigArr / arr)} of all ${fmt(arr)}.`,
+});
 const phPeak = Math.max(...N.pharmacies);
 const phPeakMonth = H.months[N.pharmacies.indexOf(phPeak)]!;
 const pharmacies = lineChart({
@@ -288,6 +314,16 @@ const parts = [
           <Fragment set:html={ratio.narrow} />
             </figure>
       </div>
+      <div class="rx-callout">
+        <p class="rx-callout-num">{fmt(bigPh)}</p>
+        <p class="rx-callout-text">pharmacies, {pct(bigPh / phNow, 1)} of all {fmt(phNow)}, now hold {fmt(bigArr)} arrangements: {pct(bigArr / arr)} of the total. In January 2012 no pharmacy held even 50.</p>
+      </div>
+      <figure class="rx-figure" data-chart="conc" data-chart-json={conc.data}>
+        <p class="rx-fig-title">Where the arrangements sit, by how many each pharmacy holds</p>
+        <Fragment set:html={conc.wide} />
+        <Fragment set:html={conc.narrow} />
+        <figcaption>Each band: the share of all arrangements held by pharmacies of one size, counted afresh each month. The strongest color, at the bottom: pharmacies with 200 or more arrangements each.</figcaption>
+      </figure>
     </div>
   </section>
 

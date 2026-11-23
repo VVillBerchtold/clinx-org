@@ -94,8 +94,10 @@ function wire(svg: SVGSVGElement, d: ChartData): void {
       svg.classList.toggle('rx-layers-hot', j >= 0);
       hot = j;
     }
-    bandLabel.textContent = j >= 0 ? layers[j]!.label.replace(/^began/, 'Began') : '';
-    bandValue.textContent = j >= 0 ? fmt(layers[j]!.values[i] ?? 0) : '';
+    const lab = j >= 0 ? layers[j]!.label : '';
+    const val = j >= 0 ? (layers[j]!.values[i] ?? 0) : 0;
+    bandLabel.textContent = lab.charAt(0).toUpperCase() + lab.slice(1);
+    bandValue.textContent = j < 0 ? '' : d.percent ? `${(val * 100).toFixed(val < 0.1 ? 1 : 0)}%` : fmt(val);
   }
 
   let last = -1;

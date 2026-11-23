@@ -1069,3 +1069,29 @@ svg.rx-narrow {
 @media (prefers-reduced-motion: reduce) {
   .rx-layer { transition: none; }
 }
+
+/* ---------- Callout: one number, said large ---------- */
+.rx-callout {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--s3) var(--s6);
+  margin: var(--s7) 0 var(--s5);
+  padding: var(--s5) var(--s6);
+  border-left: 4px solid var(--rx-1);
+  background: var(--accent-wash);
+}
+.rx-callout-num {
+  margin: 0;
+  font-family: var(--display, inherit);
+  font-size: clamp(3rem, 8vw, 5.5rem);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: var(--rx-1);
+  font-variant-numeric: tabular-nums;
+}
+.rx-callout-text { margin: 0; font-size: var(--text-lg, 1.15rem); max-width: 36rem; }
+@media (max-width: 44rem) {
+  .rx-callout { grid-template-columns: 1fr; }
+}

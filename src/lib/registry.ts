@@ -13,6 +13,7 @@
  */
 import raw from '../data/registry/history.json';
 import cohortsRaw from '../data/registry/cohorts.json';
+import concRaw from '../data/registry/concentration.json';
 import { STATES } from './state-map';
 
 export interface Law {
@@ -130,7 +131,7 @@ export interface LineOptions {
   percent?: boolean;
   markers?: Marker[];
   /** Stacked layers drawn under the first series (which should be their total), oldest first. */
-  layers?: { label: string; values: number[]; labelled?: boolean }[];
+  layers?: { label: string; values: number[]; labelled?: boolean; cls?: string }[];
   /** Shade the months before this one as "the record of endings is incomplete". */
   shadeBefore?: string;
   title: string;
@@ -207,8 +208,8 @@ function lineSvg(o: LineOptions, size: Size): string {
       const lower = run.map((val, i) => `${x(i).toFixed(1)},${y(val).toFixed(1)}`).reverse();
       for (let i = 0; i < n; i++) run[i]! += v[i] ?? 0;
       const upper = run.map((val, i) => `${x(i).toFixed(1)},${y(val).toFixed(1)}`);
-      parts.push(`<polygon class="rx-layer ck${j}" points="${[...upper, ...lower].join(' ')}"/>`);
-      if (ly.labelled && size === 'wide') layerEnds.push({ y: y(run[n - 1]! - (v[n - 1] ?? 0) / 2) + 4, value: fmt(v[n - 1] ?? 0), label: ly.label });
+      parts.push(`<polygon class="rx-layer ${ly.cls ?? `ck${j}`}" points="${[...upper, ...lower].join(' ')}"/>`);
+      if (ly.labelled && size === 'wide') layerEnds.push({ y: y(run[n - 1]! - (v[n - 1] ?? 0) / 2) + 4, value: o.percent ? pct(v[n - 1] ?? 0) : fmt(v[n - 1] ?? 0), label: ly.label });
     });
   }
   if (!o.stacked) parts.push(...markerParts);
@@ -224,6 +225,8 @@ function lineSvg(o: LineOptions, size: Size): string {
       const lower = base ? base.map((val, i) => `${x(i).toFixed(1)},${toY(val).toFixed(1)}`).reverse() : [`${x(n - 1).toFixed(1)},${y(0).toFixed(1)}`, `${x(0).toFixed(1)},${y(0).toFixed(1)}`];
       parts.push(`<polygon class="rx-fill s${s.slot}${o.stacked ? ' rx-stack' : ''}" points="${[...pts, ...lower].join(' ')}"/>`);
     }
+    const bare = !!(o.layers && o.percent); // a share chart in bands: the 100% line says nothing
+    if (bare) return;
     if (!o.stacked) parts.push(`<polyline class="rx-line s${s.slot}" points="${pts.join(' ')}"/>`);
     // End dot and direct label.
     const endY = toY(o.stacked ? (topLine[n - 1]! + (base ? base[n - 1]! : 0)) / 2 : topLine[n - 1]!);
@@ -516,4 +519,5 @@ export function lawAlignedChart(): { wide: string; narrow: string } {
 
 
 /** Arrangements in force each month by the year they began (tools/cohorts.py). */
+export const CONCENTRATION = concRaw as { months: string[]; bins: string[]; arrangements: Record<string, number[]>; pharmacies: Record<string, number[]> };
 export const COHORTS = cohortsRaw as { months: string[]; years: number[]; layers: Record<string, number[]> };
