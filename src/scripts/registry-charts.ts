@@ -18,6 +18,8 @@ interface ChartData {
   stacked: boolean;
   percent: boolean;
   series: { label: string; slot: number; values: number[] }[];
+  /** Stacked bands under the total, oldest first (the opening chart). */
+  layers?: { label: string; values: number[] }[];
 }
 
 const fmt = (n: number): string => Math.round(n).toLocaleString('en-US');
@@ -49,7 +51,9 @@ function wire(svg: SVGSVGElement, d: ChartData): void {
 
   // The readout: a card drawn in the SVG itself.
   const tip = el('g', { class: 'rx-tipcard' });
-  const rows = d.series.length + 1;
+  const layers = d.layers ?? [];
+  const polys = [...svg.querySelectorAll<SVGPolygonElement>('.rx-layer')];
+  const rows = d.series.length + 1 + (layers.length ? 1 : 0);
   const cardW = wide ? 220 : 170;
   const lh = fs + 7;
   const cardH = rows * lh + 12;
@@ -66,10 +70,37 @@ function wire(svg: SVGSVGElement, d: ChartData): void {
     tip.append(label, value);
     return value;
   });
+  // With bands: one more row, naming the band under the pointer.
+  const bandLabel = el('text', { class: 'rx-tiplabel', x: 12, y: lh * (d.series.length + 2), 'font-size': fs });
+  const bandValue = el('text', { class: 'rx-tipvalue', x: cardW - 12, y: lh * (d.series.length + 2), 'font-size': fs, 'text-anchor': 'end' });
+  if (layers.length) tip.append(bandLabel, bandValue);
   hover.append(tip);
+  let hot = -1;
+  function band(i: number, v: number | null): void {
+    let j = -1;
+    if (v !== null && v >= 0) {
+      let run = 0;
+      for (let k = 0; k < layers.length; k++) {
+        run += layers[k]!.values[i] ?? 0;
+        if (v <= run) {
+          j = k;
+          break;
+        }
+      }
+    }
+    if (j !== hot) {
+      polys[hot]?.classList.remove('is-hot');
+      polys[j]?.classList.add('is-hot');
+      svg.classList.toggle('rx-layers-hot', j >= 0);
+      hot = j;
+    }
+    bandLabel.textContent = j >= 0 ? layers[j]!.label.replace(/^began/, 'Began') : '';
+    bandValue.textContent = j >= 0 ? fmt(layers[j]!.values[i] ?? 0) : '';
+  }
 
   let last = -1;
-  function show(i: number): void {
+  function show(i: number, v: number | null = null): void {
+    if (layers.length) band(i, v);
     if (i === last) return;
     last = i;
     const x = l + (i / (n - 1)) * pw;
@@ -94,12 +125,14 @@ function wire(svg: SVGSVGElement, d: ChartData): void {
   function hide(): void {
     hover.setAttribute('hidden', '');
     last = -1;
+    if (layers.length) band(0, null);
   }
   function at(evt: PointerEvent): void {
     const box = svg.getBoundingClientRect();
     const sx = ((evt.clientX - box.left) / box.width) * w;
+    const sy = ((evt.clientY - box.top) / box.height) * num('h');
     const i = Math.round(((sx - l) / pw) * (n - 1));
-    show(Math.max(0, Math.min(n - 1, i)));
+    show(Math.max(0, Math.min(n - 1, i)), ((t + ph - sy) / ph) * top);
   }
   hit.addEventListener('pointermove', at);
   hit.addEventListener('pointerdown', at);

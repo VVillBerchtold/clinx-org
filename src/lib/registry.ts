@@ -261,6 +261,7 @@ export function lineChart(o: LineOptions): { wide: string; narrow: string; data:
     stacked: !!o.stacked,
     percent: !!o.percent,
     series: o.series.map((s) => ({ label: s.label, slot: s.slot, values: s.values.slice(start) })),
+    layers: o.layers?.map((l) => ({ label: l.label, values: l.values.slice(start) })),
   });
   return { wide: lineSvg(o, 'wide'), narrow: lineSvg(o, 'narrow'), data };
 }
