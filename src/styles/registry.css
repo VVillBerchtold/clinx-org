@@ -78,6 +78,10 @@
   background: var(--band);
   color: var(--band-ink);
 }
+@media (prefers-color-scheme: dark) {
+  /* The band and the page are close in dark mode: a hairline marks where the band ends. */
+  .rx-head { border-bottom: 1px solid var(--band-line); }
+}
 .rx-kicker {
   display: flex;
   align-items: center;
