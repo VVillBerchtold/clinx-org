@@ -166,6 +166,7 @@ for (const fig of document.querySelectorAll<HTMLElement>('[data-chart]')) {
 }
 
 // The two flow maps: side by side on a wide screen; on a narrow one, a switch shows one at a time.
+let mapPick: ((which: string) => void) | null = null;
 const maps = document.querySelector<HTMLElement>('[data-maps]');
 const sw = maps?.querySelector<HTMLElement>('[data-map-switch]');
 if (maps && sw) {
@@ -178,15 +179,18 @@ if (maps && sw) {
   };
   for (const b of buttons) b.addEventListener('click', () => pick(b.dataset.map!));
   pick('now');
+  mapPick = pick;
 }
 
 // The time-lapse: the left map and the earlier bars follow a year slider, or play from 2010.
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 interface Lapse {
   months: string[];
   bands: number[];
   share: Record<string, (number | null)[]>;
   inbound: Record<string, number[]>;
 }
+let lapseTo: ((month: string) => void) | null = null;
 const cmp = document.querySelector<HTMLElement>('[data-compare]');
 const controls = cmp?.querySelector<HTMLElement>('[data-lapse-controls]');
 const range = cmp?.querySelector<HTMLInputElement>('[data-year-range]');
@@ -210,9 +214,11 @@ if (cmp && controls && range && cmp.dataset.lapse) {
 
   const show = (i: number): void => {
     const m = L.months[i]!;
-    yearEl.textContent = m.slice(0, 4);
-    if (labelEl) labelEl.textContent = `Jan ${m.slice(0, 4)}`;
-    range.setAttribute('aria-valuetext', `January ${m.slice(0, 4)}`);
+    const today = i === last && !m.endsWith('-01');
+    const mon = MONTHS[Number(m.slice(5, 7)) - 1] ?? 'January';
+    yearEl.textContent = today ? 'Today' : m.slice(0, 4);
+    if (labelEl) labelEl.textContent = `${mon.slice(0, 3)} ${m.slice(0, 4)}`;
+    range.setAttribute('aria-valuetext', `${mon} ${m.slice(0, 4)}`);
     note.textContent = m < '2017-01' ? 'Before 2017 the registry no longer lists every ended arrangement: shares are a lower bound.' : '';
     for (const [code, g] of tiles) {
       const v = L.share[code]?.[i] ?? null;
@@ -230,6 +236,13 @@ if (cmp && controls && range && cmp.dataset.lapse) {
     }
   };
   show(start);
+  lapseTo = (month: string): void => {
+    const i = L.months.indexOf(month);
+    if (i < 0) return;
+    stop();
+    range.value = String(i);
+    show(i);
+  };
   range.addEventListener('input', () => {
     stop();
     show(Number(range.value));
@@ -261,34 +274,33 @@ if (cmp && controls && range && cmp.dataset.lapse) {
   });
 }
 
-// The scroll story: the step that has scrolled into the space under the chart sets how many year bands are lit.
-const story = document.querySelector<HTMLElement>('[data-story]');
-const storyFig = story?.querySelector<HTMLElement>('[data-story-fig]');
-function storySteps(root: HTMLElement): HTMLElement[] {
-  return [...root.querySelectorAll<HTMLElement>('.rx-story-step')];
-}
-if (story && storyFig && storySteps(story).length) {
-  const steps = storySteps(story);
+// The scroll stories: a chart pinned while step cards scroll under it. The step in play is the
+// last card whose top has passed the middle of the space under the pinned chart, so a jump (a
+// link, Back to top, a reload part way down) lands on the right step too, and the card in play
+// is never half under the chart on a short window. The opening chart lights its year bands up to
+// the step's year; the map shows the step's January.
+function wireStory(story: HTMLElement, onStep: (step: HTMLElement) => void): void {
+  const steps = [...story.querySelectorAll<HTMLElement>('.rx-story-step')];
+  const pin = story.querySelector<HTMLElement>('.rx-story-pin');
+  if (!steps.length || !pin) return;
   story.classList.add('rx-story-on');
   let cur: HTMLElement | undefined;
-  const set = (step: HTMLElement): void => {
-    if (step === cur) return;
-    cur = step;
-    for (const s of steps) s.classList.toggle('is-on', s === step);
-    storyFig.dataset.upto = step.dataset.upto ?? '16';
-  };
-  // The step in play is the last one whose top has passed the middle of the space under
-  // the pinned chart, so a jump (a link, Back to top, a reload part way down) lands on the
-  // right year too, and the card in play is never half under the chart on a short window.
-  const pin = story.querySelector<HTMLElement>('.rx-story-pin') ?? storyFig;
   let queued = false;
   const pick = (): void => {
     queued = false;
-    const under = Math.max(0, pin.getBoundingClientRect().bottom);
+    const box = story.getBoundingClientRect();
+    if (box.bottom < 0 || box.top > window.innerHeight) return; // only while the story is on screen
+    // Cards beside the pin (a wide map story): the line is the middle of the window.
+    const p = pin.getBoundingClientRect();
+    const beside = p.right <= steps[0]!.getBoundingClientRect().left;
+    const under = beside ? 0 : Math.max(0, p.bottom);
     const line = under + (window.innerHeight - under) / 2;
     let on = steps[0]!;
     for (const s of steps) if (s.getBoundingClientRect().top <= line) on = s;
-    set(on);
+    if (on === cur) return;
+    cur = on;
+    for (const s of steps) s.classList.toggle('is-on', s === on);
+    onStep(on);
   };
   const ask = (): void => {
     if (!queued) { queued = true; requestAnimationFrame(pick); }
@@ -296,4 +308,16 @@ if (story && storyFig && storySteps(story).length) {
   window.addEventListener('scroll', ask, { passive: true });
   window.addEventListener('resize', ask, { passive: true });
   pick();
+}
+for (const story of document.querySelectorAll<HTMLElement>('[data-story]')) {
+  const fig = story.querySelector<HTMLElement>('[data-story-fig]');
+  if (fig) {
+    wireStory(story, (step) => { fig.dataset.upto = step.dataset.upto ?? '16'; });
+  } else if (story.hasAttribute('data-story-map') && lapseTo) {
+    const to = lapseTo;
+    wireStory(story, (step) => {
+      if (step.dataset.month) to(step.dataset.month);
+      mapPick?.('then');
+    });
+  }
 }

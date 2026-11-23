@@ -1138,6 +1138,28 @@ svg.rx-narrow {
 @media (max-width: 44rem) {
   .rx-story-step { margin: 0 0 25vh; max-width: none; }
 }
+/* The map story: on a wide screen the cards run in their own column beside the pinned maps. */
+@media (min-width: 64rem) {
+  .rx-story-map {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 18rem;
+    gap: var(--s6);
+    align-items: start;
+  }
+  .rx-story-map .rx-story-steps { padding: 25vh 0 35vh; }
+  .rx-story-map .rx-story-step { max-width: none; margin: 0 0 45vh; }
+  .rx-story-map .rx-story-step:first-child { margin-top: 0; }
+}
+/* On a narrow screen the map story pins one map, the one that steps; Today is its last step. */
+.rx-story-map .rx-maps { margin: var(--s4) 0 var(--s2); }
+.rx-story-map .rx-share-key { margin-bottom: 0; }
+@media (max-width: 44rem) {
+  .rx-story-map.rx-story-on [data-map-panel='now'] { display: none !important; }
+  .rx-story-map .rx-lapse { margin-top: var(--s2); padding: var(--s2) var(--s3); gap: var(--s2) var(--s3); }
+  .rx-story-map .rx-range { flex-basis: 9rem; }
+  .rx-story-map .rx-map-year { margin-bottom: var(--s1); font-size: 1.5rem; }
+  .rx-story-map .rx-share-key { gap: var(--s1) var(--s3); font-size: var(--text-xs); }
+}
 /* Bands above the step's year are dimmed (only once the script sets data-upto). */
 [data-upto="0"] .rx-layer.ck1, [data-upto="0"] .rx-layer.ck2, [data-upto="0"] .rx-layer.ck3, [data-upto="0"] .rx-layer.ck4, [data-upto="0"] .rx-layer.ck5, [data-upto="0"] .rx-layer.ck6, [data-upto="0"] .rx-layer.ck7, [data-upto="0"] .rx-layer.ck8, [data-upto="0"] .rx-layer.ck9, [data-upto="0"] .rx-layer.ck10, [data-upto="0"] .rx-layer.ck11, [data-upto="0"] .rx-layer.ck12, [data-upto="0"] .rx-layer.ck13, [data-upto="0"] .rx-layer.ck14, [data-upto="0"] .rx-layer.ck15, [data-upto="0"] .rx-layer.ck16 { opacity: 0.1; }
 [data-upto="6"] .rx-layer.ck7, [data-upto="6"] .rx-layer.ck8, [data-upto="6"] .rx-layer.ck9, [data-upto="6"] .rx-layer.ck10, [data-upto="6"] .rx-layer.ck11, [data-upto="6"] .rx-layer.ck12, [data-upto="6"] .rx-layer.ck13, [data-upto="6"] .rx-layer.ck14, [data-upto="6"] .rx-layer.ck15, [data-upto="6"] .rx-layer.ck16 { opacity: 0.1; }

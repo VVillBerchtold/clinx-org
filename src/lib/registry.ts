@@ -310,6 +310,26 @@ export function medianShare(month: string): number {
   return v.length ? v[Math.floor(v.length / 2)]! : 0;
 }
 
+/** One month of the map, in numbers: for the map's scroll story. */
+export function mapFacts(month: string): {
+  measured: number;
+  median: number;
+  half: number;
+  crossing: number;
+  receivers: { code: string; n: number }[];
+} {
+  const rows = Object.values(H.out_of_state[month] ?? {}).filter(([a]) => a >= FEW);
+  const c = new Map<string, number>();
+  for (const [a, b, k] of H.flows[month] ?? []) if (a !== b) c.set(b, (c.get(b) ?? 0) + k);
+  return {
+    measured: rows.length,
+    median: medianShare(month),
+    half: rows.filter(([a, o]) => o / a >= 0.5).length,
+    crossing: [...c.values()].reduce((x, y) => x + y, 0),
+    receivers: [...c.entries()].sort((x, y) => y[1] - x[1] || x[0].localeCompare(y[0])).map(([code, n]) => ({ code, n })),
+  };
+}
+
 /** Arrangements reaching each state's pharmacies from entities in other states, for two months. */
 export function inbound(then: string, now: string, keep = 10): { code: string; state: string; then: number; now: number }[] {
   const count = (m: string): Map<string, number> => {
@@ -391,7 +411,9 @@ export function aroundLaw(code: string, effective: string): { before: number; at
  * table, every state's band and share, and the arrangements reaching the given pharmacy states.
  */
 export function timeLapse(states: { code: string }[]): string {
-  const months = Object.keys(H.out_of_state).filter((m) => m.endsWith('-01')).sort();
+  // Every January, then the latest month, so the time-lapse ends on today.
+  const jan = Object.keys(H.out_of_state).filter((m) => m.endsWith('-01')).sort();
+  const months = jan.includes(lastMonth()) ? jan : [...jan, lastMonth()];
   const share: Record<string, (number | null)[]> = {};
   for (const s of STATES) {
     share[s.code] = months.map((m) => {
