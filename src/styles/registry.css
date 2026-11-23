@@ -1144,7 +1144,7 @@ svg.rx-narrow {
   z-index: 1;
   list-style: none;
   margin: 0;
-  padding: 0 0 45vh;
+  padding: 0 0 var(--s5);
   pointer-events: none;
 }
 .rx-story-step {
@@ -1161,6 +1161,8 @@ svg.rx-narrow {
 .rx-story-on .rx-story-step { opacity: 0.55; }
 .rx-story-step:first-child { margin-top: 10vh; }
 .rx-story-on .rx-story-step.is-on { opacity: 1; }
+/* The last card needs only to reach the line where it lights; after it, the chart's key follows at once. */
+.rx-story .rx-story-step:last-child { margin-bottom: 0; }
 .rx-story-year { margin: 0 0 var(--s1); font-weight: 750; color: var(--rx-1); letter-spacing: 0.01em; }
 .rx-story-text { margin: 0; }
 .rx-story-after { margin-top: 0; }
@@ -1191,13 +1193,14 @@ svg.rx-narrow {
     gap: var(--s6);
     align-items: start;
   }
-  .rx-story-map .rx-story-steps { padding: 25vh 0 35vh; }
+  .rx-story-map .rx-story-steps { padding: 25vh 0 var(--s5); }
   .rx-story-map .rx-story-step { max-width: none; margin: 0 0 45vh; }
   .rx-story-map .rx-story-step:first-child { margin-top: 0; }
 }
 /* Today's own step is for narrow screens, where the Today map is not pinned beside the other. */
 @media (min-width: 44.0625rem) {
   .rx-story-narrow { display: none; }
+  .rx-story-map .rx-story-step:has(+ .rx-story-narrow) { margin-bottom: 0; } /* the last card shown at this width */
 }
 /* On a narrow screen the map story pins one map, the one that steps; Today is its last step. */
 .rx-story-map .rx-maps { margin: var(--s4) 0 var(--s2); }
