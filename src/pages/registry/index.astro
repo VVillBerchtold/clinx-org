@@ -22,6 +22,7 @@ import {
   lawStates,
   COHORTS,
   CONCENTRATION,
+  INSURER,
   lawAligned,
   lawAlignedChart,
   lineChart,
@@ -133,12 +134,32 @@ const ratio = lineChart({
 
 // 3. The distance.
 const share = N.arrangements.map((a, i) => (a ? N.out_of_state[i]! / a : 0));
+// The same share, split by who owns the pharmacy (tools/insurer.py).
+const IN = INSURER;
+const insOut = IN.insurer_out.map((v, i) => (IN.arrangements[i] ? v / IN.arrangements[i]! : 0));
+const othOut = IN.out_of_state.map((v, i) => (IN.arrangements[i] ? (v - IN.insurer_out[i]!) / IN.arrangements[i]! : 0));
+const ix = (m: string): number => IN.months.indexOf(m);
+const insPartOf = (m: string): number => IN.insurer_out[ix(m)]! / Math.max(IN.out_of_state[ix(m)]!, 1);
+const otherRate = (m: string): number => (IN.out_of_state[ix(m)]! - IN.insurer_out[ix(m)]!) / Math.max(IN.arrangements[ix(m)]! - IN.insurer[ix(m)]!, 1);
+const insRate = (m: string): number => IN.insurer_out[ix(m)]! / Math.max(IN.insurer[ix(m)]!, 1);
+const insNow = IN.insurer.at(-1) ?? 0;
+const ownersLine = Object.entries(IN.owners).map(function (e) { return e[0] + ' ' + fmt(e[1]); }).join('; ');
+const insDays: string[] = IN.months.filter(function (m) { return m.endsWith('-01') && m.localeCompare('2012-01') !== -1; }).concat(last.endsWith('-01') ? [] : [last]);
+const insRows = insDays.map(function (m) {
+  const k = ix(m);
+  const out = fmt(IN.out_of_state[k]!) + ' (' + pct(IN.out_of_state[k]! / IN.arrangements[k]!, 1) + ')';
+  return { day: monthLong(m), out, part: pct(insPartOf(m)), other: pct(otherRate(m), 1) };
+});
 const distance = lineChart({
   id: 'dist',
   frame: 'full',
   from: '2012-01',
   percent: true,
-  area: true,
+  line: true,
+  layers: [
+    { label: 'at insurer-owned pharmacies', values: insOut, labelled: true, cls: 'oi' },
+    { label: 'at all other pharmacies', values: othOut, labelled: true, cls: 'oo' },
+  ],
   shadeBefore: FULL_RECORD_FROM,
   series: [{ key: 'out', label: 'in another state', values: share, slot: 2 }],
   title: "Share of arrangements whose pharmacy is in another state from the entity's street address",
@@ -386,8 +407,30 @@ const parts = [
       <figure class="rx-figure" data-chart="dist" data-chart-json={distance.data}>
         <Fragment set:html={distance.wide} />
         <Fragment set:html={distance.narrow} />
-        <figcaption>The pharmacy's state is from its address in the registry; the entity's is from its street address.</figcaption>
+        <ul class="rx-legend">
+          <li><span class="rx-key oi" aria-hidden="true"></span>At insurer-owned pharmacies</li>
+          <li><span class="rx-key oo" aria-hidden="true"></span>At all other pharmacies</li>
+        </ul>
+        <figcaption>The pharmacy's state is from its address in the registry; the entity's is from its street address. Insurer-owned: specialty, mail and infusion pharmacies whose name ties them to a company that also owns a health insurer or pharmacy benefit manager. The registry records no owner, so this is matched by name.</figcaption>
       </figure>
+
+      <h3 class="rx-sub-h">Whose pharmacies cross the line</h3>
+      <p class="rx-text">
+        Most of the distance belongs to one kind of pharmacy. {pct(insRate(last))} of arrangements at insurer-owned specialty and mail pharmacies cross a state line, against {pct(otherRate(last))} of all the rest. In January 2017 those pharmacies held {pct(insPartOf('2017-01'))} of the out-of-state arrangements; on {monthLong(last)} they hold {pct(insPartOf(last))}. Leave them out, and the share of arrangements in another state was {pct(otherRate('2019-01'), 1)} in January 2019 and {pct(otherRate('2023-01'), 1)} in January 2023.
+      </p>
+      <details class="rx-table">
+        <summary>The figures, each January</summary>
+        <table>
+          <caption>Arrangements with a pharmacy in another state, by who owns the pharmacy, on 1 January of each year</caption>
+          <thead><tr><th scope="col">Day</th><th scope="col">In another state</th><th scope="col">Insurer-owned part</th><th scope="col">Other arrangements in another state</th></tr></thead>
+          <tbody>
+            {insRows.map((r) => (
+              <tr><th scope="row">{r.day}</th><td>{r.out}</td><td>{r.part}</td><td>{r.other}</td></tr>
+            ))}
+          </tbody>
+        </table>
+        <p class="rx-small">Insurer-owned arrangements on {monthLong(last)}, {fmt(insNow)} in all: {ownersLine}.</p>
+      </details>
 
       <div class="rx-compare" data-compare data-lapse={lapse}>
       <h3 class="rx-sub-h">Every state, then and now</h3>

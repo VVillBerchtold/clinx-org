@@ -1088,6 +1088,9 @@ svg.rx-narrow {
 .ck14 { fill: color-mix(in oklab, var(--rx-1) 83%, var(--bg)); background: color-mix(in oklab, var(--rx-1) 83%, var(--bg)); }
 .ck15 { fill: color-mix(in oklab, var(--rx-1) 91%, var(--bg)); background: color-mix(in oklab, var(--rx-1) 91%, var(--bg)); }
 .ck16 { fill: var(--rx-1); background: var(--rx-1); }
+/* Out of state, by who owns the pharmacy: the chart's own hue, full and light. */
+.oi { fill: color-mix(in oklab, var(--rx-2) 72%, var(--bg)); background: color-mix(in oklab, var(--rx-2) 72%, var(--bg)); }
+.oo { fill: color-mix(in oklab, var(--rx-2) 32%, var(--bg)); background: color-mix(in oklab, var(--rx-2) 32%, var(--bg)); }
 .rx-cohort-key { align-items: center; }
 .rx-cohort-strip { display: inline-flex; gap: 2px; }
 .rx-ck { display: inline-block; width: 12px; height: 12px; border-radius: 2px; }

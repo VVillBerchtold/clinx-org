@@ -14,6 +14,7 @@
 import raw from '../data/registry/history.json';
 import cohortsRaw from '../data/registry/cohorts.json';
 import concRaw from '../data/registry/concentration.json';
+import insurerRaw from '../data/registry/insurer.json';
 import { STATES } from './state-map';
 
 export interface Law {
@@ -132,6 +133,8 @@ export interface LineOptions {
   markers?: Marker[];
   /** Stacked layers drawn under the first series (which should be their total), oldest first. */
   layers?: { label: string; values: number[]; labelled?: boolean; cls?: string }[];
+  /** Keep the first series' line over the layers of a share chart (its total). */
+  line?: boolean;
   /** Shade the months before this one as "the record of endings is incomplete". */
   shadeBefore?: string;
   title: string;
@@ -225,7 +228,7 @@ function lineSvg(o: LineOptions, size: Size): string {
       const lower = base ? base.map((val, i) => `${x(i).toFixed(1)},${toY(val).toFixed(1)}`).reverse() : [`${x(n - 1).toFixed(1)},${y(0).toFixed(1)}`, `${x(0).toFixed(1)},${y(0).toFixed(1)}`];
       parts.push(`<polygon class="rx-fill s${s.slot}${o.stacked ? ' rx-stack' : ''}" points="${[...pts, ...lower].join(' ')}"/>`);
     }
-    const bare = !!(o.layers && o.percent); // a share chart in bands: the 100% line says nothing
+    const bare = !!(o.layers && o.percent && !o.line); // a share chart in bands: the 100% line says nothing
     if (bare) return;
     if (!o.stacked) parts.push(`<polyline class="rx-line s${s.slot}" points="${pts.join(' ')}"/>`);
     // End dot and direct label.
@@ -268,6 +271,16 @@ export function lineChart(o: LineOptions): { wide: string; narrow: string; data:
   });
   return { wide: lineSvg(o, 'wide'), narrow: lineSvg(o, 'narrow'), data };
 }
+
+/** Arrangements at pharmacies owned by a company that also owns a health insurer or PBM (tools/insurer.py). */
+export const INSURER = insurerRaw as {
+  months: string[];
+  arrangements: number[];
+  out_of_state: number[];
+  insurer: number[];
+  insurer_out: number[];
+  owners: Record<string, number>;
+};
 
 // ---------- Across state lines: one tile map per month, on one scale ----------
 
