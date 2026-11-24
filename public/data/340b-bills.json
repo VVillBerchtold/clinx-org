@@ -1,5 +1,5 @@
 {
- "retrieved": "2026-11-23",
+ "retrieved": "2026-11-24",
  "roles": [
   {
    "role": "main",
@@ -59,7 +59,7 @@
    "text_date": "",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119hr1enr/html/BILLS-119hr1enr.htm",
    "status_updated": "2026-05-08",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-hr44",
@@ -97,7 +97,7 @@
    "text_date": "2025-01-03",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119hr44ih/html/BILLS-119hr44ih.htm",
    "status_updated": "2026-04-14",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-hr950",
@@ -133,7 +133,7 @@
    "text_date": "2025-02-04",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119hr950ih/html/BILLS-119hr950ih.htm",
    "status_updated": "2026-02-05",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-hr1195",
@@ -167,7 +167,7 @@
    "text_date": "2025-02-11",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119hr1195ih/html/BILLS-119hr1195ih.htm",
    "status_updated": "2025-12-05",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-hr1768",
@@ -204,7 +204,7 @@
    "text_date": "2025-03-03",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119hr1768ih/html/BILLS-119hr1768ih.htm",
    "status_updated": "2026-10-19",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-hr2197",
@@ -241,7 +241,7 @@
    "text_date": "2025-03-18",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119hr2197ih/html/BILLS-119hr2197ih.htm",
    "status_updated": "2025-10-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-hr2542",
@@ -275,7 +275,7 @@
    "text_date": "2025-04-01",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119hr2542ih/html/BILLS-119hr2542ih.htm",
    "status_updated": "2026-05-04",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-hr2554",
@@ -309,7 +309,7 @@
    "text_date": "2025-04-01",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119hr2554ih/html/BILLS-119hr2554ih.htm",
    "status_updated": "2026-01-10",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-hr3222",
@@ -345,7 +345,7 @@
    "text_date": "2025-05-06",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119hr3222ih/html/BILLS-119hr3222ih.htm",
    "status_updated": "2025-05-21",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-hr3527",
@@ -379,7 +379,7 @@
    "text_date": "2025-05-21",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119hr3527ih/html/BILLS-119hr3527ih.htm",
    "status_updated": "2026-09-19",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-hr4317",
@@ -416,7 +416,7 @@
    "text_date": "2025-07-10",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119hr4317ih/html/BILLS-119hr4317ih.htm",
    "status_updated": "2026-09-29",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-hr4581",
@@ -453,7 +453,7 @@
    "text_date": "2025-07-22",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119hr4581ih/html/BILLS-119hr4581ih.htm",
    "status_updated": "2026-09-19",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-hr5256",
@@ -494,7 +494,7 @@
    "text_date": "2025-09-10",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119hr5256ih/html/BILLS-119hr5256ih.htm",
    "status_updated": "2025-09-24",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-hr6166",
@@ -528,7 +528,7 @@
    "text_date": "2025-11-20",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119hr6166ih/html/BILLS-119hr6166ih.htm",
    "status_updated": "2026-11-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-hr6501",
@@ -564,7 +564,7 @@
    "text_date": "2025-12-09",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119hr6501ih/html/BILLS-119hr6501ih.htm",
    "status_updated": "2026-01-07",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-hr6575",
@@ -600,7 +600,7 @@
    "text_date": "2025-12-10",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119hr6575ih/html/BILLS-119hr6575ih.htm",
    "status_updated": "2026-04-22",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-hr7148",
@@ -636,7 +636,7 @@
    "text_date": "",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119hr7148enr/uslm/BILLS-119hr7148enr.htm",
    "status_updated": "2026-11-21",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-hr7391",
@@ -673,7 +673,7 @@
    "text_date": "2026-02-05",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119hr7391ih/html/BILLS-119hr7391ih.htm",
    "status_updated": "2026-09-22",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-hr7871",
@@ -707,7 +707,7 @@
    "text_date": "2026-03-09",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119hr7871ih/html/BILLS-119hr7871ih.htm",
    "status_updated": "2026-11-12",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-hr8840",
@@ -743,7 +743,7 @@
    "text_date": "2026-05-14",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119hr8840ih/html/BILLS-119hr8840ih.htm",
    "status_updated": "2026-09-19",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-hr9504",
@@ -779,7 +779,7 @@
    "text_date": "2026-06-29",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119hr9504ih/html/BILLS-119hr9504ih.htm",
    "status_updated": "2026-10-07",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-hr9599",
@@ -820,7 +820,7 @@
    "text_date": "2026-07-06",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119hr9599ih/html/BILLS-119hr9599ih.htm",
    "status_updated": "2026-10-06",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-hr9682",
@@ -856,7 +856,7 @@
    "text_date": "2026-07-14",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119hr9682ih/html/BILLS-119hr9682ih.htm",
    "status_updated": "2026-10-06",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-hr9877",
@@ -890,7 +890,7 @@
    "text_date": "2026-07-22",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119hr9877ih/html/BILLS-119hr9877ih.htm",
    "status_updated": "2026-11-06",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-hr10134",
@@ -927,7 +927,7 @@
    "text_date": "2026-08-20",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119hr10134ih/html/BILLS-119hr10134ih.htm",
    "status_updated": "2026-08-24",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-hr10770",
@@ -965,7 +965,7 @@
    "text_date": "2026-10-09",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119hr10770ih/html/BILLS-119hr10770ih.htm",
    "status_updated": "2026-11-13",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-hr10919",
@@ -1002,7 +1002,7 @@
    "text_date": "2026-10-29",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119hr10919ih/html/BILLS-119hr10919ih.htm",
    "status_updated": "2026-11-02",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-hr10937",
@@ -1039,7 +1039,7 @@
    "text_date": "2026-10-29",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119hr10937ih/html/BILLS-119hr10937ih.htm",
    "status_updated": "2026-11-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-s523",
@@ -1073,7 +1073,7 @@
    "text_date": "2025-02-11",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119s523is/html/BILLS-119s523is.htm",
    "status_updated": "2025-12-05",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-s882",
@@ -1109,7 +1109,7 @@
    "text_date": "2025-03-06",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119s882is/html/BILLS-119s882is.htm",
    "status_updated": "2026-02-19",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-s891",
@@ -1146,7 +1146,7 @@
    "text_date": "2025-03-06",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119s891is/html/BILLS-119s891is.htm",
    "status_updated": "2026-08-12",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-s927",
@@ -1183,7 +1183,7 @@
    "text_date": "2025-03-11",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119s927is/html/BILLS-119s927is.htm",
    "status_updated": "2026-11-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-s1186",
@@ -1217,7 +1217,7 @@
    "text_date": "2025-03-27",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119s1186is/html/BILLS-119s1186is.htm",
    "status_updated": "2026-06-03",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-s1637",
@@ -1251,7 +1251,7 @@
    "text_date": "2025-05-07",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119s1637is/html/BILLS-119s1637is.htm",
    "status_updated": "2026-03-11",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-s1910",
@@ -1285,7 +1285,7 @@
    "text_date": "2025-05-22",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119s1910is/html/BILLS-119s1910is.htm",
    "status_updated": "2025-12-05",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-s1941",
@@ -1321,7 +1321,7 @@
    "text_date": "2025-06-04",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119s1941is/html/BILLS-119s1941is.htm",
    "status_updated": "2026-07-21",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-s2372",
@@ -1358,7 +1358,7 @@
    "text_date": "2025-07-22",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119s2372is/html/BILLS-119s2372is.htm",
    "status_updated": "2025-12-05",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-s2793",
@@ -1392,7 +1392,7 @@
    "text_date": "2025-09-11",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119s2793is/html/BILLS-119s2793is.htm",
    "status_updated": "2025-09-29",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-s3345",
@@ -1429,7 +1429,7 @@
    "text_date": "2025-12-04",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119s3345is/html/BILLS-119s3345is.htm",
    "status_updated": "2026-08-10",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-s5066",
@@ -1463,7 +1463,7 @@
    "text_date": "2026-07-22",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119s5066is/html/BILLS-119s5066is.htm",
    "status_updated": "2026-11-20",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-s5244",
@@ -1504,7 +1504,7 @@
    "text_date": "2026-08-05",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119s5244is/html/BILLS-119s5244is.htm",
    "status_updated": "2026-08-20",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "us-119-s5496",
@@ -1541,7 +1541,7 @@
    "text_date": "2026-09-24",
    "text_url": "https://www.govinfo.gov/content/pkg/BILLS-119s5496is/html/BILLS-119s5496is.htm",
    "status_updated": "2026-10-14",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ar-2025-hb1882",
@@ -1577,7 +1577,7 @@
    "text_date": "",
    "text_url": "https://www.arkleg.state.ar.us/assembly/2025/2025R/Bills/HB1882.pdf",
    "status_updated": "2025-05-08",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ar-2025-sb58",
@@ -1613,7 +1613,7 @@
    "text_date": "",
    "text_url": "https://www.arkleg.state.ar.us/Acts/FTPDocument?path=%2FACTS%2F2025R%2FPublic%2F&file=52.pdf&ddBienniumSession=2025%2F2025R",
    "status_updated": "2025-02-17",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ar-2025-sb589",
@@ -1650,7 +1650,7 @@
    "text_date": "",
    "text_url": "https://www.arkleg.state.ar.us/assembly/2025/2025R/Bills/SB589.pdf",
    "status_updated": "2025-05-06",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ar-2025-sb86",
@@ -1686,7 +1686,7 @@
    "text_date": "",
    "text_url": "https://www.arkleg.state.ar.us/assembly/2025/2025R/Bills/SB86.pdf",
    "status_updated": "2025-05-06",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "az-57th2ndregular-hb2965",
@@ -1723,7 +1723,7 @@
    "text_date": "",
    "text_url": "https://www.azleg.gov/legtext/57leg/2R/bills/HB2965P.htm",
    "status_updated": "2026-03-26",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ca-20252026-ab1460",
@@ -1757,7 +1757,7 @@
    "text_date": "",
    "text_url": "https://leginfo.legislature.ca.gov/faces/billPdf.xhtml?bill_id=202520260AB1460&version=20250AB146097AMD",
    "status_updated": "2026-10-27",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "co-2025a-sb25071",
@@ -1795,7 +1795,7 @@
    "text_date": "",
    "text_url": "https://leg.colorado.gov/sites/default/files/2025a_071_signed.pdf",
    "status_updated": "2025-06-27",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "co-2025a-sb25124",
@@ -1834,7 +1834,7 @@
    "text_date": "",
    "text_url": "https://leg.colorado.gov/sites/default/files/documents/2025A/bills/2025a_124_rer.pdf",
    "status_updated": "2025-05-07",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "fl-2025-hb1527",
@@ -1873,7 +1873,7 @@
    "text_date": "",
    "text_url": "https://flsenate.gov/Session/Bill/2025/1527/BillText/Filed/PDF",
    "status_updated": "2025-07-07",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "fl-2025-hb657",
@@ -1910,7 +1910,7 @@
    "text_date": "",
    "text_url": "https://flsenate.gov/Session/Bill/2025/657/BillText/Filed/PDF",
    "status_updated": "2025-06-26",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "fl-2025-sb1064",
@@ -1947,7 +1947,7 @@
    "text_date": "",
    "text_url": "https://flsenate.gov/Session/Bill/2025/1064/BillText/Filed/HTML",
    "status_updated": "2025-06-19",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "fl-2026-hb1281",
@@ -1986,7 +1986,7 @@
    "text_date": "",
    "text_url": "https://flsenate.gov/Session/Bill/2026/1281/BillText/Filed/PDF",
    "status_updated": "2026-06-30",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "fl-2026-hb1453",
@@ -2022,7 +2022,7 @@
    "text_date": "",
    "text_url": "https://flsenate.gov/Session/Bill/2026/1453/BillText/Filed/PDF",
    "status_updated": "2026-03-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "fl-2026-hb573",
@@ -2058,7 +2058,7 @@
    "text_date": "",
    "text_url": "https://flsenate.gov/Session/Bill/2026/573/BillText/Filed/PDF",
    "status_updated": "2026-06-30",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "fl-2026-sb1638",
@@ -2097,7 +2097,7 @@
    "text_date": "",
    "text_url": "https://flsenate.gov/Session/Bill/2026/1638/BillText/Filed/HTML",
    "status_updated": "2026-06-30",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "fl-2026-sb1758",
@@ -2133,7 +2133,7 @@
    "text_date": "",
    "text_url": "https://flsenate.gov/Session/Bill/2026/1758/BillText/c2/HTML",
    "status_updated": "2026-07-07",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "fl-2026-sb886",
@@ -2169,7 +2169,7 @@
    "text_date": "",
    "text_url": "https://flsenate.gov/Session/Bill/2026/886/BillText/Filed/HTML",
    "status_updated": "2026-04-08",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ga-202526-hb139",
@@ -2205,7 +2205,7 @@
    "text_date": "",
    "text_url": "https://www.legis.ga.gov/api/legislation/document/20252026/230367",
    "status_updated": "2026-11-19",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ga-202526-hb897",
@@ -2239,7 +2239,7 @@
    "text_date": "",
    "text_url": "https://www.legis.ga.gov/api/legislation/document/20252026/238733",
    "status_updated": "2026-11-19",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ga-202526-hb898",
@@ -2273,7 +2273,7 @@
    "text_date": "",
    "text_url": "https://www.legis.ga.gov/api/legislation/document/20252026/238735",
    "status_updated": "2026-11-19",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "hi-2025-hb561",
@@ -2310,7 +2310,7 @@
    "text_date": "",
    "text_url": "https://data.capitol.hawaii.gov/sessions/session2025/bills/HB561_.HTM",
    "status_updated": "2026-11-19",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "hi-2025-hb562",
@@ -2346,7 +2346,7 @@
    "text_date": "",
    "text_url": "https://data.capitol.hawaii.gov/sessions/session2025/bills/HB562_.HTM",
    "status_updated": "2026-11-19",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "hi-2025-hb712",
@@ -2384,7 +2384,7 @@
    "text_date": "",
    "text_url": "https://data.capitol.hawaii.gov/sessions/session2025/bills/HB712_CD1_.HTM",
    "status_updated": "2026-11-19",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "hi-2025-sb1279",
@@ -2421,7 +2421,7 @@
    "text_date": "",
    "text_url": "https://data.capitol.hawaii.gov/sessions/session2025/bills/SB1279_HD1_.HTM",
    "status_updated": "2026-11-19",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "hi-2025-sb1280",
@@ -2457,7 +2457,7 @@
    "text_date": "",
    "text_url": "https://data.capitol.hawaii.gov/sessions/session2025/bills/SB1280_.HTM",
    "status_updated": "2026-11-19",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "hi-2025-sb480",
@@ -2494,7 +2494,7 @@
    "text_date": "",
    "text_url": "https://data.capitol.hawaii.gov/sessions/session2025/bills/SB480_.HTM",
    "status_updated": "2026-11-19",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "hi-2026-hb561",
@@ -2531,7 +2531,7 @@
    "text_date": "",
    "text_url": "https://data.capitol.hawaii.gov/sessions/session2026/bills/HB561_.HTM",
    "status_updated": "2026-10-27",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "hi-2026-hb562",
@@ -2567,7 +2567,7 @@
    "text_date": "",
    "text_url": "https://data.capitol.hawaii.gov/sessions/session2026/bills/HB562_.HTM",
    "status_updated": "2026-10-27",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "hi-2026-sb1279",
@@ -2604,7 +2604,7 @@
    "text_date": "",
    "text_url": "https://data.capitol.hawaii.gov/sessions/session2026/bills/SB1279_HD1_.HTM",
    "status_updated": "2026-10-27",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "hi-2026-sb1280",
@@ -2640,7 +2640,7 @@
    "text_date": "",
    "text_url": "https://data.capitol.hawaii.gov/sessions/session2026/bills/SB1280_.HTM",
    "status_updated": "2026-10-27",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "hi-2026-sb480",
@@ -2677,7 +2677,7 @@
    "text_date": "",
    "text_url": "https://data.capitol.hawaii.gov/sessions/session2026/bills/SB480_.HTM",
    "status_updated": "2026-10-27",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ia-20252026-hf2009",
@@ -2714,7 +2714,7 @@
    "text_date": "",
    "text_url": "https://www.legis.iowa.gov/docs/publications/LGI/91/attachments/HF2009.html",
    "status_updated": "2026-03-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ia-20252026-hf590",
@@ -2751,7 +2751,7 @@
    "text_date": "",
    "text_url": "https://www.legis.iowa.gov/docs/publications/LGI/91/attachments/HF590.html",
    "status_updated": "2026-03-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ia-20252026-sf2312",
@@ -2788,7 +2788,7 @@
    "text_date": "",
    "text_url": "https://www.legis.iowa.gov/docs/publications/LGI/91/attachments/SF2312.html",
    "status_updated": "2026-03-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "id-2025-h136",
@@ -2825,7 +2825,7 @@
    "text_date": "",
    "text_url": "https://legislature.idaho.gov/wp-content/uploads/sessioninfo/2025/legislation/H0136E1.pdf",
    "status_updated": "2026-11-19",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "id-2025-h385",
@@ -2861,7 +2861,7 @@
    "text_date": "",
    "text_url": "https://legislature.idaho.gov/wp-content/uploads/sessioninfo/2025/legislation/H0385.pdf",
    "status_updated": "2026-11-19",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "id-2026-s1390",
@@ -2898,7 +2898,7 @@
    "text_date": "",
    "text_url": "https://legislature.idaho.gov/wp-content/uploads/sessioninfo/2026/legislation/S1390.pdf",
    "status_updated": "2026-03-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "il-104th-hb1443",
@@ -2934,7 +2934,7 @@
    "text_date": "",
    "text_url": "https://ilga.gov/Legislation/BillStatus/FullText?LegDocId=197280&DocName=10400HB1443eng&DocNum=1443&DocTypeID=HB&LegID=157490&GAID=18&SessionID=114&SpecSess=&Session=&Print=1",
    "status_updated": "2026-10-28",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "il-104th-hb2371",
@@ -2973,7 +2973,7 @@
    "text_date": "",
    "text_url": "https://ilga.gov/Legislation/BillStatus/FullText?LegDocId=199872&DocName=10400HB2371enr&DocNum=2371&DocTypeID=HB&LegID=160084&GAID=18&SessionID=114&SpecSess=&Session=&Print=1",
    "status_updated": "2026-10-28",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "il-104th-hb3350",
@@ -3010,7 +3010,7 @@
    "text_date": "",
    "text_url": "https://ilga.gov/Legislation/BillStatus/FullText?LegDocId=201643&DocName=10400HB3350&DocNum=3350&DocTypeID=HB&LegID=161855&GAID=18&SessionID=114&SpecSess=&Session=&Print=1",
    "status_updated": "2026-10-28",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "il-104th-hb3794",
@@ -3044,7 +3044,7 @@
    "text_date": "",
    "text_url": "https://ilga.gov/Legislation/BillStatus/FullText?LegDocId=202447&DocName=10400HB3794&DocNum=3794&DocTypeID=HB&LegID=162663&GAID=18&SessionID=114&SpecSess=&Session=&Print=1",
    "status_updated": "2026-10-28",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "il-104th-hb4065",
@@ -3081,7 +3081,7 @@
    "text_date": "",
    "text_url": "https://ilga.gov/Legislation/BillStatus/FullText?LegDocId=205013&DocName=10400HB4065&DocNum=4065&DocTypeID=HB&LegID=163864&GAID=18&SessionID=114&SpecSess=&Session=&Print=1",
    "status_updated": "2026-10-28",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "il-104th-hb4327",
@@ -3119,7 +3119,7 @@
    "text_date": "",
    "text_url": "https://ilga.gov/Legislation/BillStatus/FullText?LegDocId=206189&DocName=10400HB4327enr&DocNum=4327&DocTypeID=HB&LegID=164841&GAID=18&SessionID=114&SpecSess=&Session=&Print=1",
    "status_updated": "2026-10-28",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "il-104th-hb4761",
@@ -3153,7 +3153,7 @@
    "text_date": "",
    "text_url": "https://ilga.gov/Legislation/BillStatus/FullText?LegDocId=207240&DocName=10400HB4761&DocNum=4761&DocTypeID=HB&LegID=165894&GAID=18&SessionID=114&SpecSess=&Session=&Print=1",
    "status_updated": "2026-10-28",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "il-104th-hb4954",
@@ -3190,7 +3190,7 @@
    "text_date": "",
    "text_url": "https://ilga.gov/Legislation/BillStatus/FullText?LegDocId=207652&DocName=10400HB4954&DocNum=4954&DocTypeID=HB&LegID=166306&GAID=18&SessionID=114&SpecSess=&Session=&Print=1",
    "status_updated": "2026-10-28",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "il-104th-hb5421",
@@ -3230,7 +3230,7 @@
    "text_date": "",
    "text_url": "https://ilga.gov/Legislation/BillStatus/FullText?LegDocId=208591&DocName=10400HB5421&DocNum=5421&DocTypeID=HB&LegID=167245&GAID=18&SessionID=114&SpecSess=&Session=&Print=1",
    "status_updated": "2026-07-11",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "il-104th-hb5804",
@@ -3264,7 +3264,7 @@
    "text_date": "",
    "text_url": "https://ilga.gov/Legislation/BillStatus/FullText?LegDocId=211533&DocName=10400HB5804&DocNum=5804&DocTypeID=HB&LegID=168815&GAID=18&SessionID=114&SpecSess=&Session=&Print=1",
    "status_updated": "2026-11-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "il-104th-hr158",
@@ -3301,7 +3301,7 @@
    "text_date": "",
    "text_url": "https://ilga.gov/Legislation/BillStatus/FullText?LegDocId=202960&DocName=10400HR0158&DocNum=158&DocTypeID=HR&LegID=163093&GAID=18&SessionID=114&SpecSess=&Session=&Print=1",
    "status_updated": "2026-10-27",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "il-104th-sb1390",
@@ -3338,7 +3338,7 @@
    "text_date": "",
    "text_url": "https://ilga.gov/Legislation/BillStatus/FullText?LegDocId=203516&DocName=10400SB1390sam001&DocNum=1390&DocTypeID=SB&LegID=159493&GAID=18&SessionID=114&SpecSess=&Session=&Print=1",
    "status_updated": "2026-10-28",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "il-104th-sb2385",
@@ -3375,7 +3375,7 @@
    "text_date": "",
    "text_url": "https://ilga.gov/Legislation/BillStatus/FullText?LegDocId=202174&DocName=10400SB2385&DocNum=2385&DocTypeID=SB&LegID=162386&GAID=18&SessionID=114&SpecSess=&Session=&Print=1",
    "status_updated": "2026-10-28",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "il-104th-sb3146",
@@ -3412,7 +3412,7 @@
    "text_date": "",
    "text_url": "https://ilga.gov/Legislation/BillStatus/FullText?LegDocId=207133&DocName=10400SB3146&DocNum=3146&DocTypeID=SB&LegID=165785&GAID=18&SessionID=114&SpecSess=&Session=&Print=1",
    "status_updated": "2026-10-28",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "il-104th-sb3878",
@@ -3452,7 +3452,7 @@
    "text_date": "",
    "text_url": "https://ilga.gov/Legislation/BillStatus/FullText?LegDocId=208654&DocName=10400SB3878&DocNum=3878&DocTypeID=SB&LegID=167308&GAID=18&SessionID=114&SpecSess=&Session=&Print=1",
    "status_updated": "2026-07-11",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "il-104th-sb66",
@@ -3488,7 +3488,7 @@
    "text_date": "",
    "text_url": "https://ilga.gov/Legislation/BillStatus/FullText?LegDocId=196962&DocName=10400SB0066&DocNum=66&DocTypeID=SB&LegID=157171&GAID=18&SessionID=114&SpecSess=&Session=&Print=1",
    "status_updated": "2026-10-28",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "il-104th-sb709",
@@ -3525,7 +3525,7 @@
    "text_date": "",
    "text_url": "https://ilga.gov/Legislation/BillStatus/FullText?LegDocId=204025&DocName=10400SB0709sam001&DocNum=709&DocTypeID=SB&LegID=158420&GAID=18&SessionID=114&SpecSess=&Session=&Print=1",
    "status_updated": "2026-10-28",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ks-20252026-hb2434",
@@ -3561,7 +3561,7 @@
    "text_date": "",
    "text_url": "https://www.kslegislature.gov/b2025_26/documents/view-leg/?apn=b2025_26/year2/ready_for_publication/hb_2434/hb2434_01_0000.pdf",
    "status_updated": "2026-06-03",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ks-20252026-hb2455",
@@ -3597,7 +3597,7 @@
    "text_date": "",
    "text_url": "https://www.kslegislature.gov/b2025_26/documents/view-leg/?apn=b2025_26/year2/ready_for_publication/hb_2455/hb2455_00_0000.pdf",
    "status_updated": "2026-05-09",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ks-20252026-hb2513",
@@ -3633,7 +3633,7 @@
    "text_date": "",
    "text_url": "https://www.kslegislature.gov/b2025_26/documents/view-leg/?apn=b2025_26/year2/ready_for_publication/hb_2513/hb2513_enrolled.pdf",
    "status_updated": "2026-11-03",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ks-20252026-hb2550",
@@ -3670,7 +3670,7 @@
    "text_date": "",
    "text_url": "https://www.kslegislature.gov/b2025_26/documents/view-leg/?apn=b2025_26/year2/ready_for_publication/hb_2550/hb2550_00_0000.pdf",
    "status_updated": "2026-05-09",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ks-20252026-sb212",
@@ -3707,7 +3707,7 @@
    "text_date": "",
    "text_url": "https://www.kslegislature.gov/b2025_26/documents/view-leg/?apn=b2025_26/year2/ready_for_publication/sb_212/sb212_00_0000.pdf",
    "status_updated": "2026-11-17",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ks-20252026-sb284",
@@ -3744,7 +3744,7 @@
    "text_date": "",
    "text_url": "https://www.kslegislature.gov/b2025_26/documents/view-leg/?apn=b2025_26/year2/ready_for_publication/sb_284/sb284_01_0000.pdf",
    "status_updated": "2026-07-08",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ks-20252026-sb315",
@@ -3780,7 +3780,7 @@
    "text_date": "",
    "text_url": "https://www.kslegislature.gov/b2025_26/documents/view-leg/?apn=b2025_26/year2/ready_for_publication/sb_315/sb315_02_0000.pdf",
    "status_updated": "2026-11-17",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ks-20252026-sb337",
@@ -3816,7 +3816,7 @@
    "text_date": "",
    "text_url": "https://www.kslegislature.gov/b2025_26/documents/view-leg/?apn=b2025_26/year2/ready_for_publication/sb_337/sb337_00_0000.pdf",
    "status_updated": "2026-05-09",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ks-20252026-sb360",
@@ -3850,7 +3850,7 @@
    "text_date": "",
    "text_url": "https://www.kslegislature.gov/b2025_26/documents/view-leg/?apn=b2025_26/year2/ready_for_publication/sb_360/sb360_02_0000.pdf",
    "status_updated": "2026-11-17",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ks-20252026-sb68",
@@ -3886,7 +3886,7 @@
    "text_date": "",
    "text_url": "https://www.kslegislature.gov/b2025_26/documents/view-leg/?apn=b2025_26/year2/ready_for_publication/sb_68/sb68_00_0000.pdf",
    "status_updated": "2026-07-08",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ky-2025rs-hb685",
@@ -3925,7 +3925,7 @@
    "text_date": "",
    "text_url": "https://apps.legislature.ky.gov/recorddocuments/bill/25RS/hb685/orig_bill.pdf",
    "status_updated": "2026-11-19",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ky-2025rs-sb14",
@@ -3962,7 +3962,7 @@
    "text_date": "",
    "text_url": "https://apps.legislature.ky.gov/recorddocuments/bill/25RS/sb14/bill.pdf",
    "status_updated": "2026-11-19",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "la-2026-hr368",
@@ -3996,7 +3996,7 @@
    "text_date": "",
    "text_url": "https://www.legis.la.gov/Legis/ViewDocument.aspx?d=1478211",
    "status_updated": "2026-07-07",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ma-194th-h1107",
@@ -4034,7 +4034,7 @@
    "text_date": "",
    "text_url": "https://malegislature.gov/Bills/194/H1107.pdf",
    "status_updated": "2026-07-09",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ma-194th-h1274",
@@ -4072,7 +4072,7 @@
    "text_date": "",
    "text_url": "https://malegislature.gov/Bills/194/H1274.pdf",
    "status_updated": "2026-07-09",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ma-194th-h1296",
@@ -4111,7 +4111,7 @@
    "text_date": "",
    "text_url": "https://malegislature.gov/Bills/194/H1296.pdf",
    "status_updated": "2026-07-09",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ma-194th-h1374",
@@ -4145,7 +4145,7 @@
    "text_date": "",
    "text_url": "https://malegislature.gov/Bills/194/H1374.pdf",
    "status_updated": "2026-07-09",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ma-194th-h4490",
@@ -4183,7 +4183,7 @@
    "text_date": "",
    "text_url": "https://malegislature.gov/Bills/194/H4490.pdf",
    "status_updated": "2026-07-09",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ma-194th-h4494",
@@ -4220,7 +4220,7 @@
    "text_date": "",
    "text_url": "https://malegislature.gov/Bills/194/H4494.pdf",
    "status_updated": "2026-07-09",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ma-194th-h4495",
@@ -4257,7 +4257,7 @@
    "text_date": "",
    "text_url": "https://malegislature.gov/Bills/194/H4495.pdf",
    "status_updated": "2026-07-09",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ma-194th-h5700",
@@ -4293,7 +4293,7 @@
    "text_date": "",
    "text_url": "https://malegislature.gov/Bills/194/H5700.pdf",
    "status_updated": "2026-11-20",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ma-194th-h779",
@@ -4330,7 +4330,7 @@
    "text_date": "",
    "text_url": "https://malegislature.gov/Bills/194/H779.pdf",
    "status_updated": "2026-07-09",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ma-194th-h785",
@@ -4368,7 +4368,7 @@
    "text_date": "",
    "text_url": "https://malegislature.gov/Bills/194/H785.pdf",
    "status_updated": "2026-07-09",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ma-194th-hd1139",
@@ -4402,7 +4402,7 @@
    "text_date": "",
    "text_url": "https://malegislature.gov/Bills/194/HD1139.pdf",
    "status_updated": "2025-01-14",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ma-194th-s3103",
@@ -4438,7 +4438,7 @@
    "text_date": "",
    "text_url": "https://malegislature.gov/Bills/194/S3103.pdf",
    "status_updated": "2026-07-24",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ma-194th-s3140",
@@ -4474,7 +4474,7 @@
    "text_date": "",
    "text_url": "https://malegislature.gov/Bills/194/S3140.pdf",
    "status_updated": "2026-06-22",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ma-194th-s779",
@@ -4513,7 +4513,7 @@
    "text_date": "",
    "text_url": "https://malegislature.gov/Bills/194/S779.pdf",
    "status_updated": "2026-07-09",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ma-194th-s819",
@@ -4552,7 +4552,7 @@
    "text_date": "",
    "text_url": "https://malegislature.gov/Bills/194/S819.pdf",
    "status_updated": "2026-07-09",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ma-194th-s845",
@@ -4589,7 +4589,7 @@
    "text_date": "",
    "text_url": "https://malegislature.gov/Bills/194/S845.pdf",
    "status_updated": "2026-07-09",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ma-194th-s848",
@@ -4625,7 +4625,7 @@
    "text_date": "",
    "text_url": "https://malegislature.gov/Bills/194/S848.pdf",
    "status_updated": "2026-07-09",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ma-194th-s868",
@@ -4661,7 +4661,7 @@
    "text_date": "",
    "text_url": "https://malegislature.gov/Bills/194/S868.pdf",
    "status_updated": "2026-07-09",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "me-132-ld180",
@@ -4696,7 +4696,7 @@
    "text_date": "",
    "text_url": "http://www.mainelegislature.org/legis/bills/getPDF.asp?paper=HP0113&item=1&snum=132",
    "status_updated": "2026-10-17",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mi-20252026-hb4544",
@@ -4732,7 +4732,7 @@
    "text_date": "",
    "text_url": "https://legislature.mi.gov/documents/2025-2026/billintroduced/House/htm/2025-HIB-4544.htm",
    "status_updated": "2026-03-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mi-20252026-hb4878",
@@ -4771,7 +4771,7 @@
    "text_date": "",
    "text_url": "https://legislature.mi.gov/documents/2025-2026/billintroduced/House/htm/2025-HIB-4878.htm",
    "status_updated": "2026-03-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mi-20252026-sb317",
@@ -4807,7 +4807,7 @@
    "text_date": "",
    "text_url": "https://legislature.mi.gov/documents/2025-2026/billintroduced/Senate/htm/2025-SIB-0317.htm",
    "status_updated": "2026-03-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mi-20252026-sb94",
@@ -4845,7 +4845,7 @@
    "text_date": "",
    "text_url": "https://legislature.mi.gov/documents/2025-2026/billengrossed/Senate/htm/2025-SEBS-0094.htm",
    "status_updated": "2026-06-27",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mn-20252026-hf2703",
@@ -4882,7 +4882,7 @@
    "text_date": "2025-03-24",
    "text_url": "https://www.revisor.mn.gov/bills/94/2025/0/HF/2703/versions/0/",
    "status_updated": "2026-09-21",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mn-20252026-hf3609",
@@ -4919,7 +4919,7 @@
    "text_date": "2026-02-20",
    "text_url": "https://www.revisor.mn.gov/bills/94/2026/0/HF/3609/versions/0/",
    "status_updated": "2026-09-21",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mn-20252026-hf3756",
@@ -4953,7 +4953,7 @@
    "text_date": "2026-02-25",
    "text_url": "https://www.revisor.mn.gov/bills/94/2026/0/HF/3756/versions/0/",
    "status_updated": "2026-09-21",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mn-20252026-hf3922",
@@ -4987,7 +4987,7 @@
    "text_date": "2026-03-02",
    "text_url": "https://www.revisor.mn.gov/bills/94/2026/0/HF/3922/versions/0/",
    "status_updated": "2026-09-21",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mn-20252026-hf3931",
@@ -5021,7 +5021,7 @@
    "text_date": "2026-03-03",
    "text_url": "https://www.revisor.mn.gov/bills/94/2026/0/HF/3931/versions/0/",
    "status_updated": "2026-09-21",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mn-20252026-hf4140",
@@ -5055,7 +5055,7 @@
    "text_date": "2026-03-09",
    "text_url": "https://www.revisor.mn.gov/bills/94/2026/0/HF/4140/versions/0/",
    "status_updated": "2026-09-21",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mn-20252026-hf4442",
@@ -5089,7 +5089,7 @@
    "text_date": "2026-03-17",
    "text_url": "https://www.revisor.mn.gov/bills/94/2026/0/HF/4442/versions/0/",
    "status_updated": "2026-10-22",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mn-20252026-hf4466",
@@ -5123,7 +5123,7 @@
    "text_date": "2026-05-04",
    "text_url": "https://www.revisor.mn.gov/bills/94/2026/0/HF/4466/versions/2/",
    "status_updated": "2026-09-21",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mn-20252026-hf4609",
@@ -5157,7 +5157,7 @@
    "text_date": "2026-03-23",
    "text_url": "https://www.revisor.mn.gov/bills/94/2026/0/HF/4609/versions/0/",
    "status_updated": "2026-09-21",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mn-20252026-sf2959",
@@ -5194,7 +5194,7 @@
    "text_date": "2025-03-21",
    "text_url": "https://www.revisor.mn.gov/bills/94/2025/0/SF/2959/versions/0/",
    "status_updated": "2026-09-25",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mn-20252026-sf3271",
@@ -5232,7 +5232,7 @@
    "text_date": "2025-04-02",
    "text_url": "https://www.revisor.mn.gov/bills/94/2025/0/SF/3271/versions/0/",
    "status_updated": "2026-09-25",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mn-20252026-sf3615",
@@ -5266,7 +5266,7 @@
    "text_date": "2026-02-16",
    "text_url": "https://www.revisor.mn.gov/bills/94/2026/0/SF/3615/versions/0/",
    "status_updated": "2026-09-25",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mn-20252026-sf3769",
@@ -5303,7 +5303,7 @@
    "text_date": "2026-02-19",
    "text_url": "https://www.revisor.mn.gov/bills/94/2026/0/SF/3769/versions/0/",
    "status_updated": "2026-09-25",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mn-20252026-sf4062",
@@ -5337,7 +5337,7 @@
    "text_date": "2026-02-27",
    "text_url": "https://www.revisor.mn.gov/bills/94/2026/0/SF/4062/versions/0/",
    "status_updated": "2026-09-25",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mn-20252026-sf4138",
@@ -5371,7 +5371,7 @@
    "text_date": "2026-03-03",
    "text_url": "https://www.revisor.mn.gov/bills/94/2026/0/SF/4138/versions/0/",
    "status_updated": "2026-09-25",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mn-20252026-sf4365",
@@ -5407,7 +5407,7 @@
    "text_date": "2026-04-27",
    "text_url": "https://www.revisor.mn.gov/bills/94/2026/0/SF/4365/versions/2/",
    "status_updated": "2026-09-25",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mn-20252026-sf4659",
@@ -5441,7 +5441,7 @@
    "text_date": "2026-03-18",
    "text_url": "https://www.revisor.mn.gov/bills/94/2026/0/SF/4659/versions/0/",
    "status_updated": "2026-09-25",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mo-2025-hb781",
@@ -5479,7 +5479,7 @@
    "text_date": "",
    "text_url": "https://documents.house.mo.gov/billtracking/bills251/hlrbillspdf/0839H.01I.pdf",
    "status_updated": "2026-11-19",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mo-2025-hb784",
@@ -5516,7 +5516,7 @@
    "text_date": "",
    "text_url": "https://documents.house.mo.gov/billtracking/bills251/hlrbillspdf/1554H.01I.pdf",
    "status_updated": "2026-11-19",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mo-2025-hb785",
@@ -5553,7 +5553,7 @@
    "text_date": "",
    "text_url": "https://documents.house.mo.gov/billtracking/bills251/hlrbillspdf/1568H.01I.pdf",
    "status_updated": "2026-11-19",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mo-2026-hb2081",
@@ -5590,7 +5590,7 @@
    "text_date": "",
    "text_url": "https://documents.house.mo.gov/billtracking/bills261/hlrbillspdf/4030H.01I.pdf",
    "status_updated": "2026-08-07",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mo-2026-hb2146",
@@ -5626,7 +5626,7 @@
    "text_date": "",
    "text_url": "https://documents.house.mo.gov/billtracking/bills261/hlrbillspdf/5669S.03C.pdf",
    "status_updated": "2026-10-31",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mo-2026-hb2372",
@@ -5662,7 +5662,7 @@
    "text_date": "",
    "text_url": "https://documents.house.mo.gov/billtracking/bills261/hlrbillspdf/5868S.08T.pdf",
    "status_updated": "2026-10-31",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mo-2026-sb1178",
@@ -5700,7 +5700,7 @@
    "text_date": "",
    "text_url": "https://www.senate.mo.gov/26info/pdf-bill/intro/SB1178.pdf",
    "status_updated": "2026-10-27",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mo-2026-sb1213",
@@ -5738,7 +5738,7 @@
    "text_date": "",
    "text_url": "https://www.senate.mo.gov/26info/pdf-bill/intro/SB1213.pdf",
    "status_updated": "2026-10-27",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mo-2026-sb1340",
@@ -5776,7 +5776,7 @@
    "text_date": "",
    "text_url": "https://www.senate.mo.gov/26info/pdf-bill/intro/SB1340.pdf",
    "status_updated": "2026-10-27",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ms-2025-hb1455",
@@ -5812,7 +5812,7 @@
    "text_date": "",
    "text_url": "http://billstatus.ls.state.ms.us/documents/2025/html/HB/1400-1499/HB1455PS.htm",
    "status_updated": "2025-03-05",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ms-2025-hb1474",
@@ -5848,7 +5848,7 @@
    "text_date": "",
    "text_url": "http://billstatus.ls.state.ms.us/documents/2025/html/HB/1400-1499/HB1474PS.htm",
    "status_updated": "2025-04-01",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ms-2025-hb856",
@@ -5882,7 +5882,7 @@
    "text_date": "",
    "text_url": "http://billstatus.ls.state.ms.us/documents/2025/html/HB/0800-0899/HB0856SG.htm",
    "status_updated": "2025-04-25",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ms-2025-sb2751",
@@ -5919,7 +5919,7 @@
    "text_date": "",
    "text_url": "http://billstatus.ls.state.ms.us/documents/2025/html/SB/2700-2799/SB2751IN.htm",
    "status_updated": "2025-02-05",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ms-2026-hb1434",
@@ -5953,7 +5953,7 @@
    "text_date": "",
    "text_url": "http://billstatus.ls.state.ms.us/documents/2026/html/HB/1400-1499/HB1434IN.htm",
    "status_updated": "2026-10-28",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ms-2026-hb1666",
@@ -5987,7 +5987,7 @@
    "text_date": "",
    "text_url": "http://billstatus.ls.state.ms.us/documents/2026/html/HB/1600-1699/HB1666IN.htm",
    "status_updated": "2026-03-17",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ms-2026-hb1672",
@@ -6021,7 +6021,7 @@
    "text_date": "",
    "text_url": "http://billstatus.ls.state.ms.us/documents/2026/html/HB/1600-1699/HB1672IN.htm",
    "status_updated": "2026-03-17",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ms-2026-hb533",
@@ -6055,7 +6055,7 @@
    "text_date": "",
    "text_url": "http://billstatus.ls.state.ms.us/documents/2026/html/HB/0500-0599/HB0533IN.htm",
    "status_updated": "2026-03-17",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ms-2026-sb2555",
@@ -6089,7 +6089,7 @@
    "text_date": "",
    "text_url": "http://billstatus.ls.state.ms.us/documents/2026/html/SB/2500-2599/SB2555IN.htm",
    "status_updated": "2026-03-17",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ms-2026-sb2575",
@@ -6123,7 +6123,7 @@
    "text_date": "",
    "text_url": "http://billstatus.ls.state.ms.us/documents/2026/html/SB/2500-2599/SB2575IN.htm",
    "status_updated": "2026-03-17",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ms-2026-sb2576",
@@ -6157,7 +6157,7 @@
    "text_date": "",
    "text_url": "http://billstatus.ls.state.ms.us/documents/2026/html/SB/2500-2599/SB2576IN.htm",
    "status_updated": "2026-03-17",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mt-2025-hb740",
@@ -6191,7 +6191,7 @@
    "text_date": "",
    "text_url": "https://api.legmt.gov/docs/v1/documents/getContent?documentId=313861",
    "status_updated": "2026-11-19",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "mt-2027-lc472",
@@ -6225,7 +6225,7 @@
    "text_date": "",
    "text_url": "",
    "status_updated": "2026-10-16",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "nc-2025-hb163",
@@ -6261,7 +6261,7 @@
    "text_date": "",
    "text_url": "https://www.ncleg.gov/Sessions/2025/Bills/House/PDF/H163v3.pdf",
    "status_updated": "2026-11-05",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "nc-2025-sb479",
@@ -6298,7 +6298,7 @@
    "text_date": "",
    "text_url": "https://www.ncleg.gov/Sessions/2025/Bills/Senate/PDF/S479v8.pdf",
    "status_updated": "2026-11-05",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "nc-2025-sb517",
@@ -6336,7 +6336,7 @@
    "text_date": "",
    "text_url": "https://www.ncleg.gov/Sessions/2025/Bills/Senate/PDF/S517v1.pdf",
    "status_updated": "2026-11-05",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "nd-69-hb1473",
@@ -6372,7 +6372,7 @@
    "text_date": "",
    "text_url": "https://ndlegis.gov/assembly/69-2025/regular/documents/25-1047-02000.pdf",
    "status_updated": "2026-03-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ne-109-lb168",
@@ -6409,7 +6409,7 @@
    "text_date": "",
    "text_url": "https://nebraskalegislature.gov/FloorDocs/109/PDF/Slip/LB168.pdf",
    "status_updated": "2026-10-31",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "nh-2025-sb253",
@@ -6443,7 +6443,7 @@
    "text_date": "",
    "text_url": "",
    "status_updated": "2025-11-29",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "nh-2026-hb1755",
@@ -6481,7 +6481,7 @@
    "text_date": "",
    "text_url": "https://gc.nh.gov/bill_Status/pdf.aspx?id=24515&q=billVersion",
    "status_updated": "2026-10-24",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "nh-2026-sb477",
@@ -6520,7 +6520,7 @@
    "text_date": "",
    "text_url": "https://gc.nh.gov/bill_Status/pdf.aspx?id=22038&q=billVersion",
    "status_updated": "2026-08-22",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "nj-222-a3872",
@@ -6556,7 +6556,7 @@
    "text_date": "",
    "text_url": "https://pub.njleg.state.nj.us/Bills/2026/A4000/3872_I1.HTM",
    "status_updated": "2026-03-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "nm-2025-hb78",
@@ -6593,7 +6593,7 @@
    "text_date": "",
    "text_url": "http://www.nmlegis.gov/Sessions/25%20Regular/final/HB0078.PDF",
    "status_updated": "2025-04-23",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "nv-83-bdr52511",
@@ -6627,7 +6627,7 @@
    "text_date": "",
    "text_url": "",
    "status_updated": "2026-11-19",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "nv-83-sb149",
@@ -6664,7 +6664,7 @@
    "text_date": "",
    "text_url": "https://www.leg.state.nv.us/Session/83rd2025/Bills/SB/SB149.pdf",
    "status_updated": "2026-11-19",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "nv-83-sb389",
@@ -6700,7 +6700,7 @@
    "text_date": "",
    "text_url": "https://www.leg.state.nv.us/Session/83rd2025/Bills/SB/SB389_EN.pdf",
    "status_updated": "2026-11-19",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ny-20252026-a10842",
@@ -6736,7 +6736,7 @@
    "text_date": "",
    "text_url": "http://legislation.nysenate.gov/pdf/bills/2025/A10842A",
    "status_updated": "2026-04-21",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ny-20252026-a1466",
@@ -6770,7 +6770,7 @@
    "text_date": "",
    "text_url": "http://assembly.state.ny.us/leg/?sh=printbill&bn=A1466&term=2025&Text=Y",
    "status_updated": "2026-09-17",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ny-20252026-a2397",
@@ -6807,7 +6807,7 @@
    "text_date": "",
    "text_url": "http://assembly.state.ny.us/leg/?sh=printbill&bn=A2397&term=2025&Text=Y",
    "status_updated": "2026-03-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ny-20252026-a4100",
@@ -6843,7 +6843,7 @@
    "text_date": "",
    "text_url": "http://assembly.state.ny.us/leg/?sh=printbill&bn=A4100&term=2025&Text=Y",
    "status_updated": "2026-04-22",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ny-20252026-a4604",
@@ -6879,7 +6879,7 @@
    "text_date": "",
    "text_url": "http://assembly.state.ny.us/leg/?sh=printbill&bn=A4604&term=2025&Text=Y",
    "status_updated": "2026-03-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ny-20252026-a6222",
@@ -6918,7 +6918,7 @@
    "text_date": "",
    "text_url": "http://assembly.state.ny.us/leg/?sh=printbill&bn=A6222&term=2025&Text=Y",
    "status_updated": "2026-05-08",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ny-20252026-a6987",
@@ -6956,7 +6956,7 @@
    "text_date": "",
    "text_url": "http://legislation.nysenate.gov/pdf/bills/2025/A6987A",
    "status_updated": "2026-05-28",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ny-20252026-a7817",
@@ -6990,7 +6990,7 @@
    "text_date": "",
    "text_url": "http://legislation.nysenate.gov/pdf/bills/2025/A7817A",
    "status_updated": "2026-03-24",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ny-20252026-a8747",
@@ -7026,7 +7026,7 @@
    "text_date": "",
    "text_url": "http://legislation.nysenate.gov/pdf/bills/2025/A8747A",
    "status_updated": "2026-03-24",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ny-20252026-k718",
@@ -7060,7 +7060,7 @@
    "text_date": "",
    "text_url": "http://assembly.state.ny.us/leg/?sh=printbill&bn=K718&term=2025&Text=Y",
    "status_updated": "2026-03-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ny-20252026-r1722",
@@ -7098,7 +7098,7 @@
    "text_date": "",
    "text_url": "http://assembly.state.ny.us/leg/?sh=printbill&bn=R1722&term=2025&Text=Y",
    "status_updated": "2026-03-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ny-20252026-s1794",
@@ -7135,7 +7135,7 @@
    "text_date": "",
    "text_url": "http://assembly.state.ny.us/leg/?sh=printbill&bn=S1794&term=2025&Text=Y",
    "status_updated": "2026-03-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ny-20252026-s1913",
@@ -7174,7 +7174,7 @@
    "text_date": "",
    "text_url": "http://assembly.state.ny.us/leg/?sh=printbill&bn=S1913&term=2025&Text=Y",
    "status_updated": "2026-06-06",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ny-20252026-s1917",
@@ -7210,7 +7210,7 @@
    "text_date": "",
    "text_url": "http://legislation.nysenate.gov/pdf/bills/2025/S1917A",
    "status_updated": "2026-05-06",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ny-20252026-s3425",
@@ -7244,7 +7244,7 @@
    "text_date": "",
    "text_url": "http://assembly.state.ny.us/leg/?sh=printbill&bn=S3425&term=2025&Text=Y",
    "status_updated": "2026-03-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ny-20252026-s371",
@@ -7280,7 +7280,7 @@
    "text_date": "",
    "text_url": "http://assembly.state.ny.us/leg/?sh=printbill&bn=S371&term=2025&Text=Y",
    "status_updated": "2026-03-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ny-20252026-s6000",
@@ -7316,7 +7316,7 @@
    "text_date": "",
    "text_url": "http://assembly.state.ny.us/leg/?sh=printbill&bn=S6000&term=2025&Text=Y",
    "status_updated": "2026-03-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ny-20252026-s8257",
@@ -7352,7 +7352,7 @@
    "text_date": "",
    "text_url": "http://legislation.nysenate.gov/pdf/bills/2025/S8257A",
    "status_updated": "2026-04-21",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ny-20252026-s8380",
@@ -7390,7 +7390,7 @@
    "text_date": "",
    "text_url": "http://legislation.nysenate.gov/pdf/bills/2025/S8380A",
    "status_updated": "2026-05-15",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ny-20252026-s9434",
@@ -7424,7 +7424,7 @@
    "text_date": "",
    "text_url": "http://assembly.state.ny.us/leg/?sh=printbill&bn=S9434&term=2025&Text=Y",
    "status_updated": "2026-05-12",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "oh-136-hb276",
@@ -7462,7 +7462,7 @@
    "text_date": "",
    "text_url": "https://search-prod.lis.state.oh.us/api/v2/general_assembly_136/legislation/hb276/00_IN/html/",
    "status_updated": "2026-03-17",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "oh-136-hb780",
@@ -7496,7 +7496,7 @@
    "text_date": "",
    "text_url": "https://search-prod.lis.state.oh.us/api/v2/general_assembly_136/legislation/hb780/00_IN/html/",
    "status_updated": "2026-04-09",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "oh-136-hb890",
@@ -7533,7 +7533,7 @@
    "text_date": "",
    "text_url": "https://search-prod.lis.state.oh.us/api/v2/general_assembly_136/legislation/hb890/00_IN/html/",
    "status_updated": "2026-05-21",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "oh-136-hb96",
@@ -7570,7 +7570,7 @@
    "text_date": "",
    "text_url": "https://search-prod.lis.state.oh.us/api/v2/general_assembly_136/legislation/hb96/07_EN/html/",
    "status_updated": "2026-10-27",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "oh-136-sb198",
@@ -7608,7 +7608,7 @@
    "text_date": "",
    "text_url": "https://search-prod.lis.state.oh.us/api/v2/general_assembly_136/legislation/sb198/00_IN/html/",
    "status_updated": "2026-03-17",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "oh-136-sb386",
@@ -7642,7 +7642,7 @@
    "text_date": "",
    "text_url": "https://search-prod.lis.state.oh.us/api/v2/general_assembly_136/legislation/sb386/00_IN/html/",
    "status_updated": "2026-04-10",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ok-2025-hb2048",
@@ -7681,7 +7681,7 @@
    "text_date": "",
    "text_url": "https://www.oklegislature.gov/cf_pdf/2025-26%20ENR/hB/HB2048%20ENR.PDF",
    "status_updated": "2025-05-30",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ok-2025-sb1030",
@@ -7718,7 +7718,7 @@
    "text_date": "",
    "text_url": "https://www.oklegislature.gov/cf_pdf/2025-26%20INT/SB/SB1030%20INT.PDF",
    "status_updated": "2025-03-06",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ok-2025-sb1063",
@@ -7755,7 +7755,7 @@
    "text_date": "",
    "text_url": "https://www.oklegislature.gov/cf_pdf/2025-26%20INT/SB/SB1063%20INT.PDF",
    "status_updated": "2025-11-26",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ok-2026-hb2048",
@@ -7794,7 +7794,7 @@
    "text_date": "",
    "text_url": "https://www.oklegislature.gov/cf_pdf/2025-26%20ENR/hB/HB2048%20ENR.PDF",
    "status_updated": "2026-07-09",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ok-2026-sb1030",
@@ -7831,7 +7831,7 @@
    "text_date": "",
    "text_url": "https://www.oklegislature.gov/cf_pdf/2025-26%20INT/SB/SB1030%20INT.PDF",
    "status_updated": "2026-03-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ok-2026-sb1063",
@@ -7868,7 +7868,7 @@
    "text_date": "",
    "text_url": "https://www.oklegislature.gov/cf_pdf/2025-26%20INT/SB/SB1063%20INT.PDF",
    "status_updated": "2026-03-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ok-2026-sb252",
@@ -7902,7 +7902,7 @@
    "text_date": "",
    "text_url": "https://www.oklegislature.gov/cf_pdf/2025-26%20INT/SB/SB252%20INT.PDF",
    "status_updated": "2026-03-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "or-2025r1-hb2057",
@@ -7939,7 +7939,7 @@
    "text_date": "",
    "text_url": "https://olis.oregonlegislature.gov/liz/2025R1/Downloads/MeasureDocument/HB2057/Introduced",
    "status_updated": "2025-06-30",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "or-2025r1-hb2385",
@@ -7977,7 +7977,7 @@
    "text_date": "",
    "text_url": "https://olis.oregonlegislature.gov/liz/2025R1/Downloads/MeasureDocument/HB2385/Enrolled",
    "status_updated": "2025-09-25",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "or-2025r1-hb3212",
@@ -8011,7 +8011,7 @@
    "text_date": "",
    "text_url": "https://olis.oregonlegislature.gov/liz/2025R1/Downloads/MeasureDocument/HB3212/Introduced",
    "status_updated": "2025-09-25",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "or-2025r1-hb3226",
@@ -8045,7 +8045,7 @@
    "text_date": "",
    "text_url": "https://olis.oregonlegislature.gov/liz/2025R1/Downloads/MeasureDocument/HB3226/Enrolled",
    "status_updated": "2025-06-24",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "or-2025r1-sb533",
@@ -8083,7 +8083,7 @@
    "text_date": "",
    "text_url": "https://olis.oregonlegislature.gov/liz/2025R1/Downloads/MeasureDocument/SB533/Introduced",
    "status_updated": "2025-06-30",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "pa-20252026-hb2797",
@@ -8122,7 +8122,7 @@
    "text_date": "",
    "text_url": "https://www.palegis.us/legislation/bills/text/HTM/2025/0/HB2797/PN3953",
    "status_updated": "2026-10-21",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "pa-20252026-sb1486",
@@ -8159,7 +8159,7 @@
    "text_date": "",
    "text_url": "https://www.palegis.us/legislation/bills/text/HTM/2025/0/SB1486/PN2028",
    "status_updated": "2026-10-14",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ri-2025-hb5116",
@@ -8196,7 +8196,7 @@
    "text_date": "",
    "text_url": "http://webserver.rilegislature.gov/BillText/BillText25/HouseText25/H5116.pdf",
    "status_updated": "2025-03-07",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ri-2025-hb5634",
@@ -8235,7 +8235,7 @@
    "text_date": "",
    "text_url": "http://webserver.rilegislature.gov/BillText/BillText25/HouseText25/H5634Aaa.pdf",
    "status_updated": "2025-06-30",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ri-2025-sb114",
@@ -8274,7 +8274,7 @@
    "text_date": "",
    "text_url": "http://webserver.rilegislature.gov/BillText/BillText25/SenateText25/S0114Aaa.pdf",
    "status_updated": "2025-06-30",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "sc-20252026-s639",
@@ -8308,7 +8308,7 @@
    "text_date": "",
    "text_url": "https://www.scstatehouse.gov/sess126_2025-2026/prever/639_20250506.htm",
    "status_updated": "2026-03-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "sd-2025-sb154",
@@ -8342,7 +8342,7 @@
    "text_date": "",
    "text_url": "https://mylrc.sdlegislature.gov/api/Documents/282241.pdf",
    "status_updated": "2025-03-13",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "tn-114-hb1242",
@@ -8380,7 +8380,7 @@
    "text_date": "",
    "text_url": "https://capitol.tn.gov/Bills/114/Bill/HB1242.pdf",
    "status_updated": "2026-10-31",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "tn-114-hb1648",
@@ -8417,7 +8417,7 @@
    "text_date": "",
    "text_url": "https://capitol.tn.gov/Bills/114/Amend/SA0748.pdf",
    "status_updated": "2026-10-31",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "tn-114-sb1414",
@@ -8455,7 +8455,7 @@
    "text_date": "",
    "text_url": "https://capitol.tn.gov/Bills/114/Bill/SB1414.pdf",
    "status_updated": "2026-10-31",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "tn-114-sb1654",
@@ -8492,7 +8492,7 @@
    "text_date": "",
    "text_url": "https://capitol.tn.gov/Bills/114/Amend/HA0830.pdf",
    "status_updated": "2026-10-31",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "tx-89r-hb3265",
@@ -8529,7 +8529,7 @@
    "text_date": "",
    "text_url": "http://capitol.texas.gov/tlodocs/89R/billtext/html/HB03265H.HTM",
    "status_updated": "2025-05-10",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "tx-89r-hb4422",
@@ -8565,7 +8565,7 @@
    "text_date": "",
    "text_url": "http://capitol.texas.gov/tlodocs/89R/billtext/html/HB04422I.HTM",
    "status_updated": "2025-04-02",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "tx-90r-hb703",
@@ -8602,7 +8602,7 @@
    "text_date": "",
    "text_url": "http://capitol.texas.gov/tlodocs/90R/billtext/html/HB00703I.HTM",
    "status_updated": "2026-11-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "tx-90r-sb476",
@@ -8636,7 +8636,7 @@
    "text_date": "",
    "text_url": "http://capitol.texas.gov/tlodocs/90R/billtext/html/SB00476I.HTM",
    "status_updated": "2026-11-23",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ut-2025-hb257",
@@ -8670,7 +8670,7 @@
    "text_date": "",
    "text_url": "https://le.utah.gov/Session/2025/bills/enrolled/HB0257.xml",
    "status_updated": "2025-03-28",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ut-2025-hb519",
@@ -8706,7 +8706,7 @@
    "text_date": "",
    "text_url": "https://le.utah.gov/Session/2025/bills/introduced/HB0519.xml",
    "status_updated": "2025-03-18",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ut-2025-sb69",
@@ -8742,7 +8742,7 @@
    "text_date": "",
    "text_url": "https://le.utah.gov/Session/2025/bills/enrolled/SB0069.xml",
    "status_updated": "2025-03-28",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ut-2026-hb356",
@@ -8778,7 +8778,7 @@
    "text_date": "",
    "text_url": "https://le.utah.gov/Session/2026/bills/enrolled/HB0356.xml",
    "status_updated": "2026-10-27",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ut-2026-hb527",
@@ -8812,7 +8812,7 @@
    "text_date": "",
    "text_url": "https://le.utah.gov/Session/2026/bills/enrolled/HB0527.xml",
    "status_updated": "2026-10-27",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "ut-2026-sb300",
@@ -8848,7 +8848,7 @@
    "text_date": "",
    "text_url": "https://le.utah.gov/Session/2026/bills/introduced/SB0300S01.xml",
    "status_updated": "2026-10-27",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "vt-20252026-h202",
@@ -8885,7 +8885,7 @@
    "text_date": "",
    "text_url": "http://legislature.vermont.gov/Documents/2026/Docs/BILLS/H-0202/H-0202%20As%20Introduced.pdf",
    "status_updated": "2026-07-02",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "vt-20252026-h266",
@@ -8923,7 +8923,7 @@
    "text_date": "",
    "text_url": "http://legislature.vermont.gov/Documents/2026/Docs/ACTS/ACT055/ACT055%20As%20Enacted.pdf",
    "status_updated": "2026-10-28",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "vt-20252026-h611",
@@ -8959,7 +8959,7 @@
    "text_date": "",
    "text_url": "http://legislature.vermont.gov/Documents/2026/Docs/ACTS/ACT120/ACT120%20As%20Enacted.pdf",
    "status_updated": "2026-10-27",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "wa-20252026-hb1197",
@@ -8996,7 +8996,7 @@
    "text_date": "",
    "text_url": "http://lawfilesext.leg.wa.gov/Biennium/2025-26/Htm/Bills/House%20Bills/1197.htm",
    "status_updated": "2026-10-28",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "wa-20252026-hb1198",
@@ -9033,7 +9033,7 @@
    "text_date": "",
    "text_url": "http://lawfilesext.leg.wa.gov/Biennium/2025-26/Htm/Bills/House%20Bills/1198-S.htm",
    "status_updated": "2026-10-28",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "wa-20252026-hb2145",
@@ -9070,7 +9070,7 @@
    "text_date": "",
    "text_url": "http://lawfilesext.leg.wa.gov/Biennium/2025-26/Htm/Bills/House%20Bills/2145-S2.htm",
    "status_updated": "2026-10-28",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "wa-20252026-sb5166",
@@ -9107,7 +9107,7 @@
    "text_date": "",
    "text_url": "http://lawfilesext.leg.wa.gov/Biennium/2025-26/Htm/Bills/Senate%20Bills/5166.htm",
    "status_updated": "2026-10-28",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "wa-20252026-sb5167",
@@ -9144,7 +9144,7 @@
    "text_date": "",
    "text_url": "http://lawfilesext.leg.wa.gov/Biennium/2025-26/Htm/Bills/Senate%20Passed%20Legislature/5167-S.PL.htm",
    "status_updated": "2026-10-28",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "wa-20252026-sb5810",
@@ -9181,7 +9181,7 @@
    "text_date": "",
    "text_url": "http://lawfilesext.leg.wa.gov/Biennium/2025-26/Htm/Bills/Senate%20Bills/5810.htm",
    "status_updated": "2026-10-28",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "wa-20252026-sb5981",
@@ -9219,7 +9219,7 @@
    "text_date": "",
    "text_url": "http://lawfilesext.leg.wa.gov/Biennium/2025-26/Htm/Bills/Senate%20Passed%20Legislature/5981-S2.PL.htm",
    "status_updated": "2026-10-28",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "wa-20252026-sb5998",
@@ -9255,7 +9255,7 @@
    "text_date": "",
    "text_url": "http://lawfilesext.leg.wa.gov/Biennium/2025-26/Htm/Bills/Senate%20Passed%20Legislature/5998-S.PL.htm",
    "status_updated": "2026-10-28",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "wi-2025-ab173",
@@ -9291,7 +9291,7 @@
    "text_date": "",
    "text_url": "https://docs.legis.wisconsin.gov/document/proposaltext/2025/REG/AB173",
    "status_updated": "2026-10-31",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "wi-2025-ab62",
@@ -9327,7 +9327,7 @@
    "text_date": "",
    "text_url": "https://docs.legis.wisconsin.gov/document/proposaltext/2025/REG/AB62",
    "status_updated": "2026-10-31",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "wi-2025-sb203",
@@ -9363,7 +9363,7 @@
    "text_date": "",
    "text_url": "https://docs.legis.wisconsin.gov/document/proposaltext/2025/REG/SB203",
    "status_updated": "2026-10-31",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "wi-2025-sb50",
@@ -9399,7 +9399,7 @@
    "text_date": "",
    "text_url": "https://docs.legis.wisconsin.gov/document/proposaltext/2025/REG/SB50",
    "status_updated": "2026-10-31",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "wv-2025-hb2831",
@@ -9433,7 +9433,7 @@
    "text_date": "",
    "text_url": "https://www.wvlegislature.gov/Bill_Status/bills_text.cfm?billdoc=hb2831%20intr.htm&yr=2025&sesstype=RS&i=2831",
    "status_updated": "2025-02-24",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "wv-2025-hb3068",
@@ -9467,7 +9467,7 @@
    "text_date": "",
    "text_url": "https://www.wvlegislature.gov/Bill_Status/bills_text.cfm?billdoc=hb3068%20intr.htm&yr=2025&sesstype=RS&i=3068",
    "status_updated": "2025-03-03",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "wv-2025-sb675",
@@ -9504,7 +9504,7 @@
    "text_date": "",
    "text_url": "https://www.wvlegislature.gov/Bill_Status/bills_text.cfm?billdoc=sb675%20intr.htm&yr=2025&sesstype=RS&i=675",
    "status_updated": "2025-03-29",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "wv-2025-sb852",
@@ -9540,7 +9540,7 @@
    "text_date": "",
    "text_url": "https://www.wvlegislature.gov/Bill_Status/bills_text.cfm?billdoc=sb852%20intr.htm&yr=2025&sesstype=RS&i=852",
    "status_updated": "2025-03-20",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "wv-2026-sb907",
@@ -9576,7 +9576,7 @@
    "text_date": "",
    "text_url": "https://www.wvlegislature.gov/Bill_Status/bills_text.cfm?billdoc=sb907%20intr.htm&yr=2026&sesstype=RS&i=907",
    "status_updated": "2026-10-28",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   },
   {
    "bill_id": "wy-2026-hb179",
@@ -9612,7 +9612,7 @@
    "text_date": "",
    "text_url": "https://wyoleg.gov/2026/Introduced/HB0179.pdf",
    "status_updated": "2026-07-15",
-   "retrieved": "2026-11-23"
+   "retrieved": "2026-11-24"
   }
  ]
 }
