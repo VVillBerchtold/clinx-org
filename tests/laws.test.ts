@@ -78,7 +78,7 @@ describe('state laws', () => {
 
   it('points a saved text at the dataset repository, at the version of the data', () => {
     const law = data.laws[0]!;
-    expect(savedTextUrl(data, law.sourceText)).toBe(`https://github.com/VVillBerchtold/clinx-340b/blob/v${data.version}/${law.sourceText}`);
+    expect(savedTextUrl(data, law.sourceText)).toBe(`https://github.com/WillBerchtold/clinx-340b/blob/v${data.version}/${law.sourceText}`);
   });
 
   it('has a reporting law in the table for every state the scorecard says has one', () => {

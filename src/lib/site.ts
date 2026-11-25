@@ -128,12 +128,12 @@ export const PREVIEW = false;
 
 /** The four public repositories. The pages link to them only once the site is public (PREVIEW false). */
 export const REPOSITORIES = {
-  dataset: 'https://github.com/VVillBerchtold/clinx-340b',
-  bills: 'https://github.com/VVillBerchtold/clinx-340b-bills',
-  tracker: 'https://github.com/VVillBerchtold/clinx-radar',
-  registry: 'https://github.com/VVillBerchtold/clinx-340b-registry',
-  assistants: 'https://github.com/VVillBerchtold/clinx-mcp',
-  site: 'https://github.com/VVillBerchtold/clinx-org',
+  dataset: 'https://github.com/WillBerchtold/clinx-340b',
+  bills: 'https://github.com/WillBerchtold/clinx-340b-bills',
+  tracker: 'https://github.com/WillBerchtold/clinx-radar',
+  registry: 'https://github.com/WillBerchtold/clinx-340b-registry',
+  assistants: 'https://github.com/WillBerchtold/clinx-mcp',
+  site: 'https://github.com/WillBerchtold/clinx-org',
 } as const;
 
 /** Where ReferralFinderX lives. */
@@ -142,7 +142,7 @@ export const REFERRALFINDERX_URL = 'https://referralfinderx.com';
 /** The founder's public profiles. */
 export const LINKEDIN_URL = 'https://www.linkedin.com/in/will-berchtold';
 export const X_URL = 'https://x.com/willberch';
-export const GITHUB_URL = 'https://github.com/VVillBerchtold';
+export const GITHUB_URL = 'https://github.com/WillBerchtold';
 /** The founder's page on the ReferralFinderX site. */
 export const REFERRALFINDERX_FOUNDER_URL = 'https://referralfinderx.com/founder.html';
 
