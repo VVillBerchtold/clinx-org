@@ -13,6 +13,7 @@ import PageHead from '../../components/PageHead.astro';
 import { formatDate } from '../../lib/data';
 import { BILLS_HOME, CONGRESS, billHref, billsMapSvg, billsPath, getBills, latestSteps, placeName, statesWithBills, stepOf, billsMapCards } from '../../lib/bills';
 import { LAWS_HOME } from '../../lib/laws';
+import { FAMILY_HOME } from '../../lib/bill-family';
 
 const data = getBills();
 const states = statesWithBills(data);
@@ -53,6 +54,11 @@ const short = (title: string): string => (title.length <= 96 ? title : `${title.
         <span class="label">Congress</span>
         <strong>{federal.length} bills in the {federal[0]?.session}</strong>
         <span>{about} are about 340B itself. {federalLaws} became law.</span>
+      </a>
+      <a class="law-score bill-door" href={FAMILY_HOME}>
+        <span class="label">Family tree</span>
+        <strong>Which state bills share their words</strong>
+        <span>Contract pharmacy bills and laws, compared word for word.</span>
       </a>
       <h2 class="label">Latest steps</h2>
       <ul class="kind-index bill-latest">

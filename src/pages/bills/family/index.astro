@@ -1,0 +1,236 @@
+---
+/**
+ * The bill family tree: state contract pharmacy bills and laws, each under the earlier text it shares the
+ * most words with. The tree is built by scripts/bill-family.mjs from the official texts; this page draws it
+ * (src/lib/bill-family.ts) and prints every link with its shared words, so it reads in full with scripts off.
+ * The pointer layer is src/scripts/bill-family.ts.
+ */
+import '../../../styles/registry.css';
+import '../../../styles/bill-family.css';
+import Base from '../../../layouts/Base.astro';
+import StateMap from '../../../components/StateMap.astro';
+import FamilyNode from '../../../components/FamilyNode.astro';
+import { formatDate } from '../../../lib/data';
+import { BILLS_HOME, getBills } from '../../../lib/bills';
+import { stateMapSvg } from '../../../lib/state-map';
+import { stateName } from '../../../lib/states';
+import { FAMILY_HOME, familySvg, fmt, fullName, getFamily, memberHref, panelData, stateRoles, statusOf, yearOf } from '../../../lib/bill-family';
+
+const data = getFamily();
+const members = [...data.members.values()];
+const big = data.families[0]!;
+const small = data.families.slice(1);
+const root = data.members.get(big.root)!;
+const states = new Set(members.map((m) => m.state));
+const pairs = data.links.filter((l) => l.kind !== 'carried-over').length;
+const acrossPairs = data.links.filter((l) => l.kind === 'across-states').length;
+const placed = members.filter((m) => m.parent).length;
+const laws = members.filter((m) => m.type === 'law' || m.lawId).length;
+const bigLaws = big.members.filter((id) => { const m = data.members.get(id)!; return m.type === 'law' || m.lawId; }).length;
+
+// Bills about contract pharmacies listed in the bills table since the tree was last built: not compared yet.
+const compared = new Set(members.map((m) => m.id));
+const newer = getBills().bills.filter((b) => b.place !== 'US' && b.kinds.includes('contract-pharmacy') && !compared.has(b.billId));
+
+const roles = stateRoles(data);
+const words = (n: number, one: string, many: string): string => `${fmt(n)} ${n === 1 ? one : many}`;
+const mapSvg = stateMapSvg({
+  id: 'bf-map',
+  title: 'States with a contract pharmacy bill or law compared',
+  desc: `Filled: states with a text in the largest family (${big.states.map(stateName).join(', ')}). Outlined: states whose texts were compared but sit in a family of their own state, or alone.`,
+  tile: (s) => {
+    const r = roles.get(s.code);
+    if (!r) return { tone: 'none' };
+    const n = r.big + r.other + r.alone;
+    return { tone: r.big > 0 ? 'has' : 'next', href: `#o-${r.big > 0 ? big.members.find((id) => data.members.get(id)!.state === s.code)! : r.first}`, label: words(n, 'text compared', 'texts compared'), card: true };
+  },
+});
+const mapCards = [...roles.entries()].map(([code, r]) => ({
+  code,
+  name: stateName(code),
+  note: [r.big && `${words(r.big, 'text', 'texts')} in the largest family`, r.other && `${words(r.other, 'text', 'texts')} in a family of its own state`, r.alone && `${words(r.alone, 'text', 'texts')} with no close relative`].filter(Boolean).join('; ') + '.',
+}));
+
+const parts = [
+  { id: 'largest', label: 'The largest family' },
+  { id: 'in-state', label: 'Families in one state' },
+  { id: 'alone', label: 'No close relative' },
+  { id: 'how', label: 'How the links are found' },
+];
+const tree = familySvg(data, big, 'bf-big');
+const panel = panelData(data, big);
+---
+
+<Base
+  title="The 340B bill family tree"
+  bleed
+  crumbs={[{ name: 'Bills', path: BILLS_HOME }, { name: 'Family tree', path: FAMILY_HOME }]}
+  description={`${fmt(members.length)} state bills and laws on 340B contract pharmacies, compared word for word. ${fmt(big.members.length)} in ${big.states.length} states share wording whose earliest text here is ${fullName(root)}. Every link shows the words.`}
+>
+  <header class="rx-head">
+    <div class="wrap">
+      <p class="rx-kicker"><span class="dot" aria-hidden="true"></span>340B <span aria-hidden="true">/</span> Bills <span aria-hidden="true">/</span> Family tree</p>
+      <h1>The 340B bill family tree</h1>
+      <p class="rx-lede">
+        State bills on contract pharmacies borrow their wording from one another. Here every bill and law is placed under the earlier text it shares the most words with, word for word, and the shared words are printed.
+      </p>
+      <div class="rx-figures">
+        <div class="rx-hero-fig">
+          <p class="rx-hero-value">{big.states.length} states</p>
+          <p class="rx-hero-label">share wording whose earliest text here is {fullName(root)}{fullName(root).includes(yearOf(root)) ? "" : ` (${yearOf(root)})`}</p>
+        </div>
+        <dl class="rx-stats">
+          <div><dt>Bills and laws compared</dt><dd>{fmt(members.length)}</dd></div>
+          <div><dt>States</dt><dd>{fmt(states.size)}</dd></div>
+          <div><dt>Pairs that share a passage</dt><dd>{fmt(pairs)}</dd></div>
+          <div><dt>Of those, across state lines</dt><dd>{fmt(acrossPairs)}</dd></div>
+        </dl>
+      </div>
+    </div>
+  </header>
+
+  <nav class="rx-parts wrap" aria-label="Parts of this page">
+    <ol>{parts.map((p, i) => <li><a href={`#${p.id}`}><span class="rx-part-n">{i + 1}</span>{p.label}</a></li>)}</ol>
+  </nav>
+
+  <section class="rx-section" id="largest" aria-labelledby="largest-h">
+    <div class="wrap">
+      <p class="rx-step">1</p>
+      <h2 id="largest-h">The largest family</h2>
+      <div class="bf-intro">
+        <p class="rx-text">
+          {fmt(big.members.length)} bills and laws in {big.states.length} states sit in one family. Each shares at least one passage of {data.rules.minLongest} or more words, in the same order, with the text above it. {fmt(bigLaws)} of them are law. The earliest is {fullName(root)}, {statusOf(root).toLowerCase()} in {yearOf(root)}.
+        </p>
+        <div class="bf-map">
+          <StateMap
+            strip
+            svg={mapSvg}
+            legend={[{ tone: 'has', label: 'In the largest family' }, { tone: 'next', label: 'Compared, other family or alone' }, { tone: 'none', label: 'No text compared' }]}
+            rest={{ note: 'Point at a state to see where its texts sit. Select it to go to them.' }}
+            cards={mapCards}
+          />
+        </div>
+      </div>
+
+      <div class="bf-figure" data-bf data-bf-json={panel}>
+        <figure class="bf-chart">
+          <Fragment set:html={tree} />
+          <ul class="bf-legend">
+            <li><span class="bf-key law" aria-hidden="true"></span>Law, or became law</li>
+            <li><span class="bf-key" aria-hidden="true"></span>Bill</li>
+            <li><span class="bf-line across" aria-hidden="true"></span>Shares text with another state</li>
+            <li><span class="bf-line same" aria-hidden="true"></span>Same state</li>
+            <li><span class="bf-line again" aria-hidden="true"></span>Same bill, listed again</li>
+          </ul>
+        </figure>
+        <aside class="bf-panel" aria-hidden="true" hidden data-bf-panel>
+          <div data-bf-rest>
+            <p class="bf-p-kicker">Read a row</p>
+            <p class="bf-p-text">Point at a bill or law to see the words it shares with the text above it. Select it to go to its place in the list.</p>
+          </div>
+          <div data-bf-card hidden>
+            <p class="bf-p-kicker"><span data-f="year"></span> · <span data-f="status"></span></p>
+            <p class="bf-p-name" data-f="name"></p>
+            <p class="bf-p-title" data-f="title"></p>
+            <div data-bf-link>
+              <p class="bf-p-kind" data-f="kind"></p>
+              <dl class="bf-p-figs">
+                <div><dt>Words shared</dt><dd data-f="shared"></dd></div>
+                <div><dt>Longest run of words</dt><dd data-f="longest"></dd></div>
+              </dl>
+              <p class="bf-p-with">With <strong data-f="parent"></strong></p>
+              <blockquote class="bf-p-quote" data-f="passage"></blockquote>
+            </div>
+            <p class="bf-p-root" data-bf-root>The earliest text in this family.</p>
+          </div>
+        </aside>
+      </div>
+
+      <h3 class="rx-sub-h">Every link, with the words</h3>
+      <p class="rx-small">The same family as a list. Each line names the text it sits under and how many words they share; open it for the longest passage they share.</p>
+      <ol class="bf-outline">
+        <FamilyNode data={data} id={big.root} />
+      </ol>
+    </div>
+  </section>
+
+  <section class="rx-section rx-alt" id="in-state" aria-labelledby="in-state-h">
+    <div class="wrap">
+      <p class="rx-step">2</p>
+      <h2 id="in-state-h">Families in one state</h2>
+      <p class="rx-text">
+        {small.length} smaller families. Most stay inside one state: a bill filed in both chambers, carried into the next year, or filed again.
+      </p>
+      <div class="bf-cards">
+        {
+          small.map((f) => (
+            <article class="bf-card" aria-labelledby={`fam-${f.family}`}>
+              <h3 id={`fam-${f.family}`}>{f.states.map(stateName).join(' and ')}</h3>
+              <p class="bf-card-sub">{words(f.members.length, 'text', 'texts')}</p>
+              <ol class="bf-outline compact">
+                <FamilyNode data={data} id={f.root} />
+              </ol>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="rx-section" id="alone" aria-labelledby="alone-h">
+    <div class="wrap">
+      <p class="rx-step">3</p>
+      <h2 id="alone-h">No close relative</h2>
+      <p class="rx-text">
+        {fmt(data.alone.length)} texts share no passage of {data.rules.minLongest} words with an earlier one, and no later text sits under them.
+      </p>
+      <ul class="bf-alone">
+        {
+          data.alone.map((id) => {
+            const m = data.members.get(id)!;
+            return (
+              <li id={`o-${m.id}`}>
+                <a href={memberHref(m)}>{fullName(m)}</a>
+                <span class="bf-meta">{yearOf(m)}</span>
+                <span class:list={['bf-status', { law: m.type === 'law' || m.lawId }]}>{statusOf(m)}</span>
+                <span class="bf-alone-note">{m.relatives > 0 ? `Shares a passage with ${words(m.relatives, 'later text', 'later texts')}, each closer to another` : 'Shares no counted passage'}</span>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="rx-section rx-alt" id="how" aria-labelledby="how-h">
+    <div class="wrap">
+      <p class="rx-step">4</p>
+      <h2 id="how-h">How the links are found</h2>
+      <ol class="bf-how">
+        <li><strong>The official texts.</strong><span>Every state bill on contract pharmacies in the <a href={BILLS_HOME}>bills table</a>, in the newest text its legislature published, and every state contract pharmacy law in the <a href="/laws/contract-pharmacy/">laws table</a>, in its enacted text. {fmt(members.length)} texts, {fmt(laws)} of them law.</span></li>
+        <li><strong>Word for word.</strong><span>A shared passage is a run of at least {data.rules.minRun} words in the same order in both texts. It counts only if it names 340B, a drug, a pharmacy, a manufacturer or a covered entity, so the common frame of any bill (dates, severability, definitions of health records) is left out.</span></li>
+        <li><strong>Enough to link.</strong><span>Two texts are linked when they share {data.rules.minShared} words or more and one passage runs {data.rules.minLongest} words or more. A bill with the same number listed under two years is linked as one bill.</span></li>
+        <li><strong>Where a text sits.</strong><span>Under the earlier text, by the day it was introduced or became law, that it shares the most words with. That is the closest wording in this record. It does not say who drafted either text or which was copied.</span></li>
+      </ol>
+      <ul class="rx-limits bf-limits">
+        <li>No bill or law here names a model bill it was drawn from, so none is shown.</li>
+        <li>The texts compared are the newest each legislature published. A bill amended after it was filed may hold words from a text dated later than its own start.</li>
+        {newer.length > 0 && <li>{words(newer.length, 'bill', 'bills')} on contract pharmacies joined the bills table after the texts were compared on {formatDate(data.built)}, and are not in the tree yet: {newer.map((b) => `${stateName(b.place)} ${b.bill}`).join(', ')}.</li>}
+      </ul>
+      <div class="btn-row">
+        <a class="btn" href="/data/340b-bill-links.csv" download>Every link as a table (CSV)</a>
+        <a class="btn ghost" href={BILLS_HOME}>All 340B bills</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="rx-source">
+    <div class="wrap rx-measure">
+      <p>Sources: the official bill texts each state legislature publishes, as saved by the ClinX bills table (retrieved {formatDate(data.billsRetrieved)}), and the enacted texts saved by the ClinX laws table. Compared on {formatDate(data.built)}. {fmt(placed)} of {fmt(members.length)} texts sit under an earlier one.</p>
+    </div>
+  </footer>
+</Base>
+
+<script>
+  import '../../../scripts/bill-family';
+</script>

@@ -67,6 +67,7 @@ export const NAV: readonly (NavLink | NavGroup)[] = [
       { href: '/scorecard/', label: 'Scorecard', note: 'The 340B figures each state publishes' },
       { href: '/laws/', label: 'State laws', note: 'The 340B laws each state has passed' },
       { href: '/bills/', label: 'Bills', note: 'The 340B bills in Congress and the states' },
+      { href: '/bills/family/', label: 'Bill family tree', note: 'Which state bills share their words' },
       { href: '/notices/', label: 'Federal notices', note: 'Federal rules and notices that name 340B' },
       { href: '/calendar/', label: 'Calendar', note: 'Bill steps, hearings and federal deadlines' },
       { href: '/registry/', label: 'Registry history', note: 'Contract pharmacies, month by month since 2010' },

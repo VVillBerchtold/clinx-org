@@ -39,6 +39,10 @@ The bills come from a table of their own, kept in a separate folder (`clinx-340b
 
 A bill is listed only if its title, its official summary or its official text names the program. The words quoted on a card are the legislature's, so the site's word check does not apply to them (`PRINTED_BILL_WORDS` in `scripts/check-dist.mjs`); it still applies to every word the site writes itself.
 
+### The bill family tree
+
+`/bills/family/` shows which state contract pharmacy bills and laws share their words. `scripts/bill-family.mjs` compares the saved official texts (kept in `clinx-340b-bills/raw/state-texts/` and `clinx-340b/sources/laws/`) and writes `src/data/bill-family/340b-bill-family.json`; run it again after the bills table gains a contract pharmacy bill. Two texts are linked only when they share at least 40 words in passages of 12 or more words in a row that name the subject, with one run of 20 or more, or when one bill is listed in two years. Each text hangs from the earlier text it shares the most words with, and the page prints the words for every link. `src/lib/bill-family.ts` reads the file; `/data/340b-bill-links.csv` is written from it at build. The passages are the legislatures' words, like a bill card's.
+
 ## The calendar is the bills' dates
 
 The fourth entry under 340B in the menu, Calendar, shows when things happen: the dated steps of every listed bill (introduced, sent to committee, voted on, signed), hearings whose agenda names a listed bill, and the days each legislature's session starts and ends. There is one page for the whole country, one for Congress and one for each state.

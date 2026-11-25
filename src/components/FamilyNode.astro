@@ -1,0 +1,62 @@
+---
+/**
+ * One text of the bill family tree and, nested under it, every text that sits under it. The words
+ * each one shares with its parent are printed here, so the tree reads in full with scripts off.
+ */
+import { LINK_LABEL, childrenOf, fmt, fullName, isLaw, memberHref, parentLink, statusOf, yearOf, type FamilyData } from '../lib/bill-family';
+
+interface Props {
+  data: FamilyData;
+  id: string;
+}
+const { data, id } = Astro.props;
+const m = data.members.get(id)!;
+const link = parentLink(data, id);
+const parent = m.parent ? data.members.get(m.parent) : undefined;
+const kids = childrenOf(data, id);
+---
+
+<li class="bf-node" id={`o-${m.id}`}>
+  <div class:list={['bf-item', { 'is-law': isLaw(m) }]}>
+    <p class="bf-head">
+      <span class="bf-mark" aria-hidden="true"></span>
+      <a class="bf-title" href={memberHref(m)}>{fullName(m)}</a>
+      <span class="bf-meta">{yearOf(m)}</span>
+      <span class:list={['bf-status', { law: isLaw(m) }]}>{statusOf(m)}</span>
+    </p>
+    {
+      link && parent ? (
+        <>
+          <p class="bf-why">
+            <span class="bf-kind">{LINK_LABEL[link.kind]}</span>
+            <span>
+              {fmt(link.sharedWords)} words shared with <a href={`#o-${parent.id}`}>{fullName(parent)}</a>
+              {link.sameSponsor && <>; same sponsor ({link.sameSponsor})</>}
+            </span>
+          </p>
+          <details class="bf-words">
+            <summary>Longest shared passage: {fmt(link.longestWords)} words in a row</summary>
+            <blockquote>{link.longestPassage}</blockquote>
+            <p class="bf-src">
+              As {fullName(parent)} prints it.{' '}
+              {parent.textUrl && <a href={parent.textUrl}>Its official text</a>}
+              {parent.textUrl && m.textUrl && ' · '}
+              {m.textUrl && <a href={m.textUrl}>{fullName(m)}, official text</a>}
+            </p>
+          </details>
+        </>
+      ) : (
+        <p class="bf-why"><span class="bf-kind">Earliest in this family</span><span>{m.relatives} later {m.relatives === 1 ? 'text shares' : 'texts share'} a passage with it</span></p>
+      )
+    }
+  </div>
+  {
+    kids.length > 0 && (
+      <ol class="bf-kids">
+        {kids.map((k) => (
+          <Astro.self data={data} id={k.id} />
+        ))}
+      </ol>
+    )
+  }
+</li>

@@ -9,6 +9,7 @@ None of these ship to a reader's browser. They run when the site is built, check
 | `check-data.mjs` | `npm run check:data` | Confirms each copy (the dataset, the bills tables, the program for assistants) is byte for byte what was copied in |
 | `sync-bills.mjs` | `npm run sync:bills` | Copies the bills table and the calendar table in from the `clinx-340b-bills` folder and records a fingerprint of each file |
 | `bills-shape.mjs` | Used by `sync-bills.mjs` and `check-data.mjs` | The columns, roles, steps and links the site expects of the bills table, and the columns, kinds and links it expects of the calendar table |
+| `bill-family.mjs` | `node scripts/bill-family.mjs <bills folder> <laws folder>` | Compares the saved texts of the state contract pharmacy bills and laws and writes the bill family tree (`src/data/bill-family/340b-bill-family.json`) |
 | `sync-mcp.mjs` | `npm run sync:mcp` | Copies the program that answers AI assistants in from the `clinx-mcp` folder and records a fingerprint of each file. Refuses a file a web host could not run |
 | `usage/mcp-usage.mjs` | `npm run usage:mcp` | Prints how the door for assistants is being used: counts by kind, read from the host with a read-only token. No words typed and no addresses are in them |
 | `check-live-mcp.mjs` | `npm run check:live`, by hand after a publish | Asks the published door for assistants real questions through each of its tools and fails if an answer disagrees with the published tables or health centers files |

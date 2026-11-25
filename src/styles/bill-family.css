@@ -1,0 +1,339 @@
+/*
+  The bill family tree (/bills/family/). The opening band, the parts list and the sections are the
+  registry page's (registry.css); this file draws the tree, the list of links and the panel.
+  Colour: the site accent marks a link across state lines and a law; everything in one state is ink.
+*/
+
+/* ---------- Opening of part 1: the sentence and the map ---------- */
+
+.bf-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 24rem);
+  gap: var(--s5) var(--s7);
+  align-items: start;
+  margin-bottom: var(--s6);
+}
+.bf-intro .rx-text { margin: 0; }
+.bf-map .statemap-svg { width: 100%; height: auto; }
+
+/* ---------- The picture and its panel ---------- */
+
+.bf-figure {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 19rem;
+  gap: var(--s6);
+  align-items: start;
+}
+.bf-chart {
+  margin: 0;
+  padding: var(--s5) var(--s5) var(--s4);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.bf-tree {
+  display: block;
+  width: 100%;
+  height: auto;
+  font-family: var(--body);
+}
+.bf-band { fill: var(--surface-2); opacity: 0.55; }
+.bf-year {
+  font-size: 12px;
+  font-weight: 600;
+  fill: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.bf-colhead {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  fill: var(--muted);
+}
+.bf-hit { fill: transparent; }
+.bf-row { text-decoration: none; outline: none; }
+.bf-row:hover .bf-hit,
+.bf-row:focus-visible .bf-hit,
+.bf-row.on .bf-hit { fill: var(--accent-wash); }
+.bf-row:focus-visible .bf-hit { stroke: var(--focus); stroke-width: 1.5; }
+.bf-name { font-size: 13px; fill: var(--ink); }
+.bf-st { font-weight: 700; fill: var(--accent); }
+.bf-ev {
+  font-size: 12.5px;
+  fill: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.bf-dot {
+  fill: var(--surface);
+  stroke: var(--ink);
+  stroke-width: 1.6;
+}
+.bf-dot.law { fill: var(--accent); stroke: var(--accent); }
+.bf-edge {
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  transition: opacity 0.15s var(--ease), stroke-width 0.15s var(--ease);
+}
+.bf-edge.k-across-states { stroke: var(--accent); stroke-width: 1.8; }
+.bf-edge.k-carried-over { stroke-dasharray: 3 3; }
+.bf-row > * { transition: opacity 0.15s var(--ease); }
+
+/* Pointing at a row: its line back to the earliest text stays, the rest steps back. */
+.bf-tree.tracing .bf-edge { opacity: 0.18; }
+.bf-tree.tracing .bf-edge.on { opacity: 1; stroke-width: 2.6; }
+.bf-tree.tracing .bf-row:not(.on) .bf-name,
+.bf-tree.tracing .bf-row:not(.on) .bf-ev,
+.bf-tree.tracing .bf-row:not(.on) .bf-dot { opacity: 0.35; }
+
+.bf-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2) var(--s5);
+  margin: var(--s4) 0 0;
+  padding: var(--s3) 0 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+  font-size: var(--text-xs);
+  color: var(--muted);
+}
+.bf-legend li { display: inline-flex; align-items: center; gap: var(--s2); }
+.bf-key {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.6px solid var(--ink);
+  background: var(--surface);
+}
+.bf-key.law { background: var(--accent); border-color: var(--accent); }
+.bf-line { width: 20px; height: 0; border-top: 1.8px solid var(--muted); }
+.bf-line.across { border-color: var(--accent); }
+.bf-line.again { border-top-style: dashed; }
+
+.bf-panel {
+  position: sticky;
+  top: 5rem;
+  padding: var(--s5);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: var(--text-sm);
+}
+.bf-panel p { margin: 0; }
+.bf-p-kicker {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.bf-p-text { margin-top: var(--s2) !important; color: var(--muted); }
+.bf-p-name {
+  margin-top: var(--s2) !important;
+  font-family: var(--display);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  line-height: 1.2;
+}
+.bf-p-title { margin-top: var(--s1) !important; color: var(--muted); line-height: 1.45; }
+.bf-p-kind {
+  margin-top: var(--s4) !important;
+  padding-top: var(--s4);
+  border-top: 1px solid var(--line);
+  font-weight: 600;
+}
+.bf-p-figs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s3);
+  margin: var(--s3) 0;
+}
+.bf-p-figs dt { font-size: var(--text-xs); color: var(--muted); }
+.bf-p-figs dd {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 1.5rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+.bf-p-with { color: var(--muted); }
+.bf-p-with strong { color: var(--ink); font-weight: 600; }
+.bf-p-quote,
+.bf-words blockquote {
+  margin: var(--s3) 0 0;
+  padding: var(--s1) 0 var(--s1) var(--s3);
+  border-left: 3px solid var(--accent);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  color: var(--ink);
+}
+.bf-p-root { margin-top: var(--s4) !important; padding-top: var(--s4) !important; border-top: 1px solid var(--line); color: var(--muted); }
+
+/* ---------- The list: the same tree, with the words ---------- */
+
+.bf-outline,
+.bf-kids {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bf-outline { margin-top: var(--s4); }
+.bf-kids {
+  margin-left: 0.75rem;
+  padding-left: 1.25rem;
+  border-left: 1px solid var(--tick);
+}
+.bf-node { position: relative; scroll-margin-top: 5rem; }
+.bf-kids > .bf-node::before {
+  content: '';
+  position: absolute;
+  left: -1.25rem;
+  top: 1.45rem;
+  width: 1rem;
+  border-top: 1px solid var(--tick);
+}
+.bf-item {
+  margin-block: var(--s2);
+  padding: var(--s3) var(--s4);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.rx-alt .bf-item { background: var(--bg); }
+.bf-node:target > .bf-item { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.bf-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s1) var(--s3);
+  margin: 0;
+}
+.bf-mark {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1.6px solid var(--ink);
+}
+.is-law .bf-mark { background: var(--accent); border-color: var(--accent); }
+.bf-title { font-weight: 650; color: var(--ink); text-decoration: none; }
+.bf-title:hover { color: var(--accent); text-decoration: underline; }
+.bf-meta { font-size: var(--text-sm); color: var(--muted); font-variant-numeric: tabular-nums; }
+.bf-status {
+  padding: 0 var(--s2);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-size: var(--text-xs);
+  line-height: 1.6;
+  color: var(--muted);
+}
+.bf-status.law { color: var(--accent); background: var(--accent-wash); border-color: transparent; font-weight: 600; }
+.bf-why {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--s3);
+  margin: var(--s1) 0 0;
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+.bf-kind { font-weight: 600; color: var(--ink); }
+.bf-words { margin-top: var(--s2); font-size: var(--text-sm); }
+.bf-words summary {
+  cursor: pointer;
+  width: fit-content;
+  color: var(--accent);
+  font-weight: 600;
+}
+.bf-src { margin: var(--s2) 0 0; font-size: var(--text-xs); color: var(--muted); }
+
+/* ---------- Part 2: the smaller families ---------- */
+
+.bf-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+  gap: var(--s5);
+  align-items: start;
+}
+.bf-card {
+  padding: var(--s5);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.bf-card h3 { margin: 0; }
+.bf-card-sub { margin: var(--s1) 0 0; font-size: var(--text-sm); color: var(--muted); }
+.bf-card .bf-item { background: var(--surface); }
+.bf-outline.compact .bf-words blockquote { font-size: var(--text-xs); }
+
+/* ---------- Part 3: texts with no close relative ---------- */
+
+.bf-alone {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+.bf-alone li {
+  display: grid;
+  grid-template-columns: minmax(0, 15rem) 4rem auto minmax(0, 1fr);
+  gap: var(--s1) var(--s4);
+  align-items: baseline;
+  padding: var(--s3) 0;
+  border-bottom: 1px solid var(--line);
+  scroll-margin-top: 5rem;
+}
+.bf-alone li:target { background: var(--accent-wash); }
+.bf-alone a { font-weight: 650; color: var(--ink); }
+.bf-alone .bf-status { justify-self: start; }
+.bf-alone-note { font-size: var(--text-sm); color: var(--muted); }
+
+/* ---------- Part 4: how ---------- */
+
+.bf-how {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s5) var(--s6);
+  margin: 0 0 var(--s6);
+  padding: 0;
+  list-style: none;
+  counter-reset: how;
+}
+.bf-how li {
+  display: grid;
+  gap: var(--s1);
+  padding-top: var(--s4);
+  border-top: 2px solid var(--accent);
+  counter-increment: how;
+}
+.bf-how strong { font-family: var(--display); font-size: var(--text-lg); }
+.bf-how strong::before {
+  content: counter(how) '  ';
+  color: var(--accent);
+}
+.bf-how span { color: var(--muted); line-height: 1.55; }
+.bf-limits { max-width: var(--measure); }
+
+/* ---------- Narrower screens ---------- */
+
+@media (max-width: 68rem) {
+  .bf-figure { grid-template-columns: minmax(0, 1fr); }
+  .bf-panel { display: none; }
+}
+@media (max-width: 52rem) {
+  .bf-intro { grid-template-columns: minmax(0, 1fr); }
+  .bf-how { grid-template-columns: minmax(0, 1fr); }
+  .bf-alone li { grid-template-columns: minmax(0, 1fr) auto; }
+  .bf-alone-note { grid-column: 1 / -1; }
+}
+/* On a phone the list is the tree: the picture's labels would be too small to read. */
+@media (max-width: 46rem) {
+  .bf-figure { display: none; }
+  .bf-kids { margin-left: 0.25rem; padding-left: 0.875rem; }
+  .bf-kids > .bf-node::before { left: -0.875rem; width: 0.625rem; }
+  .bf-item { padding: var(--s3); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bf-edge, .bf-row > * { transition: none; }
+}
