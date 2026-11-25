@@ -271,7 +271,7 @@ const dayNumber = (iso: string): number => {
 export const tagOf = (m: Member, short = false): string => (short ? m.state : `${m.state} ${m.type === 'bill' ? m.number : 'law'}`);
 
 /** How thick a link is drawn: by its longest shared run of words, on a log scale, 1 to about 4.5 units. */
-export const edgeWidth = (longest: number): number => Math.min(4.6, Math.max(1, 1 + 1.3 * Math.log10(Math.max(longest, 10) / 10)));
+export const edgeWidth = (longest: number): number => Math.min(6, Math.max(1.6, 1.6 + 1.9 * Math.log10(Math.max(longest, 10) / 10)));
 
 /**
  * Lanes for a family: each text sits at its day on the time axis, in the lane nearest its parent's where its
@@ -308,6 +308,8 @@ export interface TreeOptions {
   narrow?: boolean;
   /** Smaller, for a family drawn among others. */
   compact?: boolean;
+  /** With compact: drawn at a phone's width, so its labels keep their size there. */
+  phone?: boolean;
   /** Texts drawn lit; the rest faint. Empty or missing: all lit. */
   hot?: ReadonlySet<string>;
   /** The story step at which each text first shows (class st<n>). */
@@ -338,7 +340,8 @@ export function timeTreeSvg(data: FamilyData, family: Family, o: TreeOptions): s
   const notes = narrow ? [] : (o.notes ?? []);
 
   // Geometry: along is the time axis, across is the lane axis.
-  const W = narrow ? 343 : compact ? 400 : 1000;
+  const phone = compact && Boolean(o.phone);
+  const W = narrow ? 343 : phone ? 310 : compact ? 400 : 1000;
   const lane = narrow ? 13 : compact ? 20 : 16;
   const head = narrow ? 8 : notes.length ? 58 : 26;
   const a0 = narrow ? head + 6 : 20;
@@ -365,7 +368,7 @@ export function timeTreeSvg(data: FamilyData, family: Family, o: TreeOptions): s
   };
 
   const parts: string[] = [
-    `<svg class="tt${narrow ? ' tt-narrow' : ' tt-wide'}${compact ? ' tt-compact' : ''}" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="group" aria-labelledby="${o.id}-t ${o.id}-d">`,
+    `<svg class="tt${narrow ? ' tt-narrow' : phone ? ' tt-phone' : ' tt-wide'}${compact ? ' tt-compact' : ''}" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="group" aria-labelledby="${o.id}-t ${o.id}-d">`,
     `<title id="${o.id}-t">${esc(o.title)}</title>`,
     `<desc id="${o.id}-d">${esc(o.desc)}</desc>`,
   ];
@@ -397,8 +400,19 @@ export function timeTreeSvg(data: FamilyData, family: Family, o: TreeOptions): s
       const my = py + Math.max(10, (cy - py) / 2);
       d = `M${px.toFixed(1)} ${py.toFixed(1)}C${px.toFixed(1)} ${my.toFixed(1)} ${cx.toFixed(1)} ${Math.min(my, cy).toFixed(1)} ${cx.toFixed(1)} ${cy.toFixed(1)}`;
     } else {
-      const mx = px + Math.max(10, (cx - px) / 2);
-      d = `M${px.toFixed(1)} ${py.toFixed(1)}C${mx.toFixed(1)} ${py.toFixed(1)} ${Math.min(mx, cx).toFixed(1)} ${cy.toFixed(1)} ${cx.toFixed(1)} ${cy.toFixed(1)}`;
+      // A line heading right leaves from the end of the earlier text's label, so it never runs through it;
+      // one dropping to a text at nearly the same day leaves from the dot.
+      const tagEnd = px + 8 + (p.state.length + 1 + (p.type === 'bill' ? p.number : 'law').length) * (compact ? 7.8 : 7.6) + 3;
+      const same = Math.abs(cy - py) < 0.5;
+      const sx = cx - tagEnd > (same ? 24 : 28) ? tagEnd : px;
+      const mx = sx + Math.max(10, (cx - sx) / 2);
+      const top = py - lane * 0.6;
+      d = same
+        ? sx === px
+          ? // Little room after the label: the line arcs over it, between this row and the one above.
+            `M${px.toFixed(1)} ${(py - 4).toFixed(1)}C${px.toFixed(1)} ${top.toFixed(1)} ${cx.toFixed(1)} ${top.toFixed(1)} ${cx.toFixed(1)} ${(cy - 4).toFixed(1)}`
+          : `M${sx.toFixed(1)} ${py.toFixed(1)}H${cx.toFixed(1)}`
+        : `M${sx.toFixed(1)} ${py.toFixed(1)}C${mx.toFixed(1)} ${py.toFixed(1)} ${Math.min(mx, cx).toFixed(1)} ${cy.toFixed(1)} ${cx.toFixed(1)} ${cy.toFixed(1)}`;
     }
     const kind = link?.kind ?? 'same-state';
     edges.push(`<path class="tt-e k-${kind} ${cls(m)}" data-edge="${esc(m.id)}" stroke-width="${edgeWidth(link?.longestWords ?? 0).toFixed(2)}" d="${d}"/>`);
@@ -442,7 +456,9 @@ export function timeTreeSvg(data: FamilyData, family: Family, o: TreeOptions): s
 
 /** Both forms of a family's time tree: wide for a laptop, narrow (time down the page) for a phone. */
 export function timeTree(data: FamilyData, family: Family, o: TreeOptions): { wide: string; narrow: string } {
-  return { wide: timeTreeSvg(data, family, o), narrow: timeTreeSvg(data, family, { ...o, id: `${o.id}-n`, narrow: true }) };
+  // A compact tree stays time-across on a phone, drawn again at the phone's width.
+  const small = o.compact ? { id: `${o.id}-p`, phone: true } : { id: `${o.id}-n`, narrow: true };
+  return { wide: timeTreeSvg(data, family, o), narrow: timeTreeSvg(data, family, { ...o, ...small }) };
 }
 
 /**

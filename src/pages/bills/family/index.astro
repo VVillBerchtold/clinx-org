@@ -135,7 +135,7 @@ const smallCards = small.map((f) => {
       compact: true,
       title: `${f.states.map(stateName).join(' and ')}: ${fm.length} texts`,
       desc: `Each dot is a text at its day; a line joins it to the earlier text it shares the most words with.`,
-    }).wide,
+    }),
   };
 });
 const homeOnly = small.filter((f) => f.states.length === 1).length;
@@ -303,7 +303,7 @@ const parts = [
         {smallCards.map((c) => (
           <li>
             <p class="sm-name">{c.title} <span>{c.sub}</span></p>
-            <Fragment set:html={c.svg} />
+            <Fragment set:html={c.svg.wide + c.svg.narrow} />
             <details class="bf-mini-list">
               <summary>The links</summary>
               <ol class="bf-outline compact"><FamilyNode data={data} id={c.f.root} /></ol>

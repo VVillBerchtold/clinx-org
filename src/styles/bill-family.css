@@ -10,17 +10,18 @@
 
 .tt-fig { margin: 0; }
 .tt { display: block; width: 100%; height: auto; font-family: var(--body); overflow: visible; }
-.tt-narrow { display: none; }
+.tt-narrow, .tt-phone { display: none; }
 @media (max-width: 44rem) {
   .tt-fig .tt-wide { display: none; }
   .tt-fig .tt-narrow { display: block; }
-  .bf-multiples .tt-wide { display: block; }
+  .bf-multiples .tt-wide { display: none; }
+  .bf-multiples .tt-phone { display: block; }
 }
 .tt-grid { stroke: var(--tick); stroke-width: 1; }
 .tt-year { font-size: 12px; font-weight: 650; fill: var(--muted); font-variant-numeric: tabular-nums; }
 .tt-e {
   fill: none;
-  stroke: var(--rx-q3);
+  stroke: var(--rx-q4);
   stroke-linecap: round;
   transition: opacity 0.35s var(--ease), stroke 0.2s var(--ease);
 }
@@ -44,12 +45,12 @@
 .tt-compact .tt-year { font-size: 12.5px; }
 
 /* Faint: off the lit set (part 2), or off the chosen state's line (part 3). */
-.tt .cold { opacity: 0.13; }
+.tt .cold { opacity: 0.3; }
 .tt-e.cold { stroke: var(--muted); }
 .tt.tracing .tt-n:not(.on),
 .tt.tracing .tt-e:not(.on),
-.tt.tracing .tt-note { opacity: 0.12; }
-.tt.tracing .tt-e.on { stroke-width: 3.5; }
+.tt.tracing .tt-note { opacity: 0.28; }
+.tt.tracing .tt-e.on { stroke-width: 4.5; }
 
 /* ---------- Part 1: the scroll story ---------- */
 
@@ -59,7 +60,7 @@
 [data-upto='1'] .tt :is(.st2, .st3, .st4),
 [data-upto='2'] .tt :is(.st3, .st4),
 [data-upto='3'] .tt :is(.st4) { opacity: 0.06; }
-[data-upto='3'] .tt :is(.tt-n, .tt-e):not(.f3):not(.st4) { opacity: 0.2; }
+[data-upto='3'] .tt :is(.tt-n, .tt-e):not(.f3):not(.st4) { opacity: 0.38; }
 [data-upto='3'] .tt .tt-note:not(.f3) { opacity: 0; }
 [data-upto='0'] .tt .tt-note:not(.st0),
 [data-upto='1'] .tt .tt-note:not(.st0),
@@ -74,7 +75,7 @@
 .bf-key { margin-top: var(--s4); }
 .bf-k-dot { width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--rx-1); background: var(--bg); flex: none; }
 .bf-k-dot.law { background: var(--rx-1); }
-.bf-k-line { width: 22px; height: 0; border-top: 2px solid var(--rx-q3); flex: none; }
+.bf-k-line { width: 22px; height: 0; border-top: 3px solid var(--rx-q4); flex: none; }
 .bf-k-line.across { border-color: var(--rx-2); }
 .bf-k-w { display: inline-flex; flex-direction: column; gap: 2px; width: 22px; flex: none; }
 .bf-k-w span { display: block; border-top: 1px solid var(--rx-2); }
