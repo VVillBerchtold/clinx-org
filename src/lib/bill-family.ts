@@ -258,86 +258,231 @@ export function stateRoles(data: FamilyData): Map<string, { big: number; other: 
   return out;
 }
 
-// ---------- The picture of one family ----------
+// ---------- The time tree ----------
 
 const esc = (t: string): string => t.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
-
-/** Geometry of the tree picture, in SVG units. Text is 13 units, so it reads at about 12 px on a laptop. */
-const G = { width: 880, nameW: 176, evidenceW: 96, pad: 16, top: 34, row: 26 } as const;
 
 const dayNumber = (iso: string): number => {
   const [y, mo, d] = iso.split('-').map(Number);
   return Date.UTC(y!, (mo ?? 1) - 1, d ?? 1) / 86_400_000;
 };
 
+/** The label beside a text's dot: "OK SB 1030", or the state alone where room is short. */
+export const tagOf = (m: Member, short = false): string => (short ? m.state : `${m.state} ${m.type === 'bill' ? m.number : 'law'}`);
+
+/** How thick a link is drawn: by its longest shared run of words, on a log scale, 1 to about 4.5 units. */
+export const edgeWidth = (longest: number): number => Math.min(4.6, Math.max(1, 1 + 1.3 * Math.log10(Math.max(longest, 10) / 10)));
+
 /**
- * One family as a time tree: a row for each text (root first, each text before its children), a dot at the
- * day it was introduced or signed, and an elbow from its parent's dot. Each row is a link to the text's place
- * in the list below, where the shared words are printed.
+ * Lanes for a family: each text sits at its day on the time axis, in the lane nearest its parent's where its
+ * dot and label fit. `before` and `after` are the room a text needs on the time axis, in the same units.
  */
-export function familySvg(data: FamilyData, family: Family, id: string): string {
+export function packLanes(data: FamilyData, family: Family, pos: (m: Member) => number, before: number, after: number): Map<string, number> {
+  const lanes: [number, number][][] = [];
+  const lane = new Map<string, number>();
+  for (const id of family.members) {
+    const m = data.members.get(id)!;
+    const x = pos(m);
+    const want = m.parent && lane.has(m.parent) ? lane.get(m.parent)! : 0;
+    let got = -1;
+    for (let d = 0; got < 0; d++) {
+      for (const c of d === 0 ? [want] : [want + d, want - d]) {
+        if (c < 0) continue;
+        if ((lanes[c] ?? []).every(([a, b]) => x + after < a || x - before > b)) {
+          got = c;
+          break;
+        }
+      }
+    }
+    (lanes[got] ??= []).push([x - before, x + after]);
+    lane.set(id, got);
+  }
+  return lane;
+}
+
+export interface TreeOptions {
+  id: string;
+  title: string;
+  desc: string;
+  /** Wide (time across) or narrow (time down, for a phone). */
+  narrow?: boolean;
+  /** Smaller, for a family drawn among others. */
+  compact?: boolean;
+  /** Texts drawn lit; the rest faint. Empty or missing: all lit. */
+  hot?: ReadonlySet<string>;
+  /** The story step at which each text first shows (class st<n>). */
+  step?: ReadonlyMap<string, number>;
+  /** Texts in focus at a story step (class f<n>). */
+  focus?: ReadonlyMap<number, ReadonlySet<string>>;
+  /** Short notes written over the picture, pointing at one text each (wide only). */
+  notes?: readonly { id: string; text: string }[];
+}
+
+/**
+ * One family as a time tree. Each text is a dot at the day it was introduced or became law (a law: filled);
+ * a curve joins it to the earlier text it shares the most words with, thicker the longer their longest
+ * shared run of words, orange when the two are in different states. Each dot is a link to the text's
+ * place in the list below the picture, where the shared words are printed.
+ */
+export function timeTreeSvg(data: FamilyData, family: Family, o: TreeOptions): string {
   const rows = family.members.map((mid) => data.members.get(mid)!);
   const years = rows.map((m) => Number(m.order.slice(0, 4)));
   const y0 = Math.min(...years);
   const y1 = Math.max(...years);
   const start = dayNumber(`${y0}-01-01`);
   const end = dayNumber(`${y1 + 1}-01-01`);
-  const gx0 = G.pad + G.nameW + 14;
-  const gx1 = G.width - G.pad - G.evidenceW - 18;
-  const xOf = (m: Member): number => gx0 + ((dayNumber(m.order) - start) / (end - start)) * (gx1 - gx0);
-  const yOf = (i: number): number => G.top + i * G.row + G.row / 2;
-  const height = G.top + rows.length * G.row + 8;
-  const index = new Map(rows.map((m, i) => [m.id, i]));
+  const span = end - start;
+  const hotAll = !o.hot || o.hot.size === 0;
+  const narrow = Boolean(o.narrow);
+  const compact = Boolean(o.compact);
+  const notes = narrow ? [] : (o.notes ?? []);
+
+  // Geometry: along is the time axis, across is the lane axis.
+  const W = narrow ? 343 : compact ? 400 : 1000;
+  const lane = narrow ? 13 : compact ? 20 : 16;
+  const head = narrow ? 8 : notes.length ? 58 : 26;
+  const a0 = narrow ? head + 6 : 20;
+  const a1 = narrow ? 0 : W - (compact ? 86 : 78);
+  const H0 = narrow ? Math.max(360, Math.round(116 * (y1 - y0 + 1))) : 0;
+  const along = (m: Member | string): number => {
+    const t = typeof m === 'string' ? dayNumber(m) : dayNumber(m.order);
+    return narrow ? a0 + ((t - start) / span) * (H0 - a0 - 10) : a0 + ((t - start) / span) * (a1 - a0);
+  };
+  const laneOf = packLanes(data, family, along, 7, narrow ? 7 : compact ? 78 : 74);
+  const nLanes = Math.max(...laneOf.values()) + 1;
+  const c0 = narrow ? 40 : head + 8;
+  const step = narrow ? Math.min(lane, (W - c0 - 14) / Math.max(nLanes - 1, 1)) : lane;
+  const across = (id: string): number => c0 + laneOf.get(id)! * step;
+  const xy = (m: Member): [number, number] => (narrow ? [across(m.id), along(m)] : [along(m), across(m.id)]);
+  const H = narrow ? H0 : Math.round(c0 + (nLanes - 1) * step + 14);
+
+  const cls = (m: Member): string => {
+    const c: string[] = [];
+    if (!hotAll && !o.hot!.has(m.id)) c.push('cold');
+    if (o.step) c.push(`st${o.step.get(m.id) ?? 0}`);
+    if (o.focus) for (const [n, set] of o.focus) if (set.has(m.id)) c.push(`f${n}`);
+    return c.join(' ');
+  };
+
   const parts: string[] = [
-    `<svg class="bf-tree" viewBox="0 0 ${G.width} ${height}" width="${G.width}" height="${height}" role="group" aria-labelledby="${id}-t ${id}-d">`,
-    `<title id="${id}-t">Family ${family.family}: ${rows.length} bills and laws in ${family.states.length} ${family.states.length === 1 ? 'state' : 'states'}</title>`,
-    `<desc id="${id}-d">Each row is one bill or law, placed by the day it was introduced or became law, ${y0} to ${y1}. A line joins it to the earlier text it shares the most words with. The list after the picture gives the same links with the shared words.</desc>`,
+    `<svg class="tt${narrow ? ' tt-narrow' : ' tt-wide'}${compact ? ' tt-compact' : ''}" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="group" aria-labelledby="${o.id}-t ${o.id}-d">`,
+    `<title id="${o.id}-t">${esc(o.title)}</title>`,
+    `<desc id="${o.id}-d">${esc(o.desc)}</desc>`,
   ];
-  // Year bands and labels.
-  for (let y = y0; y <= y1; y++) {
-    const a = gx0 + ((dayNumber(`${y}-01-01`) - start) / (end - start)) * (gx1 - gx0);
-    const b = gx0 + ((dayNumber(`${y + 1}-01-01`) - start) / (end - start)) * (gx1 - gx0);
-    if ((y - y0) % 2 === 1) parts.push(`<rect class="bf-band" x="${a.toFixed(1)}" y="${G.top - 6}" width="${(b - a).toFixed(1)}" height="${(height - G.top).toFixed(1)}"/>`);
-    parts.push(`<text class="bf-year" x="${((a + b) / 2).toFixed(1)}" y="${G.top - 14}" text-anchor="middle">${y}</text>`);
+
+  // Years: a line at each 1 January, the year written in the space after it.
+  const grid: string[] = [];
+  for (let y = y0; y <= y1 + 1; y++) {
+    const p = along(`${y}-01-01`);
+    if (narrow) {
+      grid.push(`<line class="tt-grid" x1="${c0 - 30}" x2="${W}" y1="${p.toFixed(1)}" y2="${p.toFixed(1)}"/>`);
+      if (y <= y1) grid.push(`<text class="tt-year" x="${c0 - 30}" y="${(p + 14).toFixed(1)}">${y}</text>`);
+    } else {
+      grid.push(`<line class="tt-grid" x1="${p.toFixed(1)}" x2="${p.toFixed(1)}" y1="${head - 14}" y2="${H}"/>`);
+      if (y <= y1) grid.push(`<text class="tt-year" x="${(p + 5).toFixed(1)}" y="${head - 4}">${y}</text>`);
+    }
   }
-  parts.push(`<text class="bf-colhead" x="${G.pad}" y="${G.top - 14}">Bill or law</text>`);
-  parts.push(`<text class="bf-colhead" x="${G.width - G.pad}" y="${G.top - 14}" text-anchor="end">Words shared</text>`);
-  // Edges first, so dots sit on top.
+  parts.push(`<g aria-hidden="true">${grid.join('')}</g>`);
+
+  // Links, under the dots.
   const edges: string[] = [];
-  rows.forEach((m, i) => {
-    if (!m.parent || !index.has(m.parent)) return;
+  for (const m of rows) {
+    if (!m.parent) continue;
     const p = data.members.get(m.parent)!;
     const link = parentLink(data, m.id);
-    const px = xOf(p);
-    const py = yOf(index.get(p.id)!);
-    const cx = xOf(m);
-    const cy = yOf(i);
-    const r = Math.min(7, Math.max(0, cx - px));
-    const d = r > 0 ? `M${px.toFixed(1)} ${py.toFixed(1)}V${(cy - r).toFixed(1)}Q${px.toFixed(1)} ${cy.toFixed(1)} ${(px + r).toFixed(1)} ${cy.toFixed(1)}H${cx.toFixed(1)}` : `M${px.toFixed(1)} ${py.toFixed(1)}V${cy.toFixed(1)}`;
-    edges.push(`<path class="bf-edge k-${link?.kind ?? 'same-state'}" data-edge="${esc(m.id)}" d="${d}"/>`);
-  });
-  parts.push(`<g class="bf-edges">${edges.join('')}</g>`);
-  rows.forEach((m, i) => {
-    const y = yOf(i);
-    const x = xOf(m);
-    const link = parentLink(data, m.id);
-    const top = i * G.row + G.top;
-    const label = `${fullName(m)}, ${yearOf(m)}. ${statusOf(m)}.${link ? ` Shares ${fmt(link.sharedWords)} words with ${fullName(data.members.get(m.parent)!)}.` : ' The earliest text in this family.'}`;
-    const dot = isLaw(m) ? `<circle class="bf-dot law" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5.5"/>` : `<circle class="bf-dot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4.5"/>`;
+    const [px, py] = xy(p);
+    const [cx, cy] = xy(m);
+    let d: string;
+    if (narrow) {
+      const my = py + Math.max(10, (cy - py) / 2);
+      d = `M${px.toFixed(1)} ${py.toFixed(1)}C${px.toFixed(1)} ${my.toFixed(1)} ${cx.toFixed(1)} ${Math.min(my, cy).toFixed(1)} ${cx.toFixed(1)} ${cy.toFixed(1)}`;
+    } else {
+      const mx = px + Math.max(10, (cx - px) / 2);
+      d = `M${px.toFixed(1)} ${py.toFixed(1)}C${mx.toFixed(1)} ${py.toFixed(1)} ${Math.min(mx, cx).toFixed(1)} ${cy.toFixed(1)} ${cx.toFixed(1)} ${cy.toFixed(1)}`;
+    }
+    const kind = link?.kind ?? 'same-state';
+    edges.push(`<path class="tt-e k-${kind} ${cls(m)}" data-edge="${esc(m.id)}" stroke-width="${edgeWidth(link?.longestWords ?? 0).toFixed(2)}" d="${d}"/>`);
+  }
+  parts.push(`<g class="tt-edges" aria-hidden="true">${edges.join('')}</g>`);
+
+  // Notes over the picture, each with a thin line down to its text.
+  for (const [i, n] of notes.entries()) {
+    const m = data.members.get(n.id);
+    if (!m) continue;
+    const [x, y] = xy(m);
+    const ty = 16 + (i % 2) * 0;
+    const anchor = x > W * 0.6 ? 'end' : 'start';
     parts.push(
-      `<a class="bf-row" href="#o-${esc(m.id)}" data-id="${esc(m.id)}" aria-label="${esc(label)}">` +
-        `<rect class="bf-hit" x="0" y="${top}" width="${G.width}" height="${G.row}"/>` +
-        `<text class="bf-name" x="${G.pad}" y="${(y + 4.5).toFixed(1)}"><tspan class="bf-st">${m.state}</tspan> ${esc(shortName(m))}</text>` +
-        dot +
-        `<text class="bf-ev" x="${G.width - G.pad}" y="${(y + 4.5).toFixed(1)}" text-anchor="end">${link ? fmt(link.sharedWords) : 'Earliest'}</text>` +
+      `<g class="tt-note ${cls(m)}" aria-hidden="true"><line x1="${x.toFixed(1)}" x2="${x.toFixed(1)}" y1="${ty + 6}" y2="${(y - 7).toFixed(1)}"/>` +
+        `<text x="${(x + (anchor === 'end' ? 4 : -4)).toFixed(1)}" y="${ty}" text-anchor="${anchor}">${esc(n.text)}</text></g>`,
+    );
+  }
+
+  // Dots and labels: each a link to its row in the list.
+  for (const m of rows) {
+    const [x, y] = xy(m);
+    const link = parentLink(data, m.id);
+    const p = m.parent ? data.members.get(m.parent) : undefined;
+    const label = `${fullName(m)}, ${yearOf(m)}. ${statusOf(m)}.${link && p ? ` Shares ${fmt(link.sharedWords)} words with ${fullName(p)}, ${fmt(link.longestWords)} of them in a row.` : ' The earliest text in this family.'}`;
+    const r = isLaw(m) ? 5.5 : 4.5;
+    const lx = narrow ? x + 7 : x + 8;
+    const ly = narrow ? y + 3.5 : y + 4;
+    const tag = narrow ? '' : `<text class="tt-tag" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}"><tspan class="tt-st">${m.state}</tspan> ${esc(m.type === 'bill' ? m.number : 'law')}</text>`;
+    parts.push(
+      `<a class="tt-n${isLaw(m) ? ' law' : ''}${m.parent ? '' : ' root'} s-${m.state} ${cls(m)}" href="#o-${esc(m.id)}" data-id="${esc(m.id)}" aria-label="${esc(label)}">` +
+        `<circle class="tt-hit" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${narrow ? 8 : 9}"/>` +
+        `<circle class="tt-dot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}"/>` +
+        tag +
         `</a>`,
     );
-  });
+  }
   parts.push('</svg>');
   return parts.join('');
 }
 
-/** What the panel beside the picture shows for each row: the same facts as the list, for the pointer. */
+/** Both forms of a family's time tree: wide for a laptop, narrow (time down the page) for a phone. */
+export function timeTree(data: FamilyData, family: Family, o: TreeOptions): { wide: string; narrow: string } {
+  return { wide: timeTreeSvg(data, family, o), narrow: timeTreeSvg(data, family, { ...o, id: `${o.id}-n`, narrow: true }) };
+}
+
+/**
+ * The passage most often at the heart of the family's links: the run of words found in the most of its
+ * links' longest shared passages, grown left and right as far as all of those passages still share it.
+ * The links and texts it is in come with it, so the page can name and draw them.
+ */
+export function travellingPassage(data: FamilyData, family: Family, n = 12): { words: string; links: Link[]; texts: Set<string>; states: string[] } {
+  const inFamily = new Set(family.members);
+  const links = family.members.map((id) => parentLink(data, id)).filter((l): l is Link => Boolean(l) && inFamily.has(l!.a));
+  const toks = (s: string): string[] => s.split(/\s+/).filter(Boolean);
+  const norm = (w: string): string => w.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const count = new Map<string, Set<number>>();
+  links.forEach((l, i) => {
+    const t = toks(l.longestPassage).map(norm);
+    for (let k = 0; k + n <= t.length; k++) {
+      const key = t.slice(k, k + n).join(' ');
+      (count.get(key) ?? count.set(key, new Set()).get(key)!).add(i);
+    }
+  });
+  let bestKey = '';
+  let best = new Set<number>();
+  for (const [k, s] of count) if (s.size > best.size) [bestKey, best] = [k, s];
+  if (!bestKey) return { words: '', links: [], texts: new Set(), states: [] };
+  const holders = [...best].map((i) => links[i]!);
+  // Grow the run while every holder still has it, then print it in the first holder's own words.
+  const first = toks(holders[0]!.longestPassage);
+  const firstN = first.map(norm);
+  const at = Math.max(0, firstN.findIndex((_, k) => firstN.slice(k, k + n).join(' ') === bestKey));
+  let lo = at;
+  let hi = at + n;
+  const all = (a: number, b: number): boolean => holders.every((l) => toks(l.longestPassage).map(norm).join(' ').includes(firstN.slice(a, b).join(' ')));
+  while (lo > 0 && all(lo - 1, hi)) lo--;
+  while (hi < first.length && all(lo, hi + 1)) hi++;
+  const texts = new Set(holders.flatMap((l) => [l.a, l.b]));
+  const states = [...new Set([...texts].map((id) => data.members.get(id)!.state))].sort();
+  return { words: first.slice(lo, hi).join(' ').replace(/^[^A-Za-z0-9]+/, ''), links: holders, texts, states };
+}
+
+/** What the readout card shows for each text: the same facts as the list, for the pointer. */
 export function panelData(data: FamilyData, family: Family): string {
   const out: Record<string, unknown> = {};
   for (const id of family.members) {
@@ -346,15 +491,20 @@ export function panelData(data: FamilyData, family: Family): string {
     const p = m.parent ? data.members.get(m.parent) : undefined;
     out[id] = {
       name: fullName(m),
+      state: m.state,
       year: yearOf(m),
       status: statusOf(m),
+      law: isLaw(m),
       title: m.title,
+      href: memberHref(m),
       parent: p ? fullName(p) : '',
       kind: link ? LINK_LABEL[link.kind] : '',
       shared: link ? fmt(link.sharedWords) : '',
       longest: link ? fmt(link.longestWords) : '',
+      width: link ? Math.round((edgeWidth(link.longestWords) / 4.6) * 100) : 0,
       passage: link?.longestPassage ?? '',
       sponsor: link?.sameSponsor ?? '',
+      kids: childrenOf(data, id).length,
       chain: chainOf(data, id),
     };
   }

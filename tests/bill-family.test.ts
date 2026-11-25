@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { LINK_COLUMNS, chainOf, familySvg, getFamily, linksCsv, parentLink, parseFamily } from '../src/lib/bill-family';
+import { LINK_COLUMNS, chainOf, timeTree, travellingPassage, getFamily, linksCsv, parentLink, parseFamily } from '../src/lib/bill-family';
 
 const raw = (): string => {
   const modules = import.meta.glob('../src/data/bill-family/340b-bill-family.json', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
@@ -52,8 +52,19 @@ describe('bill family tree', () => {
 
   it('draws one row in the picture per member of the family', () => {
     const f = data.families[0]!;
-    const svg = familySvg(data, f, 'bf-test');
-    expect(svg.match(/class="bf-row"/g)?.length).toBe(f.members.length);
+    const t = timeTree(data, f, { id: 't', title: 'T', desc: 'D' });
+    for (const svg of [t.wide, t.narrow]) {
+      expect(svg.match(/<a class="tt-n/g)?.length).toBe(f.members.length);
+      expect(svg.match(/class="tt-e /g)?.length).toBe(f.members.length - 1);
+    }
+  });
+
+  it('finds the passage the most links share, and every link it names holds it', () => {
+    const p = travellingPassage(data, data.families[0]!);
+    expect(p.words.split(' ').length).toBeGreaterThanOrEqual(12);
+    expect(p.links.length).toBeGreaterThan(2);
+    const norm = (s: string): string => s.toLowerCase().replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ' ');
+    for (const l of p.links) expect(norm(l.longestPassage)).toContain(norm(p.words));
   });
 
   it('writes the links download with its header and one row per link', () => {
