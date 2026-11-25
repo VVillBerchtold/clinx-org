@@ -696,6 +696,24 @@ for (const f of files) if (statSync(f).size > MAX_FILE_BYTES) fail(urlOf(f), `is
   }
 }
 
+// Every state's 340B report page in the Scorecard (/scorecard/<two letters>/) is titled the same way, in the window's
+// title and in its heading: "<State> 340B hospital report" (src/lib/state-pages.ts). A state added later is held to it too.
+{
+  const decode = (text) => text.replace(/&#39;|&#x27;/g, "'").replace(/&amp;/g, '&').replace(/<[^>]+>/g, '').trim();
+  const dir = join(dist, 'scorecard');
+  for (const st of existsSync(dir) ? readdirSync(dir) : []) {
+    if (!/^[a-z]{2}$/.test(st)) continue;
+    const file = join(dir, st, 'index.html');
+    if (!existsSync(file)) continue;
+    const html = readFileSync(file, 'utf8');
+    const title = decode(html.match(/<title>([^<]*)<\/title>/)?.[1] ?? '');
+    const h1 = decode(html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/)?.[1] ?? '');
+    const where = `/scorecard/${st}/`;
+    if (!/^[A-Z][A-Za-z .]+ 340B hospital report$/.test(h1)) fail(where, `the heading must be "<State> 340B hospital report", not "${h1}"`);
+    else if (!title.startsWith(h1)) fail(where, `the window's title must start with "${h1}", not "${title}"`);
+  }
+}
+
 // Every internal link must resolve to a built file, and every #fragment to an id on that page.
 function resolveTarget(page, target) {
   const [beforeHash, fragment] = target.split('#');

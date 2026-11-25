@@ -6,6 +6,8 @@ import Cited from './Cited.astro';
 import DifferencesTable from './DifferencesTable.astro';
 import OnPage from './OnPage.astro';
 import PageHead from './PageHead.astro';
+import { stateReportTitle } from '../lib/state-pages';
+import StatePages from './StatePages.astro';
 import YearSwitch from './YearSwitch.astro';
 import { formatDate, getDataset, pdfHref, reportViewFor, type Discrepancy, type LineItem } from '../lib/data';
 import { barPercentOfScale } from '../lib/meter';
@@ -62,11 +64,11 @@ const cell = (r: LineItem): string => (r.amountAsFiled === '' ? 'blank' : r.amou
 ---
 
 <Base
-  title={`${name} 340B report: ${year} data by entity`}
+  title={`${stateReportTitle(name)}: ${year} data by entity`}
   crumbs={[{ name: 'Scorecard', path: '/scorecard/' }, { name, path: `/scorecard/${code.toLowerCase()}/` }]}
   description={`Net 340B revenue for the ${entities.length} entities named in the ${spec.agency.startsWith(name) ? spec.agency : `${name} ${spec.agency}`} report, ${year} data, as the state printed it, with the state's totals and the places where its figures differ. Every figure links to its page of the report.`}
 >
-  <PageHead title={name} trail={[{ label: 'Scorecard', href: '/scorecard/' }, { label: `${year} data, state report` }]}>
+  <PageHead title={stateReportTitle(name)} trail={[{ label: 'Scorecard', href: '/scorecard/' }, { label: `${year} data, state report` }]}>
     <p class="lede">
       The {spec.agency}'s own report names these entities and prints one net 340B revenue figure for each, for {year}. The entities' own filings are not public. Every figure below is the state's, as printed, and links to its page of the report.
     </p>
@@ -243,4 +245,5 @@ const cell = (r: LineItem): string => (r.amountAsFiled === '' ? 'blank' : r.amou
       <dd>{firstPage} to {lastPage} of {filing.pageCount}</dd>
     </dl>
   </div>
+  <StatePages code={code} class="state-pages-foot" />
 </Base>

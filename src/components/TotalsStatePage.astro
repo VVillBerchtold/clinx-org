@@ -6,6 +6,8 @@ import Cited from './Cited.astro';
 import DifferencesTable from './DifferencesTable.astro';
 import OnPage from './OnPage.astro';
 import PageHead from './PageHead.astro';
+import { stateReportTitle } from '../lib/state-pages';
+import StatePages from './StatePages.astro';
 import { formatDate, getDataset, pdfHref, totalsViewFor, type LineItem, type TotalsCell, type TotalsTableView } from '../lib/data';
 import { barPercentOfScale } from '../lib/meter';
 import { numberWord, numberWordCap } from '../lib/site';
@@ -51,11 +53,11 @@ const quoteCaption = (rows: readonly LineItem[], where: string): string => `${ro
 ---
 
 <Base
-  title={`${name} 340B report: ${year} statewide totals`}
+  title={`${stateReportTitle(name)}: ${year} statewide totals`}
   crumbs={[{ name: 'Scorecard', path: '/scorecard/' }, { name, path: `/scorecard/${code.toLowerCase()}/` }]}
   description={`The statewide 340B totals the ${spec.agency} printed for ${year}: ${tables.map((t) => t.spec.heading.toLowerCase().replace(/^340b /, '340B ')).join(', ')}, as printed, with the places where the report's figures differ. Every figure links to its page of the report.`}
 >
-  <PageHead title={name} trail={[{ label: 'Scorecard', href: '/scorecard/' }, { label: `${year} data, state report` }]}>
+  <PageHead title={stateReportTitle(name)} trail={[{ label: 'Scorecard', href: '/scorecard/' }, { label: `${year} data, state report` }]}>
     <p class="lede">
       The {spec.agency} adds together what covered entities reported for {year} and prints the totals in one report. It gives statewide totals only, so no figure here belongs to any one entity. Every figure below is the state's, as printed, and links to its page of the report.
     </p>
@@ -301,4 +303,5 @@ const quoteCaption = (rows: readonly LineItem[], where: string): string => `${ro
       <dd>{report.pages.first} to {report.pages.last} of {filing.pageCount}</dd>
     </dl>
   </div>
+  <StatePages code={code} class="state-pages-foot" />
 </Base>

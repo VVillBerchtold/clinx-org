@@ -5,7 +5,7 @@ import Arrow from '../../components/Arrow.astro';
 import Draft from '../../components/Draft.astro';
 import PageHead from '../../components/PageHead.astro';
 import { CITE_SITE, LINKEDIN_URL, MAKER_NAME, NAV, REPOSITORIES, TOOL_LINKS, X_URL, citeLine, type NavGroup } from '../../lib/site';
-import { aboutPageNode, founderNode } from '../../lib/structured-data';
+import { aboutPageNode, founderNode, organizationNode } from '../../lib/structured-data';
 
 /**
  * What is on the site today, taken from the main menu and the list of tools, so this page changes
@@ -21,12 +21,12 @@ if (toolPages !== TOOL_LINKS.length) throw new Error(`The site has ${toolPages} 
 ---
 
 <Base
-  title="About: the mission and founder Will Berchtold"
+  title="About ClinX and its founder, Will Berchtold"
   description="Why ClinX exists, what it publishes, how it works and who builds it: Will Berchtold, founder of ClinX and ReferralFinderX. How it stays independent and how to report a correction."
   crumbs={[{ name: 'About', path: '/about/' }]}
-  about={[aboutPageNode(), founderNode()]}
+  about={[aboutPageNode(), organizationNode(), founderNode()]}
 >
-  <PageHead title="About" trail={[{ label: 'ClinX' }]}>
+  <PageHead title="About ClinX" trail={[{ label: 'ClinX' }]}>
     <p class="lede">
       ClinX exists to put capable healthcare tools and data within reach of every clinic, whatever its size or budget.
     </p>

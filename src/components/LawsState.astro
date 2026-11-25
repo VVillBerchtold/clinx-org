@@ -9,6 +9,7 @@ import '../styles/scorecard.css';
 import '../styles/laws.css';
 import Base from '../layouts/Base.astro';
 import PageHead from './PageHead.astro';
+import StatePages from './StatePages.astro';
 import { formatDate } from '../lib/data';
 import { LAWS_HOME, getLaws, kindPath, lawName, lawsMapSvg, lawsOf, lawsPath, ownerOf, savedTextUrl, type Law, lawsMapCards } from '../lib/laws';
 import { numberWordCap } from '../lib/site';
@@ -25,6 +26,11 @@ const labelOf = new Map(laws.kinds.map((k) => [k.kind, k.label]));
 const entry = STATE_REGISTRY[state.code];
 const one = own.length === 1;
 const stateBills = getBills().bills.filter((b) => b.place === state.code).length;
+// The page title names what the state's laws cover, in the words a search uses, in the dataset's order of kinds.
+const TITLE_WORDS: Partial<Record<string, string>> = { 'contract-pharmacy': 'contract pharmacy', 'payer-nondiscrimination': 'PBMs', reporting: 'reporting', medicaid: 'Medicaid', 'use-of-savings': 'use of savings', study: 'studies' };
+const covers = laws.kinds.filter((k) => own.some((law) => law.kinds.includes(k.kind))).flatMap((k) => TITLE_WORDS[k.kind] ?? []);
+const coverWords = covers.length > 1 ? `${covers.slice(0, -1).join(', ')} and ${covers[covers.length - 1]}` : (covers[0] ?? '');
+const pageTitle = coverWords ? `${state.name} 340B laws: ${coverWords}` : `${state.name} 340B laws`;
 
 /** The identifiers and dates of a law, as label and value pairs. A blank one is left out. */
 const facts = (law: Law): { label: string; value: string }[] => {
@@ -42,7 +48,7 @@ const pdf = (form: string): string => (form.includes('pdf') ? ' (PDF)' : '');
 ---
 
 <Base
-  title={`${state.name} 340B laws`}
+  title={pageTitle}
   crumbs={[
     { name: 'State laws', path: LAWS_HOME },
     { name: state.name, path: lawsPath(state.code) },
@@ -178,6 +184,7 @@ const pdf = (form: string): string => (form.includes('pdf') ? ' (PDF)' : '');
         />
         <a class="law-all" href={LAWS_HOME}>All state laws</a>
       </div>
+      <StatePages code={state.code} />
     </aside>
   </div>
 </Base>

@@ -2,7 +2,7 @@
 import StateMap from '../components/StateMap.astro';
 import '../styles/home.css';
 import Base from '../layouts/Base.astro';
-import { founderNode, siteNode } from '../lib/structured-data';
+import { founderNode, organizationNode, siteNode } from '../lib/structured-data';
 import Arrow from '../components/Arrow.astro';
 import Draft from '../components/Draft.astro';
 import { getBills } from '../lib/bills';
@@ -51,13 +51,13 @@ const ways = [
 <Base
   bleed
   title="ClinX: open healthcare data and tools for clinics"
-  about={[siteNode(), founderNode()]}
+  about={[siteNode(), organizationNode(), founderNode()]}
   description="ClinX publishes open healthcare data and builds small tools a clinic of any size can use: the 340B Scorecard, state laws and bills, health center records, funding dates and shortage areas, and tools that keep your file on your computer."
 >
   <section class="wrap hero hero-mission" aria-labelledby="hero-title">
     <div class="hero-say">
       <p class="kicker"><span class="dot" aria-hidden="true"></span>What ClinX is</p>
-      <h1 id="hero-title">Healthcare tools and data, <span>within reach of every clinic.</span></h1>
+      <h1 id="hero-title">ClinX puts healthcare tools and data <span>within reach of every clinic.</span></h1>
       <p class="lede">
         In healthcare, the most capable tools are gated behind six-figure contracts, complex IT projects and compliance burdens, which puts them out of reach for most clinics. ClinX publishes open data and builds tools that a clinic of any size can pick up and use.
       </p>

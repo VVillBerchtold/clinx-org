@@ -23,6 +23,8 @@ There are two ways the site can be published, and each has a lock.
 
 Both end in the same script, `scripts/deploy/publish.sh`. It installs one pinned publishing tool from the lock file in `deploy/`, kept apart from the site's own dependencies, and publishes `dist/`.
 
+Around the publish, the same script asks IndexNow (Bing and others) to read the pages that are new since the live site ([Being found](being-found.md)). That needs no secret, and a failure there never stops a publish.
+
 To rehearse without publishing:
 
 ```bash

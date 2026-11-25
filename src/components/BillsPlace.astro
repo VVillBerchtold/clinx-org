@@ -12,6 +12,7 @@ import '../styles/bills.css';
 import Base from '../layouts/Base.astro';
 import BillCard from './BillCard.astro';
 import PageHead from './PageHead.astro';
+import StatePages from './StatePages.astro';
 import { formatDate } from '../lib/data';
 import { BILLS_HOME, CONGRESS, STEPS, billsMapSvg, billsPath, getBills, placeName, sessionsOf, stepOf, billsMapCards } from '../lib/bills';
 import { getLaws, lawsOf, lawsPath } from '../lib/laws';
@@ -33,6 +34,8 @@ const federal = place === CONGRESS;
 const one = all.length === 1;
 const becameLaw = all.filter((b) => stepOf(b) === 5).length;
 const title = federal ? '340B bills in Congress' : `${name} 340B bills`;
+// The window's title uses the word a search uses, with the count: "Rhode Island 340B legislation: 4 bills".
+const fullTitle = `${federal ? '340B legislation in Congress' : `${name} 340B legislation`}: ${all.length} ${one ? 'bill' : 'bills'}`;
 const where = federal ? 'Congress' : `the ${name} legislature`;
 const stateLaws = federal ? [] : lawsOf(laws, place);
 const entry = federal ? undefined : STATE_REGISTRY[place];
@@ -43,7 +46,7 @@ const stepNotes = ['Filed or introduced', 'Approved by a committee', 'Passed by 
 ---
 
 <Base
-  title={title}
+  title={fullTitle}
   crumbs={[
     { name: 'Bills', path: BILLS_HOME },
     { name, path: billsPath(place) },
@@ -153,6 +156,7 @@ const stepNotes = ['Filed or introduced', 'Approved by a committee', 'Passed by 
           <a class="law-all" href={BILLS_HOME}>All bills</a>
         </p>
       </div>
+      {!federal && <StatePages code={place} />}
     </aside>
   </div>
 </Base>

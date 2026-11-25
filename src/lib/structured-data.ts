@@ -18,6 +18,7 @@ export type Node = Record<string, unknown>;
 
 /** One name for each thing, so every page that mentions it points at the same thing. */
 export const SITE_ID = `${SITE_URL}/#site`;
+export const ORG_ID = `${SITE_URL}/#org`;
 export const FOUNDER_ID = `${SITE_URL}/about/#will-berchtold`;
 export const DATASET_ID = `${SITE_URL}/data/#dataset`;
 
@@ -33,7 +34,26 @@ export function siteNode(): Node {
     url: `${SITE_URL}/`,
     description: 'What hospitals and health centers reported to their states about the 340B drug program, as open data. Every figure links to the public file it came from.',
     inLanguage: 'en-US',
-    publisher: { '@id': FOUNDER_ID },
+    publisher: { '@id': ORG_ID },
+  };
+}
+
+/**
+ * ClinX itself, as an organization: the name a search for "clinx" should find, its mark, its founder,
+ * and its public code. `sameAs` names only pages that are ClinX's own and that the site already links to.
+ * The About page is its page (aboutPageNode).
+ */
+export function organizationNode(): Node {
+  return {
+    '@type': 'Organization',
+    '@id': ORG_ID,
+    name: SITE_NAME,
+    alternateName: 'ClinX.org',
+    url: `${SITE_URL}/`,
+    logo: `${SITE_URL}/brand/clinx-mark-512.png`,
+    description: 'ClinX publishes open healthcare data and builds small tools a clinic of any size can use: the 340B Scorecard, state laws and bills, health center records, funding dates and shortage areas.',
+    founder: { '@id': FOUNDER_ID },
+    sameAs: [REPOSITORIES.site],
   };
 }
 
@@ -76,7 +96,8 @@ export function aboutPageNode(): Node {
     name: 'About ClinX',
     inLanguage: 'en-US',
     isPartOf: { '@id': SITE_ID },
-    about: { '@id': SITE_ID },
+    about: { '@id': ORG_ID },
+    mainEntity: { '@id': ORG_ID },
     mentions: { '@id': FOUNDER_ID },
   };
 }

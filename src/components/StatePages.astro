@@ -1,0 +1,31 @@
+---
+/**
+ * "Rhode Island on ClinX": the state's other pages, as plain links. The page being read is named, not linked.
+ * Sits in a state page's side panel, or at the foot of a state page that has none.
+ */
+import { statePages } from '../lib/state-pages';
+import { nameOf } from '../lib/hc-areas';
+
+interface Props {
+  code: string;
+  class?: string;
+}
+const { code, class: extra } = Astro.props;
+const pages = statePages(code);
+// The shortage areas' names cover the territories too.
+const name = pages.length > 1 ? nameOf(code) : '';
+const here = Astro.url.pathname;
+---
+
+{
+  pages.length > 1 && (
+    <nav class:list={['state-pages', extra]} aria-label={`${name} on ClinX`}>
+      <h2 class="label">{name} on ClinX</h2>
+      <ul>
+        {pages.map((p) => (
+          <li>{here === p.href ? <span aria-current="page">{p.label}</span> : <a href={p.href}>{p.label}</a>}</li>
+        ))}
+      </ul>
+    </nav>
+  )
+}

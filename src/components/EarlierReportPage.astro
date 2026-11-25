@@ -6,6 +6,8 @@ import Cited from './Cited.astro';
 import DifferencesTable from './DifferencesTable.astro';
 import OnPage from './OnPage.astro';
 import PageHead from './PageHead.astro';
+import { stateReportTitle } from '../lib/state-pages';
+import StatePages from './StatePages.astro';
 import YearSwitch from './YearSwitch.astro';
 import { earlierReportViewFor, formatDate, getDataset, pdfHref, type Discrepancy } from '../lib/data';
 import { barPercentOfScale } from '../lib/meter';
@@ -54,11 +56,11 @@ const shared = entities.filter((e) => e.otherYear).length;
 ---
 
 <Base
-  title={`${name} 340B report: ${year} data by entity`}
+  title={`${stateReportTitle(name)}: ${year} data by entity`}
   crumbs={[{ name: 'Scorecard', path: '/scorecard/' }, { name, path: `/scorecard/${code.toLowerCase()}/` }, { name: `${year} data`, path: `/scorecard/${code.toLowerCase()}/${year}/` }]}
   description={`Net 340B revenue for the ${entities.length} entities named in the ${spec.agency.startsWith(name) ? spec.agency : `${name} ${spec.agency}`}'s report of ${issued}, ${year} data, as printed, with its totals by grouping and payer and the places where its figures differ. Every figure links to its page of the report.`}
 >
-  <PageHead title={name} trail={[{ label: 'Scorecard', href: '/scorecard/' }, { label: name, href: `/scorecard/${code.toLowerCase()}/` }, { label: `${year} data, state report` }]}>
+  <PageHead title={stateReportTitle(name)} trail={[{ label: 'Scorecard', href: '/scorecard/' }, { label: name, href: `/scorecard/${code.toLowerCase()}/` }, { label: `${year} data, state report` }]}>
     <p class="lede">
       This is the earlier of the two reports ClinX holds for {name}. The {spec.agency}'s report of {issued} names {numberWord(entities.length)} entities and prints one net 340B revenue figure for each, for {year}. The entities' own filings are not public. Every figure below is the state's, as printed, and links to its page of the report.
     </p>
@@ -246,4 +248,5 @@ const shared = entities.filter((e) => e.otherYear).length;
       <dd>{report.pages.first} to {report.pages.last} of {filing.pageCount}</dd>
     </dl>
   </div>
+  <StatePages code={code} class="state-pages-foot" />
 </Base>
