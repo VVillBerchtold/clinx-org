@@ -70,6 +70,7 @@ export const NAV: readonly (NavLink | NavGroup)[] = [
       { href: '/notices/', label: 'Federal notices', note: 'Federal rules and notices that name 340B' },
       { href: '/calendar/', label: 'Calendar', note: 'Bill steps, hearings and federal deadlines' },
       { href: '/registry/', label: 'Registry history', note: 'Contract pharmacies, month by month since 2010' },
+      { href: '/registry/reach/', label: 'Pharmacy reach', note: 'How far each state reaches for its pharmacies' },
       { href: '/rebate-pilot/', label: 'Rebate pilot', note: 'What the federal rebate pilot changes' },
     ],
   },

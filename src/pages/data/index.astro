@@ -13,6 +13,7 @@ import { renderSections } from '../../lib/markdown';
 import { datasetNode, healthCenterDatasetNodes } from '../../lib/structured-data';
 import { fileGroups, partDays } from '../../lib/hc-hub';
 import { recordsSource } from '../../lib/hc-records';
+import { REACH_HOME, dayLong, statesCsv } from '../../lib/reach';
 
 const data = getDataset();
 // A file's size, the way a person reads it: the larger files are in the megabytes, and nothing is rounded to zero.
@@ -42,6 +43,8 @@ const billFiles = [
 ];
 // The states with a reporting law, grouped by what each state makes public: written by this site from its own registry.
 const statesFileHash = await sha256Hex(statesFileText(SITE_URL));
+// Contract pharmacy reach by place, written by this site from its copy of the registry figures.
+const reachFileHash = await sha256Hex(statesCsv());
 // The health centers files, grouped by part, each with the SHA-256 of the file as this site serves it.
 const hcDays = partDays();
 const hcGroups = await Promise.all(fileGroups().map(async (g) => ({ ...g, files: await Promise.all(g.files.map(async (f) => ({ ...f, sha256: await sha256Hex(f.text) }))) })));
@@ -119,6 +122,14 @@ const describe: Record<string, string> = {
             </li>
           ))
         }
+        <li id="pharmacy-reach">
+          <div>
+            <strong>340b-pharmacy-reach.csv</strong>
+            <p>One row per state and territory: its covered entities, their contract pharmacy arrangements on {dayLong()} and how many are with a pharmacy in the same state, a neighbouring state or farther, and the arrangements entities from elsewhere hold with pharmacies there. Made by this site from the federal registry; it is what the <a href={REACH_HOME}>pharmacy reach</a> page shows.</p>
+          </div>
+          <a class="btn ghost" href="/data/340b-pharmacy-reach.csv" download aria-label="Download 340b-pharmacy-reach.csv">Download</a>
+          <span class="hash"><span class="visually-hidden">SHA-256: </span>{reachFileHash}</span>
+        </li>
         <li id="reporting-states">
           <div>
             <strong>340b-reporting-states.json</strong>

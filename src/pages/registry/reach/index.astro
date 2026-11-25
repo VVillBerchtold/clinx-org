@@ -1,0 +1,186 @@
+---
+/**
+ * Contract pharmacy reach for the whole country, on one day of the registry: how far each state's
+ * covered entities reach for their contract pharmacies (same state, a neighbouring state, farther),
+ * by state, by pharmacy group and by kind of entity. A map leads to one page per state
+ * (./[slug].astro). Every figure comes from src/data/registry/reach.json (src/lib/reach.ts).
+ */
+import '../../../styles/registry.css';
+import '../../../styles/reach.css';
+import Base from '../../../layouts/Base.astro';
+import StateMap from '../../../components/StateMap.astro';
+import { REGISTRY_HOME, REGISTRY_REPO } from '../../../lib/registry';
+import { BANDS, BAND_LABEL, GROUPS, R, REACH_HOME, TYPES, bandShares, dayLong, fmt, hubCards, hubMapSvg, pct, placeName, reachPath, reachPlaces, stackSvg } from '../../../lib/reach';
+
+const N = R.national;
+const day = dayLong();
+const far = N.bands.farther;
+const places = reachPlaces();
+const withAny = places.filter((c) => R.states[c]!.arrangements > 0);
+const mostLeave = withAny.filter((c) => R.states[c]!.bands.same < R.states[c]!.arrangements / 2);
+const mail = R.chains['Mail-order and specialty']!;
+const mailTotal = mail.same + mail.neighbor + mail.farther;
+const wal = R.chains['Walgreens']!;
+const walTotal = wal.same + wal.neighbor + wal.farther;
+const magnet = [...places].sort((a, b) => R.states[b]!.in_arrangements - R.states[a]!.in_arrangements)[0]!;
+const groupRows = GROUPS.map((g) => ({ name: g, bands: R.chains[g]!, total: BANDS.reduce((s, k) => s + R.chains[g]![k], 0), shares: bandShares(R.chains[g]!) }));
+const typeRows = TYPES.map((g) => ({ name: g, bands: R.types[g]!, total: BANDS.reduce((s, k) => s + R.types[g]![k], 0), shares: bandShares(R.types[g]!) }));
+const parts = [
+  { id: 'map', label: 'Every state' },
+  { id: 'who', label: 'Who reaches farthest' },
+  { id: 'table', label: 'The figures' },
+  { id: 'how', label: 'How it is counted' },
+];
+---
+
+<Base
+  title="Contract pharmacy reach, state by state"
+  bleed
+  crumbs={[{ name: 'Registry history', path: REGISTRY_HOME }, { name: 'Pharmacy reach', path: REACH_HOME }]}
+  description={`Where each state's 340B covered entities hold their contract pharmacies: ${pct(N.bands.same, N.arrangements)} of ${fmt(N.arrangements)} arrangements are with a pharmacy in the same state, ${pct(far, N.arrangements)} beyond the neighbouring states. Registry of ${day}.`}
+>
+  <header class="rx-head">
+    <div class="wrap">
+      <p class="rx-kicker"><span class="dot" aria-hidden="true"></span>340B <span aria-hidden="true">/</span> Registry <span aria-hidden="true">/</span> Pharmacy reach</p>
+      <h1>How far contract pharmacies reach</h1>
+      <p class="rx-lede">Where each state&rsquo;s clinics and hospitals hold their contract pharmacies, as the federal registry records them on {day}: in the same state, in a state next door, or farther away.</p>
+      <div class="rx-figures">
+        <div class="rx-hero-fig">
+          <p class="rx-hero-value">{pct(far, N.arrangements)}</p>
+          <p class="rx-hero-label">of arrangements are with a pharmacy beyond the entity&rsquo;s state and its neighbours</p>
+        </div>
+        <dl class="rx-stats">
+          <div><dt>Arrangements in force</dt><dd>{fmt(N.arrangements)}</dd></div>
+          <div><dt>Entities holding one</dt><dd>{fmt(N.holders)}</dd></div>
+          <div><dt>Same state</dt><dd>{pct(N.bands.same, N.arrangements)}</dd></div>
+          <div><dt>Neighbouring state</dt><dd>{pct(N.bands.neighbor, N.arrangements)}</dd></div>
+        </dl>
+      </div>
+    </div>
+  </header>
+
+  <nav class="rx-parts wrap" aria-label="Parts of this page">
+    <ol>{parts.map((p, i) => <li><a href={`#${p.id}`}><span class="rx-part-n">{i + 1}</span>{p.label}</a></li>)}</ol>
+  </nav>
+
+  <section class="rx-section" id="map" aria-labelledby="map-h">
+    <div class="wrap">
+      <p class="rx-step">1</p>
+      <h2 id="map-h">Every state</h2>
+      <p class="rx-text">In {mostLeave.length} of the {withAny.length} places with a contract pharmacy, most arrangements are with a pharmacy in another state. Pick a state to see where its pharmacies are, and who holds the pharmacies inside it.</p>
+      <div class="rc-map">
+        <StateMap
+          svg={hubMapSvg('reach-map')}
+          legend={[
+            { tone: 'has', label: 'Most in another state' },
+            { tone: 'next', label: 'Half or more in the same state' },
+            { tone: 'none', label: 'No contract pharmacy' },
+          ]}
+          rest={{
+            name: 'The whole country',
+            kicker: `${fmt(N.arrangements)} arrangements`,
+            rows: bandShares(N.bands).map((s) => ({ label: BAND_LABEL[s.band], values: [pct(s.n, N.arrangements)] })),
+            note: 'Point at a state for its shares; select it to open its page.',
+          }}
+          cards={hubCards()}
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="rx-section rx-alt" id="who" aria-labelledby="who-h">
+    <div class="wrap">
+      <p class="rx-step">2</p>
+      <h2 id="who-h">Who reaches farthest</h2>
+      <p class="rx-text">Distance follows the pharmacy more than the clinic. {pct(mail.farther, mailTotal)} of arrangements with mail-order and specialty pharmacies are beyond the neighbouring states, against {pct(wal.farther, walTotal)} with Walgreens. {placeName(magnet)}&rsquo;s pharmacies are held by more entities from other states than any other state&rsquo;s: {fmt(R.states[magnet]!.in_arrangements)} arrangements.</p>
+      <div class="rc-split">
+        <figure class="rc-stack">
+          <figcaption>By pharmacy group</figcaption>
+          <ul>
+            {groupRows.map((r) => (
+              <li>
+                <span class="rc-stack-name">{r.name} <span>{fmt(r.total)}</span></span>
+                <Fragment set:html={stackSvg(r.bands)} />
+                <span class="rc-stack-figs">{r.shares.map((s) => <span class={`f-${s.band}`}><span class="visually-hidden">{BAND_LABEL[s.band]}: </span>{pct(s.n, r.total)}</span>)}</span>
+              </li>
+            ))}
+          </ul>
+        </figure>
+        <figure class="rc-stack">
+          <figcaption>By kind of entity</figcaption>
+          <ul>
+            {typeRows.map((r) => (
+              <li>
+                <span class="rc-stack-name">{r.name} <span>{fmt(r.total)}</span></span>
+                <Fragment set:html={stackSvg(r.bands)} />
+                <span class="rc-stack-figs">{r.shares.map((s) => <span class={`f-${s.band}`}><span class="visually-hidden">{BAND_LABEL[s.band]}: </span>{pct(s.n, r.total)}</span>)}</span>
+              </li>
+            ))}
+          </ul>
+        </figure>
+      </div>
+      <ul class="rc-legend">
+        {BANDS.map((b) => <li><span class={`rc-key b-${b}`} aria-hidden="true"></span>{BAND_LABEL[b]}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="rx-section" id="table" aria-labelledby="table-h">
+    <div class="wrap">
+      <p class="rx-step">3</p>
+      <h2 id="table-h">The figures</h2>
+      <p class="rx-text">Each place&rsquo;s arrangements by where the pharmacy is, and the arrangements held with pharmacies in the place by entities from elsewhere.</p>
+      <table class="rc-table">
+        <thead>
+          <tr>
+            <th scope="col">Place</th>
+            <th scope="col" class="num">Arrange&shy;ments</th>
+            <th scope="col" class="num">Same state</th>
+            <th scope="col" class="num">Neigh&shy;bouring</th>
+            <th scope="col" class="num">Farther</th>
+            <th scope="col" class="num rc-in">Held from elsewhere</th>
+          </tr>
+        </thead>
+        <tbody>
+          {places.map((c) => {
+            const p = R.states[c]!;
+            return (
+              <tr id={`s-${c.toLowerCase()}`}>
+                <th scope="row"><a href={reachPath(c)}>{placeName(c)}</a></th>
+                <td class="num">{fmt(p.arrangements)}</td>
+                <td class="num">{pct(p.bands.same, p.arrangements)}</td>
+                <td class="num">{pct(p.bands.neighbor, p.arrangements)}</td>
+                <td class="num">{pct(p.bands.farther, p.arrangements)}</td>
+                <td class="num rc-in">{fmt(p.in_arrangements)}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+      <p class="rx-small">The territories have no neighbouring state, so an arrangement there is in the same place or farther. Every figure is also in the download below.</p>
+    </div>
+  </section>
+
+  <section class="rx-section rx-alt" id="how" aria-labelledby="how-h">
+    <div class="wrap">
+      <p class="rx-step">4</p>
+      <h2 id="how-h">How it is counted</h2>
+      <ol class="rc-how">
+        <li><strong>One day of the registry.</strong><span>The national copy of {day}. An arrangement counts when it has begun and neither it nor its entity has ended.</span></li>
+        <li><strong>States, not miles.</strong><span>The entity&rsquo;s state is its street address; the pharmacy&rsquo;s is its own address. Neighbouring states share a stretch of border; a corner alone, as at Four Corners, does not count.</span></li>
+        <li><strong>Groups by name.</strong><span>The registry records no owner, so pharmacy groups are matched by the pharmacy&rsquo;s name, as on the <a href={`${REGISTRY_HOME}#chains`}>registry history page</a>.</span></li>
+        <li><strong>A registration is not a prescription.</strong><span>A mail pharmacy in another state may still fill for a patient who lives near the clinic. The registry records no patients and no drugs.</span></li>
+      </ol>
+      <div class="btn-row">
+        <a class="btn" href="/data/340b-pharmacy-reach.csv" download>Every place as a table (CSV)</a>
+        <a class="btn ghost" href={REGISTRY_HOME}>The registry since 2010</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="rx-source">
+    <div class="wrap rx-measure">
+      <p>Source: U.S. Health Resources and Services Administration, Office of Pharmacy Affairs, 340B OPAIS, Covered Entity Daily Export of {day} (copy SHA-256 <span class="rc-hash">{R.source.sha256.slice(0, 12)}</span>). How it is counted, with the code: <a href={`${REGISTRY_REPO}/blob/main/tools/reach.py`}>tools/reach.py</a>.</p>
+    </div>
+  </footer>
+</Base>

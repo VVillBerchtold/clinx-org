@@ -1,0 +1,196 @@
+/*
+  Contract pharmacy reach (/registry/reach/ and a page per place). The opening band, the parts list,
+  the sections and the source line are the registry page's (registry.css); this file draws the bars,
+  the lists and the layout of a place's page. Colour: the nearer the pharmacy, the lighter the accent;
+  farther than the neighbouring states is the registry's orange.
+*/
+
+.b-same { fill: var(--rx-q2); background: var(--rx-q2); }
+.b-neighbor { fill: var(--rx-q4); background: var(--rx-q4); }
+.b-farther { fill: var(--rx-2); background: var(--rx-2); }
+.b-one { fill: var(--rx-q4); }
+
+.rc-bar,
+.rc-one {
+  display: block;
+  width: 100%;
+  height: 12px;
+  border-radius: 3px;
+  background: var(--rx-shade);
+}
+.rc-one { height: 10px; background: transparent; }
+
+.rc-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2) var(--s5);
+  margin: var(--s3) 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+.rc-legend li { display: inline-flex; align-items: center; gap: var(--s2); }
+.rc-legend strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+.rc-legend span:last-child:not(.rc-key) { font-size: var(--text-xs); font-variant-numeric: tabular-nums; }
+.rc-key { width: 12px; height: 12px; border-radius: 3px; flex: none; }
+
+/* ---------- The main page ---------- */
+
+.rc-map { margin-top: var(--s5); }
+
+.rc-split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s6);
+  margin-top: var(--s5);
+}
+.rc-stack {
+  margin: 0;
+  padding: var(--s5);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.rc-stack figcaption {
+  margin-bottom: var(--s4);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.rc-stack ul { display: grid; gap: var(--s4); margin: 0; padding: 0; list-style: none; }
+.rc-stack li { display: grid; gap: var(--s1); }
+.rc-stack-name { font-weight: 600; font-size: var(--text-sm); }
+.rc-stack-name span { margin-left: var(--s2); font-weight: 400; color: var(--muted); font-variant-numeric: tabular-nums; }
+.rc-stack-figs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  font-size: var(--text-xs);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.rc-stack-figs > :nth-child(2) { text-align: center; }
+.rc-stack-figs > :nth-child(3) { text-align: right; color: var(--ink); font-weight: 600; }
+
+.rc-table {
+  width: 100%;
+  margin-top: var(--s5);
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+  table-layout: fixed;
+}
+.rc-table th,
+.rc-table td {
+  padding: var(--s2) var(--s2);
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: baseline;
+}
+.rc-table thead th {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--muted);
+  border-bottom-color: var(--tick);
+  hyphens: manual;
+}
+.rc-table thead th:first-child { width: 34%; }
+.rc-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.rc-table tbody th { font-weight: 600; }
+.rc-table tbody th a { color: var(--ink); text-decoration: none; }
+.rc-table tbody th a:hover { color: var(--accent); text-decoration: underline; }
+.rc-table tbody tr:target { background: var(--accent-wash); }
+.rc-table td:nth-child(5) { color: var(--ink); font-weight: 600; }
+
+.rc-how {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s5) var(--s6);
+  margin: var(--s5) 0 var(--s6);
+  padding: 0;
+  list-style: none;
+}
+.rc-how li { display: grid; gap: var(--s1); padding-top: var(--s4); border-top: 2px solid var(--accent); }
+.rc-how strong { font-family: var(--display); font-size: var(--text-lg); }
+.rc-how span { color: var(--muted); line-height: 1.55; }
+.rc-hash { font-family: var(--mono); font-size: 0.92em; }
+
+/* ---------- A place's page ---------- */
+
+.rc-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 19rem;
+  gap: var(--s7);
+  align-items: start;
+  padding-block: var(--s7);
+}
+.rc-main { display: grid; gap: var(--s7); min-width: 0; }
+.rc-part h2 { margin: 0 0 var(--s4); font-size: 1.6rem; }
+.rc-whole { margin-bottom: var(--s6); }
+.rc-whole .rc-bar { height: 16px; }
+
+.rc-where {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--s6);
+  align-items: start;
+}
+.rc-where-map svg { width: 100%; height: auto; }
+
+.rc-list {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+.rc-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 11rem) minmax(0, 1fr) 4.5rem;
+  gap: var(--s3);
+  align-items: center;
+  padding: var(--s2) 0;
+  border-bottom: 1px solid var(--line);
+  font-size: var(--text-sm);
+}
+.rc-list-name { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--s2); min-width: 0; }
+.rc-list-name a { color: var(--ink); font-weight: 600; text-decoration: none; }
+.rc-list-name a:hover { color: var(--accent); text-decoration: underline; }
+.rc-list .is-home .rc-list-name { font-weight: 700; }
+.rc-list .is-rest { color: var(--muted); }
+.rc-list-n { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+.rc-list .is-rest .rc-list-n { font-weight: 400; }
+.rc-tag { font-size: var(--text-xs); color: var(--muted); font-weight: 400; }
+.rc-groups li { grid-template-columns: minmax(0, 13rem) minmax(0, 1fr) 4.5rem; }
+.rc-note { margin: var(--s3) 0 0; font-size: var(--text-xs); color: var(--muted); }
+.rc-lead { margin: 0 0 var(--s4); max-width: var(--measure); color: var(--muted); }
+
+.rc-aside {
+  position: sticky;
+  top: 5rem;
+  display: grid;
+  gap: var(--s3);
+}
+.rc-aside .label { margin: 0; }
+.rc-back { font-weight: 600; font-size: var(--text-sm); }
+
+/* ---------- Narrower screens ---------- */
+
+@media (max-width: 64rem) {
+  .rc-layout { grid-template-columns: minmax(0, 1fr); gap: var(--s6); }
+  .rc-aside { position: static; }
+}
+@media (max-width: 52rem) {
+  .rc-split, .rc-how, .rc-where { grid-template-columns: minmax(0, 1fr); }
+  .rc-where-map { max-width: 28rem; }
+}
+@media (max-width: 40rem) {
+  .rc-table .rc-in { display: none; }
+  .rc-table thead th:first-child { width: 36%; }
+  .rc-table th, .rc-table td { padding-inline: var(--s1); }
+  .rc-list li { grid-template-columns: minmax(0, 1fr) 4.5rem; }
+  .rc-list li > svg { grid-column: 1 / -1; grid-row: 2; }
+  .rc-list .is-rest > span:nth-child(2) { display: none; }
+}

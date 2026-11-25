@@ -1,0 +1,5063 @@
+{
+ "taken_on": "2026-11-23",
+ "source": {
+  "file": "US-2026-11-23.json",
+  "sha256": "79a13941d24ff5c709fece861b2ca3743facfd6657e8f53b1d574b303347cc59"
+ },
+ "rules": {
+  "active": "begun on or before the day; neither the arrangement nor its entity ended by then",
+  "bands": [
+   "same",
+   "neighbor",
+   "farther"
+  ],
+  "neighbors": {
+   "AK": [],
+   "AL": [
+    "FL",
+    "GA",
+    "MS",
+    "TN"
+   ],
+   "AR": [
+    "LA",
+    "MO",
+    "MS",
+    "OK",
+    "TN",
+    "TX"
+   ],
+   "AZ": [
+    "CA",
+    "NM",
+    "NV",
+    "UT"
+   ],
+   "CA": [
+    "AZ",
+    "NV",
+    "OR"
+   ],
+   "CO": [
+    "KS",
+    "NE",
+    "NM",
+    "OK",
+    "UT",
+    "WY"
+   ],
+   "CT": [
+    "MA",
+    "NY",
+    "RI"
+   ],
+   "DC": [
+    "MD",
+    "VA"
+   ],
+   "DE": [
+    "MD",
+    "NJ",
+    "PA"
+   ],
+   "FL": [
+    "AL",
+    "GA"
+   ],
+   "GA": [
+    "AL",
+    "FL",
+    "NC",
+    "SC",
+    "TN"
+   ],
+   "HI": [],
+   "IA": [
+    "IL",
+    "MN",
+    "MO",
+    "NE",
+    "SD",
+    "WI"
+   ],
+   "ID": [
+    "MT",
+    "NV",
+    "OR",
+    "UT",
+    "WA",
+    "WY"
+   ],
+   "IL": [
+    "IA",
+    "IN",
+    "KY",
+    "MO",
+    "WI"
+   ],
+   "IN": [
+    "IL",
+    "KY",
+    "MI",
+    "OH"
+   ],
+   "KS": [
+    "CO",
+    "MO",
+    "NE",
+    "OK"
+   ],
+   "KY": [
+    "IL",
+    "IN",
+    "MO",
+    "OH",
+    "TN",
+    "VA",
+    "WV"
+   ],
+   "LA": [
+    "AR",
+    "MS",
+    "TX"
+   ],
+   "MA": [
+    "CT",
+    "NH",
+    "NY",
+    "RI",
+    "VT"
+   ],
+   "MD": [
+    "DC",
+    "DE",
+    "PA",
+    "VA",
+    "WV"
+   ],
+   "ME": [
+    "NH"
+   ],
+   "MI": [
+    "IN",
+    "OH",
+    "WI"
+   ],
+   "MN": [
+    "IA",
+    "ND",
+    "SD",
+    "WI"
+   ],
+   "MO": [
+    "AR",
+    "IA",
+    "IL",
+    "KS",
+    "KY",
+    "NE",
+    "OK",
+    "TN"
+   ],
+   "MS": [
+    "AL",
+    "AR",
+    "LA",
+    "TN"
+   ],
+   "MT": [
+    "ID",
+    "ND",
+    "SD",
+    "WY"
+   ],
+   "NC": [
+    "GA",
+    "SC",
+    "TN",
+    "VA"
+   ],
+   "ND": [
+    "MN",
+    "MT",
+    "SD"
+   ],
+   "NE": [
+    "CO",
+    "IA",
+    "KS",
+    "MO",
+    "SD",
+    "WY"
+   ],
+   "NH": [
+    "MA",
+    "ME",
+    "VT"
+   ],
+   "NJ": [
+    "DE",
+    "NY",
+    "PA"
+   ],
+   "NM": [
+    "AZ",
+    "CO",
+    "OK",
+    "TX"
+   ],
+   "NV": [
+    "AZ",
+    "CA",
+    "ID",
+    "OR",
+    "UT"
+   ],
+   "NY": [
+    "CT",
+    "MA",
+    "NJ",
+    "PA",
+    "VT"
+   ],
+   "OH": [
+    "IN",
+    "KY",
+    "MI",
+    "PA",
+    "WV"
+   ],
+   "OK": [
+    "AR",
+    "CO",
+    "KS",
+    "MO",
+    "NM",
+    "TX"
+   ],
+   "OR": [
+    "CA",
+    "ID",
+    "NV",
+    "WA"
+   ],
+   "PA": [
+    "DE",
+    "MD",
+    "NJ",
+    "NY",
+    "OH",
+    "WV"
+   ],
+   "PR": [],
+   "RI": [
+    "CT",
+    "MA"
+   ],
+   "SC": [
+    "GA",
+    "NC"
+   ],
+   "SD": [
+    "IA",
+    "MN",
+    "MT",
+    "ND",
+    "NE",
+    "WY"
+   ],
+   "TN": [
+    "AL",
+    "AR",
+    "GA",
+    "KY",
+    "MO",
+    "MS",
+    "NC",
+    "VA"
+   ],
+   "TX": [
+    "AR",
+    "LA",
+    "NM",
+    "OK"
+   ],
+   "UT": [
+    "AZ",
+    "CO",
+    "ID",
+    "NV",
+    "WY"
+   ],
+   "VA": [
+    "DC",
+    "KY",
+    "MD",
+    "NC",
+    "TN",
+    "WV"
+   ],
+   "VI": [],
+   "VT": [
+    "MA",
+    "NH",
+    "NY"
+   ],
+   "WA": [
+    "ID",
+    "OR"
+   ],
+   "WI": [
+    "IA",
+    "IL",
+    "MI",
+    "MN"
+   ],
+   "WV": [
+    "KY",
+    "MD",
+    "OH",
+    "PA",
+    "VA"
+   ],
+   "WY": [
+    "CO",
+    "ID",
+    "MT",
+    "NE",
+    "SD",
+    "UT"
+   ]
+  }
+ },
+ "national": {
+  "entities": 65433,
+  "holders": 12450,
+  "arrangements": 232586,
+  "bands": {
+   "same": 140738,
+   "neighbor": 16361,
+   "farther": 75487
+  },
+  "no_pharmacy_state": 0
+ },
+ "chains": {
+  "CVS": {
+   "same": 45599,
+   "neighbor": 4817,
+   "farther": 28152
+  },
+  "Walgreens": {
+   "same": 42823,
+   "neighbor": 2798,
+   "farther": 5531
+  },
+  "Walmart": {
+   "same": 10588,
+   "neighbor": 1421,
+   "farther": 7074
+  },
+  "Mail-order and specialty": {
+   "same": 1967,
+   "neighbor": 3437,
+   "farther": 22475
+  },
+  "Other": {
+   "same": 39761,
+   "neighbor": 3888,
+   "farther": 12255
+  }
+ },
+ "types": {
+  "Health centers": {
+   "same": 67560,
+   "neighbor": 5730,
+   "farther": 25851
+  },
+  "Hospitals": {
+   "same": 39578,
+   "neighbor": 6825,
+   "farther": 27291
+  },
+  "Other federal grantees": {
+   "same": 33600,
+   "neighbor": 3806,
+   "farther": 22345
+  }
+ },
+ "states": {
+  "AK": {
+   "entities": 121,
+   "holders": 23,
+   "arrangements": 221,
+   "pharmacies": 144,
+   "bands": {
+    "same": 74,
+    "neighbor": 0,
+    "farther": 147
+   },
+   "states_reached": 27,
+   "to": [
+    [
+     "FL",
+     20
+    ],
+    [
+     "TX",
+     17
+    ],
+    [
+     "WA",
+     12
+    ],
+    [
+     "CA",
+     11
+    ],
+    [
+     "PA",
+     10
+    ],
+    [
+     "AZ",
+     9
+    ],
+    [
+     "IL",
+     8
+    ],
+    [
+     "IN",
+     7
+    ]
+   ],
+   "chains": {
+    "CVS": 41,
+    "Walgreens": 26,
+    "Walmart": 34,
+    "Mail-order and specialty": 31,
+    "Other": 89
+   },
+   "in_arrangements": 2,
+   "in_entities": 2,
+   "in_states": 2,
+   "from": [
+    [
+     "IA",
+     1
+    ],
+    [
+     "OR",
+     1
+    ]
+   ]
+  },
+  "AL": {
+   "entities": 789,
+   "holders": 213,
+   "arrangements": 4423,
+   "pharmacies": 755,
+   "bands": {
+    "same": 2475,
+    "neighbor": 588,
+    "farther": 1360
+   },
+   "states_reached": 35,
+   "to": [
+    [
+     "FL",
+     303
+    ],
+    [
+     "TX",
+     200
+    ],
+    [
+     "TN",
+     179
+    ],
+    [
+     "IN",
+     143
+    ],
+    [
+     "PA",
+     143
+    ],
+    [
+     "AZ",
+     102
+    ],
+    [
+     "MI",
+     81
+    ],
+    [
+     "SC",
+     73
+    ]
+   ],
+   "chains": {
+    "CVS": 1305,
+    "Walgreens": 1062,
+    "Walmart": 636,
+    "Mail-order and specialty": 428,
+    "Other": 992
+   },
+   "in_arrangements": 2889,
+   "in_entities": 2211,
+   "in_states": 50,
+   "from": [
+    [
+     "FL",
+     439
+    ],
+    [
+     "CA",
+     397
+    ],
+    [
+     "TX",
+     166
+    ],
+    [
+     "MS",
+     153
+    ],
+    [
+     "LA",
+     136
+    ],
+    [
+     "NY",
+     111
+    ],
+    [
+     "NC",
+     86
+    ],
+    [
+     "AZ",
+     85
+    ]
+   ]
+  },
+  "AR": {
+   "entities": 734,
+   "holders": 180,
+   "arrangements": 3079,
+   "pharmacies": 862,
+   "bands": {
+    "same": 1866,
+    "neighbor": 423,
+    "farther": 790
+   },
+   "states_reached": 33,
+   "to": [
+    [
+     "TX",
+     166
+    ],
+    [
+     "FL",
+     148
+    ],
+    [
+     "IN",
+     119
+    ],
+    [
+     "MO",
+     106
+    ],
+    [
+     "TN",
+     88
+    ],
+    [
+     "AZ",
+     72
+    ],
+    [
+     "PA",
+     66
+    ],
+    [
+     "MI",
+     53
+    ]
+   ],
+   "chains": {
+    "CVS": 327,
+    "Walgreens": 519,
+    "Walmart": 736,
+    "Mail-order and specialty": 390,
+    "Other": 1107
+   },
+   "in_arrangements": 1854,
+   "in_entities": 1805,
+   "in_states": 50,
+   "from": [
+    [
+     "TX",
+     121
+    ],
+    [
+     "CA",
+     120
+    ],
+    [
+     "LA",
+     108
+    ],
+    [
+     "FL",
+     96
+    ],
+    [
+     "MI",
+     88
+    ],
+    [
+     "IL",
+     85
+    ],
+    [
+     "NY",
+     79
+    ],
+    [
+     "MO",
+     71
+    ]
+   ]
+  },
+  "AS": {
+   "entities": 12,
+   "holders": 0,
+   "arrangements": 0,
+   "pharmacies": 0,
+   "bands": {
+    "same": 0,
+    "neighbor": 0,
+    "farther": 0
+   },
+   "states_reached": 0,
+   "to": [],
+   "chains": {
+    "CVS": 0,
+    "Walgreens": 0,
+    "Walmart": 0,
+    "Mail-order and specialty": 0,
+    "Other": 0
+   },
+   "in_arrangements": 0,
+   "in_entities": 0,
+   "in_states": 0,
+   "from": []
+  },
+  "AZ": {
+   "entities": 913,
+   "holders": 207,
+   "arrangements": 5930,
+   "pharmacies": 887,
+   "bands": {
+    "same": 3670,
+    "neighbor": 267,
+    "farther": 1993
+   },
+   "states_reached": 35,
+   "to": [
+    [
+     "FL",
+     262
+    ],
+    [
+     "PA",
+     216
+    ],
+    [
+     "CA",
+     200
+    ],
+    [
+     "TX",
+     198
+    ],
+    [
+     "IN",
+     192
+    ],
+    [
+     "TN",
+     120
+    ],
+    [
+     "MI",
+     117
+    ],
+    [
+     "IL",
+     111
+    ]
+   ],
+   "chains": {
+    "CVS": 2249,
+    "Walgreens": 1479,
+    "Walmart": 352,
+    "Mail-order and specialty": 887,
+    "Other": 963
+   },
+   "in_arrangements": 5532,
+   "in_entities": 2355,
+   "in_states": 52,
+   "from": [
+    [
+     "CA",
+     640
+    ],
+    [
+     "FL",
+     539
+    ],
+    [
+     "TX",
+     347
+    ],
+    [
+     "NY",
+     273
+    ],
+    [
+     "LA",
+     265
+    ],
+    [
+     "MI",
+     204
+    ],
+    [
+     "IL",
+     197
+    ],
+    [
+     "NV",
+     163
+    ]
+   ]
+  },
+  "CA": {
+   "entities": 5147,
+   "holders": 1350,
+   "arrangements": 30443,
+   "pharmacies": 2959,
+   "bands": {
+    "same": 21414,
+    "neighbor": 938,
+    "farther": 8091
+   },
+   "states_reached": 40,
+   "to": [
+    [
+     "FL",
+     1155
+    ],
+    [
+     "TX",
+     876
+    ],
+    [
+     "IN",
+     684
+    ],
+    [
+     "AZ",
+     640
+    ],
+    [
+     "PA",
+     636
+    ],
+    [
+     "MI",
+     457
+    ],
+    [
+     "KS",
+     421
+    ],
+    [
+     "TN",
+     409
+    ]
+   ],
+   "chains": {
+    "CVS": 12793,
+    "Walgreens": 4620,
+    "Walmart": 2082,
+    "Mail-order and specialty": 3094,
+    "Other": 7854
+   },
+   "in_arrangements": 3684,
+   "in_entities": 2053,
+   "in_states": 51,
+   "from": [
+    [
+     "FL",
+     590
+    ],
+    [
+     "TX",
+     235
+    ],
+    [
+     "AZ",
+     200
+    ],
+    [
+     "NY",
+     192
+    ],
+    [
+     "LA",
+     166
+    ],
+    [
+     "NV",
+     156
+    ],
+    [
+     "IL",
+     130
+    ],
+    [
+     "NC",
+     119
+    ]
+   ]
+  },
+  "CO": {
+   "entities": 937,
+   "holders": 174,
+   "arrangements": 2339,
+   "pharmacies": 575,
+   "bands": {
+    "same": 1240,
+    "neighbor": 53,
+    "farther": 1046
+   },
+   "states_reached": 35,
+   "to": [
+    [
+     "TX",
+     131
+    ],
+    [
+     "FL",
+     120
+    ],
+    [
+     "IN",
+     90
+    ],
+    [
+     "PA",
+     80
+    ],
+    [
+     "AZ",
+     76
+    ],
+    [
+     "CA",
+     54
+    ],
+    [
+     "MI",
+     54
+    ],
+    [
+     "NJ",
+     45
+    ]
+   ],
+   "chains": {
+    "CVS": 484,
+    "Walgreens": 621,
+    "Walmart": 326,
+    "Mail-order and specialty": 371,
+    "Other": 537
+   },
+   "in_arrangements": 84,
+   "in_entities": 72,
+   "in_states": 23,
+   "from": [
+    [
+     "KY",
+     11
+    ],
+    [
+     "KS",
+     10
+    ],
+    [
+     "CA",
+     9
+    ],
+    [
+     "SD",
+     7
+    ],
+    [
+     "IL",
+     6
+    ],
+    [
+     "MT",
+     6
+    ],
+    [
+     "WY",
+     6
+    ],
+    [
+     "IA",
+     4
+    ]
+   ]
+  },
+  "CT": {
+   "entities": 1229,
+   "holders": 209,
+   "arrangements": 4029,
+   "pharmacies": 592,
+   "bands": {
+    "same": 2431,
+    "neighbor": 224,
+    "farther": 1374
+   },
+   "states_reached": 36,
+   "to": [
+    [
+     "FL",
+     166
+    ],
+    [
+     "TX",
+     132
+    ],
+    [
+     "PA",
+     131
+    ],
+    [
+     "AZ",
+     123
+    ],
+    [
+     "NY",
+     108
+    ],
+    [
+     "MA",
+     103
+    ],
+    [
+     "IN",
+     95
+    ],
+    [
+     "NJ",
+     95
+    ]
+   ],
+   "chains": {
+    "CVS": 1813,
+    "Walgreens": 894,
+    "Walmart": 91,
+    "Mail-order and specialty": 464,
+    "Other": 767
+   },
+   "in_arrangements": 80,
+   "in_entities": 51,
+   "in_states": 11,
+   "from": [
+    [
+     "MA",
+     38
+    ],
+    [
+     "NY",
+     17
+    ],
+    [
+     "ME",
+     7
+    ],
+    [
+     "RI",
+     6
+    ],
+    [
+     "PA",
+     4
+    ],
+    [
+     "AR",
+     2
+    ],
+    [
+     "FL",
+     2
+    ],
+    [
+     "DE",
+     1
+    ]
+   ]
+  },
+  "DC": {
+   "entities": 112,
+   "holders": 47,
+   "arrangements": 1289,
+   "pharmacies": 407,
+   "bands": {
+    "same": 332,
+    "neighbor": 296,
+    "farther": 661
+   },
+   "states_reached": 32,
+   "to": [
+    [
+     "MD",
+     217
+    ],
+    [
+     "FL",
+     84
+    ],
+    [
+     "VA",
+     79
+    ],
+    [
+     "PA",
+     53
+    ],
+    [
+     "CA",
+     45
+    ],
+    [
+     "TX",
+     45
+    ],
+    [
+     "NY",
+     40
+    ],
+    [
+     "TN",
+     34
+    ]
+   ],
+   "chains": {
+    "CVS": 699,
+    "Walgreens": 133,
+    "Walmart": 15,
+    "Mail-order and specialty": 199,
+    "Other": 243
+   },
+   "in_arrangements": 121,
+   "in_entities": 48,
+   "in_states": 11,
+   "from": [
+    [
+     "MD",
+     96
+    ],
+    [
+     "VA",
+     11
+    ],
+    [
+     "FL",
+     3
+    ],
+    [
+     "WV",
+     3
+    ],
+    [
+     "IL",
+     2
+    ],
+    [
+     "MA",
+     1
+    ],
+    [
+     "NC",
+     1
+    ],
+    [
+     "NY",
+     1
+    ]
+   ]
+  },
+  "DE": {
+   "entities": 180,
+   "holders": 34,
+   "arrangements": 461,
+   "pharmacies": 215,
+   "bands": {
+    "same": 279,
+    "neighbor": 56,
+    "farther": 126
+   },
+   "states_reached": 30,
+   "to": [
+    [
+     "PA",
+     46
+    ],
+    [
+     "SC",
+     19
+    ],
+    [
+     "LA",
+     16
+    ],
+    [
+     "FL",
+     12
+    ],
+    [
+     "IN",
+     10
+    ],
+    [
+     "TX",
+     10
+    ],
+    [
+     "NJ",
+     7
+    ],
+    [
+     "TN",
+     7
+    ]
+   ],
+   "chains": {
+    "CVS": 77,
+    "Walgreens": 201,
+    "Walmart": 14,
+    "Mail-order and specialty": 47,
+    "Other": 122
+   },
+   "in_arrangements": 1707,
+   "in_entities": 1676,
+   "in_states": 51,
+   "from": [
+    [
+     "FL",
+     207
+    ],
+    [
+     "NY",
+     144
+    ],
+    [
+     "CA",
+     132
+    ],
+    [
+     "LA",
+     112
+    ],
+    [
+     "TX",
+     103
+    ],
+    [
+     "PA",
+     83
+    ],
+    [
+     "MI",
+     60
+    ],
+    [
+     "NC",
+     55
+    ]
+   ]
+  },
+  "FL": {
+   "entities": 3115,
+   "holders": 929,
+   "arrangements": 29331,
+   "pharmacies": 2887,
+   "bands": {
+    "same": 19462,
+    "neighbor": 700,
+    "farther": 9169
+   },
+   "states_reached": 42,
+   "to": [
+    [
+     "TX",
+     949
+    ],
+    [
+     "PA",
+     875
+    ],
+    [
+     "IN",
+     645
+    ],
+    [
+     "MI",
+     606
+    ],
+    [
+     "CA",
+     590
+    ],
+    [
+     "TN",
+     567
+    ],
+    [
+     "NJ",
+     549
+    ],
+    [
+     "AZ",
+     539
+    ]
+   ],
+   "chains": {
+    "CVS": 11341,
+    "Walgreens": 8145,
+    "Walmart": 985,
+    "Mail-order and specialty": 3142,
+    "Other": 5718
+   },
+   "in_arrangements": 9559,
+   "in_entities": 3843,
+   "in_states": 52,
+   "from": [
+    [
+     "CA",
+     1155
+    ],
+    [
+     "TX",
+     597
+    ],
+    [
+     "LA",
+     580
+    ],
+    [
+     "NY",
+     481
+    ],
+    [
+     "GA",
+     388
+    ],
+    [
+     "NC",
+     375
+    ],
+    [
+     "IL",
+     324
+    ],
+    [
+     "MI",
+     316
+    ]
+   ]
+  },
+  "GA": {
+   "entities": 1445,
+   "holders": 373,
+   "arrangements": 3629,
+   "pharmacies": 943,
+   "bands": {
+    "same": 1718,
+    "neighbor": 780,
+    "farther": 1131
+   },
+   "states_reached": 34,
+   "to": [
+    [
+     "FL",
+     388
+    ],
+    [
+     "SC",
+     168
+    ],
+    [
+     "TX",
+     142
+    ],
+    [
+     "PA",
+     117
+    ],
+    [
+     "LA",
+     103
+    ],
+    [
+     "IN",
+     99
+    ],
+    [
+     "TN",
+     90
+    ],
+    [
+     "CA",
+     83
+    ]
+   ],
+   "chains": {
+    "CVS": 1095,
+    "Walgreens": 608,
+    "Walmart": 421,
+    "Mail-order and specialty": 400,
+    "Other": 1105
+   },
+   "in_arrangements": 699,
+   "in_entities": 550,
+   "in_states": 38,
+   "from": [
+    [
+     "FL",
+     261
+    ],
+    [
+     "AL",
+     55
+    ],
+    [
+     "TX",
+     41
+    ],
+    [
+     "CA",
+     37
+    ],
+    [
+     "TN",
+     34
+    ],
+    [
+     "CT",
+     24
+    ],
+    [
+     "SC",
+     23
+    ],
+    [
+     "MS",
+     21
+    ]
+   ]
+  },
+  "GU": {
+   "entities": 6,
+   "holders": 0,
+   "arrangements": 0,
+   "pharmacies": 0,
+   "bands": {
+    "same": 0,
+    "neighbor": 0,
+    "farther": 0
+   },
+   "states_reached": 0,
+   "to": [],
+   "chains": {
+    "CVS": 0,
+    "Walgreens": 0,
+    "Walmart": 0,
+    "Mail-order and specialty": 0,
+    "Other": 0
+   },
+   "in_arrangements": 0,
+   "in_entities": 0,
+   "in_states": 0,
+   "from": []
+  },
+  "HI": {
+   "entities": 270,
+   "holders": 81,
+   "arrangements": 563,
+   "pharmacies": 141,
+   "bands": {
+    "same": 340,
+    "neighbor": 0,
+    "farther": 223
+   },
+   "states_reached": 21,
+   "to": [
+    [
+     "TN",
+     27
+    ],
+    [
+     "PA",
+     24
+    ],
+    [
+     "FL",
+     17
+    ],
+    [
+     "CA",
+     16
+    ],
+    [
+     "TX",
+     15
+    ],
+    [
+     "IN",
+     14
+    ],
+    [
+     "KS",
+     13
+    ],
+    [
+     "AZ",
+     12
+    ]
+   ],
+   "chains": {
+    "CVS": 377,
+    "Walgreens": 39,
+    "Walmart": 15,
+    "Mail-order and specialty": 73,
+    "Other": 59
+   },
+   "in_arrangements": 422,
+   "in_entities": 422,
+   "in_states": 42,
+   "from": [
+    [
+     "FL",
+     95
+    ],
+    [
+     "CA",
+     53
+    ],
+    [
+     "OH",
+     19
+    ],
+    [
+     "TX",
+     17
+    ],
+    [
+     "IL",
+     15
+    ],
+    [
+     "PA",
+     14
+    ],
+    [
+     "NY",
+     12
+    ],
+    [
+     "AZ",
+     11
+    ]
+   ]
+  },
+  "IA": {
+   "entities": 930,
+   "holders": 191,
+   "arrangements": 1626,
+   "pharmacies": 646,
+   "bands": {
+    "same": 817,
+    "neighbor": 168,
+    "farther": 641
+   },
+   "states_reached": 40,
+   "to": [
+    [
+     "IL",
+     92
+    ],
+    [
+     "FL",
+     91
+    ],
+    [
+     "TX",
+     88
+    ],
+    [
+     "IN",
+     65
+    ],
+    [
+     "AZ",
+     47
+    ],
+    [
+     "PA",
+     46
+    ],
+    [
+     "MI",
+     31
+    ],
+    [
+     "AR",
+     30
+    ]
+   ],
+   "chains": {
+    "CVS": 334,
+    "Walgreens": 298,
+    "Walmart": 212,
+    "Mail-order and specialty": 173,
+    "Other": 609
+   },
+   "in_arrangements": 133,
+   "in_entities": 79,
+   "in_states": 16,
+   "from": [
+    [
+     "IL",
+     61
+    ],
+    [
+     "SD",
+     21
+    ],
+    [
+     "MO",
+     17
+    ],
+    [
+     "NE",
+     14
+    ],
+    [
+     "WI",
+     5
+    ],
+    [
+     "MN",
+     3
+    ],
+    [
+     "CO",
+     2
+    ],
+    [
+     "TX",
+     2
+    ]
+   ]
+  },
+  "ID": {
+   "entities": 741,
+   "holders": 68,
+   "arrangements": 1269,
+   "pharmacies": 339,
+   "bands": {
+    "same": 455,
+    "neighbor": 154,
+    "farther": 660
+   },
+   "states_reached": 33,
+   "to": [
+    [
+     "FL",
+     85
+    ],
+    [
+     "TX",
+     74
+    ],
+    [
+     "IN",
+     61
+    ],
+    [
+     "OR",
+     56
+    ],
+    [
+     "PA",
+     51
+    ],
+    [
+     "WA",
+     47
+    ],
+    [
+     "AZ",
+     45
+    ],
+    [
+     "CA",
+     39
+    ]
+   ],
+   "chains": {
+    "CVS": 258,
+    "Walgreens": 247,
+    "Walmart": 167,
+    "Mail-order and specialty": 175,
+    "Other": 422
+   },
+   "in_arrangements": 61,
+   "in_entities": 17,
+   "in_states": 5,
+   "from": [
+    [
+     "OR",
+     44
+    ],
+    [
+     "WA",
+     13
+    ],
+    [
+     "WY",
+     2
+    ],
+    [
+     "CA",
+     1
+    ],
+    [
+     "MT",
+     1
+    ]
+   ]
+  },
+  "IL": {
+   "entities": 2220,
+   "holders": 560,
+   "arrangements": 10860,
+   "pharmacies": 1654,
+   "bands": {
+    "same": 7708,
+    "neighbor": 587,
+    "farther": 2565
+   },
+   "states_reached": 38,
+   "to": [
+    [
+     "TX",
+     329
+    ],
+    [
+     "FL",
+     324
+    ],
+    [
+     "IN",
+     324
+    ],
+    [
+     "PA",
+     262
+    ],
+    [
+     "AZ",
+     197
+    ],
+    [
+     "MI",
+     189
+    ],
+    [
+     "TN",
+     162
+    ],
+    [
+     "MO",
+     136
+    ]
+   ],
+   "chains": {
+    "CVS": 2883,
+    "Walgreens": 5270,
+    "Walmart": 884,
+    "Mail-order and specialty": 715,
+    "Other": 1108
+   },
+   "in_arrangements": 3903,
+   "in_entities": 2484,
+   "in_states": 49,
+   "from": [
+    [
+     "FL",
+     438
+    ],
+    [
+     "CA",
+     397
+    ],
+    [
+     "NY",
+     196
+    ],
+    [
+     "MO",
+     195
+    ],
+    [
+     "TX",
+     187
+    ],
+    [
+     "MI",
+     151
+    ],
+    [
+     "OH",
+     145
+    ],
+    [
+     "KY",
+     143
+    ]
+   ]
+  },
+  "IN": {
+   "entities": 1303,
+   "holders": 300,
+   "arrangements": 4803,
+   "pharmacies": 894,
+   "bands": {
+    "same": 2980,
+    "neighbor": 341,
+    "farther": 1482
+   },
+   "states_reached": 35,
+   "to": [
+    [
+     "FL",
+     230
+    ],
+    [
+     "TX",
+     174
+    ],
+    [
+     "PA",
+     152
+    ],
+    [
+     "IL",
+     133
+    ],
+    [
+     "MI",
+     112
+    ],
+    [
+     "CA",
+     106
+    ],
+    [
+     "AZ",
+     102
+    ],
+    [
+     "NC",
+     87
+    ]
+   ],
+   "chains": {
+    "CVS": 2158,
+    "Walgreens": 890,
+    "Walmart": 405,
+    "Mail-order and specialty": 385,
+    "Other": 965
+   },
+   "in_arrangements": 7299,
+   "in_entities": 3361,
+   "in_states": 51,
+   "from": [
+    [
+     "CA",
+     684
+    ],
+    [
+     "FL",
+     645
+    ],
+    [
+     "LA",
+     424
+    ],
+    [
+     "TX",
+     419
+    ],
+    [
+     "MI",
+     384
+    ],
+    [
+     "NY",
+     377
+    ],
+    [
+     "KY",
+     331
+    ],
+    [
+     "IL",
+     324
+    ]
+   ]
+  },
+  "KS": {
+   "entities": 1023,
+   "holders": 173,
+   "arrangements": 1780,
+   "pharmacies": 518,
+   "bands": {
+    "same": 810,
+    "neighbor": 135,
+    "farther": 835
+   },
+   "states_reached": 32,
+   "to": [
+    [
+     "FL",
+     128
+    ],
+    [
+     "IN",
+     119
+    ],
+    [
+     "MO",
+     118
+    ],
+    [
+     "TX",
+     115
+    ],
+    [
+     "AZ",
+     88
+    ],
+    [
+     "TN",
+     68
+    ],
+    [
+     "PA",
+     57
+    ],
+    [
+     "AR",
+     41
+    ]
+   ],
+   "chains": {
+    "CVS": 160,
+    "Walgreens": 367,
+    "Walmart": 297,
+    "Mail-order and specialty": 387,
+    "Other": 569
+   },
+   "in_arrangements": 3455,
+   "in_entities": 2437,
+   "in_states": 50,
+   "from": [
+    [
+     "FL",
+     422
+    ],
+    [
+     "CA",
+     421
+    ],
+    [
+     "TX",
+     208
+    ],
+    [
+     "LA",
+     158
+    ],
+    [
+     "NY",
+     147
+    ],
+    [
+     "MO",
+     139
+    ],
+    [
+     "PA",
+     131
+    ],
+    [
+     "NC",
+     110
+    ]
+   ]
+  },
+  "KY": {
+   "entities": 1929,
+   "holders": 328,
+   "arrangements": 5412,
+   "pharmacies": 876,
+   "bands": {
+    "same": 2490,
+    "neighbor": 959,
+    "farther": 1963
+   },
+   "states_reached": 34,
+   "to": [
+    [
+     "IN",
+     331
+    ],
+    [
+     "FL",
+     312
+    ],
+    [
+     "TX",
+     306
+    ],
+    [
+     "PA",
+     215
+    ],
+    [
+     "OH",
+     197
+    ],
+    [
+     "TN",
+     173
+    ],
+    [
+     "IL",
+     143
+    ],
+    [
+     "MI",
+     123
+    ]
+   ],
+   "chains": {
+    "CVS": 1420,
+    "Walgreens": 1181,
+    "Walmart": 822,
+    "Mail-order and specialty": 660,
+    "Other": 1329
+   },
+   "in_arrangements": 770,
+   "in_entities": 558,
+   "in_states": 48,
+   "from": [
+    [
+     "WV",
+     72
+    ],
+    [
+     "OH",
+     53
+    ],
+    [
+     "NY",
+     51
+    ],
+    [
+     "FL",
+     50
+    ],
+    [
+     "IN",
+     49
+    ],
+    [
+     "TN",
+     49
+    ],
+    [
+     "AR",
+     39
+    ],
+    [
+     "CA",
+     37
+    ]
+   ]
+  },
+  "LA": {
+   "entities": 2505,
+   "holders": 361,
+   "arrangements": 8733,
+   "pharmacies": 894,
+   "bands": {
+    "same": 4481,
+    "neighbor": 683,
+    "farther": 3569
+   },
+   "states_reached": 32,
+   "to": [
+    [
+     "FL",
+     580
+    ],
+    [
+     "TX",
+     544
+    ],
+    [
+     "IN",
+     424
+    ],
+    [
+     "TN",
+     290
+    ],
+    [
+     "PA",
+     278
+    ],
+    [
+     "AZ",
+     265
+    ],
+    [
+     "NJ",
+     175
+    ],
+    [
+     "CA",
+     166
+    ]
+   ],
+   "chains": {
+    "CVS": 2486,
+    "Walgreens": 1754,
+    "Walmart": 1234,
+    "Mail-order and specialty": 1586,
+    "Other": 1673
+   },
+   "in_arrangements": 1426,
+   "in_entities": 1255,
+   "in_states": 49,
+   "from": [
+    [
+     "FL",
+     185
+    ],
+    [
+     "TX",
+     181
+    ],
+    [
+     "CA",
+     170
+    ],
+    [
+     "GA",
+     103
+    ],
+    [
+     "NY",
+     69
+    ],
+    [
+     "MI",
+     62
+    ],
+    [
+     "MS",
+     46
+    ],
+    [
+     "OH",
+     43
+    ]
+   ]
+  },
+  "MA": {
+   "entities": 1388,
+   "holders": 156,
+   "arrangements": 5433,
+   "pharmacies": 986,
+   "bands": {
+    "same": 3689,
+    "neighbor": 240,
+    "farther": 1504
+   },
+   "states_reached": 39,
+   "to": [
+    [
+     "PA",
+     177
+    ],
+    [
+     "FL",
+     148
+    ],
+    [
+     "TX",
+     111
+    ],
+    [
+     "AZ",
+     104
+    ],
+    [
+     "IN",
+     99
+    ],
+    [
+     "IL",
+     93
+    ],
+    [
+     "CA",
+     90
+    ],
+    [
+     "NJ",
+     89
+    ]
+   ],
+   "chains": {
+    "CVS": 3287,
+    "Walgreens": 1046,
+    "Walmart": 113,
+    "Mail-order and specialty": 490,
+    "Other": 497
+   },
+   "in_arrangements": 2317,
+   "in_entities": 1990,
+   "in_states": 49,
+   "from": [
+    [
+     "FL",
+     316
+    ],
+    [
+     "CA",
+     245
+    ],
+    [
+     "NY",
+     141
+    ],
+    [
+     "ME",
+     116
+    ],
+    [
+     "CT",
+     103
+    ],
+    [
+     "PA",
+     102
+    ],
+    [
+     "TX",
+     92
+    ],
+    [
+     "LA",
+     84
+    ]
+   ]
+  },
+  "MD": {
+   "entities": 459,
+   "holders": 99,
+   "arrangements": 2693,
+   "pharmacies": 703,
+   "bands": {
+    "same": 1306,
+    "neighbor": 308,
+    "farther": 1079
+   },
+   "states_reached": 35,
+   "to": [
+    [
+     "FL",
+     149
+    ],
+    [
+     "PA",
+     132
+    ],
+    [
+     "DC",
+     96
+    ],
+    [
+     "TX",
+     96
+    ],
+    [
+     "CA",
+     73
+    ],
+    [
+     "NJ",
+     70
+    ],
+    [
+     "TN",
+     66
+    ],
+    [
+     "IL",
+     62
+    ]
+   ],
+   "chains": {
+    "CVS": 1342,
+    "Walgreens": 438,
+    "Walmart": 162,
+    "Mail-order and specialty": 299,
+    "Other": 452
+   },
+   "in_arrangements": 434,
+   "in_entities": 212,
+   "in_states": 32,
+   "from": [
+    [
+     "DC",
+     217
+    ],
+    [
+     "FL",
+     21
+    ],
+    [
+     "VA",
+     20
+    ],
+    [
+     "WV",
+     20
+    ],
+    [
+     "NY",
+     17
+    ],
+    [
+     "PA",
+     15
+    ],
+    [
+     "TX",
+     14
+    ],
+    [
+     "IL",
+     12
+    ]
+   ]
+  },
+  "ME": {
+   "entities": 760,
+   "holders": 112,
+   "arrangements": 2249,
+   "pharmacies": 370,
+   "bands": {
+    "same": 988,
+    "neighbor": 13,
+    "farther": 1248
+   },
+   "states_reached": 30,
+   "to": [
+    [
+     "FL",
+     137
+    ],
+    [
+     "TX",
+     128
+    ],
+    [
+     "MA",
+     116
+    ],
+    [
+     "IN",
+     92
+    ],
+    [
+     "PA",
+     81
+    ],
+    [
+     "AZ",
+     72
+    ],
+    [
+     "MI",
+     61
+    ],
+    [
+     "CA",
+     59
+    ]
+   ],
+   "chains": {
+    "CVS": 529,
+    "Walgreens": 479,
+    "Walmart": 265,
+    "Mail-order and specialty": 332,
+    "Other": 644
+   },
+   "in_arrangements": 68,
+   "in_entities": 53,
+   "in_states": 16,
+   "from": [
+    [
+     "NH",
+     12
+    ],
+    [
+     "MA",
+     10
+    ],
+    [
+     "PA",
+     9
+    ],
+    [
+     "OH",
+     7
+    ],
+    [
+     "VT",
+     7
+    ],
+    [
+     "NC",
+     5
+    ],
+    [
+     "IL",
+     4
+    ],
+    [
+     "CA",
+     3
+    ]
+   ]
+  },
+  "MI": {
+   "entities": 2691,
+   "holders": 422,
+   "arrangements": 6976,
+   "pharmacies": 1238,
+   "bands": {
+    "same": 4087,
+    "neighbor": 587,
+    "farther": 2302
+   },
+   "states_reached": 37,
+   "to": [
+    [
+     "IN",
+     384
+    ],
+    [
+     "FL",
+     316
+    ],
+    [
+     "TX",
+     275
+    ],
+    [
+     "PA",
+     232
+    ],
+    [
+     "AZ",
+     204
+    ],
+    [
+     "OH",
+     189
+    ],
+    [
+     "IL",
+     151
+    ],
+    [
+     "TN",
+     126
+    ]
+   ],
+   "chains": {
+    "CVS": 1342,
+    "Walgreens": 1855,
+    "Walmart": 623,
+    "Mail-order and specialty": 1061,
+    "Other": 2095
+   },
+   "in_arrangements": 4218,
+   "in_entities": 2613,
+   "in_states": 51,
+   "from": [
+    [
+     "FL",
+     606
+    ],
+    [
+     "CA",
+     457
+    ],
+    [
+     "TX",
+     217
+    ],
+    [
+     "IL",
+     189
+    ],
+    [
+     "NY",
+     170
+    ],
+    [
+     "LA",
+     166
+    ],
+    [
+     "NC",
+     153
+    ],
+    [
+     "OH",
+     150
+    ]
+   ]
+  },
+  "MN": {
+   "entities": 1367,
+   "holders": 333,
+   "arrangements": 4858,
+   "pharmacies": 684,
+   "bands": {
+    "same": 3623,
+    "neighbor": 131,
+    "farther": 1104
+   },
+   "states_reached": 34,
+   "to": [
+    [
+     "FL",
+     120
+    ],
+    [
+     "TX",
+     118
+    ],
+    [
+     "IN",
+     104
+    ],
+    [
+     "PA",
+     99
+    ],
+    [
+     "AZ",
+     83
+    ],
+    [
+     "MI",
+     68
+    ],
+    [
+     "ND",
+     63
+    ],
+    [
+     "WI",
+     56
+    ]
+   ],
+   "chains": {
+    "CVS": 644,
+    "Walgreens": 804,
+    "Walmart": 180,
+    "Mail-order and specialty": 282,
+    "Other": 2948
+   },
+   "in_arrangements": 324,
+   "in_entities": 128,
+   "in_states": 32,
+   "from": [
+    [
+     "WI",
+     128
+    ],
+    [
+     "ND",
+     76
+    ],
+    [
+     "SD",
+     33
+    ],
+    [
+     "MI",
+     15
+    ],
+    [
+     "IA",
+     14
+    ],
+    [
+     "NY",
+     7
+    ],
+    [
+     "AZ",
+     6
+    ],
+    [
+     "MA",
+     5
+    ]
+   ]
+  },
+  "MO": {
+   "entities": 1943,
+   "holders": 250,
+   "arrangements": 4297,
+   "pharmacies": 1104,
+   "bands": {
+    "same": 2414,
+    "neighbor": 555,
+    "farther": 1328
+   },
+   "states_reached": 36,
+   "to": [
+    [
+     "FL",
+     200
+    ],
+    [
+     "IL",
+     195
+    ],
+    [
+     "TX",
+     179
+    ],
+    [
+     "IN",
+     173
+    ],
+    [
+     "KS",
+     139
+    ],
+    [
+     "PA",
+     131
+    ],
+    [
+     "AZ",
+     107
+    ],
+    [
+     "TN",
+     106
+    ]
+   ],
+   "chains": {
+    "CVS": 1149,
+    "Walgreens": 982,
+    "Walmart": 682,
+    "Mail-order and specialty": 620,
+    "Other": 864
+   },
+   "in_arrangements": 1564,
+   "in_entities": 1301,
+   "in_states": 50,
+   "from": [
+    [
+     "FL",
+     181
+    ],
+    [
+     "IL",
+     136
+    ],
+    [
+     "CA",
+     119
+    ],
+    [
+     "KS",
+     118
+    ],
+    [
+     "AR",
+     106
+    ],
+    [
+     "LA",
+     86
+    ],
+    [
+     "TX",
+     85
+    ],
+    [
+     "NY",
+     65
+    ]
+   ]
+  },
+  "MP": {
+   "entities": 7,
+   "holders": 4,
+   "arrangements": 7,
+   "pharmacies": 3,
+   "bands": {
+    "same": 7,
+    "neighbor": 0,
+    "farther": 0
+   },
+   "states_reached": 1,
+   "to": [],
+   "chains": {
+    "CVS": 0,
+    "Walgreens": 0,
+    "Walmart": 0,
+    "Mail-order and specialty": 0,
+    "Other": 7
+   },
+   "in_arrangements": 0,
+   "in_entities": 0,
+   "in_states": 0,
+   "from": []
+  },
+  "MS": {
+   "entities": 1052,
+   "holders": 188,
+   "arrangements": 2724,
+   "pharmacies": 650,
+   "bands": {
+    "same": 1230,
+    "neighbor": 383,
+    "farther": 1111
+   },
+   "states_reached": 30,
+   "to": [
+    [
+     "FL",
+     176
+    ],
+    [
+     "TX",
+     169
+    ],
+    [
+     "AL",
+     153
+    ],
+    [
+     "TN",
+     135
+    ],
+    [
+     "IN",
+     107
+    ],
+    [
+     "PA",
+     105
+    ],
+    [
+     "AZ",
+     75
+    ],
+    [
+     "MI",
+     64
+    ]
+   ],
+   "chains": {
+    "CVS": 649,
+    "Walgreens": 680,
+    "Walmart": 455,
+    "Mail-order and specialty": 317,
+    "Other": 623
+   },
+   "in_arrangements": 548,
+   "in_entities": 440,
+   "in_states": 43,
+   "from": [
+    [
+     "TN",
+     90
+    ],
+    [
+     "FL",
+     62
+    ],
+    [
+     "AL",
+     51
+    ],
+    [
+     "AR",
+     36
+    ],
+    [
+     "LA",
+     31
+    ],
+    [
+     "AZ",
+     22
+    ],
+    [
+     "MI",
+     22
+    ],
+    [
+     "IL",
+     16
+    ]
+   ]
+  },
+  "MT": {
+   "entities": 405,
+   "holders": 86,
+   "arrangements": 588,
+   "pharmacies": 224,
+   "bands": {
+    "same": 218,
+    "neighbor": 7,
+    "farther": 363
+   },
+   "states_reached": 33,
+   "to": [
+    [
+     "FL",
+     33
+    ],
+    [
+     "TX",
+     33
+    ],
+    [
+     "PA",
+     31
+    ],
+    [
+     "IN",
+     28
+    ],
+    [
+     "AZ",
+     23
+    ],
+    [
+     "MI",
+     22
+    ],
+    [
+     "TN",
+     21
+    ],
+    [
+     "CA",
+     14
+    ]
+   ],
+   "chains": {
+    "CVS": 146,
+    "Walgreens": 67,
+    "Walmart": 60,
+    "Mail-order and specialty": 108,
+    "Other": 207
+   },
+   "in_arrangements": 8,
+   "in_entities": 6,
+   "in_states": 5,
+   "from": [
+    [
+     "WA",
+     2
+    ],
+    [
+     "WV",
+     2
+    ],
+    [
+     "WY",
+     2
+    ],
+    [
+     "CT",
+     1
+    ],
+    [
+     "VT",
+     1
+    ]
+   ]
+  },
+  "NC": {
+   "entities": 1955,
+   "holders": 427,
+   "arrangements": 7411,
+   "pharmacies": 1176,
+   "bands": {
+    "same": 4406,
+    "neighbor": 491,
+    "farther": 2514
+   },
+   "states_reached": 37,
+   "to": [
+    [
+     "FL",
+     375
+    ],
+    [
+     "TX",
+     305
+    ],
+    [
+     "PA",
+     268
+    ],
+    [
+     "IN",
+     234
+    ],
+    [
+     "SC",
+     223
+    ],
+    [
+     "TN",
+     163
+    ],
+    [
+     "MI",
+     153
+    ],
+    [
+     "AZ",
+     143
+    ]
+   ],
+   "chains": {
+    "CVS": 2680,
+    "Walgreens": 2036,
+    "Walmart": 635,
+    "Mail-order and specialty": 724,
+    "Other": 1336
+   },
+   "in_arrangements": 3184,
+   "in_entities": 2214,
+   "in_states": 50,
+   "from": [
+    [
+     "FL",
+     450
+    ],
+    [
+     "CA",
+     347
+    ],
+    [
+     "LA",
+     152
+    ],
+    [
+     "NY",
+     136
+    ],
+    [
+     "TX",
+     134
+    ],
+    [
+     "SC",
+     122
+    ],
+    [
+     "KY",
+     117
+    ],
+    [
+     "VA",
+     111
+    ]
+   ]
+  },
+  "ND": {
+   "entities": 706,
+   "holders": 67,
+   "arrangements": 527,
+   "pharmacies": 273,
+   "bands": {
+    "same": 264,
+    "neighbor": 78,
+    "farther": 185
+   },
+   "states_reached": 29,
+   "to": [
+    [
+     "MN",
+     76
+    ],
+    [
+     "IN",
+     20
+    ],
+    [
+     "FL",
+     18
+    ],
+    [
+     "AZ",
+     17
+    ],
+    [
+     "TX",
+     15
+    ],
+    [
+     "PA",
+     14
+    ],
+    [
+     "KS",
+     11
+    ],
+    [
+     "TN",
+     11
+    ]
+   ],
+   "chains": {
+    "CVS": 67,
+    "Walgreens": 23,
+    "Walmart": 24,
+    "Mail-order and specialty": 73,
+    "Other": 340
+   },
+   "in_arrangements": 81,
+   "in_entities": 48,
+   "in_states": 6,
+   "from": [
+    [
+     "MN",
+     63
+    ],
+    [
+     "IA",
+     8
+    ],
+    [
+     "WI",
+     5
+    ],
+    [
+     "MT",
+     2
+    ],
+    [
+     "SD",
+     2
+    ],
+    [
+     "MI",
+     1
+    ]
+   ]
+  },
+  "NE": {
+   "entities": 427,
+   "holders": 81,
+   "arrangements": 830,
+   "pharmacies": 323,
+   "bands": {
+    "same": 431,
+    "neighbor": 55,
+    "farther": 344
+   },
+   "states_reached": 26,
+   "to": [
+    [
+     "TX",
+     54
+    ],
+    [
+     "FL",
+     52
+    ],
+    [
+     "IN",
+     49
+    ],
+    [
+     "AR",
+     28
+    ],
+    [
+     "AZ",
+     24
+    ],
+    [
+     "MO",
+     21
+    ],
+    [
+     "PA",
+     19
+    ],
+    [
+     "MI",
+     17
+    ]
+   ],
+   "chains": {
+    "CVS": 125,
+    "Walgreens": 223,
+    "Walmart": 184,
+    "Mail-order and specialty": 92,
+    "Other": 206
+   },
+   "in_arrangements": 112,
+   "in_entities": 77,
+   "in_states": 28,
+   "from": [
+    [
+     "IA",
+     30
+    ],
+    [
+     "NV",
+     23
+    ],
+    [
+     "SD",
+     7
+    ],
+    [
+     "MO",
+     6
+    ],
+    [
+     "IN",
+     4
+    ],
+    [
+     "TX",
+     4
+    ],
+    [
+     "AZ",
+     3
+    ],
+    [
+     "FL",
+     3
+    ]
+   ]
+  },
+  "NH": {
+   "entities": 344,
+   "holders": 51,
+   "arrangements": 1349,
+   "pharmacies": 303,
+   "bands": {
+    "same": 575,
+    "neighbor": 143,
+    "farther": 631
+   },
+   "states_reached": 31,
+   "to": [
+    [
+     "MA",
+     74
+    ],
+    [
+     "FL",
+     69
+    ],
+    [
+     "TX",
+     63
+    ],
+    [
+     "VT",
+     57
+    ],
+    [
+     "AZ",
+     55
+    ],
+    [
+     "PA",
+     51
+    ],
+    [
+     "IN",
+     49
+    ],
+    [
+     "NJ",
+     39
+    ]
+   ],
+   "chains": {
+    "CVS": 478,
+    "Walgreens": 280,
+    "Walmart": 103,
+    "Mail-order and specialty": 232,
+    "Other": 256
+   },
+   "in_arrangements": 296,
+   "in_entities": 192,
+   "in_states": 37,
+   "from": [
+    [
+     "VT",
+     87
+    ],
+    [
+     "MA",
+     53
+    ],
+    [
+     "CA",
+     35
+    ],
+    [
+     "ME",
+     13
+    ],
+    [
+     "PA",
+     11
+    ],
+    [
+     "TX",
+     10
+    ],
+    [
+     "OR",
+     9
+    ],
+    [
+     "CT",
+     8
+    ]
+   ]
+  },
+  "NJ": {
+   "entities": 639,
+   "holders": 121,
+   "arrangements": 1788,
+   "pharmacies": 751,
+   "bands": {
+    "same": 1200,
+    "neighbor": 184,
+    "farther": 404
+   },
+   "states_reached": 31,
+   "to": [
+    [
+     "PA",
+     100
+    ],
+    [
+     "NY",
+     67
+    ],
+    [
+     "TX",
+     56
+    ],
+    [
+     "FL",
+     46
+    ],
+    [
+     "AZ",
+     36
+    ],
+    [
+     "IN",
+     36
+    ],
+    [
+     "TN",
+     28
+    ],
+    [
+     "MI",
+     26
+    ]
+   ],
+   "chains": {
+    "CVS": 424,
+    "Walgreens": 617,
+    "Walmart": 42,
+    "Mail-order and specialty": 162,
+    "Other": 543
+   },
+   "in_arrangements": 3967,
+   "in_entities": 2543,
+   "in_states": 50,
+   "from": [
+    [
+     "FL",
+     549
+    ],
+    [
+     "CA",
+     385
+    ],
+    [
+     "NY",
+     324
+    ],
+    [
+     "PA",
+     281
+    ],
+    [
+     "TX",
+     205
+    ],
+    [
+     "LA",
+     175
+    ],
+    [
+     "MI",
+     125
+    ],
+    [
+     "NC",
+     119
+    ]
+   ]
+  },
+  "NM": {
+   "entities": 754,
+   "holders": 83,
+   "arrangements": 1277,
+   "pharmacies": 328,
+   "bands": {
+    "same": 602,
+    "neighbor": 245,
+    "farther": 430
+   },
+   "states_reached": 31,
+   "to": [
+    [
+     "AZ",
+     135
+    ],
+    [
+     "TX",
+     109
+    ],
+    [
+     "FL",
+     91
+    ],
+    [
+     "PA",
+     47
+    ],
+    [
+     "IN",
+     42
+    ],
+    [
+     "CA",
+     30
+    ],
+    [
+     "MI",
+     29
+    ],
+    [
+     "AR",
+     19
+    ]
+   ],
+   "chains": {
+    "CVS": 202,
+    "Walgreens": 488,
+    "Walmart": 229,
+    "Mail-order and specialty": 141,
+    "Other": 217
+   },
+   "in_arrangements": 9,
+   "in_entities": 7,
+   "in_states": 6,
+   "from": [
+    [
+     "CO",
+     3
+    ],
+    [
+     "TX",
+     2
+    ],
+    [
+     "AZ",
+     1
+    ],
+    [
+     "CA",
+     1
+    ],
+    [
+     "IA",
+     1
+    ],
+    [
+     "WV",
+     1
+    ]
+   ]
+  },
+  "NV": {
+   "entities": 200,
+   "holders": 64,
+   "arrangements": 3057,
+   "pharmacies": 403,
+   "bands": {
+    "same": 1733,
+    "neighbor": 319,
+    "farther": 1005
+   },
+   "states_reached": 30,
+   "to": [
+    [
+     "FL",
+     181
+    ],
+    [
+     "AZ",
+     163
+    ],
+    [
+     "CA",
+     156
+    ],
+    [
+     "TX",
+     91
+    ],
+    [
+     "IN",
+     76
+    ],
+    [
+     "PA",
+     60
+    ],
+    [
+     "KS",
+     57
+    ],
+    [
+     "NC",
+     55
+    ]
+   ],
+   "chains": {
+    "CVS": 1281,
+    "Walgreens": 578,
+    "Walmart": 145,
+    "Mail-order and specialty": 446,
+    "Other": 607
+   },
+   "in_arrangements": 2034,
+   "in_entities": 1848,
+   "in_states": 49,
+   "from": [
+    [
+     "FL",
+     322
+    ],
+    [
+     "CA",
+     276
+    ],
+    [
+     "TX",
+     116
+    ],
+    [
+     "NY",
+     94
+    ],
+    [
+     "LA",
+     75
+    ],
+    [
+     "NC",
+     73
+    ],
+    [
+     "IL",
+     70
+    ],
+    [
+     "PA",
+     69
+    ]
+   ]
+  },
+  "NY": {
+   "entities": 3634,
+   "holders": 929,
+   "arrangements": 13203,
+   "pharmacies": 2045,
+   "bands": {
+    "same": 8843,
+    "neighbor": 947,
+    "farther": 3413
+   },
+   "states_reached": 38,
+   "to": [
+    [
+     "FL",
+     481
+    ],
+    [
+     "PA",
+     457
+    ],
+    [
+     "IN",
+     377
+    ],
+    [
+     "TX",
+     333
+    ],
+    [
+     "NJ",
+     324
+    ],
+    [
+     "AZ",
+     273
+    ],
+    [
+     "TN",
+     217
+    ],
+    [
+     "IL",
+     196
+    ]
+   ],
+   "chains": {
+    "CVS": 4371,
+    "Walgreens": 1889,
+    "Walmart": 616,
+    "Mail-order and specialty": 1530,
+    "Other": 4797
+   },
+   "in_arrangements": 2377,
+   "in_entities": 1383,
+   "in_states": 50,
+   "from": [
+    [
+     "FL",
+     339
+    ],
+    [
+     "CA",
+     238
+    ],
+    [
+     "PA",
+     125
+    ],
+    [
+     "CT",
+     108
+    ],
+    [
+     "TX",
+     96
+    ],
+    [
+     "KY",
+     95
+    ],
+    [
+     "VT",
+     87
+    ],
+    [
+     "OH",
+     86
+    ]
+   ]
+  },
+  "OH": {
+   "entities": 3380,
+   "holders": 429,
+   "arrangements": 6161,
+   "pharmacies": 1290,
+   "bands": {
+    "same": 3423,
+    "neighbor": 745,
+    "farther": 1993
+   },
+   "states_reached": 35,
+   "to": [
+    [
+     "FL",
+     304
+    ],
+    [
+     "IN",
+     258
+    ],
+    [
+     "PA",
+     240
+    ],
+    [
+     "TX",
+     239
+    ],
+    [
+     "MI",
+     150
+    ],
+    [
+     "IL",
+     145
+    ],
+    [
+     "TN",
+     130
+    ],
+    [
+     "CA",
+     119
+    ]
+   ],
+   "chains": {
+    "CVS": 2304,
+    "Walgreens": 1042,
+    "Walmart": 548,
+    "Mail-order and specialty": 713,
+    "Other": 1554
+   },
+   "in_arrangements": 1284,
+   "in_entities": 902,
+   "in_states": 48,
+   "from": [
+    [
+     "KY",
+     197
+    ],
+    [
+     "MI",
+     189
+    ],
+    [
+     "WV",
+     136
+    ],
+    [
+     "CA",
+     101
+    ],
+    [
+     "FL",
+     82
+    ],
+    [
+     "PA",
+     56
+    ],
+    [
+     "NY",
+     48
+    ],
+    [
+     "IN",
+     47
+    ]
+   ]
+  },
+  "OK": {
+   "entities": 943,
+   "holders": 137,
+   "arrangements": 2120,
+   "pharmacies": 537,
+   "bands": {
+    "same": 1059,
+    "neighbor": 308,
+    "farther": 753
+   },
+   "states_reached": 30,
+   "to": [
+    [
+     "TX",
+     168
+    ],
+    [
+     "FL",
+     133
+    ],
+    [
+     "IN",
+     121
+    ],
+    [
+     "AZ",
+     90
+    ],
+    [
+     "PA",
+     72
+    ],
+    [
+     "AR",
+     70
+    ],
+    [
+     "TN",
+     52
+    ],
+    [
+     "MO",
+     39
+    ]
+   ],
+   "chains": {
+    "CVS": 392,
+    "Walgreens": 470,
+    "Walmart": 503,
+    "Mail-order and specialty": 317,
+    "Other": 438
+   },
+   "in_arrangements": 49,
+   "in_entities": 36,
+   "in_states": 13,
+   "from": [
+    [
+     "AR",
+     15
+    ],
+    [
+     "TX",
+     10
+    ],
+    [
+     "KS",
+     5
+    ],
+    [
+     "AL",
+     4
+    ],
+    [
+     "FL",
+     4
+    ],
+    [
+     "MS",
+     3
+    ],
+    [
+     "GA",
+     2
+    ],
+    [
+     "AZ",
+     1
+    ]
+   ]
+  },
+  "OR": {
+   "entities": 1019,
+   "holders": 182,
+   "arrangements": 3041,
+   "pharmacies": 543,
+   "bands": {
+    "same": 1632,
+    "neighbor": 293,
+    "farther": 1116
+   },
+   "states_reached": 33,
+   "to": [
+    [
+     "WA",
+     145
+    ],
+    [
+     "TX",
+     141
+    ],
+    [
+     "FL",
+     134
+    ],
+    [
+     "AZ",
+     111
+    ],
+    [
+     "IN",
+     101
+    ],
+    [
+     "PA",
+     98
+    ],
+    [
+     "CA",
+     80
+    ],
+    [
+     "MI",
+     66
+    ]
+   ],
+   "chains": {
+    "CVS": 516,
+    "Walgreens": 640,
+    "Walmart": 277,
+    "Mail-order and specialty": 385,
+    "Other": 1223
+   },
+   "in_arrangements": 221,
+   "in_entities": 136,
+   "in_states": 24,
+   "from": [
+    [
+     "WA",
+     91
+    ],
+    [
+     "ID",
+     56
+    ],
+    [
+     "CA",
+     22
+    ],
+    [
+     "NM",
+     8
+    ],
+    [
+     "IL",
+     7
+    ],
+    [
+     "AZ",
+     5
+    ],
+    [
+     "FL",
+     4
+    ],
+    [
+     "AK",
+     3
+    ]
+   ]
+  },
+  "PA": {
+   "entities": 2789,
+   "holders": 561,
+   "arrangements": 7269,
+   "pharmacies": 1247,
+   "bands": {
+    "same": 4487,
+    "neighbor": 577,
+    "farther": 2205
+   },
+   "states_reached": 36,
+   "to": [
+    [
+     "FL",
+     303
+    ],
+    [
+     "NJ",
+     281
+    ],
+    [
+     "TX",
+     244
+    ],
+    [
+     "IN",
+     222
+    ],
+    [
+     "TN",
+     156
+    ],
+    [
+     "MI",
+     139
+    ],
+    [
+     "AZ",
+     137
+    ],
+    [
+     "KS",
+     131
+    ]
+   ],
+   "chains": {
+    "CVS": 3393,
+    "Walgreens": 571,
+    "Walmart": 438,
+    "Mail-order and specialty": 992,
+    "Other": 1875
+   },
+   "in_arrangements": 7022,
+   "in_entities": 3465,
+   "in_states": 51,
+   "from": [
+    [
+     "FL",
+     875
+    ],
+    [
+     "CA",
+     636
+    ],
+    [
+     "NY",
+     457
+    ],
+    [
+     "TX",
+     347
+    ],
+    [
+     "LA",
+     278
+    ],
+    [
+     "NC",
+     268
+    ],
+    [
+     "IL",
+     262
+    ],
+    [
+     "OH",
+     240
+    ]
+   ]
+  },
+  "PR": {
+   "entities": 169,
+   "holders": 42,
+   "arrangements": 162,
+   "pharmacies": 102,
+   "bands": {
+    "same": 131,
+    "neighbor": 0,
+    "farther": 31
+   },
+   "states_reached": 16,
+   "to": [
+    [
+     "FL",
+     7
+    ],
+    [
+     "CA",
+     5
+    ],
+    [
+     "NY",
+     4
+    ],
+    [
+     "AZ",
+     2
+    ],
+    [
+     "IN",
+     2
+    ],
+    [
+     "TX",
+     2
+    ],
+    [
+     "DE",
+     1
+    ],
+    [
+     "GA",
+     1
+    ]
+   ],
+   "chains": {
+    "CVS": 0,
+    "Walgreens": 8,
+    "Walmart": 0,
+    "Mail-order and specialty": 10,
+    "Other": 144
+   },
+   "in_arrangements": 36,
+   "in_entities": 36,
+   "in_states": 15,
+   "from": [
+    [
+     "FL",
+     14
+    ],
+    [
+     "PA",
+     4
+    ],
+    [
+     "CA",
+     2
+    ],
+    [
+     "IL",
+     2
+    ],
+    [
+     "MI",
+     2
+    ],
+    [
+     "MO",
+     2
+    ],
+    [
+     "NY",
+     2
+    ],
+    [
+     "CT",
+     1
+    ]
+   ]
+  },
+  "RI": {
+   "entities": 166,
+   "holders": 44,
+   "arrangements": 1255,
+   "pharmacies": 263,
+   "bands": {
+    "same": 813,
+    "neighbor": 70,
+    "farther": 372
+   },
+   "states_reached": 28,
+   "to": [
+    [
+     "MA",
+     64
+    ],
+    [
+     "TX",
+     43
+    ],
+    [
+     "PA",
+     41
+    ],
+    [
+     "FL",
+     35
+    ],
+    [
+     "IL",
+     28
+    ],
+    [
+     "MI",
+     26
+    ],
+    [
+     "CA",
+     22
+    ],
+    [
+     "IN",
+     19
+    ]
+   ],
+   "chains": {
+    "CVS": 697,
+    "Walgreens": 325,
+    "Walmart": 34,
+    "Mail-order and specialty": 73,
+    "Other": 126
+   },
+   "in_arrangements": 91,
+   "in_entities": 30,
+   "in_states": 4,
+   "from": [
+    [
+     "MA",
+     76
+    ],
+    [
+     "CT",
+     13
+    ],
+    [
+     "IA",
+     1
+    ],
+    [
+     "NC",
+     1
+    ]
+   ]
+  },
+  "SC": {
+   "entities": 1031,
+   "holders": 115,
+   "arrangements": 2153,
+   "pharmacies": 593,
+   "bands": {
+    "same": 1000,
+    "neighbor": 145,
+    "farther": 1008
+   },
+   "states_reached": 32,
+   "to": [
+    [
+     "FL",
+     153
+    ],
+    [
+     "NC",
+     122
+    ],
+    [
+     "TX",
+     85
+    ],
+    [
+     "PA",
+     79
+    ],
+    [
+     "AZ",
+     77
+    ],
+    [
+     "IN",
+     76
+    ],
+    [
+     "CA",
+     61
+    ],
+    [
+     "TN",
+     59
+    ]
+   ],
+   "chains": {
+    "CVS": 855,
+    "Walgreens": 269,
+    "Walmart": 194,
+    "Mail-order and specialty": 428,
+    "Other": 407
+   },
+   "in_arrangements": 3255,
+   "in_entities": 2558,
+   "in_states": 50,
+   "from": [
+    [
+     "FL",
+     456
+    ],
+    [
+     "CA",
+     388
+    ],
+    [
+     "NC",
+     223
+    ],
+    [
+     "TX",
+     198
+    ],
+    [
+     "GA",
+     168
+    ],
+    [
+     "NY",
+     157
+    ],
+    [
+     "LA",
+     120
+    ],
+    [
+     "OH",
+     96
+    ]
+   ]
+  },
+  "SD": {
+   "entities": 388,
+   "holders": 75,
+   "arrangements": 607,
+   "pharmacies": 265,
+   "bands": {
+    "same": 328,
+    "neighbor": 63,
+    "farther": 216
+   },
+   "states_reached": 29,
+   "to": [
+    [
+     "MN",
+     33
+    ],
+    [
+     "IN",
+     25
+    ],
+    [
+     "FL",
+     23
+    ],
+    [
+     "IA",
+     21
+    ],
+    [
+     "TX",
+     21
+    ],
+    [
+     "PA",
+     19
+    ],
+    [
+     "AZ",
+     14
+    ],
+    [
+     "AR",
+     11
+    ]
+   ],
+   "chains": {
+    "CVS": 79,
+    "Walgreens": 64,
+    "Walmart": 73,
+    "Mail-order and specialty": 68,
+    "Other": 323
+   },
+   "in_arrangements": 23,
+   "in_entities": 17,
+   "in_states": 5,
+   "from": [
+    [
+     "MN",
+     9
+    ],
+    [
+     "IA",
+     7
+    ],
+    [
+     "AL",
+     3
+    ],
+    [
+     "ND",
+     2
+    ],
+    [
+     "NE",
+     2
+    ]
+   ]
+  },
+  "TN": {
+   "entities": 1327,
+   "holders": 218,
+   "arrangements": 3666,
+   "pharmacies": 789,
+   "bands": {
+    "same": 2080,
+    "neighbor": 356,
+    "farther": 1230
+   },
+   "states_reached": 32,
+   "to": [
+    [
+     "FL",
+     174
+    ],
+    [
+     "TX",
+     132
+    ],
+    [
+     "IN",
+     128
+    ],
+    [
+     "PA",
+     119
+    ],
+    [
+     "AZ",
+     115
+    ],
+    [
+     "MS",
+     90
+    ],
+    [
+     "MI",
+     72
+    ],
+    [
+     "NC",
+     68
+    ]
+   ],
+   "chains": {
+    "CVS": 1127,
+    "Walgreens": 1156,
+    "Walmart": 296,
+    "Mail-order and specialty": 544,
+    "Other": 543
+   },
+   "in_arrangements": 4676,
+   "in_entities": 2903,
+   "in_states": 51,
+   "from": [
+    [
+     "FL",
+     567
+    ],
+    [
+     "CA",
+     409
+    ],
+    [
+     "LA",
+     290
+    ],
+    [
+     "TX",
+     253
+    ],
+    [
+     "NY",
+     217
+    ],
+    [
+     "AL",
+     179
+    ],
+    [
+     "KY",
+     173
+    ],
+    [
+     "NC",
+     163
+    ]
+   ]
+  },
+  "TX": {
+   "entities": 3660,
+   "holders": 591,
+   "arrangements": 13360,
+   "pharmacies": 2358,
+   "bands": {
+    "same": 8847,
+    "neighbor": 314,
+    "farther": 4199
+   },
+   "states_reached": 40,
+   "to": [
+    [
+     "FL",
+     597
+    ],
+    [
+     "IN",
+     419
+    ],
+    [
+     "AZ",
+     347
+    ],
+    [
+     "PA",
+     347
+    ],
+    [
+     "TN",
+     253
+    ],
+    [
+     "CA",
+     235
+    ],
+    [
+     "MI",
+     217
+    ],
+    [
+     "KS",
+     208
+    ]
+   ],
+   "chains": {
+    "CVS": 4674,
+    "Walgreens": 2813,
+    "Walmart": 1053,
+    "Mail-order and specialty": 1783,
+    "Other": 3037
+   },
+   "in_arrangements": 8370,
+   "in_entities": 3688,
+   "in_states": 51,
+   "from": [
+    [
+     "FL",
+     949
+    ],
+    [
+     "CA",
+     876
+    ],
+    [
+     "LA",
+     544
+    ],
+    [
+     "NY",
+     333
+    ],
+    [
+     "IL",
+     329
+    ],
+    [
+     "KY",
+     306
+    ],
+    [
+     "NC",
+     305
+    ],
+    [
+     "MI",
+     275
+    ]
+   ]
+  },
+  "UT": {
+   "entities": 311,
+   "holders": 61,
+   "arrangements": 729,
+   "pharmacies": 291,
+   "bands": {
+    "same": 422,
+    "neighbor": 41,
+    "farther": 266
+   },
+   "states_reached": 33,
+   "to": [
+    [
+     "FL",
+     31
+    ],
+    [
+     "TX",
+     30
+    ],
+    [
+     "IN",
+     26
+    ],
+    [
+     "CA",
+     25
+    ],
+    [
+     "AZ",
+     23
+    ],
+    [
+     "PA",
+     23
+    ],
+    [
+     "KS",
+     14
+    ],
+    [
+     "MI",
+     14
+    ]
+   ],
+   "chains": {
+    "CVS": 114,
+    "Walgreens": 163,
+    "Walmart": 81,
+    "Mail-order and specialty": 138,
+    "Other": 233
+   },
+   "in_arrangements": 88,
+   "in_entities": 76,
+   "in_states": 8,
+   "from": [
+    [
+     "ID",
+     24
+    ],
+    [
+     "CA",
+     17
+    ],
+    [
+     "OR",
+     15
+    ],
+    [
+     "MT",
+     13
+    ],
+    [
+     "WA",
+     10
+    ],
+    [
+     "TX",
+     5
+    ],
+    [
+     "CO",
+     3
+    ],
+    [
+     "WY",
+     1
+    ]
+   ]
+  },
+  "VA": {
+   "entities": 1333,
+   "holders": 146,
+   "arrangements": 3235,
+   "pharmacies": 924,
+   "bands": {
+    "same": 1462,
+    "neighbor": 297,
+    "farther": 1476
+   },
+   "states_reached": 37,
+   "to": [
+    [
+     "FL",
+     199
+    ],
+    [
+     "TX",
+     152
+    ],
+    [
+     "PA",
+     135
+    ],
+    [
+     "IN",
+     126
+    ],
+    [
+     "TN",
+     116
+    ],
+    [
+     "NC",
+     111
+    ],
+    [
+     "AZ",
+     99
+    ],
+    [
+     "CA",
+     81
+    ]
+   ],
+   "chains": {
+    "CVS": 1363,
+    "Walgreens": 474,
+    "Walmart": 326,
+    "Mail-order and specialty": 457,
+    "Other": 615
+   },
+   "in_arrangements": 343,
+   "in_entities": 190,
+   "in_states": 19,
+   "from": [
+    [
+     "NC",
+     87
+    ],
+    [
+     "DC",
+     79
+    ],
+    [
+     "WV",
+     60
+    ],
+    [
+     "MD",
+     31
+    ],
+    [
+     "FL",
+     28
+    ],
+    [
+     "KY",
+     13
+    ],
+    [
+     "SC",
+     7
+    ],
+    [
+     "VT",
+     7
+    ]
+   ]
+  },
+  "VI": {
+   "entities": 9,
+   "holders": 3,
+   "arrangements": 12,
+   "pharmacies": 10,
+   "bands": {
+    "same": 9,
+    "neighbor": 0,
+    "farther": 3
+   },
+   "states_reached": 4,
+   "to": [
+    [
+     "AZ",
+     1
+    ],
+    [
+     "FL",
+     1
+    ],
+    [
+     "MI",
+     1
+    ]
+   ],
+   "chains": {
+    "CVS": 0,
+    "Walgreens": 4,
+    "Walmart": 0,
+    "Mail-order and specialty": 0,
+    "Other": 8
+   },
+   "in_arrangements": 0,
+   "in_entities": 0,
+   "in_states": 0,
+   "from": []
+  },
+  "VT": {
+   "entities": 265,
+   "holders": 61,
+   "arrangements": 1288,
+   "pharmacies": 341,
+   "bands": {
+    "same": 542,
+    "neighbor": 224,
+    "farther": 522
+   },
+   "states_reached": 38,
+   "to": [
+    [
+     "NH",
+     87
+    ],
+    [
+     "NY",
+     87
+    ],
+    [
+     "TX",
+     70
+    ],
+    [
+     "FL",
+     53
+    ],
+    [
+     "PA",
+     53
+    ],
+    [
+     "IN",
+     51
+    ],
+    [
+     "MA",
+     50
+    ],
+    [
+     "MI",
+     33
+    ]
+   ],
+   "chains": {
+    "CVS": 246,
+    "Walgreens": 261,
+    "Walmart": 185,
+    "Mail-order and specialty": 158,
+    "Other": 438
+   },
+   "in_arrangements": 77,
+   "in_entities": 24,
+   "in_states": 6,
+   "from": [
+    [
+     "NH",
+     57
+    ],
+    [
+     "MA",
+     8
+    ],
+    [
+     "NY",
+     8
+    ],
+    [
+     "CT",
+     2
+    ],
+    [
+     "CA",
+     1
+    ],
+    [
+     "FL",
+     1
+    ]
+   ]
+  },
+  "WA": {
+   "entities": 1365,
+   "holders": 182,
+   "arrangements": 2809,
+   "pharmacies": 699,
+   "bands": {
+    "same": 1362,
+    "neighbor": 104,
+    "farther": 1343
+   },
+   "states_reached": 33,
+   "to": [
+    [
+     "TX",
+     145
+    ],
+    [
+     "FL",
+     140
+    ],
+    [
+     "AZ",
+     123
+    ],
+    [
+     "IN",
+     111
+    ],
+    [
+     "PA",
+     104
+    ],
+    [
+     "CA",
+     97
+    ],
+    [
+     "OR",
+     91
+    ],
+    [
+     "MI",
+     78
+    ]
+   ],
+   "chains": {
+    "CVS": 560,
+    "Walgreens": 662,
+    "Walmart": 266,
+    "Mail-order and specialty": 509,
+    "Other": 812
+   },
+   "in_arrangements": 770,
+   "in_entities": 538,
+   "in_states": 43,
+   "from": [
+    [
+     "CA",
+     189
+    ],
+    [
+     "OR",
+     145
+    ],
+    [
+     "FL",
+     56
+    ],
+    [
+     "ID",
+     47
+    ],
+    [
+     "AZ",
+     41
+    ],
+    [
+     "TX",
+     26
+    ],
+    [
+     "IL",
+     25
+    ],
+    [
+     "CO",
+     23
+    ]
+   ]
+  },
+  "WI": {
+   "entities": 1362,
+   "holders": 166,
+   "arrangements": 2796,
+   "pharmacies": 709,
+   "bands": {
+    "same": 1415,
+    "neighbor": 351,
+    "farther": 1030
+   },
+   "states_reached": 35,
+   "to": [
+    [
+     "IL",
+     141
+    ],
+    [
+     "MN",
+     128
+    ],
+    [
+     "IN",
+     119
+    ],
+    [
+     "FL",
+     116
+    ],
+    [
+     "TX",
+     108
+    ],
+    [
+     "AZ",
+     105
+    ],
+    [
+     "PA",
+     90
+    ],
+    [
+     "MI",
+     77
+    ]
+   ],
+   "chains": {
+    "CVS": 563,
+    "Walgreens": 975,
+    "Walmart": 133,
+    "Mail-order and specialty": 503,
+    "Other": 622
+   },
+   "in_arrangements": 118,
+   "in_entities": 56,
+   "in_states": 11,
+   "from": [
+    [
+     "MN",
+     56
+    ],
+    [
+     "IL",
+     33
+    ],
+    [
+     "MI",
+     14
+    ],
+    [
+     "IA",
+     5
+    ],
+    [
+     "ND",
+     3
+    ],
+    [
+     "AL",
+     2
+    ],
+    [
+     "AZ",
+     1
+    ],
+    [
+     "MA",
+     1
+    ]
+   ]
+  },
+  "WV": {
+   "entities": 1369,
+   "holders": 137,
+   "arrangements": 2284,
+   "pharmacies": 534,
+   "bands": {
+    "same": 1003,
+    "neighbor": 424,
+    "farther": 857
+   },
+   "states_reached": 34,
+   "to": [
+    [
+     "OH",
+     136
+    ],
+    [
+     "PA",
+     136
+    ],
+    [
+     "FL",
+     130
+    ],
+    [
+     "TX",
+     129
+    ],
+    [
+     "IN",
+     101
+    ],
+    [
+     "KY",
+     72
+    ],
+    [
+     "VA",
+     60
+    ],
+    [
+     "IL",
+     59
+    ]
+   ],
+   "chains": {
+    "CVS": 668,
+    "Walgreens": 387,
+    "Walmart": 400,
+    "Mail-order and specialty": 256,
+    "Other": 573
+   },
+   "in_arrangements": 188,
+   "in_entities": 56,
+   "in_states": 7,
+   "from": [
+    [
+     "KY",
+     72
+    ],
+    [
+     "OH",
+     44
+    ],
+    [
+     "VA",
+     27
+    ],
+    [
+     "MD",
+     22
+    ],
+    [
+     "PA",
+     17
+    ],
+    [
+     "VT",
+     5
+    ],
+    [
+     "FL",
+     1
+    ]
+   ]
+  },
+  "WY": {
+   "entities": 155,
+   "holders": 26,
+   "arrangements": 152,
+   "pharmacies": 99,
+   "bands": {
+    "same": 65,
+    "neighbor": 11,
+    "farther": 76
+   },
+   "states_reached": 23,
+   "to": [
+    [
+     "TX",
+     15
+    ],
+    [
+     "IN",
+     11
+    ],
+    [
+     "AZ",
+     10
+    ],
+    [
+     "FL",
+     9
+    ],
+    [
+     "CO",
+     6
+    ],
+    [
+     "WA",
+     6
+    ],
+    [
+     "MI",
+     4
+    ],
+    [
+     "AR",
+     3
+    ]
+   ],
+   "chains": {
+    "CVS": 1,
+    "Walgreens": 29,
+    "Walmart": 30,
+    "Mail-order and specialty": 29,
+    "Other": 63
+   },
+   "in_arrangements": 16,
+   "in_entities": 5,
+   "in_states": 5,
+   "from": [
+    [
+     "ID",
+     7
+    ],
+    [
+     "MT",
+     4
+    ],
+    [
+     "UT",
+     3
+    ],
+    [
+     "CO",
+     1
+    ],
+    [
+     "VT",
+     1
+    ]
+   ]
+  }
+ }
+}

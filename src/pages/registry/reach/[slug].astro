@@ -1,0 +1,193 @@
+---
+/**
+ * One place's contract pharmacy reach on one day of the registry: where its entities' pharmacies
+ * are, by band and by state, which pharmacy groups they use, and who from elsewhere holds the
+ * pharmacies inside it. The map beside it leads to every other place.
+ * Every figure comes from src/data/registry/reach.json (src/lib/reach.ts).
+ */
+import '../../../styles/registry.css';
+import '../../../styles/reach.css';
+import Base from '../../../layouts/Base.astro';
+import StateMap from '../../../components/StateMap.astro';
+import { REGISTRY_HOME, REGISTRY_REPO } from '../../../lib/registry';
+import { BAND_LABEL, GROUPS, R, REACH_HOME, bandShares, barSvg, dayLong, fmt, hubCards, hubMapSvg, neighborsOf, pct, placeName, reachPath, reachPlaces, stackSvg, toMapSvg } from '../../../lib/reach';
+
+export function getStaticPaths() {
+  return reachPlaces().map((code) => ({ params: { slug: code.toLowerCase() }, props: { code } }));
+}
+
+const { code } = Astro.props as { code: string };
+const p = R.states[code]!;
+const name = placeName(code);
+const day = dayLong();
+const total = p.arrangements;
+const shares = bandShares(p.bands);
+const neighbors = neighborsOf(code);
+const listedTo = p.to.reduce((s, [, n]) => s + n, 0);
+const restTo = p.bands.neighbor + p.bands.farther - listedTo;
+const otherTo = p.states_reached - (p.bands.same > 0 ? 1 : 0) - p.to.length;
+const toMax = Math.max(p.bands.same, ...p.to.map(([, n]) => n));
+const listedFrom = p.from.reduce((s, [, n]) => s + n, 0);
+const fromMax = Math.max(0, ...p.from.map(([, n]) => n));
+const groupMax = Math.max(...GROUPS.map((g) => p.chains[g] ?? 0));
+const lede = total
+  ? `${fmt(p.holders)} of the ${fmt(p.entities)} covered entities and sites in ${name} hold ${fmt(total)} contract pharmacy arrangements with ${fmt(p.pharmacies)} pharmacies in ${p.states_reached} ${p.states_reached === 1 ? 'place' : 'places'}.`
+  : `The registry lists ${fmt(p.entities)} covered ${p.entities === 1 ? 'entity' : 'entities'} in ${name}, and none holds a contract pharmacy.`;
+---
+
+<Base
+  title={`${name} contract pharmacy reach`}
+  bleed
+  crumbs={[{ name: 'Registry history', path: REGISTRY_HOME }, { name: 'Pharmacy reach', path: REACH_HOME }, { name, path: reachPath(code) }]}
+  description={total ? `Where ${name}'s 340B covered entities hold their contract pharmacies: ${pct(p.bands.same, total)} of ${fmt(total)} arrangements in ${name}, ${pct(p.bands.farther, total)} beyond its neighbouring states. Registry of ${day}.` : `${name} in the 340B registry of ${day}: no contract pharmacy arrangements.`}
+>
+  <header class="rx-head">
+    <div class="wrap">
+      <p class="rx-kicker"><span class="dot" aria-hidden="true"></span>340B <span aria-hidden="true">/</span> <a href={REACH_HOME}>Pharmacy reach</a> <span aria-hidden="true">/</span> {name}</p>
+      <h1>{name}</h1>
+      <p class="rx-lede">{lede}</p>
+      {
+        total > 0 && (
+          <div class="rx-figures">
+            <div class="rx-hero-fig">
+              <p class="rx-hero-value">{pct(p.bands.same, total)}</p>
+              <p class="rx-hero-label">of arrangements are with a pharmacy in {name}</p>
+            </div>
+            <dl class="rx-stats">
+              <div><dt>Arrangements</dt><dd>{fmt(total)}</dd></div>
+              <div><dt>Pharmacies</dt><dd>{fmt(p.pharmacies)}</dd></div>
+              <div><dt>Neighbouring state</dt><dd>{pct(p.bands.neighbor, total)}</dd></div>
+              <div><dt>Farther away</dt><dd>{pct(p.bands.farther, total)}</dd></div>
+            </dl>
+          </div>
+        )
+      }
+    </div>
+  </header>
+
+  <div class="wrap rc-layout">
+    <div class="rc-main">
+      {
+        total > 0 && (
+          <section class="rc-part" aria-labelledby="where-h">
+            <h2 id="where-h">Where the pharmacies are</h2>
+            <div class="rc-whole">
+              <Fragment set:html={stackSvg(p.bands)} />
+              <ul class="rc-legend">
+                {shares.map((s) => (
+                  <li>
+                    <span class={`rc-key b-${s.band}`} aria-hidden="true" />
+                    {BAND_LABEL[s.band]} <strong>{pct(s.n, total)}</strong> <span>{fmt(s.n)}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div class="rc-where">
+              <div class="rc-where-map">
+                <Fragment set:html={toMapSvg(code, 'to-map')} />
+              </div>
+              <ol class="rc-list">
+                <li class="is-home">
+                  <span class="rc-list-name">{name}</span>
+                  <Fragment set:html={barSvg(p.bands.same, toMax, 'b-same')} />
+                  <span class="rc-list-n">{fmt(p.bands.same)}</span>
+                </li>
+                {p.to.map(([s, n]) => (
+                  <li>
+                    <span class="rc-list-name">
+                      <a href={reachPath(s)}>{placeName(s)}</a>
+                      {neighbors.includes(s) && <span class="rc-tag">Next door</span>}
+                    </span>
+                    <Fragment set:html={barSvg(n, toMax, neighbors.includes(s) ? 'b-neighbor' : 'b-farther')} />
+                    <span class="rc-list-n">{fmt(n)}</span>
+                  </li>
+                ))}
+                {restTo > 0 && (
+                  <li class="is-rest">
+                    <span class="rc-list-name">{otherTo} other {otherTo === 1 ? 'place' : 'places'}</span>
+                    <span />
+                    <span class="rc-list-n">{fmt(restTo)}</span>
+                  </li>
+                )}
+              </ol>
+            </div>
+            {neighbors.length > 0 && <p class="rc-note">Neighbouring states: {neighbors.map(placeName).join(', ')}.</p>}
+          </section>
+        )
+      }
+
+      {
+        total > 0 && (
+          <section class="rc-part" aria-labelledby="groups-h">
+            <h2 id="groups-h">Which pharmacies</h2>
+            <ul class="rc-list rc-groups">
+              {GROUPS.map((g) => (
+                <li>
+                  <span class="rc-list-name">{g}</span>
+                  <Fragment set:html={barSvg(p.chains[g] ?? 0, groupMax)} />
+                  <span class="rc-list-n">{pct(p.chains[g] ?? 0, total)}</span>
+                </li>
+              ))}
+            </ul>
+            <p class="rc-note">Matched by the pharmacy&rsquo;s name; the registry records no owner.</p>
+          </section>
+        )
+      }
+
+      <section class="rc-part" aria-labelledby="in-h">
+        <h2 id="in-h">Held here from elsewhere</h2>
+        {
+          p.in_arrangements > 0 ? (
+            <>
+              <p class="rc-lead">
+                {fmt(p.in_entities)} {p.in_entities === 1 ? 'entity' : 'entities'} in {p.in_states} other {p.in_states === 1 ? 'place hold' : 'places hold'} {fmt(p.in_arrangements)} arrangements with pharmacies in {name}.
+              </p>
+              <ol class="rc-list">
+                {p.from.map(([s, n]) => (
+                  <li>
+                    <span class="rc-list-name">
+                      <a href={reachPath(s)}>{placeName(s)}</a>
+                      {neighbors.includes(s) && <span class="rc-tag">Next door</span>}
+                    </span>
+                    <Fragment set:html={barSvg(n, fromMax, neighbors.includes(s) ? 'b-neighbor' : 'b-farther')} />
+                    <span class="rc-list-n">{fmt(n)}</span>
+                  </li>
+                ))}
+                {p.in_arrangements > listedFrom && (
+                  <li class="is-rest">
+                    <span class="rc-list-name">{p.in_states - p.from.length} other {p.in_states - p.from.length === 1 ? 'place' : 'places'}</span>
+                    <span />
+                    <span class="rc-list-n">{fmt(p.in_arrangements - listedFrom)}</span>
+                  </li>
+                )}
+              </ol>
+            </>
+          ) : (
+            <p class="rc-lead">No entity from another place holds a pharmacy in {name}.</p>
+          )
+        }
+      </section>
+    </div>
+
+    <aside class="rc-aside" aria-label="Other places">
+      <h2 class="label">Other places</h2>
+      <StateMap
+        strip
+        svg={hubMapSvg('aside-map', code)}
+        legend={[
+          { tone: 'has', label: 'Most in another state' },
+          { tone: 'next', label: 'Half or more in the same state' },
+        ]}
+        rest={{ note: 'Point at a state for its shares; select it to open its page.' }}
+        cards={hubCards()}
+      />
+      <a class="rc-back" href={REACH_HOME}>Every state on one page</a>
+    </aside>
+  </div>
+
+  <footer class="rx-source">
+    <div class="wrap rx-measure">
+      <p>Source: U.S. Health Resources and Services Administration, Office of Pharmacy Affairs, 340B OPAIS, Covered Entity Daily Export of {day}. Arrangements in force that day; the entity&rsquo;s state is its street address. How it is counted, with the code: <a href={`${REGISTRY_REPO}/blob/main/tools/reach.py`}>tools/reach.py</a>.</p>
+    </div>
+  </footer>
+</Base>
