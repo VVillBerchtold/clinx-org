@@ -144,6 +144,10 @@ for (const box of document.querySelectorAll<HTMLElement>('[data-bf]')) {
       if (!s.contains(e.relatedTarget as Node | null)) show(pinned);
     });
   }
+  panel.querySelector('[data-bf-close]')?.addEventListener('click', () => {
+    pinned = null;
+    show(null);
+  });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && pinned) {
       pinned = null;

@@ -261,6 +261,12 @@ const parts = [
             <Fragment set:html={explore.wide} />
             <Fragment set:html={explore.narrow} />
           </figure>
+          <ul class="rx-legend bf-key bf-key-phone">
+            <li><span class="bf-k-dot law" aria-hidden="true"></span>Law, or became law</li>
+            <li><span class="bf-k-dot" aria-hidden="true"></span>Bill</li>
+            <li><span class="bf-k-line across" aria-hidden="true"></span>Shares text across a state line</li>
+            <li><span class="bf-k-line" aria-hidden="true"></span>Same state</li>
+          </ul>
         <aside class="bf-card" hidden data-bf-panel aria-live="polite">
           <div data-bf-card hidden>
             <p class="bf-c-kicker"><span data-f="state"></span> · <span data-f="year"></span> · <span data-f="status"></span></p>
@@ -276,7 +282,7 @@ const parts = [
               <blockquote class="bf-c-quote" data-f="passage"></blockquote>
             </div>
             <p class="bf-c-root" data-bf-root>The earliest text in this family.</p>
-            <p class="bf-c-go"><a data-f-href href="#">Open its page</a> <span data-f="kids"></span> <span>Esc to close</span></p>
+            <p class="bf-c-go"><a data-f-href href="#">Open its page</a> <span data-f="kids"></span> <button type="button" class="bf-c-close" data-bf-close>Close</button></p>
           </div>
         </aside>
         </div>

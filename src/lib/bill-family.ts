@@ -284,17 +284,22 @@ export function packLanes(data: FamilyData, family: Family, pos: (m: Member) => 
     const m = data.members.get(id)!;
     const x = pos(m);
     const want = m.parent && lane.has(m.parent) ? lane.get(m.parent)! : 0;
+    // In its parent's lane a text also needs the stretch back to its parent clear, or the line between
+    // them would run through other texts.
+    const px = m.parent && lane.has(m.parent) ? pos(data.members.get(m.parent)!) + before + after : x;
+    const room = (c: number): [number, number] => (c === want && m.parent && lane.has(m.parent) ? [Math.min(px, x - before), x + after] : [x - before, x + after]);
     let got = -1;
     for (let d = 0; got < 0; d++) {
       for (const c of d === 0 ? [want] : [want + d, want - d]) {
         if (c < 0) continue;
-        if ((lanes[c] ?? []).every(([a, b]) => x + after < a || x - before > b)) {
+        const [lo, hi] = room(c);
+        if ((lanes[c] ?? []).every(([a, b]) => hi < a || lo > b)) {
           got = c;
           break;
         }
       }
     }
-    (lanes[got] ??= []).push([x - before, x + after]);
+    (lanes[got] ??= []).push(room(got));
     lane.set(id, got);
   }
   return lane;
@@ -347,9 +352,33 @@ export function timeTreeSvg(data: FamilyData, family: Family, o: TreeOptions): s
   const a0 = narrow ? head + 6 : 20;
   const a1 = narrow ? 0 : W - (compact ? 86 : 78);
   const H0 = narrow ? Math.max(360, Math.round(116 * (y1 - y0 + 1))) : 0;
+  // Time runs by quarter, and a quarter with more texts in it gets more room, so a busy season's names
+  // spread out instead of piling up. Within a quarter, time is even.
+  const quarters: { t0: number; t1: number; y: number; q: number; n: number; p0: number; p1: number }[] = [];
+  for (let y = y0; y <= y1; y++)
+    for (let q = 0; q < 4; q++) {
+      const t0 = dayNumber(`${y}-${String(q * 3 + 1).padStart(2, '0')}-01`);
+      const t1 = q === 3 ? dayNumber(`${y + 1}-01-01`) : dayNumber(`${y}-${String(q * 3 + 4).padStart(2, '0')}-01`);
+      const n = rows.filter((m) => dayNumber(m.order) >= t0 && dayNumber(m.order) < t1).length;
+      quarters.push({ t0, t1, y, q, n, p0: 0, p1: 0 });
+    }
+  const most = Math.max(...quarters.map((q) => q.n), 1);
+  const weight = (n: number): number => 0.35 + 2.4 * Math.sqrt(n / most);
+  const total = quarters.reduce((a, q) => a + weight(q.n), 0);
+  {
+    let at = a0;
+    for (const q of quarters) {
+      q.p0 = at;
+      at += (weight(q.n) / total) * (a1 - a0);
+      q.p1 = at;
+    }
+  }
   const along = (m: Member | string): number => {
     const t = typeof m === 'string' ? dayNumber(m) : dayNumber(m.order);
-    return narrow ? a0 + ((t - start) / span) * (H0 - a0 - 10) : a0 + ((t - start) / span) * (a1 - a0);
+    if (narrow) return a0 + ((t - start) / span) * (H0 - a0 - 10);
+    const q = quarters.find((x) => t >= x.t0 && t < x.t1);
+    if (!q) return t < start ? a0 : a1;
+    return q.p0 + ((t - q.t0) / (q.t1 - q.t0)) * (q.p1 - q.p0);
   };
   const laneOf = packLanes(data, family, along, 7, narrow ? 7 : compact ? 78 : 74);
   const nLanes = Math.max(...laneOf.values()) + 1;
@@ -366,6 +395,8 @@ export function timeTreeSvg(data: FamilyData, family: Family, o: TreeOptions): s
     if (o.focus) for (const [n, set] of o.focus) if (set.has(m.id)) c.push(`f${n}`);
     return c.join(' ');
   };
+
+  if (narrow) return columnTree(data, rows, o, cls);
 
   const parts: string[] = [
     `<svg class="tt${narrow ? ' tt-narrow' : phone ? ' tt-phone' : ' tt-wide'}${compact ? ' tt-compact' : ''}" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="group" aria-labelledby="${o.id}-t ${o.id}-d">`,
@@ -385,6 +416,12 @@ export function timeTreeSvg(data: FamilyData, family: Family, o: TreeOptions): s
       if (y <= y1) grid.push(`<text class="tt-year" x="${(p + 5).toFixed(1)}" y="${head - 4}">${y}</text>`);
     }
   }
+  if (!narrow)
+    for (const q of quarters) {
+      if (q.q === 0) continue;
+      grid.push(`<line class="tt-grid tt-qgrid" x1="${q.p0.toFixed(1)}" x2="${q.p0.toFixed(1)}" y1="${head - 6}" y2="${H}"/>`);
+      if (q.p1 - q.p0 >= 34 && !compact) grid.push(`<text class="tt-qtr" x="${(q.p0 + 4).toFixed(1)}" y="${head - 4}">${['', 'Apr', 'Jul', 'Oct'][q.q]}</text>`);
+    }
   parts.push(`<g aria-hidden="true">${grid.join('')}</g>`);
 
   // Links, under the dots.
@@ -404,7 +441,8 @@ export function timeTreeSvg(data: FamilyData, family: Family, o: TreeOptions): s
       // one dropping to a text at nearly the same day leaves from the dot.
       const tagEnd = px + 8 + (p.state.length + 1 + (p.type === 'bill' ? p.number : 'law').length) * (compact ? 7.8 : 7.6) + 3;
       const same = Math.abs(cy - py) < 0.5;
-      const sx = cx - tagEnd > (same ? 24 : 28) ? tagEnd : px;
+      const between = same && rows.some((o) => o.id !== m.id && o.id !== p.id && laneOf.get(o.id) === laneOf.get(m.id) && along(o) > px && along(o) < cx);
+      const sx = !between && cx - tagEnd > (same ? 24 : 28) ? tagEnd : px;
       const mx = sx + Math.max(10, (cx - sx) / 2);
       const top = py - lane * 0.6;
       d = same
@@ -447,6 +485,105 @@ export function timeTreeSvg(data: FamilyData, family: Family, o: TreeOptions): s
         `<circle class="tt-hit" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${narrow ? 8 : 9}"/>` +
         `<circle class="tt-dot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}"/>` +
         tag +
+        `</a>`,
+    );
+  }
+  parts.push('</svg>');
+  return parts.join('');
+}
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+/**
+ * A family for a phone: one text to a row in the order they came, each named, under its year. On the left,
+ * each text's line runs down from the earlier text it shares the most words with, in a column of its own,
+ * and turns in to it; on the right, the month, and whether it is law.
+ */
+function columnTree(data: FamilyData, rowsIn: Member[], o: TreeOptions, cls: (m: Member) => string): string {
+  const depth = (m: Member): number => {
+    let d = 0;
+    for (let p: string | undefined = m.parent; p; p = data.members.get(p)?.parent) d++;
+    return d;
+  };
+  const rows = [...rowsIn].sort((a, b) => (a.order < b.order ? -1 : a.order > b.order ? 1 : depth(a) - depth(b)));
+  const W = 343;
+  const rowH = 28;
+  const yearH = 34;
+  // Each text's y, with a year heading before the first text of each year.
+  const yOf = new Map<string, number>();
+  const years: { y: string; at: number }[] = [];
+  let at = 4;
+  for (const m of rows) {
+    const y = m.order.slice(0, 4);
+    if (years.at(-1)?.y !== y) {
+      years.push({ y, at });
+      at += yearH;
+    }
+    yOf.set(m.id, at + rowH / 2);
+    at += rowH;
+  }
+  const H = Math.round(at + 6);
+  const index = new Map(rows.map((m, i) => [m.id, i]));
+  const lastKid = new Map<string, number>();
+  for (const m of rows) if (m.parent) lastKid.set(m.parent, Math.max(lastKid.get(m.parent) ?? 0, index.get(m.id)!));
+  // Columns: a text takes the first column right of its parent's that is free from its row to its last child's.
+  const taken: [number, number][][] = [];
+  const col = new Map<string, number>();
+  for (const m of rows) {
+    const i = index.get(m.id)!;
+    const span: [number, number] = [i, Math.max(i, lastKid.get(m.id) ?? i)];
+    let c = m.parent ? col.get(m.parent)! + 1 : 0;
+    while ((taken[c] ?? []).some(([a, b]) => a <= span[1] && span[0] <= b)) c++;
+    (taken[c] ??= []).push(span);
+    col.set(m.id, c);
+  }
+  const nCols = taken.length;
+  const colW = Math.min(16, 120 / Math.max(nCols, 1));
+  const x0 = 9;
+  const xOf = (id: string): number => x0 + col.get(id)! * colW;
+  const labelX = x0 + (nCols - 1) * colW + 14;
+
+  const parts: string[] = [
+    `<svg class="tt tt-narrow tt-col" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="group" aria-labelledby="${o.id}-t ${o.id}-d">`,
+    `<title id="${o.id}-t">${esc(o.title)}</title>`,
+    `<desc id="${o.id}-d">${esc(o.desc)}</desc>`,
+  ];
+  const grid = years.map(
+    (y) => `<line class="tt-grid" x1="${labelX}" x2="${W}" y1="${y.at + 8}" y2="${y.at + 8}"/><text class="tt-year" x="${labelX}" y="${y.at + 26}">${y.y}</text>`,
+  );
+  parts.push(`<g aria-hidden="true">${grid.join('')}</g>`);
+
+  // Links: down the parent's column, then a turn in to the text. Longest first, so shorter ones sit on top.
+  const edges: { len: number; svg: string }[] = [];
+  for (const m of rows) {
+    if (!m.parent) continue;
+    const p = data.members.get(m.parent)!;
+    const link = parentLink(data, m.id);
+    const px = xOf(p.id);
+    const py = yOf.get(p.id)!;
+    const cx = xOf(m.id);
+    const cy = yOf.get(m.id)!;
+    const r = Math.min(8, cx - px - 4);
+    const d = `M${px.toFixed(1)} ${(py + 5).toFixed(1)}V${(cy - r).toFixed(1)}Q${px.toFixed(1)} ${cy.toFixed(1)} ${(px + r).toFixed(1)} ${cy.toFixed(1)}H${(cx - 5).toFixed(1)}`;
+    const kind = link?.kind ?? 'same-state';
+    edges.push({ len: cy - py, svg: `<path class="tt-e k-${kind} ${cls(m)}" data-edge="${esc(m.id)}" stroke-width="2.2" d="${d}"/>` });
+  }
+  edges.sort((a, b) => b.len - a.len);
+  parts.push(`<g class="tt-edges" aria-hidden="true">${edges.map((e) => e.svg).join('')}</g>`);
+
+  for (const m of rows) {
+    const x = xOf(m.id);
+    const y = yOf.get(m.id)!;
+    const link = parentLink(data, m.id);
+    const p = m.parent ? data.members.get(m.parent) : undefined;
+    const label = `${fullName(m)}, ${yearOf(m)}. ${statusOf(m)}.${link && p ? ` Shares ${fmt(link.sharedWords)} words with ${fullName(p)}, ${fmt(link.longestWords)} of them in a row.` : ' The earliest text in this family.'}`;
+    const month = MONTHS[Number(m.order.slice(5, 7)) - 1] ?? '';
+    parts.push(
+      `<a class="tt-n${isLaw(m) ? ' law' : ''}${m.parent ? '' : ' root'} s-${m.state} ${cls(m)}" href="#o-${esc(m.id)}" data-id="${esc(m.id)}" aria-label="${esc(label)}">` +
+        `<rect class="tt-hit" x="0" y="${(y - rowH / 2).toFixed(1)}" width="${W}" height="${rowH}"/>` +
+        `<circle class="tt-dot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${isLaw(m) ? 5.5 : 4.5}"/>` +
+        `<text class="tt-tag" x="${labelX}" y="${(y + 4.5).toFixed(1)}"><tspan class="tt-st">${m.state}</tspan> ${esc(m.type === 'bill' ? m.number : 'law')}</text>` +
+        `<text class="tt-when" x="${W - 2}" y="${(y + 4.5).toFixed(1)}" text-anchor="end">${isLaw(m) && m.type === 'bill' ? 'law · ' : ''}${month}</text>` +
         `</a>`,
     );
   }
