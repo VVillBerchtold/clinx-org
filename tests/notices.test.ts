@@ -65,7 +65,8 @@ describe('the notices table', () => {
     const document = JSON.parse(files['340b-notices.json']!);
     const broken = (change: (notice: Record<string, unknown>) => void): string => {
       const copy = structuredClone(document);
-      change(copy.notices[0]);
+      // A document that has been read: the newest one may not be yet.
+      change(copy.notices.find((n: Record<string, unknown>) => n['summary'] !== '')!);
       return JSON.stringify(copy);
     };
     expect(() => parseNotices(broken((n) => (n['type'] = 'Memo')))).toThrow(/unknown type/);
@@ -98,7 +99,9 @@ describe('federal dates on the calendar', () => {
       else expect(event.what).toBe(notice.title);
       expect(event.link).toBe(notice.noticeUrl);
     }
-    for (const notice of data.notices.filter((n) => rankOf(n) !== 2)) {
+    // A document nobody has read yet is on the calendar only when its title names the program.
+    const onCalendar = (n: (typeof data.notices)[number]): boolean => (n.role === 'main' || n.role === 'part' || (n.role === '' && n.namedIn.includes('title')));
+    for (const notice of data.notices.filter(onCalendar)) {
       expect(federal.some((e) => e.noticeId === notice.noticeId && e.kind === 'notice published')).toBe(true);
     }
   });
