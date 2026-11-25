@@ -2,18 +2,21 @@
 /**
  * The bill family tree: state contract pharmacy bills and laws, each under the earlier text it shares the
  * most words with. The tree is built by scripts/bill-family.mjs from the official texts; this page tells it
- * as a story over a time tree (src/lib/bill-family.ts) and prints every link with its shared words, so it
- * reads in full with scripts off. The scroll story, the readout card and the state chips are
- * src/scripts/bill-family.ts.
+ * on the site's tile map, with an arc to each text from its closest earlier text in another state, then as a
+ * tree laid out by d3-hierarchy (src/lib/bill-family-pictures.ts). Both are drawn at build time, and every
+ * link is printed with its shared words, so the page reads in full with scripts off. The month scrubber, the
+ * scroll story, the readout cards and the folding branches are src/scripts/bill-family.ts.
  */
 import '../../../styles/registry.css';
+import '../../../styles/state-map.css';
 import '../../../styles/bill-family.css';
 import Base from '../../../layouts/Base.astro';
 import FamilyNode from '../../../components/FamilyNode.astro';
 import { formatDate } from '../../../lib/data';
 import { BILLS_HOME, getBills } from '../../../lib/bills';
 import { stateName } from '../../../lib/states';
-import { FAMILY_HOME, childrenOf, fmt, fullName, getFamily, isLaw, memberHref, panelData, statusOf, timeTree, travellingPassage, yearOf, type Member } from '../../../lib/bill-family';
+import { FAMILY_HOME, childrenOf, fmt, fullName, getFamily, isLaw, memberHref, panelData, statusOf, travellingPassage, yearOf, type Member } from '../../../lib/bill-family';
+import { familyMap, familyTreeSvg, markPassage } from '../../../lib/bill-family-pictures';
 
 const data = getFamily();
 const M = (id: string): Member => data.members.get(id)!;
@@ -40,7 +43,7 @@ const rootName = isLaw(root) && root.lawName ? `${stateName(root.state)}'s ${roo
 const compared = new Set(members.map((m) => m.id));
 const newer = getBills().bills.filter((b) => b.place !== 'US' && b.kinds.includes('contract-pharmacy') && !compared.has(b.billId));
 
-// ---------- 1. The story: the family drawn up to each step's day ----------
+// ---------- 1. The story: the family on the map, month by month ----------
 const descendants = (id: string): string[] => [id, ...childrenOf(data, id).flatMap((k) => descendants(k.id))];
 // The second source: the text, other than the earliest, with the most texts directly under it.
 const hub = bigM.filter((m) => m.parent).sort((a, b) => childrenOf(data, b.id).length - childrenOf(data, a.id).length)[0]!;
@@ -54,69 +57,56 @@ const wave = bigM.filter((m) => m.order > yearAfter && m.order <= waveTo);
 const after = bigM.filter((m) => m.order > waveTo);
 const steps = [
   {
-    upto: root.order,
+    month: root.order.slice(0, 7),
     label: monthYear(root.order),
     text: `${rootName} is ${isLaw(root) ? 'law' : statusOf(root).toLowerCase()}. It is the earliest text in this family: every text drawn here shares a passage of ${data.rules.minLongest} words or more with it, or with a text that does.`,
   },
   {
-    upto: yearAfter,
+    month: yearAfter.slice(0, 7),
     label: `To ${yearAfter.slice(0, 4)}`,
     text: `${words(inYear1.length, 'text follows', 'texts follow')} in ${yearAfter.slice(0, 4)}, ${inYear1.filter(isLaw).length} of them law: ${names(inYear1.map((m) => m.state))}. Each sits under ${stateName(root.state)}'s text, the earlier one it shares the most words with.`,
   },
   {
-    upto: waveTo,
+    month: waveTo.slice(0, 7),
     label: `Early ${waveTo.slice(0, 4)}`,
     text: `The ${waveTo.slice(0, 4)} sessions open. In three months, ${words(wave.length, 'text', 'texts')} in ${new Set(wave.map((m) => m.state)).size} states join the family. ${fmt(wave.filter((m) => m.parent === root.id).length)} sit straight under ${stateName(root.state)}; the rest under a text filed weeks before.`,
   },
   {
-    upto: lastDay,
+    month: lastDay.slice(0, 7),
     label: `A second source`,
-    focus: new Set([...descendants(hub.id), hub.id]),
+    focus: descendants(hub.id).join(' '),
     text: `${fullName(hub)}, filed in ${monthYear(hub.order)}, becomes the closest wording for ${words(hubKids.length, 'later text', 'later texts')}, ${hubAcross.length} of them in ${names(hubAcross.map((m) => m.state))}.`,
   },
   {
-    upto: lastDay,
+    month: lastDay.slice(0, 7),
     label: 'Today',
     text: `${fmt(big.members.length)} texts in ${big.states.length} states, ${bigLaws} of them law. The newest is ${fullName(M(bigM.filter((m) => m.order === lastDay).at(-1)!.id))}, from ${monthYear(lastDay)}. ${words(after.length, 'text', 'texts')} came after the spring of ${waveTo.slice(0, 4)}.`,
   },
 ];
-const stepOf = new Map(bigM.map((m) => [m.id, steps.findIndex((s) => m.order <= s.upto)]));
-const focus = new Map(steps.flatMap((s, i) => (s.focus ? [[i, s.focus] as const] : [])));
-const notes = [
-  { id: root.id, text: `Earliest: ${rootName}` },
-  { id: hub.id, text: `${fullName(hub)}: ${hubKids.length} texts under it` },
-];
-const story = timeTree(data, big, {
-  id: 'bf-story',
-  title: `The largest family: ${big.members.length} bills and laws in ${big.states.length} states, ${yearOf(root)} to ${lastDay.slice(0, 4)}`,
-  desc: `Each dot is a bill or law at the day it was introduced or became law; a filled dot is law. A line joins it to the earlier text it shares the most words with, thicker the longer the run of words they share, orange across a state line. The list in part 3 gives every link with its words.`,
-  step: stepOf,
-  focus,
-  notes,
-});
-
-// ---------- 2. The words that travel ----------
 const P = travellingPassage(data, big);
+const map = familyMap(data, big, {
+  id: 'bf-map',
+  title: `The largest family on the map: ${big.members.length} bills and laws in ${big.states.length} states, ${yearOf(root)} to ${lastDay.slice(0, 4)}`,
+  desc: `A filled state has a text in the family that is law; an outlined state has bills only. An arc runs to each text from the earlier text in another state it shares the most words with, thicker the longer the passage they share. The list in part 3 gives every link with its words.`,
+  mark: P.words,
+});
+const mapJson = JSON.stringify({ months: map.months, cards: map.cards });
+// ---------- 2. The words that travel ----------
 const firstHolder = [...P.links].sort((a, b) => M(a.b).order.localeCompare(M(b.b).order))[0];
-const quote = firstHolder?.longestPassage ?? '';
-const norm = (w: string): string => w.toLowerCase().replace(/[^a-z0-9]/g, '');
-const quoteWords = quote.split(/\s+/);
-const coreN = P.words.split(/\s+/).map(norm);
-const coreAt = quoteWords.findIndex((_, k) => coreN.every((w, j) => norm(quoteWords[k + j] ?? '') === w));
-const quoteParts = coreAt < 0 ? [quote, '', ''] : [quoteWords.slice(0, coreAt).join(' '), quoteWords.slice(coreAt, coreAt + coreN.length).join(' '), quoteWords.slice(coreAt + coreN.length).join(' ')];
-const travelTree = timeTree(data, big, {
+const quoteParts = markPassage(firstHolder?.longestPassage ?? '', P.words);
+const travelMap = familyMap(data, big, {
   id: 'bf-travel',
-  title: `The ${P.links.length} links whose longest shared passage holds these words`,
-  desc: `The largest family again, with the ${P.links.length} links lit whose longest shared passage holds the words quoted beside it, in ${P.states.length} states. The other texts are drawn faint.`,
-  hot: P.texts,
+  title: `The ${P.links.length} links whose longest shared passage holds these words, in ${P.states.length} states`,
+  desc: `The states with a text on these links, filled where one of those texts is law. An arc runs to each text from the earlier text in another state it shares the words with.`,
+  only: P.texts,
+  class: 'fm-still',
 });
 
 // ---------- 3. Every text in the family ----------
-const explore = timeTree(data, big, {
-  id: 'bf-all',
-  title: `Every text in the largest family, ${yearOf(root)} to ${lastDay.slice(0, 4)}`,
-  desc: `${big.members.length} bills and laws in ${big.states.length} states. Each dot leads to its place in the list after the picture, which prints the words it shares with the text it sits under.`,
-});
+const treeTitle = `Every text in the largest family, ${yearOf(root)} to ${lastDay.slice(0, 4)}`;
+const treeDesc = `${big.members.length} bills and laws in ${big.states.length} states. Each text sits under the earlier text it shares the most words with, the earliest on the left; a filled dot is law; an orange line crosses a state line, thicker the longer the passage shared. Each text leads to its place in the list after the picture, which prints the words.`;
+const treeWide = familyTreeSvg(data, big, { id: 'bf-tree', title: treeTitle, desc: treeDesc, layout: 'tidy', fold: true });
+const treeNarrow = familyTreeSvg(data, big, { id: 'bf-tree-p', title: treeTitle, desc: treeDesc, layout: 'indent', fold: true });
 const panel = panelData(data, big);
 const chips = big.states
   .map((s) => ({ code: s, name: stateName(s), n: bigM.filter((m) => m.state === s).length }))
@@ -130,11 +120,11 @@ const smallCards = small.map((f) => {
     f,
     title: f.states.map(stateName).join(' and '),
     sub: `${words(fm.length, 'text', 'texts')}, ${y.length > 1 ? `${y[0]} to ${y.at(-1)}` : y[0]}${fm.some(isLaw) ? `, ${words(fm.filter(isLaw).length, 'law', 'laws')}` : ''}`,
-    svg: timeTree(data, f, {
+    svg: familyTreeSvg(data, f, {
       id: `bf-f${f.family}`,
-      compact: true,
+      layout: 'indent',
       title: `${f.states.map(stateName).join(' and ')}: ${fm.length} texts`,
-      desc: `Each dot is a text at its day; a line joins it to the earlier text it shares the most words with.`,
+      desc: `Each text sits under the earlier text it shares the most words with; a filled dot is law.`,
     }),
   };
 });
@@ -186,34 +176,48 @@ const parts = [
       <p class="rx-step">1</p>
       <h2 id="spread-h">How the wording spread</h2>
       <p class="rx-text">
-        Each dot is a bill or law, at the day it was filed or became law. A line joins it to the earlier text it shares the most words with: the thicker the line, the longer the run of words they share in the same order; orange when the two are in different states.
+        A state fills when a text in the family becomes law there, and is outlined while it has only bills. Each arc runs to a text from the earlier text in another state it shares the most words with: the thicker the arc, the longer the passage they share.
       </p>
-      <div class="rx-story bf-story" data-story>
+      <div class="rx-story rx-story-map bf-mapstory" data-story data-fm data-fm-json={mapJson}>
         <div class="rx-story-pin">
-          <figure class="rx-figure rx-story-fig tt-fig" data-tt-story data-upto={String(steps.length - 1)}>
-            <Fragment set:html={story.wide} />
-            <Fragment set:html={story.narrow} />
-          </figure>
+          <div class="rx-lapse" hidden data-lapse-controls>
+            <button type="button" class="rx-play" data-play aria-label={`Play the family from ${monthYear(map.months[0]!)}`}><span class="rx-play-icon" aria-hidden="true"></span><span data-play-label>Play</span></button>
+            <label class="rx-range">
+              <span class="visually-hidden">Month shown on the map</span>
+              <span class="rx-range-end" aria-hidden="true">{map.months[0]!.slice(0, 4)}</span>
+              <input type="range" min="0" step="1" data-year-range />
+              <span class="rx-range-end" aria-hidden="true">{map.months.at(-1)!.slice(0, 4)}</span>
+            </label>
+          </div>
+          <div class="bf-mapbox">
+            <figure class="rx-map bf-map">
+              <p class="rx-map-year"><span class="bf-when" data-fm-when>Today</span> <span data-fm-count>{fmt(big.members.length)} texts, {big.states.length} states, {new Set(bigM.filter(isLaw).map((m) => m.state)).size} with a law</span></p>
+              <Fragment set:html={map.svg} />
+            </figure>
+            <aside class="bf-card bf-scard" hidden data-fm-card aria-live="polite">
+              <p class="bf-c-kicker" data-fm-kicker></p>
+              <p class="bf-c-name" data-fm-name></p>
+              <ol class="bf-s-texts" data-fm-texts></ol>
+              <p class="bf-c-go"><button type="button" class="bf-c-close" data-fm-close>Close</button></p>
+            </aside>
+          </div>
+          <ul class="rx-legend bf-key">
+            <li><span class="bf-k-tile has" aria-hidden="true"></span>A text is law</li>
+            <li><span class="bf-k-tile" aria-hidden="true"></span>Bills only</li>
+            <li><span class="bf-k-arc" aria-hidden="true"></span>Shares a passage with an earlier text there</li>
+            <li><span class="bf-k-w" aria-hidden="true"><span></span><span></span><span></span></span>Thicker: a longer passage</li>
+          </ul>
         </div>
         <ol class="rx-story-steps">
-          {steps.map((s, i) => (
-            <li class="rx-story-step" data-upto={String(i)}>
+          {steps.map((s) => (
+            <li class="rx-story-step" data-month={s.month} data-focus={s.focus}>
               <p class="rx-story-year">{s.label}</p>
               <p class="rx-story-text">{s.text}</p>
             </li>
           ))}
         </ol>
       </div>
-      <figure class="rx-figure rx-story-after">
-        <ul class="rx-legend bf-key">
-          <li><span class="bf-k-dot law" aria-hidden="true"></span>Law, or became law</li>
-          <li><span class="bf-k-dot" aria-hidden="true"></span>Bill</li>
-          <li><span class="bf-k-line across" aria-hidden="true"></span>Shares text across a state line</li>
-          <li><span class="bf-k-line" aria-hidden="true"></span>Same state</li>
-          <li><span class="bf-k-w" aria-hidden="true"><span></span><span></span><span></span></span>Thicker: a longer run of shared words</li>
-        </ul>
-        <figcaption>A text sits under the earlier text it shares the most words with. That is the closest wording in this record; it does not say who drafted either text or which was copied. No bill or law here names a model bill.</figcaption>
-      </figure>
+      <p class="rx-small bf-note">An arc joins a text to the earlier text it shares the most words with. That is the closest wording in this record; it does not say who drafted either text or which was copied. No bill or law here names a model bill. Point at a state, or select it, for its texts and the words they share.</p>
     </div>
   </section>
 
@@ -234,10 +238,9 @@ const parts = [
             {P.states.map((s) => <li><span class="bf-chip">{stateName(s)}</span></li>)}
           </ul>
         </figure>
-        <figure class="rx-figure tt-fig bf-travel-fig">
-          <Fragment set:html={travelTree.wide} />
-          <Fragment set:html={travelTree.narrow} />
-          <figcaption>Lit: the {P.links.length} links whose longest shared passage holds the marked words.</figcaption>
+        <figure class="rx-map bf-travel-fig">
+          <Fragment set:html={travelMap.svg} />
+          <figcaption>The {P.states.length} states with a text on these links, and the arcs between them.</figcaption>
         </figure>
       </div>
     </div>
@@ -248,7 +251,7 @@ const parts = [
       <p class="rx-step">3</p>
       <h2 id="family-h">Every text in the family</h2>
       <p class="rx-text">
-        Pick a state to light its texts and their line back to {stateName(root.state)}. Point at a dot, or select it, to read the passage it shares with the text above it.
+        The same {fmt(big.members.length)} texts as a tree, each under the earlier text it shares the most words with. Fold a branch with its button. Point at a text, or select it, to read the passage it shares with the one above it.
       </p>
       <div class="bf-explore" data-bf data-bf-json={panel}>
         <div class="bf-explore-main">
@@ -257,11 +260,11 @@ const parts = [
               <li><button type="button" class="bf-chip" data-state={c.code} aria-pressed="false">{c.name} <span>{c.n}</span></button></li>
             ))}
           </ul>
-          <figure class="rx-figure tt-fig bf-explore-fig">
-            <Fragment set:html={explore.wide} />
-            <Fragment set:html={explore.narrow} />
+          <figure class="rx-figure bf-explore-fig">
+            <Fragment set:html={treeWide} />
+            <Fragment set:html={treeNarrow} />
           </figure>
-          <ul class="rx-legend bf-key bf-key-phone">
+          <ul class="rx-legend bf-key bf-tree-key">
             <li><span class="bf-k-dot law" aria-hidden="true"></span>Law, or became law</li>
             <li><span class="bf-k-dot" aria-hidden="true"></span>Bill</li>
             <li><span class="bf-k-line across" aria-hidden="true"></span>Shares text across a state line</li>
@@ -309,7 +312,7 @@ const parts = [
         {smallCards.map((c) => (
           <li>
             <p class="sm-name">{c.title} <span>{c.sub}</span></p>
-            <Fragment set:html={c.svg.wide + c.svg.narrow} />
+            <Fragment set:html={c.svg} />
             <details class="bf-mini-list">
               <summary>The links</summary>
               <ol class="bf-outline compact"><FamilyNode data={data} id={c.f.root} /></ol>

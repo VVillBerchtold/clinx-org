@@ -1,85 +1,72 @@
 /*
-  The bill family tree (/bills/family/). The opening band, the parts list, the sections, the scroll story
-  and the source line are the registry page's (registry.css); this file draws the time trees, the travelling
-  passage, the readout card, the chips, the small multiples and the list of links.
-  Colour, as on the registry page: periwinkle (--rx-1) is the family, orange (--rx-2) is the thing to look at,
-  a link across a state line. Everything in one state is muted.
+  The bill family tree (/bills/family/). The opening band, the parts list, the sections, the scroll story,
+  the month scrubber and the source line are the registry page's (registry.css); the tiles are the site's one
+  tile map (state-map.css). This file draws the arcs on the map, the d3 trees, the travelling passage, the
+  readout cards, the chips, the small families and the list of links.
+  Colour, as on the registry page: the map's own accent for states, periwinkle (--rx-1) for the family's
+  texts, orange (--rx-2) for the thing to look at, a passage shared across a state line.
 */
 
-/* ---------- The time tree ---------- */
+/* ---------- Part 1: the family on the map ---------- */
 
-.tt-fig { margin: 0; }
-.tt { display: block; width: 100%; height: auto; font-family: var(--body); overflow: visible; }
-.tt-narrow, .tt-phone { display: none; }
-@media (max-width: 44rem) {
-  .tt-fig .tt-wide { display: none; }
-  .tt-fig .tt-narrow { display: block; }
-  .bf-multiples .tt-wide { display: none; }
-  .bf-multiples .tt-phone { display: block; }
-}
-.tt-grid { stroke: var(--tick); stroke-width: 1; }
-.tt-year { font-size: 12px; font-weight: 650; fill: var(--muted); font-variant-numeric: tabular-nums; }
-.tt-e {
+.bf-mapbox { position: relative; }
+.bf-map { margin: 0; }
+.bf-map .rx-map-year { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--s3); }
+.bf-map .rx-map-year span[data-fm-count] { margin: 0; }
+.bf-when { margin: 0 !important; font-family: var(--display) !important; font-size: inherit !important; font-weight: inherit !important; color: var(--ink) !important; }
+svg.fm { display: block; width: 100%; height: auto; font-family: var(--body); overflow: visible; }
+.fm-ready .fm .tile { transition: fill 0.45s var(--ease), stroke 0.45s var(--ease); }
+.fm-arc {
   fill: none;
-  stroke: var(--rx-q4);
+  stroke: var(--rx-2);
   stroke-linecap: round;
-  transition: opacity 0.35s var(--ease), stroke 0.2s var(--ease);
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  opacity: 0.9;
+  pointer-events: none;
 }
-.tt-e.k-across-states { stroke: var(--rx-2); }
-.tt-e.k-carried-over { stroke-dasharray: 2 3; }
-.tt-n { text-decoration: none; outline: none; transition: opacity 0.35s var(--ease); }
-.tt-hit { fill: transparent; }
-.tt-dot { fill: var(--bg); stroke: var(--rx-1); stroke-width: 2; }
-.tt-n.law .tt-dot { fill: var(--rx-1); }
-.tt-n.root .tt-dot { stroke-width: 3; }
-.tt-tag { font-size: 11.5px; fill: var(--muted); paint-order: stroke; stroke: var(--bg); stroke-width: 3px; stroke-linejoin: round; }
-.tt-st { font-weight: 750; fill: var(--ink); }
-.tt-n:hover .tt-dot,
-.tt-n:focus-visible .tt-dot,
-.tt-n.pin .tt-dot { stroke: var(--rx-2); stroke-width: 3; }
-.tt-n:focus-visible .tt-hit { stroke: var(--focus); stroke-width: 1.5; }
-.tt-n:hover .tt-tag, .tt-n.pin .tt-tag { fill: var(--ink); }
-.tt-note line { stroke: var(--ink); stroke-width: 1; stroke-dasharray: 2 2; opacity: 0.6; }
-.tt-note text { font-size: 12.5px; font-weight: 700; fill: var(--ink); paint-order: stroke; stroke: var(--bg); stroke-width: 4px; stroke-linejoin: round; }
-.tt-compact .tt-tag { font-size: 12.5px; }
-.tt-qgrid { stroke-dasharray: 2 3; }
-.tt-qtr { font-size: 10.5px; fill: var(--muted); }
-/* The phone's column tree: one named text to a row. */
-.tt-col .tt-tag { font-size: 13.5px; }
-.tt-col .tt-year { font-size: 13px; font-weight: 750; fill: var(--ink); }
-.tt-when { font-size: 12px; fill: var(--muted); font-variant-numeric: tabular-nums; }
-.tt-col .tt-n:hover .tt-hit, .tt-col .tt-n.pin .tt-hit { fill: var(--rx-q0); }
-.tt-compact .tt-year { font-size: 12.5px; }
+.fm-end { fill: var(--rx-2); stroke: var(--bg); stroke-width: 1.5; pointer-events: none; }
+/* Changes fade only once the page has settled, so the first paint never animates. */
+.fm-ready .fm-arc, .fm-ready .fm-end { transition: opacity 0.35s var(--ease); }
+/* With the scrubber on: texts not filed by the month shown wait, unseen. */
+.fm-on .fm-arc.later,
+.fm-on .fm-end.later { opacity: 0; }
+/* A story card can light one branch: its arcs stay, the rest step back. */
+.fm.focusing .fm-arc:not(.hot):not(.later),
+.fm.focusing .fm-end:not(.hot):not(.later) { opacity: 0.16; }
+/* A state picked: its arcs, in and out, stay lit. */
+.fm.picking .fm-arc:not(.lit):not(.later),
+.fm.picking .fm-end:not(.lit):not(.later) { opacity: 0.12; }
+.fm .pick .tile { stroke: var(--ink); stroke-width: 3; }
+.fm-still .fm-arc { opacity: 0.95; }
 
-/* Faint: off the lit set (part 2), or off the chosen state's line (part 3). */
-.tt .cold { opacity: 0.3; }
-.tt-e.cold { stroke: var(--muted); }
-.tt.tracing .tt-n:not(.on),
-.tt.tracing .tt-e:not(.on),
-.tt.tracing .tt-note { opacity: 0.28; }
-.tt.tracing .tt-e.on { stroke-width: 4.5; }
-
-/* ---------- Part 1: the scroll story ---------- */
-
-.bf-story .rx-story-pin { padding-block: var(--s4) var(--s3); }
-/* Texts later than the step in play wait, nearly unseen; the step's focus is lit, the rest dimmed. */
-[data-upto='0'] .tt :is(.st1, .st2, .st3, .st4),
-[data-upto='1'] .tt :is(.st2, .st3, .st4),
-[data-upto='2'] .tt :is(.st3, .st4),
-[data-upto='3'] .tt :is(.st4) { opacity: 0.06; }
-[data-upto='3'] .tt :is(.tt-n, .tt-e):not(.f3):not(.st4) { opacity: 0.38; }
-[data-upto='3'] .tt .tt-note:not(.f3) { opacity: 0; }
-[data-upto='0'] .tt .tt-note:not(.st0),
-[data-upto='1'] .tt .tt-note:not(.st0),
-[data-upto='2'] .tt .tt-note:not(.st0) { opacity: 0; }
-.tt-note { transition: opacity 0.35s var(--ease); }
-@media (max-width: 44rem) {
-  .bf-story .rx-story-pin { padding-block: var(--s2); }
-  .bf-story .tt-narrow { max-height: 58vh; width: auto; margin-inline: auto; }
+/* The readout card for a state: over the side of the map away from the state. */
+.bf-scard {
+  top: var(--s7);
+  right: 0;
+  left: auto;
+  bottom: auto;
+  width: min(22rem, 48%);
+  max-height: calc(100% - var(--s7));
+  overflow-y: auto;
 }
+.bf-scard.on-left { left: 0; right: auto; }
+.bf-s-texts { margin: var(--s3) 0 0; padding: 0; list-style: none; display: grid; gap: var(--s3); }
+.bf-s-texts li { padding-top: var(--s3); border-top: 1px solid var(--line); }
+.bf-s-head { display: flex; flex-wrap: wrap; gap: 0 var(--s2); align-items: baseline; }
+.bf-s-head a { font-weight: 650; color: var(--ink); }
+.bf-s-texts li.law .bf-s-head a::after { content: ' ●'; color: var(--accent); font-size: 0.8em; }
+.bf-s-meta { font-size: var(--text-xs); color: var(--muted); }
+.bf-s-with { margin-top: var(--s1) !important; font-size: var(--text-xs); color: var(--muted); }
+.bf-scard .bf-c-quote { font-size: var(--text-xs); }
+.bf-c-quote mark { padding: 0 0.1em; background: color-mix(in srgb, var(--rx-2) 26%, transparent); color: var(--ink); border-radius: 2px; }
+.bf-note { margin-top: var(--s4); max-width: var(--measure); }
 
-/* The key under the story. */
-.bf-key { margin-top: var(--s4); }
+/* The keys. */
+.bf-key { margin-top: var(--s3); }
+.bf-k-tile { width: 14px; height: 14px; border-radius: 3px; border: 2px solid var(--accent); background: var(--accent-wash); flex: none; }
+.bf-k-tile.has { background: var(--accent); }
+.bf-k-arc { width: 22px; height: 9px; border: 3px solid var(--rx-2); border-bottom: 0; border-radius: 12px 12px 0 0; flex: none; }
 .bf-k-dot { width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--rx-1); background: var(--bg); flex: none; }
 .bf-k-dot.law { background: var(--rx-1); }
 .bf-k-line { width: 22px; height: 0; border-top: 3px solid var(--rx-q4); flex: none; }
@@ -88,6 +75,42 @@
 .bf-k-w span { display: block; border-top: 1px solid var(--rx-2); }
 .bf-k-w span:nth-child(2) { border-top-width: 2px; }
 .bf-k-w span:nth-child(3) { border-top-width: 4px; }
+
+/* ---------- The d3 trees (part 3 and the small families) ---------- */
+
+svg.ft { display: block; width: auto; max-width: 100%; height: auto; margin-inline: auto; font-family: var(--body); font-size: 12px; overflow: visible; }
+.bf-explore-fig .ft-indent { display: none; }
+@media (max-width: 64rem) {
+  .bf-explore-fig .ft-tidy { display: none; }
+  .bf-explore-fig .ft-indent { display: block; margin-inline: 0; }
+}
+.ft-e { fill: none; stroke: var(--rx-q4); stroke-linecap: round; transition: opacity 0.3s var(--ease); }
+.ft-e.across { stroke: var(--rx-2); }
+.ft-n { text-decoration: none; outline: none; transition: opacity 0.3s var(--ease); }
+.ft-n circle { fill: var(--bg); stroke: var(--rx-1); stroke-width: 2; }
+.ft-n.law circle { fill: var(--rx-1); }
+.ft-n text { fill: var(--ink); paint-order: stroke; stroke: var(--bg); stroke-width: 3px; stroke-linejoin: round; }
+.ft-y, .ft-n .ft-sub { fill: var(--muted); }
+.ft-tidy .ft-n text { font-weight: 600; }
+.ft-y { font-weight: 400; font-variant-numeric: tabular-nums; }
+.ft-indent .ft-n text:not(.ft-sub) { font-size: 13px; font-weight: 600; }
+.ft-sub { font-size: 11.5px; }
+.ft-hit { fill: transparent; }
+.ft-n:hover circle, .ft-n:focus-visible circle, .ft-n.pin circle { stroke: var(--rx-2); stroke-width: 3; }
+.ft-n:focus-visible .ft-hit { stroke: var(--focus); stroke-width: 1.5; }
+.ft .faint { opacity: 0.3; }
+.ft.tracing .ft-n:not(.on), .ft.tracing .ft-e:not(.on) { opacity: 0.25; }
+.ft.tracing .ft-e.on { stroke-width: 4.5; }
+.ft-off { display: none; }
+/* The fold buttons show only when the script can fold. */
+.ft-fold { display: none; cursor: pointer; outline: none; }
+.ft-js .ft-fold { display: inline; }
+.ft-fold rect { fill: var(--surface); stroke: var(--line); stroke-width: 1; }
+.ft-fold path { stroke: var(--ink); stroke-width: 1.6; stroke-linecap: round; }
+.ft-fold[aria-expanded='true'] .ft-v { display: none; }
+.ft-fold:hover rect, .ft-fold:focus-visible rect { stroke: var(--rx-2); stroke-width: 1.5; }
+.ft-fold:focus-visible rect { stroke: var(--focus); stroke-width: 2; }
+.ft-count { font-size: 11px; font-weight: 650; fill: var(--muted); }
 
 /* ---------- Part 2: the words that travel ---------- */
 
@@ -122,6 +145,7 @@
 }
 .bf-quote figcaption { margin-top: var(--s3); font-size: var(--text-sm); color: var(--muted); }
 .bf-travel-fig {
+  margin: 0;
   padding: var(--s4);
   background: var(--bg);
   border: 1px solid var(--line);
@@ -313,7 +337,7 @@ button.bf-chip:hover { border-color: var(--rx-2); }
 /* ---------- Narrower screens ---------- */
 
 @media (max-width: 60rem) {
-  .bf-card { position: static; width: auto; margin-top: var(--s4); }
+  .bf-card:not(.bf-scard) { position: static; width: auto; margin-top: var(--s4); }
 }
 @media (max-width: 56rem) {
   .bf-travel { grid-template-columns: minmax(0, 1fr); }
@@ -324,19 +348,18 @@ button.bf-chip:hover { border-color: var(--rx-2); }
   .bf-kids { margin-left: 0.25rem; padding-left: 0.875rem; }
   .bf-kids > .bf-node::before { left: -0.875rem; width: 0.625rem; }
   .bf-item { padding: var(--s3); }
-  .bf-explore-fig .tt-narrow { max-width: 343px; margin-inline: auto; }
-  /* On a phone the story is told in its cards; the whole family is drawn once, named, in part 3. */
-  .bf-story .rx-story-pin, .bf-story ~ .rx-story-after, .bf-travel-fig { display: none; }
-  .rx-story.bf-story:not(.rx-story-map) .rx-story-step { margin: 0 0 var(--s3); opacity: 1; }
-  .rx-story.bf-story { margin-top: var(--s4); }
-  /* The readout card rides at the foot of the screen while the long tree scrolls past. */
+  /* The map story pins a small map with its scrubber; the cards pass under it. */
+  .bf-mapstory .rx-story-pin .bf-key { gap: var(--s1) var(--s3); font-size: var(--text-xs); }
+  .bf-mapstory .rx-map-year { font-size: 1.35rem; }
+  .bf-mapstory .rx-lapse { margin-top: 0; padding: var(--s2) var(--s3); gap: var(--s2) var(--s3); }
+  .bf-mapstory .rx-range { flex-basis: 9rem; }
+  /* The readout cards ride at the foot of the screen. */
   .bf-card { position: sticky; bottom: var(--s2); max-height: 55vh; overflow-y: auto; padding: var(--s3) var(--s4); }
-}
-@media (min-width: 44.01rem) {
-  .bf-key-phone { display: none; }
+  .bf-scard { position: fixed; left: var(--s4); right: var(--s4); bottom: var(--s2); top: auto; width: auto; max-height: 50vh; }
+  .bf-scard.on-left { left: var(--s4); right: var(--s4); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .tt-e, .tt-n, .tt-note { transition: none; }
+  .ft-e, .ft-n, .fm-arc, .fm-end, .fm .tile { transition: none; }
 }
 /* A long passage is cut to a few lines in the card; the list in part 3 prints it whole. */
 .bf-card .bf-c-quote { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; line-clamp: 5; overflow: hidden; }
