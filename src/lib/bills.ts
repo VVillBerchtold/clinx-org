@@ -32,10 +32,10 @@ export interface Bill {
   /** The bill's number as the legislature writes it, for example "H.R. 5256" or "SB 114". */
   bill: string;
   title: string;
-  /** Blank until a person has read the bill. */
+  /** Blank until Claude has read the bill. */
   role: BillRole | '';
   kinds: readonly LawKind[];
-  /** One plain sentence on what the bill would do. Blank until a person has read the bill. */
+  /** One plain sentence on what the bill would do. Blank until Claude has read the bill. */
   summary: string;
   namedIn: readonly NamedIn[];
   /** How many times the text that was read names the program; null where no text was read. */
@@ -228,7 +228,7 @@ export function sessionOver(data: BillsData, bill: Bill): boolean {
 }
 
 /**
- * Where a bill sits on its place's page. A bill a person has read goes by what it is to the
+ * Where a bill sits on its place's page. A bill Claude has read goes by what it is to the
  * program; one nobody has read yet goes by where it names the program. Bills that only mention
  * the program come last, as a short list.
  */
@@ -274,8 +274,8 @@ export function sessionsOf(data: BillsData, place: string): SessionGroup[] {
 }
 
 /**
- * The bills with the newest recorded steps, newest first. Only bills that are about 340B: one a
- * person has read as about it or as having a part on it, or one not yet read that names it in its title.
+ * The bills with the newest recorded steps, newest first. Only bills that are about 340B: one
+ * Claude has read as about it or as having a part on it, or one not yet read that names it in its title.
  */
 export function latestSteps(data: BillsData, howMany: number): Bill[] {
   return data.bills

@@ -113,7 +113,7 @@
   line-height: 1.5;
 }
 
-/* What the bill is, where a person has read it; else where it names the program. */
+/* What the bill is, where Claude has read it; else where it names the program. */
 .kind.role {
   background: var(--accent);
   box-shadow: none;

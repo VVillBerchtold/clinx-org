@@ -35,7 +35,7 @@ The bills come from a table of their own, kept in a separate folder (`clinx-340b
 - `/bills/` is the way in: a map of the states with a bill, a door to Congress, the newest steps, and how the list is put together.
 - Congress has a page (`/bills/congress/`) and so does each state with a bill (`/bills/ri/`). Bills are grouped by session, the newest session first.
 - Each bill is a card (`src/components/BillCard.astro`): its number and title, how far it has got on five steps, its latest step in the legislature's own words, the passage that names 340B, and links to the legislature's own pages.
-- Where a person has read the bill, the card also says in one sentence what it would do, and whether the bill is about 340B, has a part on it, or only mentions it. Bills that only mention it are a short list at the end of their session.
+- Where Claude has read the bill, the card also says in one sentence what it would do, and whether the bill is about 340B, has a part on it, or only mentions it. Bills that only mention it are a short list at the end of their session.
 
 A bill is listed only if its title, its official summary or its official text names the program. The words quoted on a card are the legislature's, so the site's word check does not apply to them (`PRINTED_BILL_WORDS` in `scripts/check-dist.mjs`); it still applies to every word the site writes itself.
 

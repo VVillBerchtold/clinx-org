@@ -25,7 +25,7 @@ const PILOT_NOTICE = 'fr-2026-15633';
 // said out loud because the protocol takes a hint that is left out to mean "may remove things".
 const READ_ONLY = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
 const CAUTION = 'Plain-word summaries are a reading aid; the official text at the link governs. Not legal advice.';
-const NOTICE_CAUTION = 'The sentence on each document is written by a person who read it and covers only what it does about 340B. Titles, agencies and dates are the Federal Register\'s own, and the Federal Register governs. Not legal advice.';
+const NOTICE_CAUTION = 'The sentence on each document was written with Claude, Anthropic\'s AI model, from the document\'s own text and covers only what it does about 340B. Titles, agencies and dates are the Federal Register\'s own, and the Federal Register governs. Not legal advice.';
 
 const place = (code) => (code === 'US' ? 'congress' : code === AGENCIES ? 'agencies' : code.toLowerCase());
 
@@ -736,7 +736,7 @@ export const TOOLS = [
         calendar_kinds: t.eventKinds,
         licence: `${t.licence}. Free to copy, share and build on with credit.`,
         downloads: `${SITE}/data/`,
-        limits: 'A bill is listed only when its title, official summary or text names the program. Summaries are written by a person reading the text and may trail a newer version of a bill. Hearings appear once a legislature posts an agenda naming a listed bill. A federal rule or notice is listed when its text names the program; one nobody has read yet carries the Federal Register\'s facts and no summary. "Coming up" and "open for comment" go by today\'s date, so check up_to_date_as_of for how fresh each table is. A filed report is listed as the official file prints it, and a claim count of 1 to 5 is never given. ' + CAUTION,
+        limits: 'A bill is listed only when its title, official summary or text names the program. Summaries are written with Claude, Anthropic\'s AI model, from the official text and may trail a newer version of a bill. Hearings appear once a legislature posts an agenda naming a listed bill. A federal rule or notice is listed when its text names the program; one nobody has read yet carries the Federal Register\'s facts and no summary. "Coming up" and "open for comment" go by today\'s date, so check up_to_date_as_of for how fresh each table is. A filed report is listed as the official file prints it, and a claim count of 1 to 5 is never given. ' + CAUTION,
       };
     },
   },
