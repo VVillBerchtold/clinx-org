@@ -21,7 +21,7 @@ export type NoticeType = (typeof NOTICE_TYPES)[number];
 const NAMED_IN = ['title', 'summary', 'text'] as const;
 type NamedIn = (typeof NAMED_IN)[number];
 
-/** A day the document itself sets, read in it by a person. */
+/** A day the document itself sets, read in it by Claude. */
 export interface NoticeDate {
   day: string;
   /** What happens on the day, in our words. */
@@ -42,9 +42,9 @@ export interface Notice {
   /** The department first, then the agency that wrote it. */
   agencies: readonly string[];
   title: string;
-  /** Blank until a person has read the document. */
+  /** Blank until Claude has read the document. */
   role: BillRole | '';
-  /** One plain sentence on what the document does about 340B. Blank until a person has read it. */
+  /** One plain sentence on what the document does about 340B. Blank until Claude has read it. */
   summary: string;
   namedIn: readonly NamedIn[];
   /** How many times the text names the program. */
@@ -179,7 +179,7 @@ export function writerOf(notice: Notice): string {
 
 /**
  * Where a document sits on the notices page: 0 about 340B, 1 with a part on it, 2 only mentions it.
- * A document a person has read goes by what they found; one nobody has read yet goes by whether
+ * A document Claude has read goes by what it found; one nobody has read yet goes by whether
  * its title names the program.
  */
 export function rankOf(notice: Notice): 0 | 1 | 2 {

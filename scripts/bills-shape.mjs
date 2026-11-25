@@ -107,7 +107,7 @@ export const BILL_COLUMNS = [
   'retrieved',
 ];
 
-/** What a bill is to the program. Blank until a person has read the bill. */
+/** What a bill is to the program. Blank until Claude has read the bill. */
 export const BILL_ROLES = ['main', 'part', 'mention'];
 /** Where a bill names the program. */
 export const NAMED_IN = ['title', 'summary', 'text', 'earlier text'];
