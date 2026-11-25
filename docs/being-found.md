@@ -6,8 +6,8 @@
 
 | Page | What it tells a search engine | Why |
 |---|---|---|
-| Home | This is the site ClinX, built by Will Berchtold | So a search for the site's name shows the right name and the right person |
-| About | This is the page about ClinX, and here is the person who builds it, with his other public pages | So a search engine knows the Will Berchtold here is the same person as on those pages |
+| Home | This is the site ClinX, published by the organization ClinX, founded by Will Berchtold; the organization's mark, and its public code as `sameAs` | So a search for "clinx" finds ClinX by name, with the right mark and the right person |
+| About | This is the page about the organization ClinX (its main subject), and here is the person who founded it, with his other public pages | So About is the page that answers who ClinX is, and a search engine knows the Will Berchtold here is the same person as on those pages |
 | Data | These are datasets: the 340B state filings with its name, version, licence, the states and years it covers, and every file; and one for each part of the health centers files (the records, the funding calendar, the shortage areas) with its name, licence and files. Each names who made it: Will Berchtold, with the About page as his address | So each dataset can be listed by dataset search engines, such as Google's Dataset Search |
 | The article | This is an article, with its title, author and date | So it can be shown as an article |
 | Every page but the home page | The trail from the home page to this page (ClinX, Scorecard, Rhode Island, …) | So a search result can show the trail in place of a bare address |
@@ -22,7 +22,11 @@ Pages a search engine may not list ("Page not found" and the contact form's two 
 
 ## Titles
 
-A page's title is the line a search result shows. Each one says what the page holds in the words a person would type: "Rhode Island 340B filings, 2025", "Thundermist Health Center: 340B filing, 2025". The heading on the page itself stays short.
+A page's title is the line a search result shows. Each one says what the page holds in the words a person would type.
+
+- A state's 340B report page in the Scorecard: "<State> 340B hospital report" in the title and in the heading, then the year ("Minnesota 340B hospital report: 2024 data by entity"). `stateReportTitle` in `src/lib/state-pages.ts` writes it for every layout, so a state added later gets it too, and `npm run check:dist` fails a `/scorecard/<st>/` page without it.
+- A state's other pages: "Rhode Island 340B laws: contract pharmacy, PBMs and reporting" (the kinds of law it has), "Rhode Island 340B legislation: 4 bills", "Rhode Island 340B calendar: bill steps, hearings and session dates", "Rhode Island shortage areas (HPSA, MUA) and health center sites", "Rhode Island health center UDS reports, 2021 to 2025". Each is built from the page's data.
+- A state page's side panel (or its foot, where it has no panel) lists that state's pages in the other sections ("Rhode Island on ClinX"), from `statePages` in the same file.
 
 ## The block is data, not a program
 
@@ -38,6 +42,12 @@ It is still checked on every build. `npm run check:dist` fails if a block:
 
 `tests/structured-data.test.ts` checks the same things at the source, including that each dataset's block lists exactly its downloads on the Data page.
 
+## The page list and IndexNow
+
+- `sitemap.xml` is written after every build from the pages built (`scripts/sitemap.mjs`), and `robots.txt` names it.
+- IndexNow tells Bing and the other engines that use it (Yandex, Seznam, Naver) about new pages. The site proves it is clinx.org with a key served at its root, `public/<key>.txt`, whose text is the key itself. The key is public by design: it opens nothing and only lets someone ask a search engine to re-read a page of this site. To replace it, put a new key file in `public/` and delete the old one.
+- `scripts/indexnow.mjs` does the asking. `scripts/deploy/publish.sh` runs it around every publish: before, it lists the pages in the new sitemap that the live one lacks; after, it sends them. A failure is reported and never stops a publish. After a change that touches many existing pages, send them all once by hand: `node scripts/indexnow.mjs send --all`.
+
 ## What is not done here
 
-Signing the site up with a search engine (Google Search Console, Bing Webmaster Tools) is done by the owner in those tools. It needs one line added to the domain's records and nothing in this repository.
+Signing the site up with a search engine (Google Search Console, Bing Webmaster Tools) and submitting `https://clinx.org/sitemap.xml` there is done by the owner in those tools.

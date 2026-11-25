@@ -28,8 +28,14 @@ fi
 npm ci --prefix "$ROOT/deploy" --ignore-scripts --no-audit --no-fund
 
 cd "$ROOT"
+# Before publishing: list the pages that are new since the live site (scripts/indexnow.mjs). Never stops a publish.
+node scripts/indexnow.mjs plan || echo "publish: the IndexNow plan failed; publishing anyway." >&2
+
 if [[ "${DRY_RUN:-false}" == "true" ]]; then
   WRANGLER_SEND_METRICS=false deploy/node_modules/.bin/wrangler deploy --config wrangler.jsonc --dry-run
+  node scripts/indexnow.mjs send --dry-run || true
 else
   WRANGLER_SEND_METRICS=false deploy/node_modules/.bin/wrangler deploy --config wrangler.jsonc
+  # After publishing: tell IndexNow (Bing and others) about the new pages. A failure is reported, not fatal.
+  node scripts/indexnow.mjs send || echo "publish: the IndexNow ping failed; the site is published." >&2
 fi

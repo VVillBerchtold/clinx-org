@@ -5,6 +5,7 @@ import '../../styles/laws.css';
 import '../../styles/hc-records.css';
 import Base from '../../layouts/Base.astro';
 import PageHead from '../PageHead.astro';
+import StatePages from '../StatePages.astro';
 import StateMap from '../StateMap.astro';
 import { areaPath, getIndex } from '../../lib/hc-areas';
 import { DOWNLOADS, RECORDS_PATH, centerPath, centersWord, coverageRows, listByState, placeInWords, recordsCards, recordsSource, recordsTile, statePath } from '../../lib/hc-records';
@@ -59,7 +60,7 @@ const withFilter = rows.length >= 12;
 ---
 
 <Base
-  title={`${name}: health center records`}
+  title={`${name} health center UDS reports, ${span}`}
   crumbs={[
     { name: HC_NAME, path: HC_HOME },
     { name: 'Health center records', path: RECORDS_PATH },
@@ -67,7 +68,7 @@ const withFilter = rows.length >= 12;
   ]}
   description={`The ${centersWord(rows.length)} of ${place} in HRSA's Uniform Data System files, ${span}, A to Z by name, each with a link to every year's report.`}
 >
-  <PageHead title={name} trail={[{ label: HC_NAME, href: HC_HOME }, { label: 'Records', href: RECORDS_PATH }, { label: name }]}>
+  <PageHead title={`${name} health centers`} trail={[{ label: HC_NAME, href: HC_HOME }, { label: 'Records', href: RECORDS_PATH }, { label: name }]}>
     <p class="lede">
       HRSA's Uniform Data System files for {span} list {centersWord(rows.length)} for {place}. {one ? 'Its reports are' : 'They are'} here, {one ? 'one page for each year' : 'A to Z by name, with one page for each health center and year'}.
     </p>
@@ -158,6 +159,7 @@ const withFilter = rows.length >= 12;
           </a>
         )
       }
+      <StatePages code={code} />
     </aside>
   </div>
 </Base>

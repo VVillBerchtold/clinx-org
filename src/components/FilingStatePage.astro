@@ -7,6 +7,7 @@ import Draft from './Draft.astro';
 import Meter from './Meter.astro';
 import OnPage from './OnPage.astro';
 import PageHead from './PageHead.astro';
+import StatePages from './StatePages.astro';
 import ShareTable from './ShareTable.astro';
 import { GROUP_LABEL, GROUP_ORDER, buildViews, comparabilityParagraph, formatDate, getDataset, groupTotals, retrievalSpan, sharedValue, stateDrugViewFor, viewsInGroup } from '../lib/data';
 import { renderInline } from '../lib/markdown';
@@ -14,6 +15,7 @@ import { formatUsdMillions } from '../lib/money';
 import { groupId, numberWord, numberWordCap } from '../lib/site';
 import { STATE_REGISTRY, stateName } from '../lib/states';
 import { formSpec } from '../lib/forms';
+import { stateReportTitle } from '../lib/state-pages';
 
 interface Props {
   code: string;
@@ -45,7 +47,7 @@ const groups = GROUP_ORDER.map((g) => ({ g, list: viewsInGroup(views, g), totals
 ---
 
 <Base
-  title={onePage ? `${name} 340B hospital ${spec.nounPlural}, ${spec.periodWord} ${year}` : `${name} 340B filings, ${year}`}
+  title={onePage ? `${stateReportTitle(name)}: ${spec.periodWord} ${year}` : `${stateReportTitle(name)}: ${year} filings`}
   crumbs={[{ name: 'Scorecard', path: '/scorecard/' }, { name, path: `/scorecard/${code.toLowerCase()}/` }]}
   description={
     onePage
@@ -53,7 +55,7 @@ const groups = GROUP_ORDER.map((g) => ({ g, list: viewsInGroup(views, g), totals
       : `Gross margin, external cost and share for each ${name} 340B filing for ${year}, grouped by type of filer. Every figure links to the page of the filing it was read from.`
   }
 >
-  <PageHead title={name} trail={[{ label: 'Scorecard', href: '/scorecard/' }, { label: onePage ? `${spec.periodWord[0]!.toUpperCase()}${spec.periodWord.slice(1)} ${year} ${spec.nounPlural}` : `${year} filings` }]}>
+  <PageHead title={stateReportTitle(name)} trail={[{ label: 'Scorecard', href: '/scorecard/' }, { label: onePage ? `${spec.periodWord[0]!.toUpperCase()}${spec.periodWord.slice(1)} ${year} ${spec.nounPlural}` : `${year} filings` }]}>
     {
       onePage ? (
         <p class="lede">
@@ -178,4 +180,5 @@ const groups = GROUP_ORDER.map((g) => ({ g, list: viewsInGroup(views, g), totals
       </section>
     )
   }
+  <StatePages code={code} class="state-pages-foot" />
 </Base>

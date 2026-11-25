@@ -5,6 +5,8 @@ import '../styles/workbook.css';
 import Base from '../layouts/Base.astro';
 import OnPage from './OnPage.astro';
 import PageHead from './PageHead.astro';
+import { stateReportTitle } from '../lib/state-pages';
+import StatePages from './StatePages.astro';
 import WorkbookTotals from './WorkbookTotals.astro';
 import { buildWorkbookViews, formatDate, getDataset, sharedValue } from '../lib/data';
 import { workbookFormSpec } from '../lib/forms';
@@ -54,11 +56,11 @@ const retrieved = sharedValue(views.map((v) => v.filing.retrievedAt.slice(0, 10)
 ---
 
 <Base
-  title={`${name} 340B workbooks, ${year}`}
+  title={`${stateReportTitle(name)}: ${year} workbooks`}
   crumbs={[{ name: 'Scorecard', path: '/scorecard/' }, { name, path: `/scorecard/${code.toLowerCase()}/` }]}
   description={`The ${views.length} 340B workbooks the ${spec.agency} posts for ${spec.periodWord} ${year}, one for each covered entity, with HRSA's name for each filer. Each page shows the cells of its workbook, and the state page adds up the filers' own figures.`}
 >
-  <PageHead title={name} trail={[{ label: 'Scorecard', href: '/scorecard/' }, { label: `${year} workbooks` }]}>
+  <PageHead title={stateReportTitle(name)} trail={[{ label: 'Scorecard', href: '/scorecard/' }, { label: `${year} workbooks` }]}>
     <p class="lede">
       The {numberWord(views.length)} workbooks the {spec.agency} posts for {spec.periodWord} {year}, one for each covered entity, on the department's template. A workbook prints a 340B ID and no name, so each filer is named as HRSA names it in its list of covered entities read on {formatDate(listDate)}. Each filer's page shows the cells of its workbook, with the figures shown to the cent.
     </p>
@@ -163,6 +165,7 @@ const retrieved = sharedValue(views.map((v) => v.filing.retrievedAt.slice(0, 10)
       </section>
     )
   }
+  <StatePages code={code} class="state-pages-foot" />
 </Base>
 
 <script>

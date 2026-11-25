@@ -1263,6 +1263,65 @@ a.card:hover {
   color: var(--muted);
   font-size: var(--text-sm);
 }
+/* "Rhode Island on ClinX": a state's pages in the other sections. In a side panel, or at the foot of a state page. */
+.state-pages {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+}
+.state-pages ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+.state-pages li {
+  break-inside: avoid;
+  border-bottom: 1px solid var(--line);
+}
+.state-pages a,
+.state-pages span {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: var(--s2);
+  padding: 0.625rem var(--s1) 0.625rem 0;
+  font-weight: 600;
+  font-size: var(--text-sm);
+  line-height: 1.3;
+  color: var(--ink);
+  text-decoration: none;
+}
+.state-pages span {
+  color: var(--muted);
+}
+.state-pages a::after {
+  content: '';
+  align-self: center;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-right: 0.125rem;
+  border-right: 2px solid var(--tick);
+  border-bottom: 2px solid var(--tick);
+  transform: rotate(-45deg);
+  transition: transform 0.2s var(--ease), border-color 0.2s;
+}
+.state-pages a:hover {
+  color: var(--accent);
+}
+.state-pages a:hover::after {
+  border-color: var(--accent);
+  transform: translateX(2px) rotate(-45deg);
+}
+.state-pages-foot {
+  max-width: 46rem;
+  margin-top: var(--s7);
+}
+.state-pages-foot ul {
+  columns: 2 16rem;
+  column-gap: var(--s6);
+}
+
 .label {
   font-weight: 700;
   font-size: var(--text-xs);

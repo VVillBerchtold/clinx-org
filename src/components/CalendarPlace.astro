@@ -12,6 +12,7 @@ import '../styles/calendar.css';
 import Base from '../layouts/Base.astro';
 import CalendarRows from './CalendarRows.astro';
 import PageHead from './PageHead.astro';
+import StatePages from './StatePages.astro';
 import { CONGRESS, billsPath, getBills } from '../lib/bills';
 import { CALENDAR_HOME, byMonth, byYear, calendarFilePath, calendarMapSvg, calendarPath, calendarPlaceName, comingUp, eventsOf, getCalendar, isSessionDay, legislatureName, past, calendarMapCards } from '../lib/calendar';
 import { getLaws, lawsOf, lawsPath } from '../lib/laws';
@@ -40,6 +41,8 @@ const years = byYear(past(events, data.retrieved));
 const documents = new Set(events.map((e) => e.noticeId)).size;
 const pilotDay = agencies ? pilotStart(getNotices()) : '';
 const title = national ? `340B calendar for ${federal ? 'Congress' : 'federal agencies'}` : `${name} 340B calendar`;
+// The window's title says what the dates are, in the words a search uses.
+const fullTitle = national ? title : billCount > 0 ? `${title}: bill steps, hearings and session dates` : `${title}: session dates`;
 const sessionWords = federal ? 'the day this Congress ends' : 'the days its sessions start and end';
 const lede = agencies
   ? `${numberWordCap(events.length)} dates of the ${documents} federal rules and notices that are about the 340B program or have a part on it: the day each was published, the day comments close, the day it takes effect, and other days it sets.`
@@ -54,7 +57,7 @@ const description = agencies
 ---
 
 <Base
-  title={title}
+  title={fullTitle}
   crumbs={[
     { name: 'Calendar', path: CALENDAR_HOME },
     { name, path: calendarPath(place) },
@@ -176,6 +179,7 @@ const description = agencies
           <a class="law-all" href={CALENDAR_HOME}>Whole calendar</a>
         </p>
       </div>
+      {!national && <StatePages code={place} />}
     </aside>
   </div>
 </Base>

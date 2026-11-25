@@ -558,7 +558,7 @@ describe('the built pages', () => {
       const page = readFileSync(join(dist, g.code.toLowerCase(), 'index.html'), 'utf8');
       expect((page.match(/<tr role="row" data-search=/g) ?? []).length, g.code).toBe(g.rows.length);
       for (const r of g.rows) expect(page, `${g.code} ${r.key}`).toContain(`href="${r.path}"`);
-      expect(page).toContain(`<h1>${g.name}</h1>`);
+      expect(page).toContain(`<h1>${g.name} health centers</h1>`);
     }
   });
 

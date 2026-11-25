@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { getDataset } from '../src/lib/data';
 import { REPOSITORIES, SITE_URL } from '../src/lib/site';
-import { DATASET_ID, FOUNDER_ID, SITE_ID, aboutPageNode, articleNode, creatorNode, datasetNode, founderNode, hcDatasetId, healthCenterDatasetNodes, siteNode, toBlock, trailNode } from '../src/lib/structured-data';
+import { DATASET_ID, FOUNDER_ID, ORG_ID, SITE_ID, aboutPageNode, organizationNode, articleNode, creatorNode, datasetNode, founderNode, hcDatasetId, healthCenterDatasetNodes, siteNode, toBlock, trailNode } from '../src/lib/structured-data';
 import { fileGroups } from '../src/lib/hc-hub';
 import { rawFile as recordsFile, recordsSource } from '../src/lib/hc-records';
 import dataPage from '../src/pages/data/index.astro?raw';
@@ -23,11 +23,27 @@ describe('the block of data a page gives search engines', () => {
 });
 
 describe('the site and the person who builds it', () => {
-  it('names the site ClinX and points to its builder', () => {
+  it('names the site ClinX and points to ClinX as its publisher', () => {
     const site = siteNode();
     expect(site['@id']).toBe(SITE_ID);
     expect(site.name).toBe('ClinX');
-    expect(site.publisher).toEqual({ '@id': FOUNDER_ID });
+    expect(site.publisher).toEqual({ '@id': ORG_ID });
+  });
+
+  it('describes ClinX as an organization, founded by Will Berchtold, with its public code as sameAs', () => {
+    const org = organizationNode();
+    expect(org['@type']).toBe('Organization');
+    expect(org['@id']).toBe(ORG_ID);
+    expect(org.name).toBe('ClinX');
+    expect(org.url).toBe(`${SITE_URL}/`);
+    expect(org.founder).toEqual({ '@id': FOUNDER_ID });
+    expect(org.sameAs).toEqual([REPOSITORIES.site]);
+  });
+
+  it('makes the About page the page about ClinX', () => {
+    const about = aboutPageNode();
+    expect(about.mainEntity).toEqual({ '@id': ORG_ID });
+    expect(about.about).toEqual({ '@id': ORG_ID });
   });
 
   it('ties Will Berchtold to his other public pages, ReferralFinderX first', () => {
@@ -43,7 +59,7 @@ describe('the site and the person who builds it', () => {
   });
 
   it('never writes a middle name or the short product name', () => {
-    const text = toBlock([siteNode(), founderNode(), aboutPageNode(), articleNode('x')]);
+    const text = toBlock([siteNode(), organizationNode(), founderNode(), aboutPageNode(), articleNode('x')]);
     expect(text).not.toMatch(/\bRFX\b/);
     expect(text).not.toMatch(/William/);
   });

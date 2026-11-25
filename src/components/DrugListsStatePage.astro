@@ -6,6 +6,8 @@ import Cited from './Cited.astro';
 import DifferencesTable from './DifferencesTable.astro';
 import OnPage from './OnPage.astro';
 import PageHead from './PageHead.astro';
+import { stateReportTitle } from '../lib/state-pages';
+import StatePages from './StatePages.astro';
 import { drugReportViewFor, formatDate, getDataset, pdfHref } from '../lib/data';
 import { numberWord, numberWordCap } from '../lib/site';
 import { STATE_REGISTRY, stateName } from '../lib/states';
@@ -45,11 +47,11 @@ if (!costly || !frequent) throw new Error(`${code}: the page expects two lists o
 ---
 
 <Base
-  title={`${name} 340B report: fiscal year ${year}, totals and drug lists`}
+  title={`${stateReportTitle(name)}: fiscal year ${year}, totals and drug lists`}
   crumbs={[{ name: 'Scorecard', path: '/scorecard/' }, { name, path: `/scorecard/${code.toLowerCase()}/` }]}
   description={`What the ${spec.agency} printed in its 340B report for fiscal year ${year}: four totals for ${count} hospitals added together, two lists of drugs with their costs and savings, and the hospitals named. Every figure links to its page of the report.`}
 >
-  <PageHead title={name} trail={[{ label: 'Scorecard', href: '/scorecard/' }, { label: `Fiscal year ${year}, state report` }]}>
+  <PageHead title={stateReportTitle(name)} trail={[{ label: 'Scorecard', href: '/scorecard/' }, { label: `Fiscal year ${year}, state report` }]}>
     <p class="lede">
       The {spec.agency} published its 340B report of {issued}, as Maine's law requires. It covers fiscal year {year} and adds together what {numberWord(count)} hospitals sent. It prints no figure for any single hospital, so no figure here belongs to one.
     </p>
@@ -212,4 +214,5 @@ if (!costly || !frequent) throw new Error(`${code}: the page expects two lists o
       <dd>{report.pages.first} to {descriptions.lastPage} of {filing.pageCount}</dd>
     </dl>
   </div>
+  <StatePages code={code} class="state-pages-foot" />
 </Base>

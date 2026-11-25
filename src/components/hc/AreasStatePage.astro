@@ -6,6 +6,7 @@ import Base from '../../layouts/Base.astro';
 import { HC_HOME, HC_NAME } from '../../lib/site';
 import OnPage from '../OnPage.astro';
 import PageHead from '../PageHead.astro';
+import StatePages from '../StatePages.astro';
 import AreasCare from './AreasCare.astro';
 import AreasCountsTable from './AreasCountsTable.astro';
 import AreasDesignations from './AreasDesignations.astro';
@@ -55,19 +56,34 @@ const c = state.counts;
 const noState = code === NO_STATE;
 const title = noState ? 'Rows with no state in HRSA’s files' : name;
 const places = noState ? 'the rows of HRSA’s files that give no state' : name;
+// The summary line at the top, from the same counts as the table below it.
+const designatedIn = (series: readonly string[]): number => series.reduce((sum, s) => sum + c.designations[s as keyof typeof c.designations].Designated.designations, 0);
+const hpsas = designatedIn(['hpsa-pc', 'hpsa-dh', 'hpsa-mh']);
+const muas = designatedIn(['mua']);
+const proposedCount = SERIES.reduce((sum, s) => sum + c.designations[s]['Proposed For Withdrawal'].designations, 0);
+const sitesAdded = c.sites_added_to_scope_in_window;
+const plural = (n: number, one: string, many: string): string => `${num(n)} ${n === 1 ? one : many}`;
+const summary = `HRSA lists ${plural(hpsas, 'designated health professional shortage area', 'designated health professional shortage areas')} and ${plural(muas, 'medically underserved area or population', 'medically underserved areas or populations')} for ${name}. It marks ${num(proposedCount)} Proposed For Withdrawal and added ${plural(sitesAdded, 'health center site', 'health center sites')} to scope in the 365 days to ${when}.`;
+const pageTitle = noState ? title : `${name} shortage areas`;
 
 
 ---
 
 <Base
-  title={`${title}: shortage areas and health center sites`}
+  title={noState ? `${title}: shortage areas and health center sites` : `${name} shortage areas (HPSA, MUA) and health center sites`}
   crumbs={[{ name: HC_NAME, path: HC_HOME }, { name: 'Shortage areas', path: AREAS_PATH }, { name: title, path: areaPath(code) }]}
   description={`${noState ? 'Rows with no state' : name} in HRSA’s files of ${when}: designated shortage areas and underserved areas, those HRSA proposes to withdraw, what HRSA’s own dates say happened in the 365 days before, and health center sites added.`}
 >
-  <PageHead title={title} trail={[{ label: HC_NAME, href: HC_HOME }, { label: 'Shortage areas', href: AREAS_PATH }, { label: title }]}>
-    <p class="lede">
-      What HRSA’s files of {when} show for {places}: the designated shortage areas and underserved areas, the designations HRSA marks Proposed For Withdrawal, what HRSA’s own dates say happened from {from} to {when}, and the health center sites HRSA added to scope in the same 365 days.
-    </p>
+  <PageHead title={pageTitle} trail={[{ label: HC_NAME, href: HC_HOME }, { label: 'Shortage areas', href: AREAS_PATH }, { label: title }]}>
+    {
+      noState ? (
+        <p class="lede">
+          What HRSA’s files of {when} show for {places}: the designated shortage areas and underserved areas, the designations HRSA marks Proposed For Withdrawal, what HRSA’s own dates say happened from {from} to {when}, and the health center sites HRSA added to scope in the same 365 days.
+        </p>
+      ) : (
+        <p class="lede">{summary}</p>
+      )
+    }
     {noState && <p class="lede">HRSA writes the code XX where a row gives no state. These rows have a page so that the counts of all the pages cover every row in HRSA’s files.</p>}
     <p class="hc-day"><strong>Files of {when}</strong><span>Counts are counts of rows in HRSA’s files on that day.</span></p>
     <OnPage
@@ -307,6 +323,7 @@ const places = noState ? 'the rows of HRSA’s files that give no state' : name;
 
   <AreasCare state />
   <AreasSource state={code} />
+  <StatePages code={code} class="state-pages-foot" />
 </Base>
 
 <script>
