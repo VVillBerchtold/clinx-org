@@ -1,0 +1,1636 @@
+/* The draft story at /writing/court-map/. Built on tokens.css, article.css and registry.css (the chapter
+   sections, the chapter links, the scroll story and its step cards, the details table). This file adds the
+   opening, the map's five tones and its steps, the two questions, the stalled bills, the state readout,
+   the dark deadline band and the notes.
+
+   Shape: radii 3 to 8px, no pills, no filled circles, no box inside a box.
+
+   Tile labels on their fills (WCAG AA asks 4.5 to 1 at this size):
+   upheld (accent, bg label)        6.8 light, 7.5 dark
+   vacated (warn, bg label)         6.3 light, 12.7 dark
+   district (warn wash, ink label)  15.0 light, 11.4 dark
+   no ruling yet (surface, ink)     17 light, 16 dark
+   step tone (ink 18%, ink label)   above 9 in both
+   no law (faint, muted label)      5.3 light, 7.3 dark */
+
+.cm {
+  --cm-up: var(--accent);
+  --cm-vac: var(--warn);
+  --cm-dist: color-mix(in srgb, var(--warn) 45%, var(--bg));
+  --cm-none: var(--surface);
+  --cm-none-line: color-mix(in srgb, var(--ink) 40%, var(--bg));
+  --cm-law: color-mix(in srgb, var(--ink) 30%, var(--bg));
+  --cm-nolaw: color-mix(in srgb, var(--tick) 35%, var(--bg));
+}
+
+/* ---------- Draft marks: a small label on a short rule, never a pill ---------- */
+
+.cm-mark {
+  display: block;
+  width: fit-content;
+  margin: 0;
+  padding-left: var(--s2);
+  border-left: 3px solid var(--warn);
+  font: 700 var(--text-xs) / 1.4 var(--body);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--warn);
+}
+
+/* ---------- Opening ---------- */
+
+/* The opening sits in the site's dark band, as /registry/'s does: the headline, then one figure. */
+.cm-head {
+  --cm-band-vac: #ffc670; /* the site's warn tone for dark grounds (tokens.css, dark scheme) */
+  padding-block: var(--s4) var(--s6);
+  background: var(--band);
+  color: var(--band-ink);
+}
+.cm-kicker {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--band-muted);
+}
+.cm-kicker a {
+  color: inherit;
+  text-decoration: none;
+}
+.cm-kicker a:hover {
+  color: var(--band-ink);
+}
+.cm-sq {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--band-accent);
+}
+.cm-head h1 {
+  margin: 0;
+  font-size: clamp(2.25rem, 4.2vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  color: var(--band-ink);
+  /* Fills the first line, so the title breaks after "two courts," rather than between "two" and "courts" (balance
+     splits it there). 14.6em holds "Twenty-one words, two courts," but not the next word. */
+  max-width: 14.6em;
+  text-wrap: wrap;
+}
+.cm-head .cm-mark {
+  border-left-color: var(--cm-band-vac);
+  color: var(--cm-band-vac);
+}
+.cm-dek {
+  max-width: 70rem;
+  margin-top: var(--s3);
+  font-size: clamp(1rem, 1.2vw, 1.125rem);
+  line-height: 1.5;
+  color: var(--band-muted);
+}
+.cm-byline {
+  margin-top: var(--s1);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--band-muted);
+}
+.cm-byline span {
+  color: var(--cm-band-vac);
+}
+.cm-head .cm-n a {
+  color: var(--band-accent);
+}
+
+/* A compact band: the headline with its draft mark on one line, the dek in two lines under it, the byline on one,
+   so the field and its figure are on the first screen. */
+.cm-head-grid {
+  margin-top: var(--s2);
+}
+.cm-head-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s2) var(--s4);
+}
+@media (prefers-color-scheme: dark) {
+  .cm-head {
+    border-bottom: 1px solid var(--band-line);
+  }
+}
+
+/* ---------- The patient field: one dot per 10,000 patients, drawn on the server in its final state ----------
+   The band is dark in both schemes, so these tones hold in light and dark alike. Few colours, few weights:
+   one label style (small capitals, tracked, muted) with its figure in the brighter tone; three sizes of figure. */
+
+.cm-head {
+  --pf-none: color-mix(in srgb, var(--band-muted) 58%, var(--band)); /* cool neutral, a step above the band */
+  --pf-up: var(--band-accent);
+  --pf-vac: var(--cm-band-vac);
+  --pf-dist: color-mix(in srgb, var(--cm-band-vac) 50%, #fff); /* the lighter amber */
+  --pf-axis: color-mix(in srgb, var(--band-muted) 45%, var(--band));
+  --pf-lead: color-mix(in srgb, var(--band-muted) 62%, var(--band));
+}
+.pf-story.rx-story {
+  margin-top: var(--s3);
+}
+.pf-story .rx-story-pin {
+  top: 0;
+  padding-block: var(--s1) var(--s3);
+  background: var(--band);
+}
+.pf-fig {
+  margin: 0;
+}
+/* The 21 words: the caption of the axis, set where the line begins. */
+.pf-words {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding-top: var(--s2);
+  border-top: 1px solid var(--band-line);
+  font-family: var(--display);
+  font-size: clamp(1rem, 1.25vw, 1.1875rem);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.008em;
+  text-align: center;
+  color: var(--band-ink);
+  text-wrap: balance;
+}
+.pf-svg {
+  display: block;
+  width: 100%;
+  max-width: 1100px;
+  height: auto;
+  margin-inline: auto;
+  overflow: visible;
+  font-family: var(--body);
+}
+.pf-narrow {
+  display: none;
+}
+
+/* Dots: flat fills; their sizes vary a little (set on the server), so a cluster reads as many marks. */
+.pf-d {
+  fill: var(--pf-none);
+}
+.pf-up { fill: var(--pf-up); }
+.pf-vac { fill: var(--pf-vac); }
+.pf-dist { fill: var(--pf-dist); }
+.pf-axis {
+  stroke: var(--pf-axis);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  shape-rendering: crispEdges;
+}
+.pf-lead {
+  fill: none;
+  stroke: var(--pf-lead);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+/* Words keep a thin halo of the band, so the axis and leaders stop short of them. */
+.pf-svg text {
+  paint-order: stroke;
+  stroke: var(--band);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+/* The one label style. */
+.pf-t {
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  fill: var(--band-muted);
+  font-variant-numeric: tabular-nums;
+}
+.pf-fs {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  fill: var(--band-ink);
+}
+/* The group figures, and the one display figure. */
+.pf-fg {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  fill: var(--band-ink);
+}
+.pf-big {
+  font-family: var(--display);
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  fill: var(--band-ink);
+  font-variant-numeric: tabular-nums;
+}
+.pf-lab-all {
+  display: none; /* the one field shows only while the story is at its start */
+}
+/* The key, under the field, in the label style. */
+.pf-key {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: var(--s1) var(--s5);
+  margin: var(--s2) 0 0;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--band-muted);
+  font-variant-numeric: tabular-nums;
+}
+.pf-key-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 10px;
+  border-radius: 50%; /* a data mark: the dot the key explains */
+  background: var(--pf-none);
+  vertical-align: 1px;
+}
+.pf-key .cm-n {
+  letter-spacing: 0;
+}
+.pf-key .cm-n a {
+  color: var(--band-accent);
+}
+
+/* The steps only give the story its scroll: each is a stretch of page with words for screen readers.
+   Without a script, with reduced motion, or on a phone, there are no steps and the field is drawn as it ends. */
+.pf-story:not(.rx-story-on) .pf-steps {
+  display: none;
+}
+.pf-story .pf-steps {
+  padding: 0;
+}
+.pf-story .rx-story-step.pf-step {
+  display: block;
+  min-height: 1px;
+  max-width: none;
+  margin: 0 0 50vh;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+.pf-story .rx-story-step.pf-step:first-child {
+  margin-top: 0;
+}
+.pf-story .rx-story-step.pf-step:last-child {
+  margin-bottom: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pf-story .pf-steps {
+    display: none;
+  }
+}
+
+/* Wide screens: the stage. While the story runs, the pinned figure fills the window and the field takes what the
+   words and the key leave. Each step shows what has happened so far; the script moves the dots. A group's words
+   fade in once it lands, and go at once when the reader scrolls back. */
+@media (min-width: 52.0625rem) {
+  .pf-story.rx-story-on .rx-story-pin {
+    box-sizing: border-box;
+    height: 100vh;
+    height: 100svh;
+    display: flex;
+    flex-direction: column;
+  }
+  .pf-story.rx-story-on .pf-fig {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .pf-story.rx-story-on .pf-svg {
+    flex: 1 1 0;
+    min-height: 0;
+    max-width: none;
+  }
+  /* The parted field holds for a while before the page moves on. Padding, not a margin, so it stays inside the
+     story and the pin holds through it. */
+  .pf-story.rx-story-on .pf-steps {
+    padding-bottom: 60vh;
+  }
+}
+@media (min-width: 52.0625rem) and (prefers-reduced-motion: no-preference) {
+  .pf-d {
+    transition: fill 0.6s var(--ease);
+  }
+  .pf-lab,
+  .pf-axis {
+    transition: opacity 0.4s var(--ease);
+  }
+  .pf-fig[data-upto] .pf-lab {
+    opacity: 0;
+  }
+  .pf-fig[data-upto] .pf-lab-all {
+    display: inline;
+  }
+  /* The one field: the axis runs faintly through it, and each dot leans a little toward where it is going. */
+  .pf-fig[data-upto='0'] .pf-axis {
+    opacity: 0.25;
+  }
+  .pf-fig[data-upto='0'] .pf-up {
+    fill: color-mix(in srgb, var(--pf-up) 15%, var(--pf-none));
+  }
+  .pf-fig[data-upto='0'] :is(.pf-vac, .pf-dist),
+  .pf-fig[data-upto='1'] .pf-dist {
+    fill: color-mix(in srgb, var(--pf-vac) 15%, var(--pf-none));
+  }
+  .pf-fig[data-upto='0'] .pf-lab-all {
+    opacity: 1;
+  }
+  .pf-fig:is([data-upto='1'], [data-upto='2'], [data-upto='3']) .pf-lab-up {
+    opacity: 1;
+    transition-delay: 0.85s;
+  }
+  .pf-fig:is([data-upto='1'], [data-upto='2'], [data-upto='3']) .pf-lab-vac {
+    opacity: 1;
+    transition-delay: 1s;
+  }
+  .pf-fig:is([data-upto='2'], [data-upto='3']) .pf-lab-dist {
+    opacity: 1;
+    transition-delay: 0.95s;
+  }
+  .pf-fig[data-upto='3'] :is(.pf-lab-c, .pf-lab-tie, .pf-lab-none) {
+    opacity: 1;
+  }
+  .pf-fig[data-upto='3'] .pf-lab-c0 { transition-delay: 0.85s; }
+  .pf-fig[data-upto='3'] .pf-lab-c1 { transition-delay: 0.91s; }
+  .pf-fig[data-upto='3'] .pf-lab-c2 { transition-delay: 0.97s; }
+  .pf-fig[data-upto='3'] .pf-lab-c3 { transition-delay: 1.03s; }
+  .pf-fig[data-upto='3'] .pf-lab-c4 { transition-delay: 1.09s; }
+  .pf-fig[data-upto='3'] .pf-lab-c5 { transition-delay: 1.15s; }
+  .pf-fig[data-upto='3'] .pf-lab-tie { transition-delay: 1.3s; }
+  .pf-fig[data-upto='3'] .pf-lab-none { transition-delay: 1.3s; }
+}
+
+/* Phone: the field is drawn parted, every group down the axis in reading order, and simply scrolls. */
+@media (max-width: 52rem) {
+  .pf-wide {
+    display: none;
+  }
+  .pf-narrow {
+    display: block;
+    max-width: 358px;
+    margin-top: var(--s4);
+  }
+  .pf-narrow .pf-t {
+    font-size: 13px; /* 358 units across a 358px column on a 390px phone: 13px on screen */
+    letter-spacing: 0.03em;
+  }
+  .pf-narrow .pf-fg {
+    font-size: 18px;
+  }
+  .pf-story .rx-story-pin {
+    position: static;
+    padding-block: var(--s2);
+  }
+  .pf-story .pf-steps {
+    display: none;
+  }
+  .pf-key {
+    justify-content: flex-start;
+    font-size: 13px;
+    letter-spacing: 0.03em;
+    gap: 2px var(--s4);
+  }
+  .pf-words {
+    text-align: left;
+    margin: 0;
+  }
+}
+
+/* ---------- Notes markers ---------- */
+
+.cm-n {
+  font-size: 0.68em;
+  line-height: 0;
+}
+.cm-n a {
+  padding: 0 0.12em;
+  font-weight: 700;
+  color: var(--accent);
+  text-decoration: none;
+}
+.cm-n a:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Chapters ---------- */
+
+.cm-section h2 {
+  max-width: 22ch;
+}
+.cm-prose {
+  margin-top: var(--s5);
+}
+.cm-prose > p + p {
+  margin-top: var(--s4);
+}
+.cm-after {
+  margin-top: var(--s6);
+}
+.cm-figline {
+  max-width: var(--measure);
+  margin-top: var(--s4);
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+.cm-figtitle {
+  margin: 0 0 var(--s4);
+  font-weight: 600;
+}
+
+/* ---------- 1. The map and its scroll story ---------- */
+
+.cm-story {
+  margin-top: var(--s6);
+}
+.cm-mapfig {
+  margin: 0;
+}
+.cm-mapgrid {
+  display: grid;
+  /* The map is as wide as it can be while it still fits the window's height; the labels take the rest. */
+  grid-template-columns: minmax(0, calc(min(64vh, 38rem) * 1.353)) minmax(16rem, 1fr);
+  gap: var(--s6);
+  align-items: center;
+}
+.cm-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  font-family: var(--body);
+}
+
+/* Tiles: each status sets its tone on the tile's link; the tile and its letters read it. */
+.cm-t {
+  --f: var(--cm-nolaw);
+  --s: transparent;
+  --sw: 0;
+  --sd: none;
+  --lab: var(--muted);
+  --lw: 600;
+}
+.cm-upheld { --f: var(--cm-up); --lab: var(--bg); --lw: 700; }
+.cm-vacated { --f: var(--cm-vac); --lab: var(--bg); --lw: 700; }
+.cm-district { --f: var(--cm-dist); --lab: var(--ink); --lw: 700; }
+/* No appeals ruling yet: the quietest law tone, a light tile with a hairline, so the eye goes to the rulings. */
+.cm-none { --f: var(--cm-none); --s: var(--cm-none-line); --sw: 1; --lab: var(--ink); --lw: 600; }
+.cm-tile {
+  fill: var(--f);
+  stroke: var(--s);
+  stroke-width: var(--sw);
+  stroke-dasharray: var(--sd);
+  transition: fill 0.4s var(--ease), stroke 0.2s, opacity 0.4s var(--ease);
+}
+.cm-abbr {
+  font-size: 13px;
+  font-weight: var(--lw);
+  fill: var(--lab);
+  pointer-events: none;
+  transition: fill 0.4s var(--ease), opacity 0.4s var(--ease);
+}
+.cm-t:hover .cm-tile,
+.cm-t:focus-visible .cm-tile {
+  stroke: var(--ink);
+  stroke-width: 2.5;
+  stroke-dasharray: none;
+}
+.cm-t:focus-visible {
+  outline: none;
+}
+
+/* The steps. Groups not yet reached wear one plain tone; groups already passed fade; the step's own group is full.
+   The last step is the whole map again, the same as the map without a script. */
+.cm-mapfig[data-upto='1'] :is(.cm-upheld, .cm-vacated, .cm-district, .cm-none) {
+  --f: var(--cm-law);
+  --s: transparent;
+  --sw: 0;
+  --lab: var(--ink);
+}
+.cm-mapfig[data-upto='2'] :is(.cm-vacated, .cm-district, .cm-none),
+.cm-mapfig[data-upto='3'] :is(.cm-district, .cm-none),
+.cm-mapfig[data-upto='4'] .cm-none {
+  --f: var(--cm-none);
+  --s: var(--cm-none-line);
+  --sw: 1;
+  --lab: var(--ink);
+  --lw: 600;
+}
+.cm-mapfig[data-upto='3'] .cm-upheld,
+.cm-mapfig[data-upto='4'] :is(.cm-upheld, .cm-vacated) {
+  opacity: 0.4;
+}
+
+/* The figure written on the map, in the open band above the northern states. */
+.cm-annot {
+  display: none;
+}
+.cm-mapfig:not([data-upto]) .a1,
+.cm-mapfig[data-upto='1'] .a1,
+.cm-mapfig[data-upto='2'] .a2,
+.cm-mapfig[data-upto='3'] .a3,
+.cm-mapfig[data-upto='4'] .a4,
+.cm-mapfig[data-upto='5'] .a5 {
+  display: inline;
+}
+.cm-annot-n {
+  font-family: var(--display);
+  font-size: 31px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  fill: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.a2 .cm-annot-n { fill: var(--cm-up); }
+.a3 .cm-annot-n,
+.a4 .cm-annot-n { fill: var(--cm-vac); }
+.cm-annot-l {
+  font-size: 11.5px;
+  font-weight: 500;
+  fill: var(--muted);
+}
+.cm-map-note {
+  font-size: 9.5px;
+  fill: var(--muted);
+}
+
+/* The labels beside the map: each group with its patients. Hairlines, no boxes. */
+/* A small label row: the big figure for the whole set is the one written on the map. */
+.cm-rail-all {
+  margin: 0 0 var(--s2);
+  padding-bottom: var(--s2);
+  border-bottom: 1px solid var(--line);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  transition: opacity 0.3s var(--ease);
+}
+.cm-rail ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cm-r {
+  display: grid;
+  grid-template-columns: 12px minmax(0, 1fr) auto;
+  gap: var(--s3);
+  align-items: baseline;
+  padding: var(--s3) 0;
+  border-bottom: 1px solid var(--line);
+  transition: opacity 0.3s var(--ease);
+}
+.cm-r-name {
+  font-size: var(--text-sm);
+  font-weight: 650;
+  line-height: 1.25;
+}
+.cm-r-sub {
+  display: block;
+  font-size: var(--text-xs);
+  font-weight: 400;
+  color: var(--muted);
+}
+.cm-r-n {
+  font-family: var(--display);
+  font-size: 1.375rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.cm-r-upheld .cm-r-n { color: var(--cm-up); }
+.cm-r-vacated .cm-r-n,
+.cm-r-district .cm-r-n { color: var(--cm-vac); }
+.cm-mapfig[data-upto='1'] .cm-r,
+.cm-mapfig[data-upto='2'] :is(.cm-rail-all, .cm-r:not(.cm-r-upheld)),
+.cm-mapfig[data-upto='3'] :is(.cm-rail-all, .cm-r:not(.cm-r-vacated)),
+.cm-mapfig[data-upto='4'] :is(.cm-rail-all, .cm-r:not(.cm-r-district)),
+.cm-mapfig[data-upto='5'] :is(.cm-rail-all, .cm-r:not(.cm-r-none)) {
+  opacity: 0.38;
+}
+/* A figure shows once per screen: the group written large on the map shows a marker here, not its figure again. */
+.cm-r-on {
+  display: none;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--ink);
+}
+.cm-r-on::before {
+  content: '\2190\00a0'; /* an arrow to the map beside */
+}
+.cm-mapfig[data-upto='2'] .cm-r-upheld .cm-r-n,
+.cm-mapfig[data-upto='3'] .cm-r-vacated .cm-r-n,
+.cm-mapfig[data-upto='4'] .cm-r-district .cm-r-n,
+.cm-mapfig[data-upto='5'] .cm-r-none .cm-r-n {
+  display: none;
+}
+.cm-mapfig[data-upto='2'] .cm-r-upheld .cm-r-on,
+.cm-mapfig[data-upto='3'] .cm-r-vacated .cm-r-on,
+.cm-mapfig[data-upto='4'] .cm-r-district .cm-r-on,
+.cm-mapfig[data-upto='5'] .cm-r-none .cm-r-on {
+  display: inline;
+}
+@media (max-width: 52rem) {
+  .cm-r-on::before {
+    content: '\2191\00a0'; /* the map is above on a phone */
+  }
+}
+
+/* With a script the step's words show here, level with the rail, and the pinned stage fills the window;
+   the steps below it only give the story its scroll. Without one, the steps are the cards under the map. */
+.cm-cap {
+  display: none;
+}
+.cm-story.rx-story-on .cm-cap {
+  display: block;
+  margin-top: var(--s4);
+  padding: var(--s3) var(--s4);
+  border-left: 4px solid var(--ink);
+  border-radius: 0 6px 6px 0;
+  background: var(--surface);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+.cm-cap.g-upheld { border-left-color: var(--cm-up); }
+.cm-cap:is(.g-vacated, .g-district) { border-left-color: var(--cm-vac); }
+.cm-cap .rx-story-year {
+  margin: 0 0 var(--s1);
+  font-weight: 750;
+}
+.cm-cap .rx-story-text {
+  margin: 0;
+}
+.cm-story.rx-story-on .rx-story-pin {
+  display: flex;
+  align-items: center;
+  min-height: 100vh;
+  min-height: 100svh;
+}
+.cm-story.rx-story-on .rx-story-pin > .cm-mapfig {
+  width: 100%;
+}
+.cm-story.rx-story-on .rx-story-step.cm-step {
+  opacity: 0;
+  pointer-events: none;
+  margin-bottom: 55vh;
+}
+.cm-story.rx-story-on .rx-story-step.cm-step:last-child {
+  margin-bottom: 25vh;
+}
+
+.cm-key {
+  display: inline-block;
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: var(--cm-nolaw);
+}
+.cm-key.k-upheld { background: var(--cm-up); }
+.cm-key.k-vacated { background: var(--cm-vac); }
+.cm-key.k-district { background: var(--cm-dist); }
+.cm-key.k-none { background: var(--cm-none); border: 1px solid var(--cm-none-line); }
+
+/* Step cards: /registry/'s, with each group's colour on the rule and its patients under the label. */
+.cm-step.g-upheld { border-left-color: var(--cm-up); }
+.cm-step.g-vacated,
+.cm-step.g-district { border-left-color: var(--cm-vac); }
+.cm-step.g-all,
+.cm-step.g-none { border-left-color: var(--ink); }
+.cm-step .rx-story-year {
+  color: var(--ink);
+  line-height: 1.25;
+}
+@media (min-width: 44.0625rem) {
+  .cm-story.rx-story .rx-story-step {
+    grid-template-columns: 14rem minmax(0, 1fr);
+  }
+  .cm-story.rx-story .rx-story-year {
+    font-size: 1.125rem;
+  }
+}
+
+/* ---------- 2. Two questions ---------- */
+
+.cm-duel {
+  margin-top: var(--s7);
+}
+.cm-duel-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.cm-side {
+  padding: var(--s5) var(--s6) 0 0;
+  border-top: 4px solid var(--cm-up);
+}
+.cm-side-vac {
+  padding: var(--s5) 0 0 var(--s6);
+  border-top-color: var(--cm-vac);
+  border-left: 1px solid var(--line);
+}
+.cm-side-court {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cm-up);
+}
+.cm-side-vac .cm-side-court {
+  color: var(--cm-vac);
+}
+.cm-side-court span {
+  display: block;
+  margin-top: var(--s1);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--muted);
+}
+.cm-side-q {
+  margin-top: var(--s4);
+  font-family: var(--display);
+  font-size: clamp(1.625rem, 3vw, 2.375rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.cm-side-a {
+  margin-top: var(--s4);
+  font-size: 1.1875rem;
+}
+.cm-side-a strong {
+  font-family: var(--display);
+  font-size: 1.5rem;
+  color: var(--cm-up);
+}
+.cm-side-vac .cm-side-a strong {
+  color: var(--cm-vac);
+}
+.cm-side-quote {
+  margin: var(--s5) 0 0;
+  padding-left: var(--s4);
+  border-left: 3px solid var(--tick);
+}
+.cm-side-quote p {
+  font-family: var(--display);
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  font-weight: 500;
+  line-height: 1.3;
+}
+.cm-side-note {
+  max-width: 48ch;
+  margin-top: var(--s4);
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+/* ---------- 3. The stalled bills ---------- */
+
+.cm-stallfig {
+  margin-top: var(--s7);
+}
+.cm-stalls {
+  display: grid;
+  gap: var(--s4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cm-stall {
+  display: grid;
+  grid-template-columns: 12rem 10rem minmax(0, 1fr);
+  gap: var(--s5) var(--s6);
+  align-items: start;
+  padding: var(--s5) var(--s6);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+.cm-stall-who h3 {
+  font-size: 1.5rem;
+}
+.cm-stall-who p {
+  margin-top: var(--s1);
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+.cm-vote-n {
+  font-family: var(--display);
+  font-size: 2.25rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+.cm-vote-n span {
+  display: block;
+  margin-top: var(--s1);
+  font-family: var(--body);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+.cm-vote-bar {
+  display: block;
+  width: 100%;
+  height: 8px;
+  margin-top: var(--s2);
+}
+.cm-vote-bar .yes { fill: var(--cm-up); }
+.cm-vote-bar .no { fill: var(--muted); }
+.cm-vote-bar .other { fill: var(--tick); }
+.cm-vote-k {
+  margin-top: var(--s2);
+  font-size: var(--text-xs);
+  color: var(--muted);
+}
+
+/* The path: a line that runs from the Senate, stops at the committee, and never reaches the floor. */
+.cm-path {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.5fr) minmax(0, 0.7fr);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cm-p {
+  position: relative;
+  padding: 26px var(--s4) 0 0;
+}
+.cm-p::before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--cm-up);
+  transform-origin: left center;
+  transition: transform 0.9s var(--ease);
+}
+.cm-p::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 13px;
+  height: 13px;
+  border-radius: 3px;
+  background: var(--cm-up);
+}
+.cm-p-stop::before {
+  top: 5px;
+  height: 0;
+  border-top: 3px dotted var(--tick);
+  background: none;
+}
+.cm-p-stop::after {
+  top: -5px;
+  width: 5px;
+  height: 23px;
+  border-radius: 2px;
+  background: var(--cm-vac);
+  transition: opacity 0.3s 0.8s, transform 0.3s 0.8s var(--ease);
+}
+.cm-p-never::before {
+  display: none;
+}
+.cm-p-never::after {
+  background: transparent;
+  border: 2px solid var(--tick);
+}
+.cm-p-k {
+  display: block;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.cm-p-stop .cm-p-k {
+  color: var(--cm-vac);
+}
+.cm-p-t {
+  display: block;
+  margin-top: var(--s1);
+  font-size: var(--text-sm);
+  line-height: 1.4;
+}
+.cm-p-never .cm-p-t {
+  color: var(--muted);
+}
+.cm-p-why {
+  display: block;
+  margin-top: var(--s2);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cm-vac);
+}
+/* With a script, each line draws when its bill comes into view; without one, it is drawn. */
+@media (prefers-reduced-motion: no-preference) {
+  .cm-js .cm-stall:not(.is-in) .cm-p-done::before {
+    transform: scaleX(0);
+  }
+  .cm-js .cm-stall:not(.is-in) .cm-p-stop::after {
+    opacity: 0;
+    transform: scaleY(0.3);
+  }
+}
+
+/* ---------- 3b. Your state ---------- */
+
+.cm-look {
+  margin-top: var(--s8);
+  scroll-margin-top: var(--s4);
+}
+.cm-look-h {
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+}
+
+/* ---------- Circuit by circuit: one flat card per circuit, the active four first, then a quieter run ---------- */
+.cm-circ {
+  margin-top: var(--s8);
+  scroll-margin-top: var(--s4);
+}
+.cm-circ-two {
+  max-width: 44rem;
+  margin: var(--s2) 0 0;
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+.cm-cc-run {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17.5rem), 1fr));
+  gap: var(--s4);
+  margin: var(--s5) 0 0;
+  padding: 0;
+  list-style: none;
+}
+@media (min-width: 64rem) {
+  .cm-cc-run:not(.cm-cc-quiet) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+@media (min-width: 40rem) and (max-width: 63.99rem) {
+  .cm-cc-run:not(.cm-cc-quiet) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.cm-cc {
+  padding: var(--s4) var(--s4) var(--s5);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--cm-c, var(--cm-none-line));
+  border-radius: 6px;
+  background: var(--surface);
+  scroll-margin-top: var(--s5);
+  transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+#circ-5, #circ-8 { --cm-c: var(--cm-up); }
+#circ-4 { --cm-c: var(--cm-vac); }
+#circ-10 { --cm-c: var(--cm-dist); }
+.cm-cc-h {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--s2);
+  margin: 0;
+  font-family: var(--display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.cm-cc-h span {
+  font-family: var(--body);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+.cm-cc-h .cm-cc-on.cm-js-only {
+  display: none;
+  margin-left: auto;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.cm-cc-dl {
+  margin: var(--s3) 0 0;
+  font-size: var(--text-sm);
+  line-height: 1.45;
+}
+.cm-cc-dl > div + div {
+  margin-top: var(--s3);
+}
+.cm-cc-dl dt {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.cm-cc-dl dd {
+  margin: 2px 0 0;
+}
+/* The five quiet circuits: one card, a line per circuit, hairlines between, the facts in aligned columns. */
+.cm-cq {
+  margin-top: var(--s5);
+  padding: var(--s4) var(--s4) var(--s2);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.cm-cq-h {
+  margin: 0;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.cm-cq-list {
+  margin: var(--s2) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.cm-cq-row,
+.cm-cq-k {
+  display: grid;
+  grid-template-columns: 9rem 1.2fr 0.8fr 1.2fr 1fr;
+  gap: var(--s3);
+  align-items: baseline;
+}
+.cm-cq-row {
+  padding-block: var(--s2);
+  border-top: 1px solid var(--line);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+.cm-cq-k {
+  margin: var(--s3) 0 0;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.cm-cq-c {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+.cm-cq-c .cm-cc-on.cm-js-only {
+  display: none;
+  margin-left: var(--s2);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.cm-cq-row.is-on .cm-cq-c .cm-cc-on.cm-js-only {
+  display: block;
+  margin-left: 0;
+}
+.cm-cq-row.is-on .cm-cq-c {
+  color: var(--accent);
+}
+.cm-cq-dl {
+  display: contents;
+}
+.cm-cq-dl > div {
+  margin: 0;
+}
+.cm-cq-dl dt {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.cm-cq-dl dd {
+  margin: 0;
+}
+@media (max-width: 52rem) {
+  .cm-cq-k {
+    display: none;
+  }
+  .cm-cq-row {
+    display: block;
+    padding-block: var(--s3);
+  }
+  .cm-cq-dl > div {
+    display: flex;
+    gap: var(--s2);
+    margin-top: 2px;
+  }
+  .cm-cq-dl dt {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+    flex: 0 0 9.5rem;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    line-height: 1.9;
+  }
+}
+/* The circuit of the state picked above. */
+.cm-cc.is-on {
+  border-color: var(--accent);
+  border-top-color: var(--cm-c, var(--accent));
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.cm-cc.is-on .cm-cc-h .cm-cc-on.cm-js-only {
+  display: inline;
+}
+.cm-look-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--s6);
+  align-items: start;
+  margin-top: var(--s5);
+}
+.cm-select {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  margin-bottom: var(--s4);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+.cm-select select {
+  max-width: 20rem;
+  padding: var(--s2) var(--s3);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 400;
+}
+.cm-js-only {
+  display: none;
+}
+.cm-js .cm-js-only {
+  display: inline;
+}
+.cm-card {
+  display: none;
+  padding: var(--s5) var(--s6);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--cm-card, var(--tick));
+  border-radius: 8px;
+  background: var(--surface);
+  scroll-margin-top: var(--s5);
+}
+.cm-card:target,
+.cm-cards:not(:has(.cm-card:target)) .cm-card.is-default {
+  display: block;
+}
+.cm-card-upheld { --cm-card: var(--cm-up); }
+.cm-card-vacated,
+.cm-card-district { --cm-card: var(--cm-vac); }
+.cm-card-none { --cm-card: var(--ink); }
+.cm-card-k {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.cm-card h4 {
+  margin: var(--s2) 0 var(--s4);
+  font-family: var(--display);
+  font-size: clamp(1.75rem, 3vw, 2.375rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+.cm-card-dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 var(--s5);
+}
+.cm-card-dl > div {
+  padding: var(--s3) 0;
+  border-top: 1px solid var(--line);
+}
+.cm-card-dl .cm-wide {
+  grid-column: 1 / -1;
+}
+.cm-card-dl dt {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--muted);
+}
+.cm-card-dl dd {
+  margin: var(--s1) 0 0;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+.cm-card-dl .cm-card-num {
+  font-family: var(--display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.cm-card-num .cm-dim {
+  font-family: var(--body);
+  font-size: var(--text-sm);
+  font-weight: 400;
+}
+.cm-tries {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+.cm-tries li + li {
+  margin-top: var(--s2);
+}
+.cm-src,
+.cm-dim {
+  color: var(--muted);
+}
+.cm-src {
+  font-size: var(--text-xs);
+}
+.cm-died {
+  font-weight: 600;
+}
+.cm-more {
+  margin-top: var(--s2);
+}
+.cm-card-back {
+  margin-top: var(--s3);
+  font-size: var(--text-sm);
+}
+.cm-all {
+  margin-top: var(--s6);
+  border-radius: 8px;
+  overflow-x: auto;
+}
+.cm-all table td {
+  white-space: nowrap;
+}
+.cm-all table td:nth-child(2) {
+  white-space: normal;
+  text-align: left;
+}
+
+/* ---------- The deadlines: a dark band ---------- */
+
+.cm-over {
+  padding-block: var(--s8);
+  background: var(--band);
+  color: var(--band-ink);
+  scroll-margin-top: 0;
+}
+@media (prefers-color-scheme: dark) {
+  .cm-over {
+    border-block: 1px solid var(--band-line);
+  }
+}
+.cm-over-k {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--band-muted);
+}
+.cm-over h2 {
+  margin: var(--s2) 0 var(--s6);
+  font-size: clamp(1.75rem, 3.6vw, 2.75rem);
+}
+.cm-count {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--band-line);
+}
+.cm-count li {
+  display: grid;
+  grid-template-columns: minmax(11rem, 3fr) minmax(0, 8fr);
+  gap: var(--s6);
+  padding-block: var(--s5);
+  border-bottom: 1px solid var(--band-line);
+}
+.cm-date {
+  font-family: var(--display);
+  font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.025em;
+}
+.cm-count li:first-child .cm-date {
+  color: var(--band-accent);
+}
+.cm-days {
+  margin-top: var(--s2);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--band-muted);
+  font-variant-numeric: tabular-nums;
+}
+.cm-who {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--band-muted);
+}
+.cm-what h3 {
+  margin: var(--s1) 0 var(--s2);
+  font-size: 1.375rem;
+}
+.cm-what p:last-child {
+  max-width: 64ch;
+  line-height: 1.55;
+  color: var(--band-muted);
+}
+.cm-over .cm-n a {
+  color: var(--band-accent);
+}
+.cm-over-note {
+  margin-top: var(--s4);
+  font-size: var(--text-xs);
+  color: var(--band-muted);
+}
+
+/* ---------- The lede: one long paragraph, set like an article's opening paragraph, in the reading column ---------- */
+
+.cm-lede {
+  max-width: 44rem;
+}
+.cm-lede > p {
+  font-size: 1.3125rem;
+  line-height: 1.5;
+}
+
+/* ---------- Ending and notes ---------- */
+
+.cm-end {
+  padding-block: var(--s8) var(--s6);
+}
+.cm-end .cm-prose > p:not(.cm-mark),
+.cm-end .cm-prose > ol {
+  margin-top: var(--s4);
+  font-size: 1.3125rem;
+  line-height: 1.5;
+}
+/* The three things to watch: the article's list indent and accent markers, at the ending's size. */
+.cm-end .cm-prose > ol {
+  padding-left: 1.5rem;
+}
+.cm-end .cm-prose > ol > li + li {
+  margin-top: var(--s3);
+}
+.cm-end .cm-prose > ol > li::marker {
+  color: var(--accent);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.cm-notes {
+  padding-block: var(--s6) var(--s8);
+}
+.cm-notes-col {
+  max-width: 44rem;
+  padding-top: var(--s6);
+  border-top: 1px solid var(--line);
+}
+.cm-notes h2 {
+  font-size: 1.5rem;
+}
+/* The notes fold away; a note's number opens them (court-map.ts). Without a script they stay open. */
+.cm-notes-d > summary {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s3);
+  padding-block: var(--s2);
+  cursor: pointer;
+  list-style: none;
+}
+.cm-notes-d > summary::-webkit-details-marker {
+  display: none;
+}
+.cm-notes-d > summary h2 {
+  margin: 0;
+}
+.cm-notes-d > summary::after {
+  content: 'Show';
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.cm-notes-d[open] > summary::after {
+  content: 'Hide';
+}
+.cm-notes-d > summary:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+.cm-notes .cm-notes-h2 {
+  margin: var(--s7) 0 var(--s3);
+}
+.cm-notelist {
+  margin: var(--s4) 0 0;
+  padding-left: 1.75rem;
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  color: var(--muted);
+}
+.cm-notelist li {
+  padding-left: var(--s1);
+  scroll-margin-top: var(--s6);
+}
+.cm-notelist li + li {
+  margin-top: var(--s2);
+}
+.cm-notelist li::marker {
+  font-weight: 700;
+  color: var(--accent);
+}
+.cm-notelist li:target {
+  color: var(--ink);
+}
+.cm-notes-col > p:not(.cm-mark) {
+  margin-top: var(--s3);
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+/* ---------- Narrower screens ---------- */
+
+@media (max-width: 60rem) {
+  .cm-stall {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .cm-path {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 52rem) {
+  .cm-mapgrid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s3);
+  }
+  .cm-abbr {
+    font-size: 16px;
+  }
+  .cm-rail-all {
+    margin-bottom: 0;
+  }
+  .cm-rail ol {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--s4);
+  }
+  .cm-r {
+    grid-template-columns: 10px minmax(0, 1fr);
+    gap: 0 var(--s2);
+    padding: var(--s2) 0;
+  }
+  .cm-r .cm-key {
+    width: 10px;
+    height: 10px;
+  }
+  .cm-r-name {
+    font-size: var(--text-xs);
+  }
+  .cm-r-sub {
+    display: none;
+  }
+  .cm-r-n {
+    grid-column: 2;
+    font-size: 1.125rem;
+  }
+  .cm-r-on {
+    grid-column: 2;
+    line-height: 1.6;
+  }
+  /* The map draws at about 0.7 of its own size on a phone: 42 units come out near 29px. */
+  .cm-annot-n {
+    font-size: 42px;
+  }
+  .cm-annot-l {
+    font-size: 18px;
+    transform: translateY(10px);
+  }
+  .cm-map-note {
+    font-size: 14px;
+  }
+  .cm-duel-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .cm-side {
+    padding-right: 0;
+  }
+  .cm-side-vac {
+    margin-top: var(--s6);
+    padding-left: 0;
+    border-left: 0;
+  }
+  .cm-look-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .cm-count li {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s3);
+  }
+}
+@media (max-width: 44rem) {
+  .cm-stall {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s4);
+    padding: var(--s4);
+  }
+  .cm-path {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .cm-p {
+    padding: 0 0 var(--s4) 28px;
+  }
+  .cm-p::before {
+    top: 13px;
+    bottom: 0;
+    left: 5px;
+    right: auto;
+    width: 3px;
+    height: auto;
+    transform-origin: center top;
+  }
+  .cm-p-stop::before {
+    top: 22px;
+    width: 0;
+    border-top: 0;
+    border-left: 3px dotted var(--tick);
+  }
+  .cm-p-stop::after {
+    top: 4px;
+    left: -2px;
+    width: 17px;
+    height: 5px;
+  }
+  .cm-p-never {
+    padding-bottom: 0;
+  }
+  .cm-card {
+    padding: var(--s4);
+  }
+  .cm-card-dl {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 44rem) and (prefers-reduced-motion: no-preference) {
+  .cm-js .cm-stall:not(.is-in) .cm-p-done::before {
+    transform: scaleY(0);
+  }
+  .cm-js .cm-stall:not(.is-in) .cm-p-stop::after {
+    transform: scaleX(0.3);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cm-tile,
+  .cm-abbr,
+  .cm-r,
+  .cm-rail-all,
+  .cm-p::before,
+  .cm-p::after {
+    transition: none;
+  }
+}
+
+/* The site's back-to-top link (layout.css) would cover the pinned map. On this page only, it steps
+   aside while the map is on screen; court-map.ts sets the class. */
+html.cm-pinned .to-top.is-on {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}

@@ -1,0 +1,768 @@
+---
+/**
+ * DRAFT: the story on 340B contract-pharmacy state laws in the federal courts. Not published, not listed: the page
+ * asks search engines not to list it (so scripts/sitemap.mjs leaves it out), carries no data for them, and is not on
+ * the Writing page. The headline, dek, lede, ending, byline and methods are the owner's (picked 25 Nov 2026; DECISIONS-LOG.md).
+ *
+ * The prose of the three chapters is planning/bill-family-concepts/story/DRAFT.md, as written, split into scroll steps.
+ * Every figure comes from src/data/court-map/court-map-2026-11.json, written by
+ * planning/bill-family-concepts/story/build-court-map-data.mjs, which checks its totals against
+ * planning/bill-family-concepts/DISCOVERY.md. Court facts: FINDING.md and INVESTIGATION.md.
+ *
+ * Form (story/REDESIGN-BRIEF.md): one opening moment, numbered chapters, prose in one reading column, the map as the
+ * main object with /registry/'s scroll story (src/scripts/registry-charts.ts sets data-upto on the map from the step
+ * in view; without a script the map shows its final state), and one set of notes at the end.
+ * Everything is drawn on the server. The state readout works with no script: each state's card is an anchor target.
+ */
+import '../../../styles/article.css';
+import '../../../styles/registry.css';
+import './_court-map.css';
+import Base from '../../../layouts/Base.astro';
+import Cited from '../../../components/Cited.astro';
+import D from '../../../data/court-map/court-map-2026-11.json';
+import { STATES } from '../../../lib/state-map';
+import { lawsPath } from '../../../lib/laws';
+import { billsPath, getBills, statesWithBills } from '../../../lib/bills';
+import { WIDE, NARROW, layout, type Counts, type Spec } from './_field';
+
+type Status = 'upheld' | 'vacated' | 'district' | 'none' | 'nolaw';
+const TITLE = 'Twenty-one words, two courts, nine million patients';
+const fmt = (n: number): string => n.toLocaleString('en-US');
+const ord = (c: number | string): string => (c === 'DC' ? 'D.C.' : `${c}${c === 1 ? 'st' : c === 2 ? 'nd' : c === 3 ? 'rd' : 'th'}`);
+const circuitName = (c: number | string): string => (c === 'DC' ? 'D.C. Circuit' : `${ord(c)} Circuit`);
+const esc = (t: string): string => t.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
+
+// DISCOVERY.md's four status words. FINDING.md's precise wording for Maryland and West Virginia is in their cards.
+const STATUS: Record<Status, string> = {
+  upheld: 'Upheld',
+  vacated: 'Vacated and pending',
+  district: 'District judges ruled against',
+  none: 'No appeals court ruling yet',
+  nolaw: 'No contract-pharmacy law',
+};
+// What each circuit has said, for a state's card (FINDING.md F1 to F10b; "upheld" as the map counts it, below).
+const circuitSays = (c: number | string): string =>
+  c === 5 ? 'Has upheld a law of this kind (Louisiana)'
+  : c === 8 ? 'Has upheld a law of this kind (Arkansas)'
+  : c === 4 ? 'A panel ruled against two laws; that ruling is vacated while the full court rehears them'
+  : c === 10 ? 'No appeals ruling yet; appeals from Oklahoma and Colorado were pending as of 19 Feb 2026'
+  : 'No appeals ruling on a law of this kind as of 25 Nov 2026';
+
+const states = D.states as {
+  code: string; name: string; circuit: number | string; status: Status; patients: number | null;
+  law: { bill: string; year: number; act: string }[] | null;
+  court: { text: string; src: string } | null;
+  tries: { bill: string; session: string; how: string; stopped: string; status: string; url: string; src: string }[];
+}[];
+const byCode = Object.fromEntries(states.map((s) => [s.code, s]));
+// Court status in the state cards, from FINDING.md's late addendum (F13, F14), where it adds to the data file's text.
+const COURT_NOTE: Record<string, { text: string; src: string }> = {
+  CO: { text: "A district judge declined to block the law, 31 Oct 2025 (AbbVie v. Weiser). The drug makers' appeal was pending in the Tenth Circuit as of 19 Feb 2026.", src: 'FINDING F13' },
+  ND: { text: 'A district judge held the law invalid as to the drug makers that sued, 27 Apr 2026. The Eighth Circuit paused that ruling on 17 Aug 2026 while it hears the appeal.', src: 'FINDING F9b, F14' },
+  OK: { text: 'Parts aimed at drug makers blocked, 31 Oct 2025 (AbbVie v. Drummond); on appeal to the Tenth Circuit, pending as of 19 Feb 2026. The parts aimed at insurers and PBMs took effect.', src: 'FINDING F10, F13' },
+};
+const courtOf = (s: { code: string; court: { text: string; src: string } | null }): { text: string; src: string } | null => COURT_NOTE[s.code] ?? s.court;
+const groups = D.groups.map((g) => ({ ...g, status: g.status as Status }));
+const G = Object.fromEntries(groups.map((g) => [g.status, g])) as Record<Exclude<Status, 'nolaw'>, (typeof groups)[number]>;
+const lawCount = states.filter((s) => s.law).length;
+const noLawCount = states.length - lawCount;
+const hcHref = (code: string): string => `/health-centers/records/${code.toLowerCase()}/`;
+const UDS = 'HRSA Uniform Data System 2025, Table 3A line 39';
+const billStates = new Set(statesWithBills(getBills()).map((s) => s.code));
+const lawLabel = (s: (typeof states)[number]): string => (s.law ?? []).map((l) => `${l.bill || l.act} (${l.year})`).join('; ');
+const cardId = (code: string): string => `st-${code.toLowerCase()}`;
+const byName = [...states].sort((a, b) => a.name.localeCompare(b.name));
+const names = (codes: string[]): string => codes.map((c) => byCode[c]!.name).join(', ');
+
+// The notes, numbered in the order the page first cites them.
+const NOTE = { words: 1, laws: 2, status: 3, la: 4, md: 5, wv: 6, murrill: 7, mccuskey: 8, dissent: 9, kamen: 10, sides: 11, ky: 12, mi: 13, ny: 14, tries: 15, circ: 16, r5: 17, clauses: 18, r8: 19, r4: 20, r10: 21, rnone: 22, box: 23, next: 24 } as const;
+
+// ---------- The map ----------
+// The site's tile grid (src/lib/state-map.ts), drawn here so the tiles can carry five tones and the map its own notes.
+const T = 40;
+const STEP = 46;
+const PAD = 3;
+const MAP_W = 11 * STEP - (STEP - T) + PAD * 2;
+const MAP_H = 8 * STEP - (STEP - T) + PAD * 2;
+const ANNOT = [
+  { n: D.lawPatients, l: `patients in all ${lawCount} law states` },
+  { n: G.upheld.patients, l: `in the ${G.upheld.states.length} upheld states` },
+  { n: G.vacated.patients, l: 'in Maryland and West Virginia' },
+  { n: G.district.patients, l: 'in North Dakota and Oklahoma' },
+  { n: G.none.patients, l: `in the ${G.none.states.length} states with no appeals ruling` },
+];
+function mapSvg(id: string, hero: boolean): string {
+  const ax = PAD + STEP + 10; // the open band above the northern states, just right of Alaska
+  const parts = [
+    `<svg class="cm-svg${hero ? ' cm-svg-hero' : ' cm-svg-mini'}" viewBox="0 0 ${MAP_W} ${MAP_H}" preserveAspectRatio="xMinYMin meet" role="group" aria-labelledby="${id}-t ${id}-d">`,
+    `<title id="${id}-t">${hero ? 'Where each state\'s contract-pharmacy law stands in the federal courts' : 'Pick a state'}</title>`,
+    `<desc id="${id}-d">${esc(
+      (['upheld', 'vacated', 'district', 'none'] as const).map((st) => `${STATUS[st]}: ${names(G[st].states)}.`).join(' ') +
+        ` The other ${noLawCount - 1} states and D.C. have no contract-pharmacy law. Each state links to its card below.`,
+    )}</desc>`,
+  ];
+  if (hero) {
+    ANNOT.forEach((a, i) => {
+      parts.push(
+        `<g class="cm-annot a${i + 1}" aria-hidden="true"><text class="cm-annot-n" x="${ax}" y="${PAD + 30}">${fmt(a.n)}</text>` +
+          `<text class="cm-annot-l" x="${ax}" y="${PAD + 48}">${esc(a.l)}</text></g>`,
+      );
+    });
+    parts.push(
+      `<text class="cm-map-note" aria-hidden="true" x="${PAD}" y="${PAD + 6 * STEP + 16}">Faint tiles: no law,</text>` +
+        `<text class="cm-map-note" aria-hidden="true" x="${PAD}" y="${PAD + 6 * STEP + 29}">${noLawCount - 1} states and D.C.</text>`,
+    );
+  }
+  for (const p of STATES) {
+    const s = byCode[p.code]!;
+    const x = PAD + p.col * STEP;
+    const y = PAD + p.row * STEP;
+    const label =
+      s.status === 'nolaw'
+        ? `no contract-pharmacy law, ${circuitName(s.circuit)}`
+        : `${STATUS[s.status]}, ${circuitName(s.circuit)}, ${fmt(s.patients ?? 0)} health center patients in 2025`;
+    parts.push(
+      `<a class="cm-t cm-${s.status}" href="#${cardId(p.code)}" aria-label="${p.code}, ${esc(p.name)}: ${esc(label)}">` +
+        `<rect class="cm-tile" x="${x}" y="${y}" width="${T}" height="${T}" rx="6"/>` +
+        `<text class="cm-abbr" x="${x + T / 2}" y="${y + T / 2 + 4.5}" text-anchor="middle">${p.code}</text></a>`,
+    );
+  }
+  parts.push('</svg>');
+  return parts.join('');
+}
+const heroMap = mapSvg('court-map', true);
+const pickMap = mapSvg('pick-map', false);
+
+// The scroll steps: beat 1's third paragraph and its numbered list, as DRAFT.md has them, one step each.
+const steps = [
+  { upto: 1, g: 'all', label: `All ${lawCount} law states`, n: D.lawPatients,
+    text: `Twenty-two states now have a law of this kind, and their health centers saw ${fmt(D.lawPatients)} patients in 2025. Which answer applies to those patients depends on the federal circuit they live in:` },
+  { upto: 2, g: 'upheld', label: `The ${G.upheld.states.length} upheld`, n: G.upheld.patients,
+    text: `${fmt(G.upheld.patients)} are in seven states where a federal appeals court has upheld this kind of law (the Fifth and Eighth Circuits).` },
+  { upto: 3, g: 'vacated', label: 'Maryland and West Virginia', n: G.vacated.patients,
+    text: `${fmt(G.vacated.patients)} are in Maryland and West Virginia, where a Fourth Circuit panel ruled against the laws. That ruling is set aside while the full court hears the case again.` },
+  { upto: 4, g: 'district', label: 'North Dakota and Oklahoma', n: G.district.patients,
+    text: `${fmt(G.district.patients)} are in North Dakota and Oklahoma, where district judges have ruled against the laws.` },
+  { upto: 5, g: 'none', label: `The ${G.none.states.length} with no appeals ruling`, n: G.none.patients,
+    text: `${fmt(G.none.patients)} are in eleven states where no appeals court has ruled at all.` },
+];
+const rail = [
+  { g: 'upheld', name: 'Upheld', sub: `${G.upheld.states.length} states; 5th Circuit (New Orleans), 8th (St. Louis)`, n: G.upheld.patients },
+  { g: 'vacated', name: 'Ruled against, vacated', sub: 'Maryland, West Virginia; 4th Circuit (Richmond)', n: G.vacated.patients },
+  { g: 'district', name: 'District judges ruled against', sub: 'North Dakota (8th Circuit, paused on appeal), Oklahoma (10th, on appeal)', n: G.district.patients },
+  { g: 'none', name: 'No appeals court ruling yet', sub: `${G.none.states.length} states, six circuits`, n: G.none.patients },
+];
+
+// ---------- The patient field (the opening) ----------
+// One dot per 10,000 health center patients, 2025. Each group is rounded to the nearest dot (912 in all), then shared
+// among its clusters by largest remainder, so a group's clusters add up to the group. The upheld dots are drawn as
+// one cluster per circuit, the district dots as one per state, the no-ruling dots as one per appeals court that has
+// not ruled (FINDING.md F12 to F14i).
+const PER_DOT = 10000;
+const dotsOf = (n: number): number => Math.round(n / PER_DOT);
+const share = (parts: number[], total: number): number[] => {
+  const raw = parts.map((p) => p / PER_DOT);
+  const out = raw.map(Math.floor);
+  const order = raw.map((r, i) => ({ i, f: r - Math.floor(r) })).sort((a, b) => b.f - a.f || a.i - b.i);
+  const short = total - out.reduce((a, b) => a + b, 0);
+  for (let k = 0; k < short; k++) out[order[k]!.i]! += 1;
+  return out;
+};
+const sumOf = (ss: { patients: number | null }[]): number => ss.reduce((t, s) => t + (s.patients ?? 0), 0);
+const CITY: Record<number, string> = { 5: 'New Orleans', 8: 'St. Louis', 4: 'Richmond' };
+const courtCity = (c: number): string => `${circuitName(c)} (${CITY[c]})`;
+const UP_CIRCUITS = [5, 8];
+const upCl = UP_CIRCUITS.map((c) => {
+  const ss = states.filter((s) => s.status === 'upheld' && s.circuit === c).sort((a, b) => a.code.localeCompare(b.code));
+  return { c, codes: ss.map((s) => s.code), patients: sumOf(ss) };
+});
+const DIST_STATES = ['OK', 'ND'];
+const distCl = DIST_STATES.map((code) => ({ code, name: byCode[code]!.name, c: byCode[code]!.circuit as number, patients: byCode[code]!.patients ?? 0 }));
+const CLUSTER_CIRCUITS = [9, 7, 10, 1, 6, 2];
+const clusterSt = CLUSTER_CIRCUITS.map((c) => {
+  const ss = states.filter((s) => s.status === 'none' && s.circuit === c).sort((a, b) => (b.patients ?? 0) - (a.patients ?? 0));
+  return { c, codes: ss.map((s) => s.code), patients: sumOf(ss) };
+});
+const upDots = share(upCl.map((k) => k.patients), dotsOf(G.upheld.patients));
+const distDots = share(distCl.map((k) => k.patients), dotsOf(G.district.patients));
+const noneDotsBy = share(clusterSt.map((k) => k.patients), dotsOf(G.none.patients));
+const clusters = clusterSt.map((k, i) => ({ ...k, dots: noneDotsBy[i]! }));
+const counts: Counts = {
+  up: upDots,
+  clusters: noneDotsBy,
+  tenth: CLUSTER_CIRCUITS.indexOf(10),
+  dist: distDots,
+  vac: dotsOf(G.vacated.patients),
+};
+const total = (a: number[]): number => a.reduce((x, y) => x + y, 0);
+const noneDots = total(counts.clusters);
+const dotTotal = total(counts.up) + noneDots + total(counts.dist) + counts.vac;
+if (sumOf(upCl) !== G.upheld.patients || sumOf(distCl) !== G.district.patients || sumOf(clusterSt) !== G.none.patients) {
+  throw new Error('court-map: the field\'s clusters do not add up to their groups');
+}
+// The sr table's words for each group (the field draws its own, set in capitals, below).
+const FIELD_LAB = {
+  up: `Upheld: ${upCl.map((k) => `the ${courtCity(k.c)}`).join(' and the ')}`,
+  vac: `${courtCity(4)}: a panel ruled against the laws; that ruling is vacated while the full court rehears them`,
+  dist: 'District judges ruled against the laws',
+  none: 'No appeals court ruling yet, six circuits',
+};
+const f1 = (n: number): string => n.toFixed(1);
+/** The words of the field, by the layout's keys: each entry is its lines, each line its runs. A run that is a
+ *  number is drawn in the figure tone; `fg` marks a group figure. */
+type Run = string | { n: string; fg?: boolean };
+function fieldWords(S: Spec): Record<string, Run[][]> {
+  const wide = S.name === 'wide';
+  const W: Record<string, Run[][]> = {};
+  const N = (n: number, fg = false): Run => ({ n: fmt(n), fg });
+  const head = (n: number | null, words: string): Run[][] =>
+    wide ? [[...(n === null ? [] : [N(n, true), '  ·  ']), words]] : [...(n === null ? [] : [[N(n, true)]]), [words]];
+  W['head-up'] = head(G.upheld.patients, 'Upheld');
+  upCl.forEach((k, i) => {
+    W[`up-${i}`] = wide ? [[courtCity(k.c)], [k.codes.join(' · '), '   ', N(k.patients)]] : [[circuitName(k.c)], [`(${CITY[k.c]})`]];
+    W[`fig-up-${i}`] = [[N(k.patients)]];
+  });
+  W['head-none'] = head(G.none.patients, wide ? 'Six appeals courts have not ruled yet' : 'No appeals ruling yet');
+  clusters.forEach((k, i) => {
+    W[`none-${i}`] = wide ? [[circuitName(k.c), '   ', N(k.patients)], [k.codes.join(' · ')]] : k.c === 10 ? [[circuitName(k.c)], ['OK, CO appeals']] : [[circuitName(k.c)]];
+    W[`fig-none-${i}`] = [[N(k.patients)]];
+  });
+  W['head-vac'] = wide ? [[N(G.vacated.patients, true), '  ·  ', courtCity(4)], ['Panel ruled against, now vacated']] : [['Panel ruling vacated']];
+  W['vac-0'] = [[circuitName(4)], [`(${CITY[4]})`]];
+  W['fig-vac-0'] = [[N(G.vacated.patients)]];
+  W['head-dist'] = wide ? [[N(G.district.patients, true), '  ·  ', 'District rulings'], ['Judges ruled against the laws']] : [['District ruling']];
+  W.ok = [[`${distCl[0]!.code}  `, N(distCl[0]!.patients)], ['District ruling']];
+  distCl.forEach((k, i) => {
+    W[`dist-${i}`] = wide ? [[`${k.code} · ${circuitName(k.c)}`], [N(k.patients)]] : [[k.name], [circuitName(k.c)]];
+    W[`fig-dist-${i}`] = [[N(k.patients)]];
+  });
+  W.tie = wide ? [['Appeals from OK and CO'], ['pending, Feb 2026']] : [['OK, CO appeals'], ['pending, Feb 2026']];
+  W.all = [[{ n: fmt(D.lawPatients) }], [`Patients in ${lawCount} states`], ['with this kind of law']];
+  return W;
+}
+function fieldSvg(S: Spec): string {
+  const F = layout(S, counts);
+  const W = fieldWords(S);
+  const wide = S.name === 'wide';
+  const runs = (line: Run[]): string =>
+    line.map((r) => (typeof r === 'string' ? esc(r.toUpperCase()).replaceAll('  ', '&#160; ') : `<tspan class="${r.fg ? 'pf-fg' : 'pf-fs'}">${esc(r.n)}</tspan>`)).join('');
+  const byG = new Map<string, string[]>();
+  const add = (g: string, part: string): void => {
+    byG.set(g, [...(byG.get(g) ?? []), part]);
+  };
+  for (const L of F.leads) {
+    const pts = L.pts.map((p) => `${f1(p.x)},${f1(p.y)}`).join(' ');
+    const end = L.pts[L.pts.length - 1]!;
+    const prev = L.pts[L.pts.length - 2]!;
+    const vert = Math.abs(end.x - prev.x) < 0.1;
+    add(L.g, `<polyline class="pf-lead" points="${pts}"/>` +
+      (L.tick ? (vert ? `<line class="pf-lead" x1="${f1(end.x - 3)}" y1="${f1(end.y)}" x2="${f1(end.x + 3)}" y2="${f1(end.y)}"/>` : `<line class="pf-lead" x1="${f1(end.x)}" y1="${f1(end.y - 3)}" x2="${f1(end.x)}" y2="${f1(end.y + 3)}"/>`) : ''));
+  }
+  for (const L of F.labs) {
+    const lines = W[L.key];
+    if (!lines) throw new Error(`court-map: no words for the field's ${L.key}`);
+    if (lines.length !== L.lines) throw new Error(`court-map: the field's ${L.key} has ${lines.length} lines, not ${L.lines}`);
+    let y = L.y;
+    lines.forEach((line, i) => {
+      const big = L.key === 'all' && i === 0;
+      const cls = big ? 'pf-big' : 'pf-t';
+      if (i > 0) y += big ? 0 : lines[i - 1]!.some((r) => typeof r !== 'string' && r.fg) ? S.t.lh + 4 : L.key === 'all' && i === 1 ? 24 : S.t.lh;
+      add(L.g, `<text class="${cls}" x="${f1(L.x)}" y="${f1(y)}" text-anchor="${L.anchor}">${big ? esc((line[0] as { n: string }).n) : runs(line)}</text>`);
+    });
+  }
+  // A dot's size varies a little (±8%), the same on every load, so the field reads as many marks, not a texture.
+  const size = (i: number): string => (S.r * (1 + 0.08 * (((i * 0.6180339887) % 1) * 2 - 1))).toFixed(2);
+  const out = [
+    `<svg class="pf-svg pf-${S.name}" data-field="${S.name}" data-counts="${counts.up.join(',')}|${counts.clusters.join(',')}|${counts.tenth}|${counts.dist.join(',')}|${counts.vac}" viewBox="0 0 ${S.w} ${F.h}" preserveAspectRatio="xMidYMin meet" aria-hidden="true" focusable="false">`,
+    `<line class="pf-axis${wide ? ' pf-lab-axis' : ''}" x1="${f1(F.axis.x)}" y1="${f1(F.axis.y1)}" x2="${f1(F.axis.x)}" y2="${f1(F.axis.y2)}"/>`,
+  ];
+  F.fin.forEach((d, i) => out.push(`<circle class="pf-d pf-${F.kinds[i]}" cx="${f1(d.x)}" cy="${f1(d.y)}" r="${size(i)}"/>`));
+  for (const [g, parts] of byG) out.push(`<g class="pf-lab pf-lab-${g}${/^c\d$/.test(g) ? ' pf-lab-c' : ''}">${parts.join('')}</g>`);
+  out.push('</svg>');
+  return out.join('');
+}
+const fieldWide = fieldSvg(WIDE);
+const fieldNarrow = fieldSvg(NARROW);
+const fieldSteps = [
+  'One field: each dot is 10,000 health center patients in a state with this kind of law.',
+  'The field parts. The states whose appeals courts upheld the law, in the Fifth Circuit (New Orleans) and the Eighth (St. Louis), go to one side; Maryland and West Virginia, where a Fourth Circuit panel in Richmond ruled against the laws, go to the other.',
+  'North Dakota (Eighth Circuit) and Oklahoma (Tenth Circuit), where district judges ruled against the laws, join the side against.',
+  'The largest group stays on the line: six appeals courts have not ruled on these laws. The Tenth Circuit had appeals from Oklahoma and Colorado pending as of 19 Feb 2026.',
+];
+
+// ---------- Circuit by circuit (FINDING.md F1 to F14i). Facts only. ----------
+const W21 = new Set(['LA', 'MS', 'MO', 'MD', 'RI']); // all 21 words (F12)
+const SHARE = new Set(['CO', 'HI', 'IL', 'ME', 'NM', 'OK', 'SD', 'TN', 'UT', 'VT', 'WA', 'WV']); // a run of 14 to 16 (F12)
+const CLAIMS = new Set(['WV', 'ND', 'NE', 'UT', 'CO', 'NM', 'TN', 'VT', 'OK']); // a claims-data clause (F11)
+const NO_HOLDING = 'No appeals holding yet.';
+type NoteKey = keyof typeof NOTE;
+// One card per circuit: the circuits with a ruling or an appeal first, then the five where nothing is before an
+// appeals court in our notes.
+const PANEL: { c: number; ruling: string; pending: string; rNote: NoteKey; held: string; hNote: NoteKey }[] = [
+  { c: 5, ruling: "AbbVie v. Murrill, 6 Jul 2026: Louisiana's law upheld. AbbVie v. Fitch, Sep 2025: Mississippi's law left in force (injunction denied, affirmed).",
+    pending: 'AbbVie’s deadline to ask the Supreme Court to review Louisiana’s case is 3 Dec 2026 (Supreme Court docket 26A356).', rNote: 'r5',
+    held: 'Delivery question: the 340B law says nothing about delivery, so a state may regulate it. The laws stand.', hNote: 'sides' },
+  { c: 8, ruling: "PhRMA v. McClain, 12 Mar 2024: Arkansas's law upheld. Novartis v. Hanaway, 1 Jul 2026: Missouri's law left in force (injunction denied, affirmed).",
+    pending: 'PhRMA v. Wrigley (North Dakota). The court paused the district ruling on 17 Aug 2026.', rNote: 'r8',
+    held: 'Delivery question: no conflict with the 340B law under any theory. The laws stand.', hNote: 'sides' },
+  { c: 4, ruling: 'None in force. The panel rulings against the laws (PhRMA v. McCuskey, 31 Mar 2026; AbbVie v. Brown, 14 Apr 2026) are vacated.',
+    pending: 'Both cases, before the full court, which heard them on 27 Oct 2026.', rNote: 'r4',
+    held: 'Spending-power theory (panel, now vacated): the laws bind only companies that signed the federal 340B bargain. In West Virginia the claims-data clause was one extra ground.', hNote: 'wv' },
+  { c: 10, ruling: 'None yet.',
+    pending: 'Colorado: AbbVie and AstraZeneca v. Weiser. Oklahoma: AbbVie, Novartis and PhRMA v. Drummond.', rNote: 'r10',
+    held: "No appeals holding. District judges split on 31 Oct 2025: Oklahoma's blocked the drug-maker parts; Colorado's let the law stand.", hNote: 'r10' },
+  ...[9, 7, 1, 6, 2].map((c) => ({ c, ruling: 'None yet.', pending: 'None listed in the AHA’s list of rulings (read 25 Nov 2026).', rNote: 'rnone' as NoteKey, held: NO_HOLDING, hNote: 'rnone' as NoteKey })),
+];
+const panel = PANEL.map((r) => {
+  const law = states.filter((s) => s.law && s.circuit === r.c).map((s) => s.code).sort();
+  const all = law.filter((c) => W21.has(c));
+  const share = law.filter((c) => SHARE.has(c));
+  const claims = law.filter((c) => CLAIMS.has(c));
+  const words =
+    (all.length ? all.join(', ') : 'None') +
+    (share.length ? `. ${share.length}${all.length ? ' more' : ''} share 14–16 of them (${share.join(', ')})` : '') + '.';
+  return { ...r, law, all, share, claimsOf: claims, words, claims: claims.length ? `${claims.join(', ')}.` : 'None.', quiet: [9, 7, 1, 6, 2].includes(r.c) };
+});
+
+// ---------- The stalled bills ----------
+const stalls = D.stalls;
+const VOTE_W = 100;
+
+// ---------- The deadlines, counted on the day the page is built ----------
+const built = new Date();
+const builtDay = Date.UTC(built.getUTCFullYear(), built.getUTCMonth(), built.getUTCDate());
+const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const builtLabel = `${built.getUTCDate()} ${MON[built.getUTCMonth()]} ${built.getUTCFullYear()}`;
+const daysTo = (y: number, m: number, d: number): string => {
+  const n = Math.round((Date.UTC(y, m - 1, d) - builtDay) / 86400000);
+  return n > 1 ? `${n} days` : n === 1 ? '1 day' : n === 0 ? 'Today' : 'Passed';
+};
+
+const parts = [
+  { id: 'map', n: '1', label: 'The court map' },
+  { id: 'split', n: '2', label: 'Why the courts split' },
+  { id: 'next', n: '3', label: 'What states do next' },
+  { id: 'override', n: '', label: 'What could override it' },
+  { id: 'notes', n: '', label: 'Notes' },
+];
+
+const DEK = 'Twenty-two states have passed laws protecting the 340B discounts that clinics and hospitals get through outside pharmacies. Which federal circuit hears the appeal now decides what those laws mean.';
+const description = DEK;
+---
+
+<Base title={TITLE} description={description} unlisted bleed>
+  <div class="cm">
+    <!-- ================= OPENING ================= -->
+    <header class="cm-head">
+      <div class="wrap">
+        <nav class="cm-kicker" aria-label="You are here">
+          <span class="cm-sq" aria-hidden="true"></span><a href="/writing/">Writing</a><span aria-hidden="true">/</span><span>Draft</span>
+        </nav>
+        <div class="cm-head-grid">
+          <div class="cm-head-title">
+            <h1>{TITLE}</h1>
+          </div>
+          <div>
+            <p class="cm-dek">{DEK}</p>
+            <p class="cm-byline">By Will Berchtold, with Claude. <span>Draft, not published.</span> Figures as of 25 Nov 2026.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rx-story pf-story wrap" data-story>
+        <div class="rx-story-pin pf-pin">
+          <figure class="rx-story-fig pf-fig" data-story-fig aria-labelledby="pf-cap">
+            <p class="pf-words"><span class="visually-hidden">The words both laws share: </span>“the acquisition of a 340B drug by, or delivery of a 340B drug to, a pharmacy that is under contract with”<sup class="cm-n"><a href={`#n${NOTE.words}`} aria-label={`Note ${NOTE.words}`}>{NOTE.words}</a></sup></p>
+            <Fragment set:html={fieldWide} />
+            <Fragment set:html={fieldNarrow} />
+            <p class="pf-key"><span><span class="pf-key-dot" aria-hidden="true"></span>1 dot = 10,000 health center patients, 2025<sup class="cm-n"><a href={`#n${NOTE.laws}`} aria-label={`Note ${NOTE.laws}`}>{NOTE.laws}</a></sup></span> <span class="pf-key-sep">Court status as of 25 November 2026<sup class="cm-n"><a href={`#n${NOTE.status}`} aria-label={`Note ${NOTE.status}`}>{NOTE.status}</a></sup></span></p>
+            <table class="visually-hidden">
+              <caption id="pf-cap">Health center patients in 2025 in the {lawCount} states with a contract-pharmacy law, by where the law stands in the federal courts on 25 November 2026. The field draws one dot per 10,000 patients.</caption>
+              <thead><tr><th scope="col">Where the law stands</th><th scope="col">Patients, 2025</th><th scope="col">Dots</th></tr></thead>
+              <tbody>
+                {upCl.map((k, i) => <tr><th scope="row">Upheld: the {courtCity(k.c)} ({k.codes.join(', ')})</th><td>{fmt(k.patients)}</td><td>{counts.up[i]}</td></tr>)}
+                <tr><th scope="row">{FIELD_LAB.up}</th><td>{fmt(G.upheld.patients)}</td><td>{total(counts.up)}</td></tr>
+                <tr><th scope="row">{FIELD_LAB.vac} (MD, WV)</th><td>{fmt(G.vacated.patients)}</td><td>{counts.vac}</td></tr>
+                {distCl.map((k, i) => <tr><th scope="row">District judges ruled against: {k.name} ({circuitName(k.c)})</th><td>{fmt(k.patients)}</td><td>{counts.dist[i]}</td></tr>)}
+                <tr><th scope="row">{FIELD_LAB.dist}</th><td>{fmt(G.district.patients)}</td><td>{total(counts.dist)}</td></tr>
+                {clusters.map((k) => <tr><th scope="row">No appeals court ruling yet: {circuitName(k.c)} ({k.codes.join(', ')}){k.c === 10 ? '; appeals from Oklahoma and Colorado pending as of 19 Feb 2026' : ''}</th><td>{fmt(k.patients)}</td><td>{k.dots}</td></tr>)}
+                <tr><th scope="row">{FIELD_LAB.none}</th><td>{fmt(G.none.patients)}</td><td>{noneDots}</td></tr>
+                <tr><th scope="row">All {lawCount} states</th><td>{fmt(D.lawPatients)}</td><td>{dotTotal}</td></tr>
+              </tbody>
+            </table>
+          </figure>
+        </div>
+        <ol class="rx-story-steps pf-steps">
+          {fieldSteps.map((t, i) => <li class="rx-story-step pf-step" data-upto={String(i)}><span class="visually-hidden">{t}</span></li>)}
+        </ol>
+      </div>
+    </header>
+
+    <div class="cm-open wrap">
+      <div class="cm-lede">
+        <p>Louisiana’s law and Maryland’s share twenty-one words: “the acquisition of a 340B drug by, or delivery of a 340B drug to, a pharmacy that is under contract with.”<sup class="cm-n"><a href={`#n${NOTE.words}`}>{NOTE.words}</a></sup> On April 14, 2026, a Fourth Circuit panel in Richmond, Virginia, vacated the ruling that allowed Maryland’s law to stand and sent the case back.<sup class="cm-n"><a href={`#n${NOTE.md}`}>{NOTE.md}</a></sup> On July 6, the Fifth Circuit in New Orleans upheld Louisiana’s law.<sup class="cm-n"><a href={`#n${NOTE.la}`}>{NOTE.la}</a></sup> The full Fourth Circuit has since set its panel’s ruling aside to hear the case again.<sup class="cm-n"><a href={`#n${NOTE.r4}`}>{NOTE.r4}</a></sup> Health centers in the twenty-two states with this kind of law saw {fmt(D.lawPatients)} patients in 2025.<sup class="cm-n"><a href={`#n${NOTE.laws}`}>{NOTE.laws}</a></sup> Which interpretation applies to them now depends on the circuit that hears the appeal, and on which question the circuit asks of the federal statute.<sup class="cm-n"><a href={`#n${NOTE.sides}`}>{NOTE.sides}</a></sup> AbbVie has until December 3, 2026, to ask the Supreme Court to review the Louisiana ruling. Justice Alito has recused himself, with no reason given.<sup class="cm-n"><a href={`#n${NOTE.box}`}>{NOTE.box}</a></sup></p>
+      </div>
+    </div>
+
+    <nav class="rx-parts wrap" aria-label="Chapters of this page">
+      <ol>{parts.map((p) => <li><a href={`#${p.id}`}>{p.n && <span class="rx-part-n">{p.n}</span>}{p.label}</a></li>)}</ol>
+    </nav>
+
+    <!-- ================= 1. THE COURT MAP ================= -->
+    <section class="rx-section cm-section" id="map" aria-labelledby="map-h">
+      <div class="wrap">
+        <p class="rx-step">1</p>
+        <h2 id="map-h">The court map</h2>
+        <div class="article cm-prose">
+          <p>Louisiana’s law and Maryland’s share a run of twenty-one words: “the acquisition of a 340B drug by, or delivery of a 340B drug to, a pharmacy that is under contract with”.<sup class="cm-n"><a href={`#n${NOTE.words}`}>{NOTE.words}</a></sup> On 6 July 2026 the Fifth Circuit, sitting in New Orleans, upheld Louisiana’s law.<sup class="cm-n"><a href={`#n${NOTE.la}`}>{NOTE.la}</a></sup> Three months earlier, on 14 April, a Fourth Circuit panel in Richmond had sent Maryland’s case back, holding that the judge who let the law stand “erred as a matter of law”.<sup class="cm-n"><a href={`#n${NOTE.md}`}>{NOTE.md}</a></sup></p>
+          <p>The same Fourth Circuit panel had ruled against West Virginia’s law two weeks before, in part over a clause on claims data. Maryland’s law has no such clause. The panel’s reasoning reached it anyway.<sup class="cm-n"><a href={`#n${NOTE.wv}`}>{NOTE.wv}</a></sup></p>
+        </div>
+
+        <div class="rx-story cm-story" data-story>
+          <div class="rx-story-pin">
+            <figure class="rx-story-fig cm-mapfig" data-story-fig aria-labelledby="map-cap">
+              <div class="cm-mapgrid">
+                <div class="cm-mapbox"><Fragment set:html={heroMap} /></div>
+                <div class="cm-rail">
+                  <p class="cm-rail-all">{lawCount} law states, health center patients in 2025</p>
+                  <ol>
+                    {rail.map((r) => (
+                      <li class={`cm-r cm-r-${r.g}`}>
+                        <span class={`cm-key k-${r.g}`} aria-hidden="true"></span>
+                        <span class="cm-r-name">{r.name}<span class="cm-r-sub">{r.sub}</span></span>
+                        <span class="cm-r-n">{fmt(r.n)}</span>
+                        <span class="cm-r-on" aria-hidden="true">On the map</span>
+                      </li>
+                    ))}
+                  </ol>
+                  <div class="cm-cap" data-cap aria-hidden="true"></div>
+                </div>
+              </div>
+              <figcaption id="map-cap" class="visually-hidden">Court status of each state's 340B contract-pharmacy law, 25 November 2026, with the health center patients in each group.</figcaption>
+            </figure>
+          </div>
+          <ol class="rx-story-steps">
+            {steps.map((st) => (
+              <li class={`rx-story-step cm-step g-${st.g}`} data-upto={String(st.upto)}>
+                <p class="rx-story-year">{st.label}</p>
+                <p class="rx-story-text">{st.text}<sup class="cm-n"><a href={`#n${st.upto === 1 ? NOTE.laws : NOTE.status}`}>{st.upto === 1 ? NOTE.laws : NOTE.status}</a></sup></p>
+              </li>
+            ))}
+          </ol>
+        </div>
+        <p class="cm-figline">Status as of 25 November 2026. Select a state for its card. How the map counts: note {NOTE.status}.</p>
+
+        <div class="article cm-prose cm-after">
+          <p>Those counts measure the reach of each state’s health centers, not who fills a 340B prescription. They are the plainest gauge we have of how many people stand on each side of the line.<sup class="cm-n"><a href={`#n${NOTE.laws}`}>{NOTE.laws}</a></sup></p>
+          <p>So a clinic’s footing now turns on the courthouse that hears the appeal more than on the statute its legislature passed.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 2. WHY THE COURTS SPLIT ================= -->
+    <section class="rx-section rx-alt cm-section" id="split" aria-labelledby="split-h">
+      <div class="wrap">
+        <p class="rx-step">2</p>
+        <h2 id="split-h">Why the courts split</h2>
+        <div class="article cm-prose">
+          <p>Both courts read the same federal statute, and each put a different question to it.</p>
+          <p>In New Orleans, the Fifth Circuit panel (Judge Willett writing) asked whether the 340B law says anything about delivery. It found that it does not, so a state may regulate what Congress left alone. The rulings that stopped the federal government from forcing delivery limit what an agency may demand; a state’s power over its pharmacies comes from somewhere else. “The two run on separate tracks,” the court wrote.<sup class="cm-n"><a href={`#n${NOTE.murrill}`}>{NOTE.murrill}</a></sup></p>
+          <p>In Richmond, the Fourth Circuit panel began from the money. 340B, it held, is a bargain Congress struck with drug makers under its spending power, and West Virginia’s law “seeks to add conditions, uninvited,” to that bargain.<sup class="cm-n"><a href={`#n${NOTE.mccuskey}`}>{NOTE.mccuskey}</a></sup> Judge Benjamin dissented. She wrote that the majority “departs dramatically from the unanimous view of the circuit courts” and leaned on theories the parties never briefed.<sup class="cm-n"><a href={`#n${NOTE.dissent}`}>{NOTE.dissent}</a></sup> The majority’s answer was that a court may apply the right law whatever the parties argue.<sup class="cm-n"><a href={`#n${NOTE.kamen}`}>{NOTE.kamen}</a></sup></p>
+        </div>
+
+        <figure class="cm-duel" aria-labelledby="duel-t">
+          <p class="cm-figtitle" id="duel-t">Two courts, two questions</p>
+          <div class="cm-duel-grid">
+            <div class="cm-side cm-side-up">
+              <p class="cm-side-court">5th and 8th Circuits <span>New Orleans and St. Louis</span></p>
+              <p class="cm-side-q">Does 340B say anything about delivery?</p>
+              <p class="cm-side-a"><strong>No.</strong> So the state law stands.</p>
+              <blockquote class="cm-side-quote"><p>“The two run on separate tracks.”<sup class="cm-n"><a href={`#n${NOTE.murrill}`}>{NOTE.murrill}</a></sup></p></blockquote>
+              <p class="cm-side-note">Laws let stand: Louisiana and Arkansas upheld; for Mississippi and Missouri the courts refused to block them.<sup class="cm-n"><a href={`#n${NOTE.sides}`}>{NOTE.sides}</a></sup></p>
+            </div>
+            <div class="cm-side cm-side-vac">
+              <p class="cm-side-court">4th Circuit <span>Richmond; a panel, 2-1</span></p>
+              <p class="cm-side-q">Does the state add terms to a federal spending bargain?</p>
+              <p class="cm-side-a"><strong>Yes.</strong> So the law is likely preempted.</p>
+              <blockquote class="cm-side-quote"><p>“seeks to add conditions, uninvited”<sup class="cm-n"><a href={`#n${NOTE.mccuskey}`}>{NOTE.mccuskey}</a></sup></p></blockquote>
+              <p class="cm-side-note">West Virginia and Maryland. The panel ruling is vacated while the full court rehears it. For Maryland the panel vacated and remanded; it did not itself find the law preempted.<sup class="cm-n"><a href={`#n${NOTE.sides}`}>{NOTE.sides}</a></sup></p>
+            </div>
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ================= 3. WHAT STATES DO NEXT ================= -->
+    <section class="rx-section cm-section" id="next" aria-labelledby="next-h">
+      <div class="wrap">
+        <p class="rx-step">3</p>
+        <h2 id="next-h">What states do next</h2>
+        <div class="article cm-prose">
+          <p>Outside the courtrooms, the bills keep coming. In three states the Senate passed one by a wide margin, and the other chamber never voted.</p>
+          <p>Kentucky’s Senate passed its bill 33-4 in February 2025. In the House, the protection was folded into another bill along with new rules requiring hospitals to report their 340B savings. The Kentucky Hospital Association withdrew its support, and the session ended without a floor vote.<sup class="cm-n"><a href={`#n${NOTE.ky}`}>{NOTE.ky}</a></sup> Michigan’s Senate voted 33-3 in March 2025. The chair of House Health Policy never heard that bill and advanced his own instead, which pairs the protection with hospital reporting. It waits in Rules.<sup class="cm-n"><a href={`#n${NOTE.mi}`}>{NOTE.mi}</a></sup> New York’s Senate voted 48-12 in June 2026. The Assembly version belongs to the Health Committee’s own chair and has not had a committee vote.<sup class="cm-n"><a href={`#n${NOTE.ny}`}>{NOTE.ny}</a></sup></p>
+          <p>None of the three stops has a reason on record.</p>
+        </div>
+
+        <figure class="cm-stallfig" aria-labelledby="stall-t">
+          <p class="cm-figtitle" id="stall-t">Passed the Senate, then stopped in committee</p>
+          <ol class="cm-stalls">
+            {
+              stalls.map((s) => {
+                const total = s.yes + s.no + s.other;
+                const yw = (s.yes / total) * VOTE_W;
+                const nw = (s.no / total) * VOTE_W;
+                return (
+                  <li class="cm-stall">
+                    <div class="cm-stall-who">
+                      <h3>{s.name}</h3>
+                      <p><a href={s.url}>{s.bill}</a><br /><Cited value={fmt(s.patients)} href={hcHref(s.state)} label={`${UDS}: ${s.name}'s health centers`} /> health center patients</p>
+                    </div>
+                    <div class="cm-vote">
+                      <p class="cm-vote-n">{s.yes}-{s.no}{s.other > 0 && <span> ({s.other} {s.otherLabel})</span>}</p>
+                      <svg class="cm-vote-bar" viewBox={`0 0 ${VOTE_W} 8`} preserveAspectRatio="none" role="img" aria-label={`${s.yes} yes, ${s.no} no${s.other ? `, ${s.other} ${s.otherLabel}` : ''}`}>
+                        <rect class="yes" x="0" y="0" width={yw} height="8" />
+                        <rect class="no" x={yw} y="0" width={nw} height="8" />
+                        {s.other > 0 && <rect class="other" x={yw + nw} y="0" width={VOTE_W - yw - nw} height="8" />}
+                      </svg>
+                      <p class="cm-vote-k">Senate vote, {s.voted}</p>
+                    </div>
+                    <ol class="cm-path" aria-label={`${s.bill}'s path`}>
+                      <li class="cm-p cm-p-done"><span class="cm-p-k">Senate</span><span class="cm-p-t">Passed, {s.voted}</span></li>
+                      <li class="cm-p cm-p-stop"><span class="cm-p-k">{s.house} committee</span><span class="cm-p-t">Sent to {s.where}, {s.reached}. {s.after}</span><strong class="cm-p-why">No reason on record</strong></li>
+                      <li class="cm-p cm-p-never"><span class="cm-p-k">{s.house} floor</span><span class="cm-p-t">No vote</span></li>
+                    </ol>
+                  </li>
+                );
+              })
+            }
+          </ol>
+          <figcaption class="cm-figline"><Cited value={fmt(D.stallPatients)} href="/health-centers/records/" label={`${UDS}, Kentucky, Michigan and New York`} /> health center patients live in these three states (2025).<sup class="cm-n"><a href={`#n${NOTE.tries}`}>{NOTE.tries}</a></sup></figcaption>
+        </figure>
+
+        <section class="cm-look" id="look" aria-labelledby="look-h">
+          <h3 id="look-h" class="cm-look-h">Your state</h3>
+          <p class="cm-figline">Pick a state on the map{' '}<span class="cm-js-only">or from the list</span>. Its card shows the law, the court, the patients, and every try in the 2025 and 2026 sessions: a contract-pharmacy bill that did not become law.<sup class="cm-n"><a href={`#n${NOTE.tries}`}>{NOTE.tries}</a></sup></p>
+          <div class="cm-look-grid">
+            <div class="cm-pick" id="pick">
+              <label class="cm-select" hidden data-pick>
+                <span>State</span>
+                <select data-pick-select>
+                  <option value="">Choose a state</option>
+                  {byName.map((s) => <option value={cardId(s.code)}>{s.name}</option>)}
+                </select>
+              </label>
+              <Fragment set:html={pickMap} />
+            </div>
+            <div class="cm-cards">
+              {
+                states.map((s) => (
+                  <article class:list={['cm-card', `cm-card-${s.status}`, { 'is-default': s.code === 'MD' }]} id={cardId(s.code)} data-circuit={String(s.circuit)} aria-labelledby={`${cardId(s.code)}-h`}>
+                    <p class="cm-card-k">{s.law ? <><span class={`cm-key k-${s.status}`} aria-hidden="true"></span>{STATUS[s.status]}</> : STATUS.nolaw}</p>
+                    <h4 id={`${cardId(s.code)}-h`}>{s.name}</h4>
+                    <dl class="cm-card-dl">
+                      <div>
+                        <dt>Law</dt>
+                        <dd>{s.law ? <a href={lawsPath(s.code)}>{lawLabel(s)}</a> : 'None'}</dd>
+                      </div>
+                      <div>
+                        <dt>Patients, 2025</dt>
+                        <dd class="cm-card-num">{s.patients !== null ? <Cited value={fmt(s.patients)} href={hcHref(s.code)} label={`${UDS}: ${s.name}'s health centers`} /> : <span class="cm-dim">Not summed for states with no law</span>}</dd>
+                      </div>
+                      <div class="cm-wide">
+                        <dt>Circuit</dt>
+                        <dd><strong>{circuitName(s.circuit)}{typeof s.circuit === 'number' && CITY[s.circuit] ? ` (${CITY[s.circuit]})` : ''}.</strong> {circuitSays(s.circuit)}.</dd>
+                      </div>
+                      {s.law && (
+                        <div class="cm-wide">
+                          <dt>Court status</dt>
+                          <dd>
+                            {courtOf(s)?.text ?? 'No court ruling on a law of this kind as of 25 Nov 2026.'}
+                            {courtOf(s) && <sup class="cm-n"><a href={`#n${NOTE.status}`} aria-label={`Note ${NOTE.status}`}>{NOTE.status}</a></sup>}
+                          </dd>
+                        </div>
+                      )}
+                      <div class="cm-wide">
+                        <dt>Tries, 2025–26</dt>
+                        <dd>
+                          {s.tries.length === 0 ? (
+                            <p>None in the list.</p>
+                          ) : (
+                            <ol class="cm-tries">
+                              {s.tries.map((t) => (
+                                <li>
+                                  <a href={t.url}>{t.bill}</a> <span class="cm-dim">({t.session})</span>: {t.how}. <span class="cm-died">{t.stopped}</span>{' '}
+                                  <span class="cm-src">{t.status === 'pending: session open' ? 'Session still open.' : t.status === 'died: session over' ? 'Session over.' : ''}</span>
+                                </li>
+                              ))}
+                            </ol>
+                          )}
+                          {billStates.has(s.code) && <p class="cm-more"><a href={billsPath(s.code)}>All of {s.name}’s 340B bills</a></p>}
+                        </dd>
+                      </div>
+                    </dl>
+                    <p class="cm-card-back"><a href="#look">Pick another state</a></p>
+                  </article>
+                ))
+              }
+            </div>
+          </div>
+          <details class="rx-table cm-all">
+            <summary>All 51 states</summary>
+            <table>
+              <caption>Each state and D.C.: its contract-pharmacy law, circuit, court status, health center patients (2025) and tries in the 2025 and 2026 sessions. Tries before 2025 are not collected.</caption>
+              <thead><tr><th scope="col">State</th><th scope="col">Law</th><th scope="col">Circuit</th><th scope="col">Court status</th><th scope="col">Patients</th><th scope="col">Tries</th></tr></thead>
+              <tbody>
+                {byName.map((s) => (
+                  <tr>
+                    <th scope="row"><a href={`#${cardId(s.code)}`}>{s.name}</a></th>
+                    <td>{s.law ? lawLabel(s) : 'None'}</td>
+                    <td>{ord(s.circuit)}</td>
+                    <td>{s.law ? STATUS[s.status] : '-'}</td>
+                    <td>{s.patients !== null ? fmt(s.patients) : '-'}</td>
+                    <td>{s.tries.length}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </details>
+        </section>
+
+        <section class="cm-circ" id="circuits" aria-labelledby="circ-h">
+          <h3 id="circ-h" class="cm-look-h">Circuit by circuit</h3>
+          <p class="cm-figline">A state's case is heard in the circuit it sits in. <span class="cm-js-only">The circuit of the state you pick is marked.</span></p>
+          <p class="cm-circ-two">Two readings so far: the delivery question (the 5th Circuit, in New Orleans, and the 8th, in St. Louis: the laws stand) and the spending-power theory (a 4th Circuit panel in Richmond, now vacated).<sup class="cm-n"><a href={`#n${NOTE.sides}`}>{NOTE.sides}</a></sup></p>
+          <ol class="cm-cc-run">
+            {panel.filter((r) => !r.quiet).map((r) => (
+              <li class="cm-cc" id={`circ-${r.c}`} data-circuit={String(r.c)}>
+                <h4 class="cm-cc-h">{circuitName(r.c)}{CITY[r.c] && <span>{CITY[r.c]}</span>}<span class="cm-cc-on cm-js-only" aria-hidden="true">Your state’s circuit</span></h4>
+                <dl class="cm-cc-dl">
+                  <div><dt>States with a law</dt><dd>{r.law.join(', ')}<sup class="cm-n"><a href={`#n${NOTE.circ}`}>{NOTE.circ}</a></sup></dd></div>
+                  <div><dt>Appeals ruling</dt><dd>{r.ruling}<sup class="cm-n"><a href={`#n${NOTE[r.rNote]}`}>{NOTE[r.rNote]}</a></sup></dd></div>
+                  <div><dt>Pending</dt><dd>{r.pending}<sup class="cm-n"><a href={`#n${NOTE[r.c === 5 ? 'box' : r.rNote]}`}>{NOTE[r.c === 5 ? 'box' : r.rNote]}</a></sup></dd></div>
+                  <div><dt>What courts held</dt><dd>{r.held}<sup class="cm-n"><a href={`#n${NOTE[r.hNote]}`}>{NOTE[r.hNote]}</a></sup></dd></div>
+                  <div><dt>All 21 words</dt><dd>{r.words}<sup class="cm-n"><a href={`#n${NOTE.clauses}`}>{NOTE.clauses}</a></sup></dd></div>
+                  <div><dt>Claims-data clause</dt><dd>{r.claims}<sup class="cm-n"><a href={`#n${NOTE.clauses}`}>{NOTE.clauses}</a></sup></dd></div>
+                </dl>
+              </li>
+            ))}
+          </ol>
+          <div class="cm-cq">
+            <h4 class="cm-cq-h">No appeals ruling yet (as of 25 Nov 2026)<sup class="cm-n"><a href={`#n${NOTE.rnone}`}>{NOTE.rnone}</a></sup></h4>
+            <p class="cm-cq-k" aria-hidden="true"><span>Circuit</span><span>States with a law</span><span>All 21 words</span><span>Share 14–16</span><span>Claims-data clause</span></p>
+            <ol class="cm-cq-list">
+              {panel.filter((r) => r.quiet).map((r) => (
+                <li class="cm-cq-row" id={`circ-${r.c}`} data-circuit={String(r.c)}>
+                  <h5 class="cm-cq-c">{circuitName(r.c)}<span class="cm-cc-on cm-js-only" aria-hidden="true">Your state’s circuit</span></h5>
+                  <dl class="cm-cq-dl">
+                    <div><dt>States with a law</dt><dd>{r.law.join(', ')}</dd></div>
+                    <div><dt>All 21 words</dt><dd>{r.all.length ? r.all.join(', ') : 'None'}</dd></div>
+                    <div><dt>Share 14–16</dt><dd>{r.share.length ? r.share.join(', ') : 'None'}</dd></div>
+                    <div><dt>Claims-data clause</dt><dd>{r.claimsOf.length ? r.claimsOf.join(', ') : 'None'}</dd></div>
+                  </dl>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- ================= THE OVERRIDE ================= -->
+    <section class="cm-over" id="override" aria-labelledby="over-h">
+      <div class="wrap">
+        <p class="cm-over-k">The clock</p>
+        <h2 id="over-h">What could override all of it</h2>
+        <ol class="cm-count">
+          <li>
+            <div class="cm-when"><p class="cm-date">3 Dec 2026</p><p class="cm-days">{daysTo(2026, 12, 3)}</p></div>
+            <div class="cm-what">
+              <p class="cm-who">Supreme Court</p>
+              <h3>AbbVie’s deadline on Louisiana</h3>
+              <p>Application 26A356 (AbbVie v. Murrill) won two extensions from Justice Sotomayor; its deadline to ask the Supreme Court to review the 5th Circuit’s Louisiana ruling is 3 Dec 2026. Justice Alito is recused. No petition was docketed as of 25 Nov 2026.<sup class="cm-n"><a href={`#n${NOTE.box}`}>{NOTE.box}</a></sup></p>
+            </div>
+          </li>
+          <li>
+            <div class="cm-when"><p class="cm-date">1 Jan 2027</p><p class="cm-days">{daysTo(2027, 1, 1)}</p></div>
+            <div class="cm-what">
+              <p class="cm-who">Federal rules</p>
+              <h3>The rebate pilot and the CMS claims rules</h3>
+              <p>HRSA’s revised rebate pilot starts 1 Jan 2027 for the drugs chosen for Medicare price negotiation for 2026 and 2027. CMS’s 2027 physician fee schedule rule has covered entities report Medicare Part D 340B claims from 1 Jan 2027; the first report is due 30 Sep 2027.<sup class="cm-n"><a href={`#n${NOTE.box}`}>{NOTE.box}</a></sup></p>
+            </div>
+          </li>
+          <li>
+            <div class="cm-when"><p class="cm-date">Any day</p><p class="cm-days">No date set</p></div>
+            <div class="cm-what">
+              <p class="cm-who">Congress</p>
+              <h3>H.R. 5256, section 18</h3>
+              <p>The 340B ACCESS Act (Rep. Carter, R-Ga., 1 cosponsor) would supersede any state or local law that “relates in any way” to the program, “including the distribution of such drugs.” Referred 10 Sep 2025; no action since.<sup class="cm-n"><a href={`#n${NOTE.box}`}>{NOTE.box}</a></sup></p>
+            </div>
+          </li>
+        </ol>
+        <p class="cm-over-note">Days left are counted from {builtLabel}, the day this page was built.</p>
+      </div>
+    </section>
+
+    <!-- ================= ENDING AND NOTES ================= -->
+    <section class="rx-section cm-section cm-end" aria-labelledby="end-h">
+      <div class="wrap">
+        <h2 id="end-h" class="visually-hidden">Ending</h2>
+        <div class="article cm-prose">
+          <p>In eleven states with this kind of law, there have been no appeals court rulings.<sup class="cm-n"><a href={`#n${NOTE.status}`}>{NOTE.status}</a></sup> The health centers in these states saw {fmt(G.none.patients)} patients in 2025, and for these patients the answer is still open.<sup class="cm-n"><a href={`#n${NOTE.laws}`}>{NOTE.laws}</a></sup></p>
+          <p>Three things to watch:</p>
+          <ol>
+            <li>December 3, 2026: AbbVie’s deadline to ask the Supreme Court to review the Louisiana decision.<sup class="cm-n"><a href={`#n${NOTE.box}`}>{NOTE.box}</a></sup></li>
+            <li>The full Fourth Circuit’s ruling on Maryland and West Virginia. The date has not yet been set.<sup class="cm-n"><a href={`#n${NOTE.r4}`}>{NOTE.r4}</a></sup></li>
+            <li>January 1, 2027: the revised federal rebate pilot and new CMS claims rules begin.<sup class="cm-n"><a href={`#n${NOTE.box}`}>{NOTE.box}</a></sup></li>
+          </ol>
+          <p>Next are the 2027 sessions. Virginia, North Carolina and South Carolina are Fourth Circuit states with no law yet, and their health centers saw 1,584,733 patients in 2025.<sup class="cm-n"><a href={`#n${NOTE.next}`}>{NOTE.next}</a></sup> If these states pass any laws, the Fourth Circuit will read them.</p>
+          <p>Our page shows every state: whether it has a law yet, which circuit that state sits in, how many bills were tried and where each one fizzled out.</p>
+          <p>By the end of 2027, will Louisiana’s twenty-one words still mean one thing in New Orleans and something different in Richmond?</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="cm-notes" id="notes" aria-labelledby="notes-h">
+      <div class="wrap">
+        <div class="cm-notes-col">
+          <details class="cm-notes-d" open data-notes>
+            <summary><h2 id="notes-h">Notes and sources ({Object.keys(NOTE).length})</h2></summary>
+            <ol class="cm-notelist">
+            <li id={`n${NOTE.words}`}>Maryland’s delivery ban and Louisiana’s share this run of 21 words (Louisiana Act 358 of 2023, La. R.S. 40:2884; Maryland HB 1056 of 2025, Md. Code, Health-Gen. § 12-6C-09.1(c)(1); ClinX’s saved law texts). The texts share too few words overall to count as one family, so the piece says they share the words, not that one copied the other.</li>
+            <li id={`n${NOTE.laws}`}>Laws: the ClinX <a href="/laws/">laws table</a>, laws whose kinds include contract pharmacy. Patients: the <Cited value={UDS} href="/health-centers/records/" label="ClinX health center records" /> (total patients, columns a and b), summed by state from each health center’s report. All 22 states: {fmt(D.lawPatients)}. A count of the health centers’ reach, not of 340B users or hospital patients.</li>
+            <li id={`n${NOTE.status}`}>Court status, as of 25 Nov 2026: the opinions for Louisiana, Arkansas, West Virginia, Maryland, Oklahoma and Utah; the Mississippi and Missouri orders and North Dakota’s stay from the AHA’s list of rulings and trade summaries; the AHA’s list, “340B state law contract pharmacy decisions”, aha.org, read 25 Nov 2026). “Upheld” means the state’s circuit (the 5th or 8th) has upheld a law of this kind; Minnesota’s, Nebraska’s and South Dakota’s own laws have not yet come before it on appeal, per the same list. North Dakota’s district ruling is stayed on appeal. The 4th Circuit panel rulings on West Virginia and Maryland are vacated; the full court heard both cases on 27 October 2026. Upheld: {names(G.upheld.states)}. No appeals court ruling yet: {names(G.none.states)}. Circuits of states with no law: 28 U.S.C. § 41.</li>
+            <li id={`n${NOTE.la}`}>AbbVie v. Murrill, 166 F.4th 528 (5th Cir., substitute opinion 6 Jul 2026), affirming for Louisiana “on all counts”.</li>
+            <li id={`n${NOTE.md}`}>AbbVie v. Brown, Nos. 24-1939, -1949 (4th Cir. panel, 14 Apr 2026, unpublished; vacated on rehearing by the full court). The panel vacated and remanded; it did not itself find Maryland’s law preempted.</li>
+            <li id={`n${NOTE.wv}`}>PhRMA v. McCuskey, Nos. 25-1054, -1055, -1056 (4th Cir. panel, 31 Mar 2026; vacated on rehearing by the full court). The claims-data clause is one of the problems the majority lists. Maryland’s law (Md. Code, Health-Gen. § 12-6C-09.1) has no such clause.</li>
+            <li id={`n${NOTE.murrill}`}>AbbVie v. Murrill, slip op. p. 15.</li>
+            <li id={`n${NOTE.mccuskey}`}>PhRMA v. McCuskey, slip op. p. 22.</li>
+            <li id={`n${NOTE.dissent}`}>Same case, dissent p. 42, and p. 27 n.9.</li>
+            <li id={`n${NOTE.kamen}`}>Same case, p. 27 n.9, citing Kamen v. Kemper (1991).</li>
+            <li id={`n${NOTE.sides}`}>The two questions: Fitch p. 14 and Murrill p. 15 against McCuskey p. 22. Cases: AbbVie v. Fitch, 152 F.4th 635 (5th Cir., Sep 2025); PhRMA v. McClain, 95 F.4th 1136 (8th Cir., 12 Mar 2024); Novartis v. Hanaway, No. 25-1619 (8th Cir., 1 Jul 2026). Two more points where the rulings differ: whether the spending power changes anything (no, Murrill p. 20 n.68; yes, it is the core of the holding, McCuskey pp. 5 to 6, 20 to 22), and HHS as the only enforcer (no obstacle, because the law helps 340B’s purpose, McClain p. 11 and Hanaway pp. 12 to 13; a conflict, because it cuts across HHS’s enforcement role, McCuskey p. 28).</li>
+            <li id={`n${NOTE.ky}`}>Kentucky LRC records, <a href="https://apps.legislature.ky.gov/record/25RS/sb14.html">SB 14</a> and SB 153; Kentucky Lantern via Kentucky Health News, 23 Mar 2025.</li>
+            <li id={`n${NOTE.mi}`}>legislature.mi.gov, <a href="https://legislature.mi.gov/Bills/Bill?ObjectName=2025-SB-0094">SB 94</a> and HB 4878.</li>
+            <li id={`n${NOTE.ny}`}>nysenate.gov, <a href="https://www.nysenate.gov/legislation/bills/2025/S1913">S1913</a> and A6222.</li>
+            <li id={`n${NOTE.tries}`}>Senate votes and where each bill stopped: the legislatures’ own bill pages (Kentucky LRC, legislature.mi.gov, nysenate.gov, kslegislature.gov), read Nov 2026. No reason for the stop is on record for any of the three. Tries: the ClinX bills table, contract-pharmacy bills that did not become law (39 bills that died before any floor vote, 2025–26 sessions), plus four that passed the Senate or a Senate committee and then stopped (Kentucky SB 14, Michigan SB 94, New York S1913, Kansas SB 284). Bills from 2020 to 2024 are not collected. Patients: the {UDS}, summed by state.</li>
+            <li id={`n${NOTE.circ}`}>Circuits: 28 U.S.C. § 41. A state’s federal cases are appealed to the court of appeals for the circuit the state sits in. States with a law: the ClinX <a href="/laws/">laws table</a>, as in note {NOTE.laws}.</li>
+            <li id={`n${NOTE.r5}`}>AbbVie v. Murrill, 166 F.4th 528 (5th Cir., substitute opinion 6 Jul 2026), affirming for Louisiana on all counts; AbbVie v. Fitch, 152 F.4th 635 (5th Cir., Sep 2025), and Novartis v. Fitch and PhRMA v. Fitch (9 Apr 2026), affirming denials of preliminary injunctions against Mississippi’s law.</li>
+            <li id={`n${NOTE.clauses}`}>The 21 words: laws that contain the whole run, and laws that share a run of 14 to 16 of them, from ClinX’s saved law texts with punctuation ignored (/laws/). Claims-data clause: a word search of the same texts for “claims data”, “claims or utilization data” and “utilization data”.</li>
+            <li id={`n${NOTE.r8}`}>PhRMA v. McClain, 95 F.4th 1136 (8th Cir., 12 Mar 2024), Supreme Court review denied 9 Dec 2024; Novartis v. Hanaway, No. 25-1619 (8th Cir., 1 Jul 2026). North Dakota: AbbVie v. Wrigley (D.N.D., 27 Apr 2026), on appeal as PhRMA v. Wrigley, Nos. 26-1860, 26-1863; the Eighth Circuit stayed the ruling on 17 Aug 2026 pending appeal. The district court’s grounds are known only from press reports (Bismarck Tribune via InForum, 28 Apr 2026; North Dakota Monitor, 29 Apr 2026).</li>
+            <li id={`n${NOTE.r4}`}>PhRMA v. McCuskey and AbbVie v. Brown (4th Cir. panels, 31 Mar and 14 Apr 2026). Granting rehearing by the full court vacates the panel judgment and opinion (4th Cir. Local Rule 40(e)); the full court heard both cases on 27 Oct 2026 and had not ruled as of 20 Nov 2026.</li>
+            <li id={`n${NOTE.r10}`}>Oklahoma: AbbVie v. Drummond (W.D. Okla., 31 Oct 2025) enjoined the duties on drug makers and their enforcement (2025 WL 3048929). Colorado: the district court (D. Colo.) denied AbbVie a preliminary injunction against SB 25-071 the same day. Utah: AbbVie v. Brown (D. Utah, 19 Nov 2025) let the preemption claims go forward (2025 WL 3228898). Appeals: AbbVie v. Weiser, No. 25-1439; AstraZeneca v. Weiser, No. 25-1466; AbbVie v. Drummond, No. 25-6184; Novartis v. Drummond, No. 25-6182; PhRMA v. Drummond, No. 26-6001. Appeal numbers and dates: AbbVie’s opening brief, No. 25-1439 (10th Cir., filed 19 Feb 2026). No Tenth Circuit decision is listed in the AHA’s list of rulings, read 25 Nov 2026. A Tenth Circuit ruling would bind Oklahoma, Colorado, Utah and New Mexico.</li>
+            <li id={`n${NOTE.rnone}`}>No appeals ruling on a law of this kind is listed for the 9th, 7th, 1st, 6th or 2nd Circuits in the AHA’s list of rulings, read 25 Nov 2026. The same list shows mixed district rulings in Vermont and Hawaii, not checked against the opinions.</li>
+            <li id={`n${NOTE.box}`}>Supreme Court: docket 26A356 (AbbVie v. Murrill), where AbbVie’s time to file was extended to 3 Dec 2026 and Justice Alito took no part; the docket gives no reason. H.R. 5256: bill text, govinfo BILLS-119. Rebate pilot (revised): 91 FR 48883, 3 Aug 2026. Claims reporting: 91 FR 70992, 9 Nov 2026. Both begin 1 Jan 2027.</li>
+            <li id={`n${NOTE.next}`}>Virginia, North Carolina and South Carolina sit in the 4th Circuit (28 U.S.C. § 41) and have no law of this kind in the ClinX <a href="/laws/">laws table</a>. Patients: the {UDS}, summed by state for the three: 1,584,733.</li>
+            </ol>
+          </details>
+
+          <h2 class="cm-notes-h2">How this was put together</h2>
+          <p>Researched and drafted with Claude, an AI model made by Anthropic, from court opinions, legislature records and federal data. Every figure links to its source. Will Berchtold chose the angle, edited every line and wrote the opening and close.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<script>
+  import '../../../scripts/registry-charts';
+  import '../../../scripts/court-map';
+</script>

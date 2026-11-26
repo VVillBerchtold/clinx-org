@@ -1,0 +1,1204 @@
+{
+  "asOf": "2026-11-25",
+  "patientsSource": "HRSA Uniform Data System 2025, Table 3A line 39 (total patients, columns a and b), summed by state",
+  "lawPatients": 9121904,
+  "groups": [
+    {
+      "status": "upheld",
+      "states": [
+        "LA",
+        "MS",
+        "AR",
+        "MO",
+        "MN",
+        "NE",
+        "SD"
+      ],
+      "patients": 2278173
+    },
+    {
+      "status": "vacated",
+      "states": [
+        "MD",
+        "WV"
+      ],
+      "patients": 962038
+    },
+    {
+      "status": "district",
+      "states": [
+        "ND",
+        "OK"
+      ],
+      "patients": 393775
+    },
+    {
+      "status": "none",
+      "states": [
+        "CO",
+        "HI",
+        "IL",
+        "ME",
+        "NM",
+        "OR",
+        "RI",
+        "TN",
+        "UT",
+        "VT",
+        "WA"
+      ],
+      "patients": 5487918
+    }
+  ],
+  "stallPatients": 3683822,
+  "stalls": [
+    {
+      "state": "KY",
+      "name": "Kentucky",
+      "bill": "SB 14",
+      "yes": 33,
+      "no": 4,
+      "other": 0,
+      "voted": "13 Feb 2025",
+      "house": "House",
+      "where": "House Committee on Committees",
+      "reached": "14 Feb 2025",
+      "after": "No later action. The session ended.",
+      "url": "https://apps.legislature.ky.gov/record/25RS/sb14.html",
+      "src": "INVESTIGATION B1; F1",
+      "patients": 675713
+    },
+    {
+      "state": "MI",
+      "name": "Michigan",
+      "bill": "SB 94",
+      "yes": 33,
+      "no": 3,
+      "other": 1,
+      "otherLabel": "excused",
+      "voted": "6 Mar 2025",
+      "house": "House",
+      "where": "House Health Policy",
+      "reached": "6 Mar 2025",
+      "after": "Never heard. No later action.",
+      "url": "https://legislature.mi.gov/Bills/Bill?ObjectName=2025-SB-0094",
+      "src": "INVESTIGATION B1; F2",
+      "patients": 693367
+    },
+    {
+      "state": "NY",
+      "name": "New York",
+      "bill": "S1913",
+      "yes": 48,
+      "no": 12,
+      "other": 0,
+      "voted": "4 Jun 2026",
+      "house": "Assembly",
+      "where": "Assembly Health",
+      "reached": "5 Jun 2026",
+      "after": "No committee vote.",
+      "url": "https://www.nysenate.gov/legislation/bills/2025/S1913",
+      "src": "INVESTIGATION B1; F3",
+      "patients": 2314742
+    }
+  ],
+  "states": [
+    {
+      "code": "AL",
+      "name": "Alabama",
+      "circuit": 11,
+      "law": null,
+      "status": "nolaw",
+      "patients": null,
+      "court": null,
+      "tries": []
+    },
+    {
+      "code": "AK",
+      "name": "Alaska",
+      "circuit": 9,
+      "law": null,
+      "status": "nolaw",
+      "patients": null,
+      "court": null,
+      "tries": []
+    },
+    {
+      "code": "AZ",
+      "name": "Arizona",
+      "circuit": 9,
+      "law": null,
+      "status": "nolaw",
+      "patients": null,
+      "court": null,
+      "tries": [
+        {
+          "bill": "HB 2965",
+          "session": "2026",
+          "how": "filed, no hearing on record",
+          "stopped": "Last action, 5 Feb 2026: given a second reading in the House.",
+          "status": "died: session over",
+          "url": "https://apps.azleg.gov/BillStatus/BillOverview/85170?SessionId=130",
+          "src": "died-before-a-vote.csv"
+        }
+      ]
+    },
+    {
+      "code": "AR",
+      "name": "Arkansas",
+      "circuit": 8,
+      "law": [
+        {
+          "bill": "HB 1881",
+          "year": 2021,
+          "act": "Act 1103 of 2021"
+        }
+      ],
+      "status": "upheld",
+      "patients": 385249,
+      "court": {
+        "text": "The Eighth Circuit upheld Act 1103, 12 Mar 2024 (PhRMA v. McClain). The Supreme Court declined to hear it, 9 Dec 2024.",
+        "src": "FINDING F2"
+      },
+      "tries": []
+    },
+    {
+      "code": "CA",
+      "name": "California",
+      "circuit": 9,
+      "law": null,
+      "status": "nolaw",
+      "patients": null,
+      "court": null,
+      "tries": []
+    },
+    {
+      "code": "CO",
+      "name": "Colorado",
+      "circuit": 10,
+      "law": [
+        {
+          "bill": "SB 25-071",
+          "year": 2025,
+          "act": "Session Laws of Colorado 2025, ch. 313"
+        }
+      ],
+      "status": "none",
+      "patients": 638538,
+      "court": null,
+      "tries": []
+    },
+    {
+      "code": "CT",
+      "name": "Connecticut",
+      "circuit": 2,
+      "law": null,
+      "status": "nolaw",
+      "patients": null,
+      "court": null,
+      "tries": []
+    },
+    {
+      "code": "DE",
+      "name": "Delaware",
+      "circuit": 3,
+      "law": null,
+      "status": "nolaw",
+      "patients": null,
+      "court": null,
+      "tries": []
+    },
+    {
+      "code": "DC",
+      "name": "District of Columbia",
+      "circuit": "DC",
+      "law": null,
+      "status": "nolaw",
+      "patients": null,
+      "court": null,
+      "tries": []
+    },
+    {
+      "code": "FL",
+      "name": "Florida",
+      "circuit": 11,
+      "law": null,
+      "status": "nolaw",
+      "patients": null,
+      "court": null,
+      "tries": [
+        {
+          "bill": "HB 1527",
+          "session": "2025",
+          "how": "died in committee",
+          "stopped": "Last action, 16 Jun 2025: died in the House Health Care Facilities and Systems Subcommittee.",
+          "status": "died: session over",
+          "url": "https://flsenate.gov/Session/Bill/2025/1527/ByCategory",
+          "src": "died-before-a-vote.csv"
+        },
+        {
+          "bill": "HB 1281",
+          "session": "2026",
+          "how": "died in committee",
+          "stopped": "Last action, 13 Mar 2026: died in the House Health Care Facilities and Systems Subcommittee.",
+          "status": "died: session over",
+          "url": "https://flsenate.gov/Session/Bill/2026/1281/ByCategory",
+          "src": "died-before-a-vote.csv"
+        },
+        {
+          "bill": "SB 1638",
+          "session": "2026",
+          "how": "filed, no hearing on record",
+          "stopped": "Last action, 13 Mar 2026: died in the Senate Banking and Insurance Committee.",
+          "status": "died: session over",
+          "url": "https://flsenate.gov/Session/Bill/2026/1638/ByCategory",
+          "src": "died-before-a-vote.csv"
+        }
+      ]
+    },
+    {
+      "code": "GA",
+      "name": "Georgia",
+      "circuit": 11,
+      "law": null,
+      "status": "nolaw",
+      "patients": null,
+      "court": null,
+      "tries": [
+        {
+          "bill": "HB 139",
+          "session": "2025–26",
+          "how": "filed, no hearing on record",
+          "stopped": "Last action, 29 Jan 2025: given a second reading in the House.",
+          "status": "died: session over",
+          "url": "https://www.legis.ga.gov/legislation/69539",
+          "src": "died-before-a-vote.csv"
+        }
+      ]
+    },
+    {
+      "code": "HI",
+      "name": "Hawaii",
+      "circuit": 9,
+      "law": [
+        {
+          "bill": "HB 712",
+          "year": 2025,
+          "act": "Act 143, Session Laws of Hawaii 2025"
+        }
+      ],
+      "status": "none",
+      "patients": 157004,
+      "court": {
+        "text": "The AHA lists a ruling here as mixed. Not checked against the opinion.",
+        "src": "FINDING, district courts table"
+      },
+      "tries": [
+        {
+          "bill": "HB 562",
+          "session": "2025–26",
+          "how": "filed, no hearing on record",
+          "stopped": "Last action, 21 Jan 2025: introduced and passed first reading.",
+          "status": "died: session over",
+          "url": "https://capitol.hawaii.gov/session/archives/measure_indiv_Archives.aspx?billtype=HB&billnumber=562&year=2025",
+          "src": "died-before-a-vote.csv"
+        },
+        {
+          "bill": "SB 1280",
+          "session": "2025–26",
+          "how": "filed, no hearing on record",
+          "stopped": "Last action, 27 Jan 2025: referred to committees.",
+          "status": "died: session over",
+          "url": "https://capitol.hawaii.gov/session/archives/measure_indiv_Archives.aspx?billtype=SB&billnumber=1280&year=2025",
+          "src": "died-before-a-vote.csv"
+        },
+        {
+          "bill": "SB 480",
+          "session": "2025–26",
+          "how": "heard, then deferred (held)",
+          "stopped": "Last action, 10 Feb 2025: heard, then deferred by the Senate Health and Human Services Committee.",
+          "status": "died: session over",
+          "url": "https://capitol.hawaii.gov/session/archives/measure_indiv_Archives.aspx?billtype=SB&billnumber=480&year=2025",
+          "src": "died-before-a-vote.csv"
+        }
+      ]
+    },
+    {
+      "code": "ID",
+      "name": "Idaho",
+      "circuit": 9,
+      "law": null,
+      "status": "nolaw",
+      "patients": null,
+      "court": null,
+      "tries": [
+        {
+          "bill": "H 385",
+          "session": "2025",
+          "how": "cleared a committee, no floor vote",
+          "stopped": "Last action, 10 Mar 2025: reported out and referred to the House Health and Welfare Committee; no floor vote.",
+          "status": "died: session over",
+          "url": "https://legislature.idaho.gov/sessioninfo/2025/legislation/H0385/",
+          "src": "died-before-a-vote.csv"
+        }
+      ]
+    },
+    {
+      "code": "IL",
+      "name": "Illinois",
+      "circuit": 7,
+      "law": [
+        {
+          "bill": "HB 2371",
+          "year": 2026,
+          "act": "Public Act 104-0758"
+        }
+      ],
+      "status": "none",
+      "patients": 1450397,
+      "court": null,
+      "tries": [
+        {
+          "bill": "HB 3350",
+          "session": "2025–26",
+          "how": "filed, no hearing on record",
+          "stopped": "Last action, 24 Apr 2025: a co-sponsor added.",
+          "status": "pending: session open",
+          "url": "https://ilga.gov/Legislation/BillStatus?DocNum=3350&GAID=18&DocTypeID=HB&LegId=161855&SessionID=114",
+          "src": "died-before-a-vote.csv"
+        },
+        {
+          "bill": "HB 4065",
+          "session": "2025–26",
+          "how": "filed, no hearing on record",
+          "stopped": "Last action, 27 Mar 2026: sent back to the House Rules Committee under a deadline rule.",
+          "status": "pending: session open",
+          "url": "https://ilga.gov/Legislation/BillStatus?DocNum=4065&GAID=18&DocTypeID=HB&LegId=163864&SessionID=114",
+          "src": "died-before-a-vote.csv"
+        },
+        {
+          "bill": "SB 2385",
+          "session": "2025–26",
+          "how": "filed, no hearing on record",
+          "stopped": "Last action, 2 Jun 2025: sent back to the Senate Assignments Committee under a deadline rule.",
+          "status": "pending: session open",
+          "url": "https://ilga.gov/Legislation/BillStatus?DocNum=2385&GAID=18&DocTypeID=SB&LegId=162386&SessionID=114",
+          "src": "died-before-a-vote.csv"
+        }
+      ]
+    },
+    {
+      "code": "IN",
+      "name": "Indiana",
+      "circuit": 7,
+      "law": null,
+      "status": "nolaw",
+      "patients": null,
+      "court": null,
+      "tries": []
+    },
+    {
+      "code": "IA",
+      "name": "Iowa",
+      "circuit": 8,
+      "law": null,
+      "status": "nolaw",
+      "patients": null,
+      "court": null,
+      "tries": [
+        {
+          "bill": "HF 2009",
+          "session": "2025–26",
+          "how": "cleared a committee, no floor vote",
+          "stopped": "Last action, 21 Jan 2026: a House subcommittee recommended passage; no floor vote.",
+          "status": "died: session over",
+          "url": "https://www.legis.iowa.gov/legislation/billTracking/billHistory?billName=HF%202009&ga=91",
+          "src": "died-before-a-vote.csv"
+        },
+        {
+          "bill": "HF 590",
+          "session": "2025–26",
+          "how": "filed, no hearing on record",
+          "stopped": "Last action, 25 Feb 2025: referred to the House Health and Human Services Committee.",
+          "status": "died: session over",
+          "url": "https://www.legis.iowa.gov/legislation/billTracking/billHistory?billName=HF%20590&ga=91",
+          "src": "died-before-a-vote.csv"
+        },
+        {
+          "bill": "SF 2312",
+          "session": "2025–26",
+          "how": "died in committee",
+          "stopped": "Last action, 18 Feb 2026: assigned to a Senate subcommittee; no further action.",
+          "status": "died: session over",
+          "url": "https://www.legis.iowa.gov/legislation/billTracking/billHistory?billName=SF%202312&ga=91",
+          "src": "died-before-a-vote.csv"
+        }
+      ]
+    },
+    {
+      "code": "KS",
+      "name": "Kansas",
+      "circuit": 10,
+      "law": null,
+      "status": "nolaw",
+      "patients": null,
+      "court": null,
+      "tries": [
+        {
+          "bill": "SB 284",
+          "session": "2025–26",
+          "how": "a Senate committee reported it \"passed as amended\", 18 Mar 2025",
+          "stopped": "Where it stopped is unclear: the legislature's page and the ClinX bills table disagree.",
+          "status": "died",
+          "url": "https://kslegislature.gov/b2025_26/bills/SB284/",
+          "src": "INVESTIGATION B1"
+        }
+      ]
+    },
+    {
+      "code": "KY",
+      "name": "Kentucky",
+      "circuit": 6,
+      "law": null,
+      "status": "nolaw",
+      "patients": 675713,
+      "court": null,
+      "tries": [
+        {
+          "bill": "SB 14",
+          "session": "2025",
+          "how": "passed the Senate 33-4, 13 Feb 2025",
+          "stopped": "Sent to the House Committee on Committees, 14 Feb 2025; no later action.",
+          "status": "died: session over",
+          "url": "https://apps.legislature.ky.gov/record/25RS/sb14.html",
+          "src": "INVESTIGATION B1, F1"
+        }
+      ]
+    },
+    {
+      "code": "LA",
+      "name": "Louisiana",
+      "circuit": 5,
+      "law": [
+        {
+          "bill": "HB 548",
+          "year": 2023,
+          "act": "Act 358 of 2023"
+        }
+      ],
+      "status": "upheld",
+      "patients": 501384,
+      "court": {
+        "text": "The Fifth Circuit upheld Act 358 \"on all counts\", 6 Jul 2026 (AbbVie v. Murrill). AbbVie may ask the Supreme Court by 3 Dec 2026.",
+        "src": "FINDING F1, F3"
+      },
+      "tries": []
+    },
+    {
+      "code": "ME",
+      "name": "Maine",
+      "circuit": 1,
+      "law": [
+        {
+          "bill": "",
+          "year": 2025,
+          "act": "P.L. 2025, ch. 388, Part P"
+        }
+      ],
+      "status": "none",
+      "patients": 205142,
+      "court": null,
+      "tries": []
+    },
+    {
+      "code": "MD",
+      "name": "Maryland",
+      "circuit": 4,
+      "law": [
+        {
+          "bill": "HB 1056",
+          "year": 2024,
+          "act": "Chapter 962, Acts of 2024"
+        }
+      ],
+      "status": "vacated",
+      "patients": 368723,
+      "court": {
+        "text": "A Fourth Circuit panel vacated a ruling for Maryland and sent it back, 14 Apr 2026. It did not itself find the law preempted. The full court reheard the case on 27 Oct 2026.",
+        "src": "FINDING F7, F9"
+      },
+      "tries": []
+    },
+    {
+      "code": "MA",
+      "name": "Massachusetts",
+      "circuit": 1,
+      "law": null,
+      "status": "nolaw",
+      "patients": null,
+      "court": null,
+      "tries": [
+        {
+          "bill": "H 1107",
+          "session": "2025–26",
+          "how": "folded into another bill or a study order",
+          "stopped": "Last action, 18 Sep 2025: folded into a new draft bill (H 4490).",
+          "status": "died: session over",
+          "url": "https://malegislature.gov/Bills/194/H1107",
+          "src": "died-before-a-vote.csv"
+        },
+        {
+          "bill": "H 1296",
+          "session": "2025–26",
+          "how": "folded into another bill or a study order",
+          "stopped": "Last action, 18 Sep 2025: folded into a new draft bill (H 4495).",
+          "status": "died: session over",
+          "url": "https://malegislature.gov/Bills/194/H1296",
+          "src": "died-before-a-vote.csv"
+        },
+        {
+          "bill": "H 4490",
+          "session": "2025–26",
+          "how": "filed, no hearing on record",
+          "stopped": "Last action, 17 Jun 2026: committee reporting deadline extended to 31 Jul 2026; no report.",
+          "status": "died: session over",
+          "url": "https://malegislature.gov/Bills/194/H4490",
+          "src": "died-before-a-vote.csv"
+        },
+        {
+          "bill": "H 785",
+          "session": "2025–26",
+          "how": "filed, no hearing on record",
+          "stopped": "Last action, 17 Jun 2026: committee reporting deadline extended to 31 Jul 2026; no report.",
+          "status": "died: session over",
+          "url": "https://malegislature.gov/Bills/194/H785",
+          "src": "died-before-a-vote.csv"
+        },
+        {
+          "bill": "S 779",
+          "session": "2025–26",
+          "how": "folded into another bill or a study order",
+          "stopped": "Last action, 4 Dec 2025: folded into a study order (S 2787).",
+          "status": "died: session over",
+          "url": "https://malegislature.gov/Bills/194/S779",
+          "src": "died-before-a-vote.csv"
+        },
+        {
+          "bill": "S 819",
+          "session": "2025–26",
+          "how": "cleared a committee, no floor vote",
+          "stopped": "Last action, 18 May 2026: a committee recommended passage and sent it to Senate Ways and Means; no floor vote.",
+          "status": "died: session over",
+          "url": "https://malegislature.gov/Bills/194/S819",
+          "src": "died-before-a-vote.csv"
+        },
+        {
+          "bill": "S 868",
+          "session": "2025–26",
+          "how": "cleared a committee, no floor vote",
+          "stopped": "Last action, 16 Jun 2025: reported favorably and sent to Senate Ways and Means; no floor vote.",
+          "status": "died: session over",
+          "url": "https://malegislature.gov/Bills/194/S868",
+          "src": "died-before-a-vote.csv"
+        }
+      ]
+    },
+    {
+      "code": "MI",
+      "name": "Michigan",
+      "circuit": 6,
+      "law": null,
+      "status": "nolaw",
+      "patients": 693367,
+      "court": null,
+      "tries": [
+        {
+          "bill": "SB 94",
+          "session": "2025–26",
+          "how": "passed the Senate 33-3, 6 Mar 2025",
+          "stopped": "Sent to House Health Policy, 6 Mar 2025; never heard.",
+          "status": "pending: session open",
+          "url": "https://legislature.mi.gov/Bills/Bill?ObjectName=2025-SB-0094",
+          "src": "INVESTIGATION B1, F2"
+        },
+        {
+          "bill": "HB 4878",
+          "session": "2025–26",
+          "how": "cleared a committee, no floor vote",
+          "stopped": "Last action, 28 Jan 2026: reported out of House Health Policy and sent to the Rules Committee; no floor vote.",
+          "status": "pending: session open",
+          "url": "https://legislature.mi.gov/Bills/Bill?ObjectName=2025-HB-4878",
+          "src": "died-before-a-vote.csv"
+        }
+      ]
+    },
+    {
+      "code": "MN",
+      "name": "Minnesota",
+      "circuit": 8,
+      "law": [
+        {
+          "bill": "HF 4757",
+          "year": 2024,
+          "act": "Laws 2024, ch. 121, art. 4, sec. 3"
+        }
+      ],
+      "status": "upheld",
+      "patients": 158039,
+      "court": {
+        "text": "No appeals ruling on this state's own law as of 25 Nov 2026. Its circuit, the Eighth, upheld Arkansas's and Missouri's.",
+        "src": "FINDING F2, F4b"
+      },
+      "tries": [
+        {
+          "bill": "HF 2703",
+          "session": "2025–26",
+          "how": "filed, no hearing on record",
+          "stopped": "Last action, 13 Apr 2026: an author removed.",
+          "status": "died: session over",
+          "url": "https://www.revisor.mn.gov/bills/94/2025/0/HF/2703?body=House",
+          "src": "died-before-a-vote.csv"
+        },
+        {
+          "bill": "HF 3609",
+          "session": "2025–26",
+          "how": "filed, no hearing on record",
+          "stopped": "Last action, 28 Apr 2026: an author added.",
+          "status": "died: session over",
+          "url": "https://www.revisor.mn.gov/bills/94/2026/0/HF/3609?body=House",
+          "src": "died-before-a-vote.csv"
+        },
+        {
+          "bill": "SF 2959",
+          "session": "2025–26",
+          "how": "filed, no hearing on record",
+          "stopped": "Last action, 17 Feb 2026: an author removed.",
+          "status": "died: session over",
+          "url": "https://www.revisor.mn.gov/bills/94/2025/0/SF/2959?body=Senate",
+          "src": "died-before-a-vote.csv"
+        },
+        {
+          "bill": "SF 4365",
+          "session": "2025–26",
+          "how": "folded into another bill or a study order",
+          "stopped": "Last action, 28 Apr 2026: replaced by the House bill (HF 4188) and indefinitely postponed.",
+          "status": "died: session over",
+          "url": "https://www.revisor.mn.gov/bills/94/2026/0/SF/4365?body=Senate",
+          "src": "died-before-a-vote.csv"
+        }
+      ]
+    },
+    {
+      "code": "MS",
+      "name": "Mississippi",
+      "circuit": 5,
+      "law": [
+        {
+          "bill": "HB 728",
+          "year": 2024,
+          "act": "Laws 2024, ch. 319"
+        }
+      ],
+      "status": "upheld",
+      "patients": 306400,
+      "court": {
+        "text": "The Fifth Circuit affirmed the denial of preliminary injunctions (AbbVie v. Fitch, Sep 2025; two more orders, 9 Apr 2026).",
+        "src": "FINDING F4"
+      },
+      "tries": [
+        {
+          "bill": "SB 2751",
+          "session": "2025",
+          "how": "died in committee",
+          "stopped": "Last action, 4 Feb 2025: died in committee.",
+          "status": "died: session over",
+          "url": "http://billstatus.ls.state.ms.us/documents/2025/pdf/SB/2700-2799/SB2751IN.pdf",
+          "src": "died-before-a-vote.csv"
+        }
+      ]
+    },
+    {
+      "code": "MO",
+      "name": "Missouri",
+      "circuit": 8,
+      "law": [
+        {
+          "bill": "SB 751",
+          "year": 2024,
+          "act": "L. 2024 S.B. 751"
+        }
+      ],
+      "status": "upheld",
+      "patients": 681965,
+      "court": {
+        "text": "The Eighth Circuit affirmed the denial of a preliminary injunction, 1 Jul 2026 (Novartis v. Hanaway).",
+        "src": "FINDING F4b"
+      },
+      "tries": []
+    },
+    {
+      "code": "MT",
+      "name": "Montana",
+      "circuit": 9,
+      "law": null,
+      "status": "nolaw",
+      "patients": null,
+      "court": null,
+      "tries": []
+    },
+    {
+      "code": "NE",
+      "name": "Nebraska",
+      "circuit": 8,
+      "law": [
+        {
+          "bill": "LB 168",
+          "year": 2025,
+          "act": "Laws 2025, LB 168"
+        }
+      ],
+      "status": "upheld",
+      "patients": 121579,
+      "court": {
+        "text": "No appeals ruling on this state's own law as of 25 Nov 2026. Its circuit, the Eighth, upheld Arkansas's and Missouri's.",
+        "src": "FINDING F2, F4b"
+      },
+      "tries": []
+    },
+    {
+      "code": "NV",
+      "name": "Nevada",
+      "circuit": 9,
+      "law": null,
+      "status": "nolaw",
+      "patients": null,
+      "court": null,
+      "tries": []
+    },
+    {
+      "code": "NH",
+      "name": "New Hampshire",
+      "circuit": 1,
+      "law": null,
+      "status": "nolaw",
+      "patients": null,
+      "court": null,
+      "tries": []
+    },
+    {
+      "code": "NJ",
+      "name": "New Jersey",
+      "circuit": 3,
+      "law": null,
+      "status": "nolaw",
+      "patients": null,
+      "court": null,
+      "tries": []
+    },
+    {
+      "code": "NM",
+      "name": "New Mexico",
+      "circuit": 10,
+      "law": [
+        {
+          "bill": "HB 78",
+          "year": 2025,
+          "act": "Laws 2025, ch. 91"
+        }
+      ],
+      "status": "none",
+      "patients": 294409,
+      "court": null,
+      "tries": []
+    },
+    {
+      "code": "NY",
+      "name": "New York",
+      "circuit": 2,
+      "law": null,
+      "status": "nolaw",
+      "patients": 2314742,
+      "court": null,
+      "tries": [
+        {
+          "bill": "S1913",
+          "session": "2025–26",
+          "how": "passed the Senate 48-12, 4 Jun 2026",
+          "stopped": "Sent to Assembly Health, 5 Jun 2026; no committee vote.",
+          "status": "pending: session open",
+          "url": "https://www.nysenate.gov/legislation/bills/2025/S1913",
+          "src": "INVESTIGATION B1, F3"
+        },
+        {
+          "bill": "A 6222",
+          "session": "2025",
+          "how": "filed, no hearing on record",
+          "stopped": "Last action, 7 Jan 2026: referred to the Assembly Health Committee; no committee vote.",
+          "status": "pending: session open",
+          "url": "https://legislation.nysenate.gov/api/3/bills/2025-2026/A6222?summary=&detail=",
+          "src": "died-before-a-vote.csv"
+        }
+      ]
+    },
+    {
+      "code": "NC",
+      "name": "North Carolina",
+      "circuit": 4,
+      "law": null,
+      "status": "nolaw",
+      "patients": null,
+      "court": null,
+      "tries": []
+    },
+    {
+      "code": "ND",
+      "name": "North Dakota",
+      "circuit": 8,
+      "law": [
+        {
+          "bill": "HB 1473",
+          "year": 2025,
+          "act": ""
+        }
+      ],
+      "status": "district",
+      "patients": 36924,
+      "court": {
+        "text": "A district judge held the law invalid as to the drug makers that sued, 27 Apr 2026. The Eighth Circuit stayed that ruling on 17 Aug 2026 while the state appeals.",
+        "src": "FINDING F9b"
+      },
+      "tries": []
+    },
+    {
+      "code": "OH",
+      "name": "Ohio",
+      "circuit": 6,
+      "law": null,
+      "status": "nolaw",
+      "patients": null,
+      "court": null,
+      "tries": [
+        {
+          "bill": "HB 276",
+          "session": "2025–26",
+          "how": "filed, no hearing on record",
+          "stopped": "Last action, 21 May 2025: referred to committee.",
+          "status": "pending: session open",
+          "url": "https://www.legislature.ohio.gov/legislation/136/hb276",
+          "src": "died-before-a-vote.csv"
+        },
+        {
+          "bill": "SB 198",
+          "session": "2025–26",
+          "how": "filed, no hearing on record",
+          "stopped": "Last action, 14 May 2025: referred to committee.",
+          "status": "pending: session open",
+          "url": "https://www.legislature.ohio.gov/legislation/136/sb198",
+          "src": "died-before-a-vote.csv"
+        }
+      ]
+    },
+    {
+      "code": "OK",
+      "name": "Oklahoma",
+      "circuit": 10,
+      "law": [
+        {
+          "bill": "HB 2048",
+          "year": 2025,
+          "act": ""
+        }
+      ],
+      "status": "district",
+      "patients": 356851,
+      "court": {
+        "text": "A district judge blocked the duties on drug makers, 31 Oct 2025 (AbbVie v. Drummond). The parts aimed at insurers and PBMs took effect.",
+        "src": "FINDING F10"
+      },
+      "tries": [
+        {
+          "bill": "SB 1030",
+          "session": "2025–26",
+          "how": "filed, no hearing on record",
+          "stopped": "Last action, 5 Mar 2025: a co-author added.",
+          "status": "died: session over",
+          "url": "http://www.oklegislature.gov/BillInfo.aspx?Bill=SB1030&session=2500",
+          "src": "died-before-a-vote.csv"
+        },
+        {
+          "bill": "SB 1063",
+          "session": "2025–26",
+          "how": "filed, no hearing on record",
+          "stopped": "Last action, 4 Feb 2025: referred to the Senate Health and Human Services Committee.",
+          "status": "died: session over",
+          "url": "http://www.oklegislature.gov/BillInfo.aspx?Bill=SB1063&session=2500",
+          "src": "died-before-a-vote.csv"
+        }
+      ]
+    },
+    {
+      "code": "OR",
+      "name": "Oregon",
+      "circuit": 9,
+      "law": [
+        {
+          "bill": "HB 2385",
+          "year": 2025,
+          "act": "Oregon Laws 2025, ch. 297"
+        }
+      ],
+      "status": "none",
+      "patients": 440152,
+      "court": null,
+      "tries": [
+        {
+          "bill": "SB 533",
+          "session": "2025",
+          "how": "filed, no hearing on record",
+          "stopped": "Last action, 27 Jun 2025: at the Senate President’s desk when the session adjourned.",
+          "status": "died: session over",
+          "url": "https://olis.oregonlegislature.gov/liz/2025R1/Measures/Overview/SB533",
+          "src": "died-before-a-vote.csv"
+        }
+      ]
+    },
+    {
+      "code": "PA",
+      "name": "Pennsylvania",
+      "circuit": 3,
+      "law": null,
+      "status": "nolaw",
+      "patients": null,
+      "court": null,
+      "tries": [
+        {
+          "bill": "HB 2797",
+          "session": "2025–26",
+          "how": "filed, no hearing on record",
+          "stopped": "Last action, 29 Sep 2026: referred to the House Human Services Committee.",
+          "status": "pending: session open",
+          "url": "https://www.palegis.us/legislation/bills/2025/hb2797",
+          "src": "died-before-a-vote.csv"
+        },
+        {
+          "bill": "SB 1486",
+          "session": "2025–26",
+          "how": "filed, no hearing on record",
+          "stopped": "Last action, 13 Oct 2026: referred to the Senate Health and Human Services Committee.",
+          "status": "pending: session open",
+          "url": "https://www.palegis.us/legislation/bills/2025/sb1486",
+          "src": "died-before-a-vote.csv"
+        }
+      ]
+    },
+    {
+      "code": "RI",
+      "name": "Rhode Island",
+      "circuit": 1,
+      "law": [
+        {
+          "bill": "S 0114 Substitute A; H 5634 Substitute A",
+          "year": 2025,
+          "act": "P.L. 2025, ch. 288 and ch. 290"
+        }
+      ],
+      "status": "none",
+      "patients": 232629,
+      "court": null,
+      "tries": []
+    },
+    {
+      "code": "SC",
+      "name": "South Carolina",
+      "circuit": 4,
+      "law": null,
+      "status": "nolaw",
+      "patients": null,
+      "court": null,
+      "tries": []
+    },
+    {
+      "code": "SD",
+      "name": "South Dakota",
+      "circuit": 8,
+      "law": [
+        {
+          "bill": "SB 154",
+          "year": 2025,
+          "act": "SL 2025, ch. 198"
+        }
+      ],
+      "status": "upheld",
+      "patients": 123557,
+      "court": {
+        "text": "No appeals ruling on this state's own law as of 25 Nov 2026. Its circuit, the Eighth, upheld Arkansas's and Missouri's.",
+        "src": "FINDING F2, F4b"
+      },
+      "tries": []
+    },
+    {
+      "code": "TN",
+      "name": "Tennessee",
+      "circuit": 6,
+      "law": [
+        {
+          "bill": "SB 1414; HB 1242",
+          "year": 2025,
+          "act": "Public Chapter 404 (2025)"
+        }
+      ],
+      "status": "none",
+      "patients": 427688,
+      "court": null,
+      "tries": [
+        {
+          "bill": "HB 1242",
+          "session": "2025–26",
+          "how": "companion became law (not killed)",
+          "stopped": "Last action, 13 May 2025: its Senate companion became law (Public Chapter 404).",
+          "status": "died: session over",
+          "url": "https://wapp.capitol.tn.gov/apps/BillInfo/Default?BillNumber=HB1242&ga=114",
+          "src": "died-before-a-vote.csv"
+        }
+      ]
+    },
+    {
+      "code": "TX",
+      "name": "Texas",
+      "circuit": 5,
+      "law": null,
+      "status": "nolaw",
+      "patients": null,
+      "court": null,
+      "tries": [
+        {
+          "bill": "HB 3265",
+          "session": "2025",
+          "how": "cleared a committee, no floor vote",
+          "stopped": "Last action, 5 May 2025: committee report sent to the Calendars Committee; no floor vote.",
+          "status": "died: session over",
+          "url": "https://capitol.texas.gov/BillLookup/History.aspx?LegSess=89R&Bill=HB3265",
+          "src": "died-before-a-vote.csv"
+        }
+      ]
+    },
+    {
+      "code": "UT",
+      "name": "Utah",
+      "circuit": 10,
+      "law": [
+        {
+          "bill": "SB 69",
+          "year": 2025,
+          "act": ""
+        },
+        {
+          "bill": "HB 356",
+          "year": 2026,
+          "act": ""
+        }
+      ],
+      "status": "none",
+      "patients": 139551,
+      "court": {
+        "text": "A district judge let the drug makers' preemption claims go forward, 19 Nov 2025 (a motion to dismiss, not an injunction).",
+        "src": "FINDING F10b"
+      },
+      "tries": []
+    },
+    {
+      "code": "VT",
+      "name": "Vermont",
+      "circuit": 2,
+      "law": [
+        {
+          "bill": "H.266",
+          "year": 2025,
+          "act": "Act 55 of 2025"
+        }
+      ],
+      "status": "none",
+      "patients": 207752,
+      "court": {
+        "text": "The AHA lists its rulings as mixed: an injunction granted 29 Dec 2025, another denied 30 Sep 2026. Not checked against the opinions.",
+        "src": "FINDING, district courts table"
+      },
+      "tries": []
+    },
+    {
+      "code": "VA",
+      "name": "Virginia",
+      "circuit": 4,
+      "law": null,
+      "status": "nolaw",
+      "patients": null,
+      "court": null,
+      "tries": []
+    },
+    {
+      "code": "WA",
+      "name": "Washington",
+      "circuit": 9,
+      "law": [
+        {
+          "bill": "E2SSB 5981",
+          "year": 2026,
+          "act": "Laws of 2026, ch. 227"
+        }
+      ],
+      "status": "none",
+      "patients": 1294656,
+      "court": null,
+      "tries": [
+        {
+          "bill": "HB 2145",
+          "session": "2025–26",
+          "how": "filed, no hearing on record",
+          "stopped": "Last action, 9 Feb 2026: referred to House Rules for review; no floor vote.",
+          "status": "died: session over",
+          "url": "https://app.leg.wa.gov/billsummary/?BillNumber=2145&Year=2025&Initiative=false",
+          "src": "died-before-a-vote.csv"
+        }
+      ]
+    },
+    {
+      "code": "WV",
+      "name": "West Virginia",
+      "circuit": 4,
+      "law": [
+        {
+          "bill": "SB 325",
+          "year": 2024,
+          "act": "Acts 2024, ch. 93"
+        }
+      ],
+      "status": "vacated",
+      "patients": 593315,
+      "court": {
+        "text": "A Fourth Circuit panel ruled 2-1 that the law is likely preempted, 31 Mar 2026. That ruling is vacated while the full court rehears the case (argued 27 Oct 2026).",
+        "src": "FINDING F5, F9"
+      },
+      "tries": []
+    },
+    {
+      "code": "WI",
+      "name": "Wisconsin",
+      "circuit": 7,
+      "law": null,
+      "status": "nolaw",
+      "patients": null,
+      "court": null,
+      "tries": []
+    },
+    {
+      "code": "WY",
+      "name": "Wyoming",
+      "circuit": 10,
+      "law": null,
+      "status": "nolaw",
+      "patients": null,
+      "court": null,
+      "tries": []
+    }
+  ]
+}
