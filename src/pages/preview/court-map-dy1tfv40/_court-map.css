@@ -291,14 +291,15 @@
   }
 }
 
-/* Wide screens: the stage. While the story runs, the pinned figure fills the window and the field takes what the
-   words and the key leave. Each step shows what has happened so far; the script moves the dots. A group's words
-   fade in once it lands, and go at once when the reader scrolls back. */
+/* Wide screens: the stage. While the story runs, the pinned figure is as tall as the field drawn full width, and
+   never taller than the window: on a short window the field takes what the words and the key leave; on a tall one
+   the key sits right under the field, with no empty band between them. Each step shows what has happened so far;
+   the script moves the dots. A group's words fade in once it lands, and go at once when the reader scrolls back. */
 @media (min-width: 52.0625rem) {
   .pf-story.rx-story-on .rx-story-pin {
     box-sizing: border-box;
-    height: 100vh;
-    height: 100svh;
+    max-height: 100vh;
+    max-height: 100svh;
     display: flex;
     flex-direction: column;
   }
@@ -309,7 +310,7 @@
     flex-direction: column;
   }
   .pf-story.rx-story-on .pf-svg {
-    flex: 1 1 0;
+    flex: 0 1 auto;
     min-height: 0;
     max-width: none;
   }
@@ -327,49 +328,50 @@
   .pf-axis {
     transition: opacity 0.4s var(--ease);
   }
-  .pf-fig[data-upto] .pf-lab {
+  /* Words fade in as their dots land (the dots take about half a second; see court-map.ts). */
+  .pf-fig[data-step] .pf-lab {
     opacity: 0;
   }
-  .pf-fig[data-upto] .pf-lab-all {
+  .pf-fig[data-step] .pf-lab-all {
     display: inline;
   }
   /* The one field: the axis runs faintly through it, and each dot leans a little toward where it is going. */
-  .pf-fig[data-upto='0'] .pf-axis {
+  .pf-fig[data-step='0'] .pf-axis {
     opacity: 0.25;
   }
-  .pf-fig[data-upto='0'] .pf-up {
+  .pf-fig[data-step='0'] .pf-up {
     fill: color-mix(in srgb, var(--pf-up) 15%, var(--pf-none));
   }
-  .pf-fig[data-upto='0'] :is(.pf-vac, .pf-dist),
-  .pf-fig[data-upto='1'] .pf-dist {
+  .pf-fig[data-step='0'] :is(.pf-vac, .pf-dist),
+  .pf-fig[data-step='1'] .pf-dist {
     fill: color-mix(in srgb, var(--pf-vac) 15%, var(--pf-none));
   }
-  .pf-fig[data-upto='0'] .pf-lab-all {
+  .pf-fig[data-step='0'] .pf-lab-all {
     opacity: 1;
   }
-  .pf-fig:is([data-upto='1'], [data-upto='2'], [data-upto='3']) .pf-lab-up {
+  .pf-fig:is([data-step='1'], [data-step='2'], [data-step='3']) .pf-lab-up {
     opacity: 1;
-    transition-delay: 0.85s;
+    transition-delay: 0.5s;
   }
-  .pf-fig:is([data-upto='1'], [data-upto='2'], [data-upto='3']) .pf-lab-vac {
+  .pf-fig:is([data-step='1'], [data-step='2'], [data-step='3']) .pf-lab-vac {
     opacity: 1;
-    transition-delay: 1s;
+    transition-delay: 0.6s;
   }
-  .pf-fig:is([data-upto='2'], [data-upto='3']) .pf-lab-dist {
+  .pf-fig:is([data-step='2'], [data-step='3']) .pf-lab-dist {
     opacity: 1;
-    transition-delay: 0.95s;
+    transition-delay: 0.55s;
   }
-  .pf-fig[data-upto='3'] :is(.pf-lab-c, .pf-lab-tie, .pf-lab-none) {
+  .pf-fig[data-step='3'] :is(.pf-lab-c, .pf-lab-tie, .pf-lab-none) {
     opacity: 1;
   }
-  .pf-fig[data-upto='3'] .pf-lab-c0 { transition-delay: 0.85s; }
-  .pf-fig[data-upto='3'] .pf-lab-c1 { transition-delay: 0.91s; }
-  .pf-fig[data-upto='3'] .pf-lab-c2 { transition-delay: 0.97s; }
-  .pf-fig[data-upto='3'] .pf-lab-c3 { transition-delay: 1.03s; }
-  .pf-fig[data-upto='3'] .pf-lab-c4 { transition-delay: 1.09s; }
-  .pf-fig[data-upto='3'] .pf-lab-c5 { transition-delay: 1.15s; }
-  .pf-fig[data-upto='3'] .pf-lab-tie { transition-delay: 1.3s; }
-  .pf-fig[data-upto='3'] .pf-lab-none { transition-delay: 1.3s; }
+  .pf-fig[data-step='3'] .pf-lab-c0 { transition-delay: 0.5s; }
+  .pf-fig[data-step='3'] .pf-lab-c1 { transition-delay: 0.53s; }
+  .pf-fig[data-step='3'] .pf-lab-c2 { transition-delay: 0.56s; }
+  .pf-fig[data-step='3'] .pf-lab-c3 { transition-delay: 0.6s; }
+  .pf-fig[data-step='3'] .pf-lab-c4 { transition-delay: 0.63s; }
+  .pf-fig[data-step='3'] .pf-lab-c5 { transition-delay: 0.66s; }
+  .pf-fig[data-step='3'] .pf-lab-tie { transition-delay: 0.75s; }
+  .pf-fig[data-step='3'] .pf-lab-none { transition-delay: 0.75s; }
 }
 
 /* Phone: the field is drawn parted, every group down the axis in reading order, and simply scrolls. */
@@ -512,23 +514,23 @@
 
 /* The steps. Groups not yet reached wear one plain tone; groups already passed fade; the step's own group is full.
    The last step is the whole map again, the same as the map without a script. */
-.cm-mapfig[data-upto='1'] :is(.cm-upheld, .cm-vacated, .cm-district, .cm-none) {
+.cm-mapfig[data-step='1'] :is(.cm-upheld, .cm-vacated, .cm-district, .cm-none) {
   --f: var(--cm-law);
   --s: transparent;
   --sw: 0;
   --lab: var(--ink);
 }
-.cm-mapfig[data-upto='2'] :is(.cm-vacated, .cm-district, .cm-none),
-.cm-mapfig[data-upto='3'] :is(.cm-district, .cm-none),
-.cm-mapfig[data-upto='4'] .cm-none {
+.cm-mapfig[data-step='2'] :is(.cm-vacated, .cm-district, .cm-none),
+.cm-mapfig[data-step='3'] :is(.cm-district, .cm-none),
+.cm-mapfig[data-step='4'] .cm-none {
   --f: var(--cm-none);
   --s: var(--cm-none-line);
   --sw: 1;
   --lab: var(--ink);
   --lw: 600;
 }
-.cm-mapfig[data-upto='3'] .cm-upheld,
-.cm-mapfig[data-upto='4'] :is(.cm-upheld, .cm-vacated) {
+.cm-mapfig[data-step='3'] .cm-upheld,
+.cm-mapfig[data-step='4'] :is(.cm-upheld, .cm-vacated) {
   opacity: 0.4;
 }
 
@@ -536,12 +538,12 @@
 .cm-annot {
   display: none;
 }
-.cm-mapfig:not([data-upto]) .a1,
-.cm-mapfig[data-upto='1'] .a1,
-.cm-mapfig[data-upto='2'] .a2,
-.cm-mapfig[data-upto='3'] .a3,
-.cm-mapfig[data-upto='4'] .a4,
-.cm-mapfig[data-upto='5'] .a5 {
+.cm-mapfig:not([data-step]) .a1,
+.cm-mapfig[data-step='1'] .a1,
+.cm-mapfig[data-step='2'] .a2,
+.cm-mapfig[data-step='3'] .a3,
+.cm-mapfig[data-step='4'] .a4,
+.cm-mapfig[data-step='5'] .a5 {
   display: inline;
 }
 .cm-annot-n {
@@ -612,11 +614,11 @@
 .cm-r-upheld .cm-r-n { color: var(--cm-up); }
 .cm-r-vacated .cm-r-n,
 .cm-r-district .cm-r-n { color: var(--cm-vac); }
-.cm-mapfig[data-upto='1'] .cm-r,
-.cm-mapfig[data-upto='2'] :is(.cm-rail-all, .cm-r:not(.cm-r-upheld)),
-.cm-mapfig[data-upto='3'] :is(.cm-rail-all, .cm-r:not(.cm-r-vacated)),
-.cm-mapfig[data-upto='4'] :is(.cm-rail-all, .cm-r:not(.cm-r-district)),
-.cm-mapfig[data-upto='5'] :is(.cm-rail-all, .cm-r:not(.cm-r-none)) {
+.cm-mapfig[data-step='1'] .cm-r,
+.cm-mapfig[data-step='2'] :is(.cm-rail-all, .cm-r:not(.cm-r-upheld)),
+.cm-mapfig[data-step='3'] :is(.cm-rail-all, .cm-r:not(.cm-r-vacated)),
+.cm-mapfig[data-step='4'] :is(.cm-rail-all, .cm-r:not(.cm-r-district)),
+.cm-mapfig[data-step='5'] :is(.cm-rail-all, .cm-r:not(.cm-r-none)) {
   opacity: 0.38;
 }
 /* A figure shows once per screen: the group written large on the map shows a marker here, not its figure again. */
@@ -630,16 +632,16 @@
 .cm-r-on::before {
   content: '\2190\00a0'; /* an arrow to the map beside */
 }
-.cm-mapfig[data-upto='2'] .cm-r-upheld .cm-r-n,
-.cm-mapfig[data-upto='3'] .cm-r-vacated .cm-r-n,
-.cm-mapfig[data-upto='4'] .cm-r-district .cm-r-n,
-.cm-mapfig[data-upto='5'] .cm-r-none .cm-r-n {
+.cm-mapfig[data-step='2'] .cm-r-upheld .cm-r-n,
+.cm-mapfig[data-step='3'] .cm-r-vacated .cm-r-n,
+.cm-mapfig[data-step='4'] .cm-r-district .cm-r-n,
+.cm-mapfig[data-step='5'] .cm-r-none .cm-r-n {
   display: none;
 }
-.cm-mapfig[data-upto='2'] .cm-r-upheld .cm-r-on,
-.cm-mapfig[data-upto='3'] .cm-r-vacated .cm-r-on,
-.cm-mapfig[data-upto='4'] .cm-r-district .cm-r-on,
-.cm-mapfig[data-upto='5'] .cm-r-none .cm-r-on {
+.cm-mapfig[data-step='2'] .cm-r-upheld .cm-r-on,
+.cm-mapfig[data-step='3'] .cm-r-vacated .cm-r-on,
+.cm-mapfig[data-step='4'] .cm-r-district .cm-r-on,
+.cm-mapfig[data-step='5'] .cm-r-none .cm-r-on {
   display: inline;
 }
 @media (max-width: 52rem) {
@@ -1384,6 +1386,7 @@
 
 .cm-lede {
   max-width: 44rem;
+  padding-block-start: var(--s6);
 }
 .cm-lede > p {
   font-size: 1.3125rem;

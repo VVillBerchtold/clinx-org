@@ -6,6 +6,10 @@
  *   drops and grows, with the scroll, from just under the 21 words on the first screen to fill the middle of the
  *   pinned stage.
  * - The court map: the words of the step in view are shown beside the map.
+ * - Both stories play their steps one at a time. registry-charts.ts sets data-upto to the step in view; this walks
+ *   data-step (which the CSS draws from) towards it a step at a time, each step a short timed transition that runs
+ *   to its end before the next begins. So a fast flick or a fling still shows every step's end state, briefly,
+ *   and never a half-drawn mix. With reduced motion, data-step simply follows data-upto.
  * - The state list beside the small map. Without a script, each tile is a link to its state's card, and the card
  *   shows because it is the page's target (CSS :target). This shows the list and makes picking from it do the same.
  * - The circuit cards: the circuit of the state picked (its card is the page's target) is marked.
@@ -14,6 +18,42 @@
 import { WIDE, NARROW, layout, type Counts, type FieldLayout, type Pt } from '../pages/preview/court-map-dy1tfv40/_field';
 
 const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ---------- Steps, one at a time ----------
+/** Walks fig's data-step towards its data-upto one step at a time. show(s, last) draws step s and returns how long
+ *  its transition takes (ms); the next step starts only once that has run. last is true when s is the step in view,
+ *  false when it is only being passed through on the way there. */
+const walk = (fig: HTMLElement, first: number, show: (s: number, last: boolean, now: boolean) => number): void => {
+  const want = (): number => (fig.dataset.upto === undefined ? first : Number(fig.dataset.upto));
+  let at = want();
+  let busy = 0;
+  const next = (): void => {
+    busy = 0;
+    const w = want();
+    if (w === at) return;
+    at += w > at ? 1 : -1;
+    fig.dataset.step = String(at);
+    const ms = show(at, at === w, false);
+    if (ms > 0) busy = window.setTimeout(next, ms);
+    else next();
+  };
+  // Until the story sets a step, there is none: the figure is drawn as it is without a script.
+  let set = fig.dataset.upto !== undefined;
+  if (set) fig.dataset.step = String(at);
+  show(at, true, true);
+  new MutationObserver(() => {
+    // The first step the story sets is where the reader is: draw it at once, without walking to it.
+    if (still || !set) {
+      set = true;
+      window.clearTimeout(busy);
+      busy = 0;
+      at = want();
+      fig.dataset.step = String(at);
+      const ms = show(at, true, true);
+      if (!still && ms > 0) busy = window.setTimeout(next, ms); // it still holds for a step's time
+    } else if (!busy) next();
+  }).observe(fig, { attributes: true, attributeFilter: ['data-upto'] });
+};
 
 // ---------- The patient field ----------
 const pf = document.querySelector<HTMLElement>('.pf-fig[data-story-fig]');
@@ -39,7 +79,9 @@ if (pf && !still) {
     const q = f.F.fin[i]!;
     return k < 3 && (p.x !== q.x || p.y !== q.y) ? { x: p.x, y: p.y + f.lift } : p;
   };
-  const DUR = 800;
+  /** How long the dots take: a step being passed through is quicker than the step the reader stops at. */
+  const DUR = 460;
+  const DUR_PASS = 320;
   // cubic-bezier(0.65, 0, 0.35, 1), solved for x by bisection: a slow start, a long glide, a soft landing.
   const bez = (a: number, b: number, k: number): number => 3 * a * k * (1 - k) ** 2 + 3 * b * k * k * (1 - k) + k ** 3;
   const ease = (x: number): number => {
@@ -63,7 +105,11 @@ if (pf && !still) {
     const lead = k === 'up' ? 0 : k === 'vac' || k === 'dist' ? (moving.has('up') ? 150 : 0) : (moving.size > 1 ? 300 : 0) + f.F.cl[i]! * 60;
     return lead + f.F.depth[i]! * 120;
   };
-  const go = (now: boolean): void => {
+  /** Moves the dots to the current step and returns how long that takes (ms), beats included. The beats shrink
+   *  with the move, so the whole step stays well under a second. */
+  const go = (now: boolean, dur = DUR): number => {
+    let total = 0;
+    const scale = dur / 800;
     for (const f of fields) {
       cancelAnimationFrame(f.raf);
       f.moving = false;
@@ -82,15 +128,16 @@ if (pf && !still) {
         const b = to[i]!;
         const dx = b.x - a.x;
         const dy = b.y - a.y;
-        return { i, a, b, cx: (a.x + b.x) / 2 - dy * 0.1, cy: (a.y + b.y) / 2 + dx * 0.1, wait: beat(f, i, groups) };
+        return { i, a, b, cx: (a.x + b.x) / 2 - dy * 0.1, cy: (a.y + b.y) / 2 + dx * 0.1, wait: beat(f, i, groups) * scale };
       });
+      for (const m of plan) total = Math.max(total, m.wait + dur);
       const t0 = performance.now();
       const s0 = step;
       f.moving = true;
       const tick = (t: number): void => {
         let done = true;
         for (const m of plan) {
-          const k = Math.min(1, Math.max(0, (t - t0 - m.wait) / DUR));
+          const k = Math.min(1, Math.max(0, (t - t0 - m.wait) / dur));
           if (k < 1) done = false;
           const e = ease(k);
           const u = 1 - e;
@@ -103,8 +150,8 @@ if (pf && !still) {
       };
       f.raf = requestAnimationFrame(tick);
     }
+    return total;
   };
-  const stepNow = (): number => (pf.dataset.upto === undefined ? 3 : Number(pf.dataset.upto));
 
   // The lift. The one field is drawn high, so the whole of it shows on the first screen, just under the 21 words.
   // Once the stage pins, it should sit midway between the words and the key. So as the reader scrolls from the
@@ -163,30 +210,29 @@ if (pf && !still) {
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onScroll);
-  step = stepNow();
-  lift();
-  go(true);
-  new MutationObserver(() => {
-    step = stepNow();
+  walk(pf, 3, (s, last, now) => {
+    step = s;
     lift();
-    go(false);
-  }).observe(pf, { attributes: true, attributeFilter: ['data-upto'] });
+    const ms = go(now, last ? DUR : DUR_PASS);
+    return now ? DUR : ms;
+  });
 }
 
 // ---------- The court map: the step's words beside the map ----------
+// Each map step holds for 600ms (350ms when only passed through), long enough for its colours to settle.
 for (const story of document.querySelectorAll<HTMLElement>('.cm-story')) {
   const fig = story.querySelector<HTMLElement>('[data-story-fig]');
   const cap = story.querySelector<HTMLElement>('[data-cap]');
   if (!fig || !cap) continue;
-  const sync = (): void => {
-    const step = story.querySelector<HTMLElement>(`.rx-story-step[data-upto="${fig.dataset.upto ?? ''}"]`);
-    if (!step) return;
-    cap.innerHTML = step.innerHTML;
-    cap.className = ['cm-cap', ...[...step.classList].filter((c) => c.startsWith('g-'))].join(' ');
-    for (const a of cap.querySelectorAll('a')) a.tabIndex = -1; // the step itself keeps the working link
-  };
-  sync();
-  new MutationObserver(sync).observe(fig, { attributes: true, attributeFilter: ['data-upto'] });
+  walk(fig, 5, (s, last) => {
+    const step = story.querySelector<HTMLElement>(`.rx-story-step[data-upto="${s}"]`);
+    if (step) {
+      cap.innerHTML = step.innerHTML;
+      cap.className = ['cm-cap', ...[...step.classList].filter((c) => c.startsWith('g-'))].join(' ');
+      for (const a of cap.querySelectorAll('a')) a.tabIndex = -1; // the step itself keeps the working link
+    }
+    return last ? 600 : 350;
+  });
 }
 
 // ---------- The notes ----------
