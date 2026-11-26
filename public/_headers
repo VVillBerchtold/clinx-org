@@ -35,3 +35,7 @@
 /tools/schedule-designer/clinx-schedule-designer
   Content-Disposition: attachment; filename="clinx-schedule-designer.html"
   X-Robots-Tag: noindex
+
+# The draft court-map story, shared by link for early feedback. Search engines are asked not to list it or follow its links.
+/preview/court-map-dy1tfv40/
+  X-Robots-Tag: noindex, nofollow

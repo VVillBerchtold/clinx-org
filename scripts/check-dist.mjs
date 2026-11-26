@@ -489,7 +489,8 @@ checkStandalone();
 // Search engines. robots.txt, the pages' own "do not list" tags and sitemap.xml must tell one story:
 // either the private preview (every crawler turned away, every page unlisted, no sitemap), or the
 // public site (crawlers let in, only the pages in ALWAYS_UNLISTED unlisted, the sitemap naming every other page).
-const ALWAYS_UNLISTED = ['/404.html', `${SITE}/contact/sent/`, `${SITE}/contact/problem/`];
+// The draft court-map story is shared by link for early feedback and kept out of every list.
+const ALWAYS_UNLISTED = ['/404.html', `${SITE}/contact/sent/`, `${SITE}/contact/problem/`, `${SITE}/preview/court-map-dy1tfv40/`];
 const robotsPath = join(dist, 'robots.txt');
 const sitemapPath = join(dist, 'sitemap.xml');
 let mode = 'missing';
