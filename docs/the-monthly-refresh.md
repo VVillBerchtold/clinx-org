@@ -14,7 +14,7 @@ The steps live in one script, `scripts/refresh/refresh.sh`. The script never pub
 
 | Step | What happens | If it goes wrong |
 |---|---|---|
-| 1. Pull the export | The [clinx-radar](https://github.com/VVillBerchtold/clinx-radar) tool downloads the registry's public daily export, once | No export: the run stops (exit 4) |
+| 1. Pull the export | The [clinx-radar](https://github.com/WillBerchtold/clinx-radar) tool downloads the registry's public daily export, once | No export: the run stops (exit 4) |
 | 2. Make the snapshot | The export is cut down to a small dated file for one state, with every personal field left out | |
 | 3. Compare | The new snapshot is compared with last month's and a change report is written | An unusual amount of change: the run stops so a person can read the report (exit 3) |
 | 4. Drug names | The FDA's National Drug Code Directory is downloaded once and the names file is rebuilt | Directory not reachable (exit 5), or an unusual amount of change (exit 3): the run stops and nothing is written |

@@ -53,7 +53,7 @@ describe('the site and the person who builds it', () => {
       'https://referralfinderx.com/founder.html',
       'https://www.linkedin.com/in/will-berchtold',
       'https://x.com/willberch',
-      'https://github.com/VVillBerchtold',
+      'https://github.com/WillBerchtold',
     ]);
     expect(String(person.description)).toContain('ReferralFinderX');
   });
