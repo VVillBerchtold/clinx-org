@@ -1,16 +1,16 @@
 {
-  "retrieved": "2026-11-26",
+  "retrieved": "2026-11-27",
   "bills": 264,
   "notices": 39,
   "events": 1366,
-  "source_commit": "2824c93f503fc7fedccb37cea935a634dfe5a6f1",
+  "source_commit": "a8e2e6911cb9c0a398c8f8ebd3431c56524f87eb",
   "source_commit_had_uncommitted_changes": false,
   "files": {
-    "bills.csv": "89907475d3c202fe50c58f0b370ff63b6f9ada1bc5bc74802800c2819a28a6a4",
-    "340b-bills.json": "68e8e9ac396b9fd85d4afdfb40943d16799a33a1960d9033cb242e1ed3dc7429",
-    "notices.csv": "830059ed3fcf7e12699df21c74ae1b8d18f00ced7c7bd2c8e88fe635855bf8b3",
-    "340b-notices.json": "43d168d3c16f08170bb55e304cddf8160293d4a5f737da4657aba83df1c79c0b",
-    "events.csv": "27d384007ac39ffbe8e74dfb890e451e407ed83d94df51d619affef91b233203",
-    "340b-events.json": "afbdb405186af086d1c32627f2e08e03a8eced53b1c919408cc52e60f4e5f1d2"
+    "bills.csv": "413fb042416ac2db83472d935f80fcc5585aeb20a1e057743efda3d59946d8d3",
+    "340b-bills.json": "8a9287a56dcdbb5740df5b7f17658fdd43b8b7de374c77340a936e1fdd5982e0",
+    "notices.csv": "63c328e3098c44a3bd32ec9149e8f1d263910cf26e2cbed994655c627cf16bf9",
+    "340b-notices.json": "105dbf5e27277e62853ac7644546c4adf64f9438b3ec9683d5d420a425a279dc",
+    "events.csv": "b23b86fc992f8b62a312cedfcf7e9fa66650deb77c2b8826b1a0e8367973f86a",
+    "340b-events.json": "5942d8a660ad0eeed569723af29daa54432a226d5d4145cde89496dbad299216"
   }
 }
