@@ -21093,6 +21093,22 @@
    "retrieved": "2026-11-27"
   },
   {
+   "event_id": "id-starts-2027",
+   "day": "2027-01-11",
+   "time": "",
+   "jurisdiction": "ID",
+   "kind": "session starts",
+   "bill_id": "",
+   "bill": "",
+   "notice_id": "",
+   "what": "69th Legislature, 1st Regular Session (2027)",
+   "body": "",
+   "where": "",
+   "link": "http://www.legislature.idaho.gov",
+   "source": "Open States' list of sessions",
+   "retrieved": "2026-11-27"
+  },
+  {
    "event_id": "wa-starts-20272028",
    "day": "2027-01-11",
    "time": "",
@@ -21458,6 +21474,22 @@
    "where": "",
    "link": "https://webserver.rilegislature.gov/PublicLaws/law25/law25288.htm",
    "source": "the official source, read on 2026-11-16: \"Annually on or before April 1, each 340B covered entity participating in the federal 340B drug pricing program established by 42 U.S.C. § 256b shall submit to the office of the governor, the speaker of the house of representatives, the president of the senate, and auditor general a report\"",
+   "retrieved": "2026-11-27"
+  },
+  {
+   "event_id": "id-ends-2027",
+   "day": "2027-04-02",
+   "time": "",
+   "jurisdiction": "ID",
+   "kind": "session ends",
+   "bill_id": "",
+   "bill": "",
+   "notice_id": "",
+   "what": "69th Legislature, 1st Regular Session (2027)",
+   "body": "",
+   "where": "",
+   "link": "http://www.legislature.idaho.gov",
+   "source": "Open States' list of sessions",
    "retrieved": "2026-11-27"
   },
   {
