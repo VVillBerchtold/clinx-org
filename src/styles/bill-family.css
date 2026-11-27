@@ -1,0 +1,365 @@
+/*
+  The bill family tree (/bills/family/). The opening band, the parts list, the sections, the scroll story,
+  the month scrubber and the source line are the registry page's (registry.css); the tiles are the site's one
+  tile map (state-map.css). This file draws the arcs on the map, the d3 trees, the travelling passage, the
+  readout cards, the chips, the small families and the list of links.
+  Colour, as on the registry page: the map's own accent for states, periwinkle (--rx-1) for the family's
+  texts, orange (--rx-2) for the thing to look at, a passage shared across a state line.
+*/
+
+/* ---------- Part 1: the family on the map ---------- */
+
+.bf-mapbox { position: relative; }
+.bf-map { margin: 0; }
+.bf-map .rx-map-year { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--s3); }
+.bf-map .rx-map-year span[data-fm-count] { margin: 0; }
+.bf-when { margin: 0 !important; font-family: var(--display) !important; font-size: inherit !important; font-weight: inherit !important; color: var(--ink) !important; }
+svg.fm { display: block; width: 100%; height: auto; font-family: var(--body); overflow: visible; }
+.fm-ready .fm .tile { transition: fill 0.45s var(--ease), stroke 0.45s var(--ease); }
+.fm-arc {
+  fill: none;
+  stroke: var(--rx-2);
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  opacity: 0.9;
+  pointer-events: none;
+}
+.fm-end { fill: var(--rx-2); stroke: var(--bg); stroke-width: 1.5; pointer-events: none; }
+/* Changes fade only once the page has settled, so the first paint never animates. */
+.fm-ready .fm-arc, .fm-ready .fm-end { transition: opacity 0.35s var(--ease); }
+/* With the scrubber on: texts not filed by the month shown wait, unseen. */
+.fm-on .fm-arc.later,
+.fm-on .fm-end.later { opacity: 0; }
+/* A story card can light one branch: its arcs stay, the rest step back. */
+.fm.focusing .fm-arc:not(.hot):not(.later),
+.fm.focusing .fm-end:not(.hot):not(.later) { opacity: 0.16; }
+/* A state picked: its arcs, in and out, stay lit. */
+.fm.picking .fm-arc:not(.lit):not(.later),
+.fm.picking .fm-end:not(.lit):not(.later) { opacity: 0.12; }
+.fm .pick .tile { stroke: var(--ink); stroke-width: 3; }
+.fm-still .fm-arc { opacity: 0.95; }
+
+/* The readout card for a state: over the side of the map away from the state. */
+.bf-scard {
+  top: var(--s7);
+  right: 0;
+  left: auto;
+  bottom: auto;
+  width: min(22rem, 48%);
+  max-height: calc(100% - var(--s7));
+  overflow-y: auto;
+}
+.bf-scard.on-left { left: 0; right: auto; }
+.bf-s-texts { margin: var(--s3) 0 0; padding: 0; list-style: none; display: grid; gap: var(--s3); }
+.bf-s-texts li { padding-top: var(--s3); border-top: 1px solid var(--line); }
+.bf-s-head { display: flex; flex-wrap: wrap; gap: 0 var(--s2); align-items: baseline; }
+.bf-s-head a { font-weight: 650; color: var(--ink); }
+.bf-s-texts li.law .bf-s-head a::after { content: ' ●'; color: var(--accent); font-size: 0.8em; }
+.bf-s-meta { font-size: var(--text-xs); color: var(--muted); }
+.bf-s-with { margin-top: var(--s1) !important; font-size: var(--text-xs); color: var(--muted); }
+.bf-scard .bf-c-quote { font-size: var(--text-xs); }
+.bf-c-quote mark { padding: 0 0.1em; background: color-mix(in srgb, var(--rx-2) 26%, transparent); color: var(--ink); border-radius: 2px; }
+.bf-note { margin-top: var(--s4); max-width: var(--measure); }
+
+/* The keys. */
+.bf-key { margin-top: var(--s3); }
+.bf-k-tile { width: 14px; height: 14px; border-radius: 3px; border: 2px solid var(--accent); background: var(--accent-wash); flex: none; }
+.bf-k-tile.has { background: var(--accent); }
+.bf-k-arc { width: 22px; height: 9px; border: 3px solid var(--rx-2); border-bottom: 0; border-radius: 12px 12px 0 0; flex: none; }
+.bf-k-dot { width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--rx-1); background: var(--bg); flex: none; }
+.bf-k-dot.law { background: var(--rx-1); }
+.bf-k-line { width: 22px; height: 0; border-top: 3px solid var(--rx-q4); flex: none; }
+.bf-k-line.across { border-color: var(--rx-2); }
+.bf-k-w { display: inline-flex; flex-direction: column; gap: 2px; width: 22px; flex: none; }
+.bf-k-w span { display: block; border-top: 1px solid var(--rx-2); }
+.bf-k-w span:nth-child(2) { border-top-width: 2px; }
+.bf-k-w span:nth-child(3) { border-top-width: 4px; }
+
+/* ---------- The d3 trees (part 3 and the small families) ---------- */
+
+svg.ft { display: block; width: auto; max-width: 100%; height: auto; margin-inline: auto; font-family: var(--body); font-size: 12px; overflow: visible; }
+.bf-explore-fig .ft-indent { display: none; }
+@media (max-width: 64rem) {
+  .bf-explore-fig .ft-tidy { display: none; }
+  .bf-explore-fig .ft-indent { display: block; margin-inline: 0; }
+}
+.ft-e { fill: none; stroke: var(--rx-q4); stroke-linecap: round; transition: opacity 0.3s var(--ease); }
+.ft-e.across { stroke: var(--rx-2); }
+.ft-n { text-decoration: none; outline: none; transition: opacity 0.3s var(--ease); }
+.ft-n circle { fill: var(--bg); stroke: var(--rx-1); stroke-width: 2; }
+.ft-n.law circle { fill: var(--rx-1); }
+.ft-n text { fill: var(--ink); paint-order: stroke; stroke: var(--bg); stroke-width: 3px; stroke-linejoin: round; }
+.ft-y, .ft-n .ft-sub { fill: var(--muted); }
+.ft-tidy .ft-n text { font-weight: 600; }
+.ft-y { font-weight: 400; font-variant-numeric: tabular-nums; }
+.ft-indent .ft-n text:not(.ft-sub) { font-size: 13px; font-weight: 600; }
+.ft-sub { font-size: 11.5px; }
+.ft-hit { fill: transparent; }
+.ft-n:hover circle, .ft-n:focus-visible circle, .ft-n.pin circle { stroke: var(--rx-2); stroke-width: 3; }
+.ft-n:focus-visible .ft-hit { stroke: var(--focus); stroke-width: 1.5; }
+.ft .faint { opacity: 0.3; }
+.ft.tracing .ft-n:not(.on), .ft.tracing .ft-e:not(.on) { opacity: 0.25; }
+.ft.tracing .ft-e.on { stroke-width: 4.5; }
+.ft-off { display: none; }
+/* The fold buttons show only when the script can fold. */
+.ft-fold { display: none; cursor: pointer; outline: none; }
+.ft-js .ft-fold { display: inline; }
+.ft-fold rect { fill: var(--surface); stroke: var(--line); stroke-width: 1; }
+.ft-fold path { stroke: var(--ink); stroke-width: 1.6; stroke-linecap: round; }
+.ft-fold[aria-expanded='true'] .ft-v { display: none; }
+.ft-fold:hover rect, .ft-fold:focus-visible rect { stroke: var(--rx-2); stroke-width: 1.5; }
+.ft-fold:focus-visible rect { stroke: var(--focus); stroke-width: 2; }
+.ft-count { font-size: 11px; font-weight: 650; fill: var(--muted); }
+
+/* ---------- Part 2: the words that travel ---------- */
+
+.bf-travel {
+  display: grid;
+  grid-template-columns: minmax(0, 23rem) minmax(0, 1fr);
+  gap: var(--s6);
+  align-items: start;
+  margin-top: var(--s5);
+}
+.bf-quote { margin: 0; }
+.bf-quote blockquote {
+  margin: 0;
+  padding: var(--s5);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--rx-2);
+  border-radius: 4px;
+}
+.bf-quote blockquote p {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 1.35rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.bf-quote mark {
+  padding: 0.05em 0.1em;
+  background: color-mix(in srgb, var(--rx-2) 22%, transparent);
+  color: var(--ink);
+  border-radius: 2px;
+}
+.bf-quote figcaption { margin-top: var(--s3); font-size: var(--text-sm); color: var(--muted); }
+.bf-travel-fig {
+  margin: 0;
+  padding: var(--s4);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.bf-travel-fig figcaption { margin-top: var(--s3); font-size: var(--text-sm); color: var(--muted); }
+
+/* ---------- Chips ---------- */
+
+.bf-chips { display: flex; flex-wrap: wrap; gap: var(--s2); margin: var(--s4) 0 0; padding: 0; list-style: none; }
+.bf-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--s1);
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-sm);
+  line-height: 1.3;
+}
+.bf-chips-static .bf-chip { border-left: 3px solid var(--rx-2); }
+button.bf-chip { cursor: pointer; }
+button.bf-chip:hover { border-color: var(--rx-2); }
+.bf-chip span { color: var(--muted); font-size: var(--text-xs); font-variant-numeric: tabular-nums; }
+.bf-chip[aria-pressed='true'] { background: var(--rx-2); border-color: var(--rx-2); color: var(--bg); }
+.bf-chip[aria-pressed='true'] span { color: inherit; }
+
+/* ---------- Part 3: the whole family, chips and the readout card ---------- */
+
+.bf-explore { margin-top: var(--s4); }
+.bf-explore-main { position: relative; }
+.bf-explore-fig { margin-top: var(--s4); }
+/* The readout card sits in the empty corner under the earliest texts, so the tree keeps the full width. */
+.bf-card {
+  position: absolute;
+  left: 0;
+  bottom: var(--s3);
+  z-index: 4;
+  width: min(23rem, 44%);
+  padding: var(--s4) var(--s5);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--rx-2);
+  border-radius: 4px;
+  box-shadow: 0 12px 32px -16px rgb(0 0 0 / 0.35);
+  font-size: var(--text-sm);
+}
+.bf-card p { margin: 0; }
+.bf-c-kicker { font-size: var(--text-xs); font-weight: 650; letter-spacing: 0.06em; text-transform: uppercase; color: var(--rx-1); }
+.bf-c-name { margin-top: var(--s2) !important; font-family: var(--display); font-size: 1.3rem; line-height: 1.2; color: var(--ink); }
+.bf-c-title, .bf-c-text { margin-top: var(--s2) !important; color: var(--muted); line-height: 1.45; }
+.bf-c-with { margin-top: var(--s4) !important; padding-top: var(--s3) !important; border-top: 1px solid var(--line); color: var(--muted); }
+.bf-c-with strong { color: var(--ink); }
+.bf-c-kind { display: block; font-size: var(--text-xs); }
+.bf-c-figs { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s3); margin: var(--s3) 0 var(--s2); }
+.bf-c-figs dt { font-size: var(--text-xs); color: var(--muted); }
+.bf-c-figs dd { margin: 0; font-family: var(--display); font-size: 1.5rem; font-variant-numeric: tabular-nums; color: var(--ink); }
+.bf-c-meter { display: block; width: 100%; height: 6px; }
+.bf-c-meter .bg { fill: var(--rx-shade); }
+.bf-c-meter .fg { fill: var(--rx-2); }
+.bf-c-quote,
+.bf-words blockquote {
+  margin: var(--s3) 0 0;
+  padding: var(--s1) 0 var(--s1) var(--s3);
+  border-left: 3px solid var(--rx-2);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  color: var(--ink);
+}
+.bf-c-root { margin-top: var(--s3) !important; color: var(--muted); }
+.bf-c-go { margin-top: var(--s4) !important; display: flex; flex-wrap: wrap; gap: var(--s1) var(--s3); align-items: baseline; }
+.bf-c-go a { font-weight: 650; }
+.bf-c-go span { color: var(--muted); font-size: var(--text-xs); }
+.bf-c-close { margin-left: auto; padding: 0.25rem 0.625rem; font: inherit; font-size: var(--text-xs); font-weight: 650; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 4px; cursor: pointer; }
+.bf-c-close:hover { border-color: var(--rx-2); }
+.bf-list { margin-top: var(--s6); }
+
+/* ---------- The list: the same tree, with the words ---------- */
+
+.bf-outline,
+.bf-kids { margin: 0; padding: 0; list-style: none; }
+.bf-outline { margin-top: var(--s4); }
+.bf-kids { margin-left: 0.75rem; padding-left: 1.25rem; border-left: 1px solid var(--tick); }
+.bf-node { position: relative; scroll-margin-top: 5rem; }
+.bf-kids > .bf-node::before {
+  content: '';
+  position: absolute;
+  left: -1.25rem;
+  top: 1.45rem;
+  width: 1rem;
+  border-top: 1px solid var(--tick);
+}
+.bf-item {
+  margin-block: var(--s2);
+  padding: var(--s3) var(--s4);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.rx-alt .bf-item { background: var(--bg); }
+.bf-node:target > .bf-item { border-color: var(--rx-2); box-shadow: 0 0 0 1px var(--rx-2); }
+.bf-head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s1) var(--s3); margin: 0; }
+.bf-mark { width: 9px; height: 9px; border-radius: 50%; border: 1.6px solid var(--rx-1); }
+.is-law .bf-mark { background: var(--rx-1); }
+.bf-title { font-weight: 650; color: var(--ink); text-decoration: none; }
+.bf-title:hover { color: var(--accent); text-decoration: underline; }
+.bf-meta { font-size: var(--text-sm); color: var(--muted); font-variant-numeric: tabular-nums; }
+.bf-status {
+  padding: 0 var(--s2);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-size: var(--text-xs);
+  line-height: 1.6;
+  color: var(--muted);
+}
+.bf-status.law { color: var(--rx-1); background: var(--rx-shade); border-color: transparent; font-weight: 600; }
+.bf-why { display: flex; flex-wrap: wrap; gap: 0 var(--s3); margin: var(--s1) 0 0; font-size: var(--text-sm); color: var(--muted); }
+.bf-kind { font-weight: 600; color: var(--ink); }
+.bf-words { margin-top: var(--s2); font-size: var(--text-sm); }
+.bf-words summary { cursor: pointer; width: fit-content; color: var(--accent); font-weight: 600; }
+.bf-src { margin: var(--s2) 0 0; font-size: var(--text-xs); color: var(--muted); }
+
+/* ---------- Part 4: small multiples and the texts alone ---------- */
+
+.bf-multiples {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr));
+  gap: var(--s5);
+  margin: var(--s5) 0 var(--s6);
+  padding: 0;
+  list-style: none;
+}
+.bf-multiples > li {
+  padding: var(--s4) var(--s4) var(--s3);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.bf-multiples .sm-name { margin: 0 0 var(--s3); font-weight: 700; }
+.bf-multiples .sm-name span { display: block; font-weight: 400; font-size: var(--text-sm); color: var(--muted); }
+.bf-mini-list { margin-top: var(--s2); font-size: var(--text-sm); }
+.bf-mini-list summary { cursor: pointer; color: var(--accent); font-weight: 600; width: fit-content; }
+.bf-outline.compact .bf-item { background: var(--surface); }
+.bf-outline.compact .bf-words blockquote { font-size: var(--text-xs); }
+
+.bf-alone {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  gap: var(--s2);
+  margin: var(--s4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.bf-alone li {
+  display: grid;
+  gap: 2px;
+  padding: var(--s2) var(--s3);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--tick);
+  border-radius: 4px;
+  scroll-margin-top: 5rem;
+}
+.bf-alone li:target { border-color: var(--rx-2); }
+.bf-alone a { color: var(--ink); text-decoration: none; font-size: var(--text-sm); }
+.bf-alone a:hover { color: var(--accent); text-decoration: underline; }
+.bf-alone span { font-size: var(--text-xs); color: var(--muted); }
+
+/* ---------- Part 5: how ---------- */
+
+.bf-how {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s5) var(--s6);
+  margin: var(--s5) 0 var(--s6);
+  padding: 0;
+  list-style: none;
+  counter-reset: how;
+}
+.bf-how li { display: grid; gap: var(--s1); padding-top: var(--s4); border-top: 2px solid var(--rx-1); counter-increment: how; }
+.bf-how strong { font-family: var(--display); font-size: var(--text-lg); }
+.bf-how strong::before { content: counter(how) '  '; color: var(--rx-1); }
+.bf-how span { color: var(--muted); line-height: 1.55; }
+.bf-limits { max-width: var(--measure); }
+
+/* ---------- Narrower screens ---------- */
+
+@media (max-width: 60rem) {
+  .bf-card:not(.bf-scard) { position: static; width: auto; margin-top: var(--s4); }
+}
+@media (max-width: 56rem) {
+  .bf-travel { grid-template-columns: minmax(0, 1fr); }
+  .bf-how { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 44rem) {
+  .bf-quote blockquote p { font-size: 1.15rem; }
+  .bf-kids { margin-left: 0.25rem; padding-left: 0.875rem; }
+  .bf-kids > .bf-node::before { left: -0.875rem; width: 0.625rem; }
+  .bf-item { padding: var(--s3); }
+  /* The map story pins a small map with its scrubber; the cards pass under it. */
+  .bf-mapstory .rx-story-pin .bf-key { gap: var(--s1) var(--s3); font-size: var(--text-xs); }
+  .bf-mapstory .rx-map-year { font-size: 1.35rem; }
+  .bf-mapstory .rx-lapse { margin-top: 0; padding: var(--s2) var(--s3); gap: var(--s2) var(--s3); }
+  .bf-mapstory .rx-range { flex-basis: 9rem; }
+  /* The readout cards ride at the foot of the screen. */
+  .bf-card { position: sticky; bottom: var(--s2); max-height: 55vh; overflow-y: auto; padding: var(--s3) var(--s4); }
+  .bf-scard { position: fixed; left: var(--s4); right: var(--s4); bottom: var(--s2); top: auto; width: auto; max-height: 50vh; }
+  .bf-scard.on-left { left: var(--s4); right: var(--s4); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ft-e, .ft-n, .fm-arc, .fm-end, .fm .tile { transition: none; }
+}
+/* A long passage is cut to a few lines in the card; the list in part 3 prints it whole. */
+.bf-card .bf-c-quote { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; line-clamp: 5; overflow: hidden; }
